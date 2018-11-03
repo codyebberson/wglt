@@ -1,0 +1,17 @@
+{
+  "name": "wglt",
+  "version": "0.0.1",
+  "description": "WebGL Terminal",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "scripts": {
+    "dev": "microbundle watch",
+    "build": "microbundle"
+  },
+  "author": "Cody Ebberson",
+  "license": "MIT",
+  "devDependencies": {
+    "http-serve": "^1.0.1",
+    "microbundle": "^0.7.0"
+  }
+}
