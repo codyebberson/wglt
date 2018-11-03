@@ -7,57 +7,59 @@ const KEY_COUNT = 256;
 /**
  * Creates a new key instance.
  */
-class Key {
-    down: boolean;
-    downCount: number;
+export class Key {
+  down: boolean;
+  downCount: number;
 
-    constructor() {
-        this.down = false;
-        this.downCount = 0;
-    }
+  constructor() {
+    this.down = false;
+    this.downCount = 0;
+  }
 }
 
 export class Keys {
-    private keys: Array<Key>;
+  private keys: Key[];
 
-    /**
-     * Creates a new keyboard module.
-     *
-     * @param element DOM element to attach listeners.
-     */
-    constructor(element: Element) {
-        this.keys = new Array(KEY_COUNT);
-        for (let i = 0; i < KEY_COUNT; i++) {
-            this.keys[i] = new Key();
-        }
-
-        element.addEventListener('keydown', e => this.setKey(e, true));
-        element.addEventListener('keyup', e => this.setKey(e, false));
+  /**
+   * Creates a new keyboard module.
+   *
+   * @param element DOM element to attach listeners.
+   */
+  constructor(element: Element) {
+    this.keys = new Array(KEY_COUNT);
+    for (let i = 0; i < KEY_COUNT; i++) {
+      this.keys[i] = new Key();
     }
 
+    element.addEventListener(
+        'keydown', e => this.setKey(e as KeyboardEvent, true));
+    element.addEventListener(
+        'keyup', e => this.setKey(e as KeyboardEvent, false));
+  }
 
-    setKey(e, state) {
-        e.stopPropagation();
-        e.preventDefault();
-        const keyCode = e.keyCode;
-        if (keyCode >= 0 && keyCode < KEY_COUNT) {
-            this.keys[keyCode].down = state;
-        }
-    }
 
-    updateKeys() {
-        for (let i = 0; i < KEY_COUNT; i++) {
-            if (this.keys[i].down) {
-                this.keys[i].downCount++;
-            } else {
-                this.keys[i].downCount = 0;
-            }
-        }
+  setKey(e: KeyboardEvent, state: boolean) {
+    e.stopPropagation();
+    e.preventDefault();
+    const keyCode = e.keyCode;
+    if (keyCode >= 0 && keyCode < KEY_COUNT) {
+      this.keys[keyCode].down = state;
     }
+  }
 
-    getKey(keyCode) {
-        return keyCode >= 0 && keyCode < KEY_COUNT ? this.keys[keyCode] : null;
+  updateKeys() {
+    for (let i = 0; i < KEY_COUNT; i++) {
+      if (this.keys[i].down) {
+        this.keys[i].downCount++;
+      } else {
+        this.keys[i].downCount = 0;
+      }
     }
+  }
+
+  getKey(keyCode: number) {
+    return keyCode >= 0 && keyCode < KEY_COUNT ? this.keys[keyCode] : null;
+  }
 }
 
 export const VK_ESCAPE = 27;

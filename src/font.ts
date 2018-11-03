@@ -14,7 +14,8 @@ export const FONT_CHAR_HEIGHT = 8;
  * IBM terminal font.
  * See img/font.png.
  */
-export const FONT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAA' +
+export const FONT_IMAGE =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAA' +
     'ACAAQMAAAD58POIAAAABlBMVEUAAAD///+l2Z/dAAAEtElEQVRIx2WTsYsUMRTGPxT' +
     'OJniWgRMFsbR4oJyDBE+s/AdsrIJKtEixIKwPHOc8tbCwsdNKLCy0tlBQGBCnel55C' +
     'K5y1dqIbKVbhBlfZkYP8UsI2d98ed+bMAtUVTxUHELn3Krb2HwCbHVtUSo4f/5AOHn' +

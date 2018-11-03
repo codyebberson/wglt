@@ -6,12 +6,21 @@
   "source": "src/index.ts",
   "scripts": {
     "dev": "microbundle watch",
-    "build": "microbundle"
+    "build": "microbundle",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
   },
   "author": "Cody Ebberson",
   "license": "MIT",
   "devDependencies": {
+    "gts": "^0.8.0",
     "http-serve": "^1.0.1",
-    "microbundle": "^0.7.0"
+    "microbundle": "^0.7.0",
+    "typescript": "^3.1.6"
   }
 }
