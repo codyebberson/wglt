@@ -21,4 +21,5 @@
 
 # Exclude output from diff
 dist/* -diff
+dist/* linguist-generated=true
 
