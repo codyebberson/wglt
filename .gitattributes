@@ -19,3 +19,6 @@
 *.xcf    binary
 *.zip    binary
 
+# Exclude output from diff
+dist/* -diff
+
