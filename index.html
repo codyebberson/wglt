@@ -33,6 +33,17 @@
         canvas {
             image-rendering: pixelated;
         }
+
+        pre {
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            border: 1px solid #eee;
+            padding: 12px;
+        }
+
+        a {
+            color: #00f;
+        }
     </style>
 </head>
 
@@ -81,11 +92,56 @@
 
     <h2>What is it?</h2>
     <p>WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.</p>
+    <p>WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU usage.</p>
     <p>WGLT is modelled after <a href="https://bitbucket.org/libtcod/libtcod">libtcod</a> and <a href="http://ondras.github.io/rot.js/hp/">rot.js</a>.</p>
-    <p>WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU usage</p>
+
+    <h2>Usage</h2>
+    <p>Add dependency:</p>
+    <pre>npm i -D wglt</pre>
+    <p>Import library:</p>
+    <pre>import * as wglt from 'wglt';</pre>
+    <p>Or, simply use the prebuilt:</p>
+    <pre>&lt;script src="wglt.min.js"&gt;&lt;/script&gt;</pre>
+    <p>Use it:</p>
+    <pre>const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
+term.fillBackgroundRect(0, 0, 80, 50, wglt.COLOR_DARK_BLUE);
+term.fillForegroundRect(0, 0, 80, 50, wglt.COLOR_YELLOW);
+
+let x = 10;
+let y = 10;
+
+term.update = function () {
+    if (term.isKeyDown(wglt.VK_UP)) {
+        y--;
+    }
+    if (term.isKeyDown(wglt.VK_LEFT)) {
+        x--;
+    }
+    if (term.isKeyDown(wglt.VK_RIGHT)) {
+        x++;
+    }
+    if (term.isKeyDown(wglt.VK_DOWN)) {
+        y++;
+    }
+
+    term.clear();
+    term.drawString(1, 1, 'Hello world!');
+    term.drawString(1, 3, 'Use arrow keys to move');
+    term.drawString(x, y, '@');
+};
+    </pre>
+
+    <h2>Examples</h2>
+    <ul>
+        <li><a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls</li>
+        <li><a href="examples/performance.html">Performance</a> - Smooth and consistent 60 fps without CPU fan</li>
+        <li><a href="examples/colors.html">Colors</a> - True color palette, HSV color manipulation</li>
+        <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
+    </ul>
 
     <h2>Roguelike Tutorial</h2>
-    <p>Full implementation of the classic <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod">Rogue Basin Complete Roguelike Tutorial</a>.</p>
+    <p>Full implementation of the classic <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod">Rogue
+            Basin Complete Roguelike Tutorial</a></p>
     <ul>
         <li><a href="examples/roguelike/part1.html">Part 1: Graphics</a></li>
         <li><a href="examples/roguelike/part2.html">Part 2: The object and the map</a></li>
@@ -94,14 +150,6 @@
         <li><a href="examples/roguelike/part5.html">Part 5: Preparing for combat</a></li>
         <li><a href="examples/roguelike/part6.html">Part 6: Going Berserk!</a></li>
         <li><a href="examples/roguelike/part7.html">Part 7: The GUI</a></li>
-    </ul>
-
-    <h2>Examples</h2>
-    <ul>
-        <li><a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls</li>
-        <li><a href="examples/performance.html">Performance</a> - Smooth and consistent 60 fps without CPU fan</li>
-        <li><a href="examples/colors.html">Colors</a> - True color palette, HSV color manipulation</li>
-        <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
     </ul>
 </body>
 
