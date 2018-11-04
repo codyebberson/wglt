@@ -5,29 +5,46 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WGLT - WebGL Terminal</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <style type="text/css">
+        * {
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+        }
+
         body {
             margin: 40px auto;
             max-width: 650px;
             line-height: 1.6;
             font-family: sans-serif;
-            font-size: 18px;
-            color: #333;
+            font-size: 15px;
+            color: #34495e;
             padding: 0 10px
         }
 
         h1,
         h2,
         h3 {
-            line-height: 1.2
+            line-height: 1.2;
+            font-weight: normal;
+        }
+
+        canvas {
+            image-rendering: pixelated;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>WGLT - WebGL Terminal</h1>
-    </header>
+    <h1>WGLT - WebGL Terminal</h1>
+    <ul>
+        <li>Fast, lightweight, terminal emulator using WebGL</li>
+        <li>100% TypeScript</li>
+        <li>MIT license</li>
+        <li>~10kb minified JS, ~5kb gzipped</li>
+        <li>No external dependencies</li>
+    </ul>
 
     <canvas></canvas>
     <script src="dist/index.umd.js"></script>
@@ -61,6 +78,31 @@
         };
 
     </script>
+
+    <h2>What is it?</h2>
+    <p>WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.</p>
+    <p>WGLT is modelled after <a href="https://bitbucket.org/libtcod/libtcod">libtcod</a> and <a href="http://ondras.github.io/rot.js/hp/">rot.js</a>.</p>
+    <p>WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU usage</p>
+
+    <h2>Roguelike Tutorial</h2>
+    <p>Full implementation of the classic <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod">Rogue Basin Complete Roguelike Tutorial</a>.</p>
+    <ul>
+        <li><a href="examples/roguelike/part1.html">Part 1: Graphics</a></li>
+        <li><a href="examples/roguelike/part2.html">Part 2: The object and the map</a></li>
+        <li><a href="examples/roguelike/part3.html">Part 3: The dungeon</a></li>
+        <li><a href="examples/roguelike/part4.html">Part 4: Field-of-view and exploration</a></li>
+        <li><a href="examples/roguelike/part5.html">Part 5: Preparing for combat</a></li>
+        <li><a href="examples/roguelike/part6.html">Part 6: Going Berserk!</a></li>
+        <li><a href="examples/roguelike/part7.html">Part 7: The GUI</a></li>
+    </ul>
+
+    <h2>Examples</h2>
+    <ul>
+        <li><a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls</li>
+        <li><a href="examples/performance.html">Performance</a> - Smooth and consistent 60 fps without CPU fan</li>
+        <li><a href="examples/colors.html">Colors</a> - True color palette, HSV color manipulation</li>
+        <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
+    </ul>
 </body>
 
 </html>
