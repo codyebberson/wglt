@@ -1,5 +1,4 @@
 
-// import * from './glconstants';
 import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH, FONT_IMAGE} from './font';
 import {Keys} from './keys';
 import {FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE} from './shaders';

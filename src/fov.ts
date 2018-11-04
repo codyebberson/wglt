@@ -1,7 +1,6 @@
 
 // MRPAS
 // Mingos' Restrictive Precise Angle Shadowcasting
-// (Precise Angle Shadowcasting for short)
 // https://bitbucket.org/mingos/mrpas/overview
 
 function createBoolMatrix(width: number, height: number) {
@@ -66,84 +65,21 @@ export class FovMap {
    * Compute the FOV in an octant adjacent to the Y axis
    */
   private computeOctantY(deltaX: number, deltaY: number) {
-    /**
-     * @type {Array.<number>}
-     */
     const startSlopes: number[] = [];
-
-    /**
-     * @type {Array.<number>}
-     */
     const endSlopes: number[] = [];
-
-    /**
-     * @type {number}
-     */
     let iteration = 1;
-
-    /**
-     * @type {number}
-     */
     let totalObstacles = 0;
-
-    /**
-     * @type {number}
-     */
     let obstaclesInLastLine = 0;
-
-    /**
-     * @type {number}
-     */
     let minSlope = 0;
-
-    /**
-     * @type {number}
-     */
     let x;
-
-    /**
-     * @type {number}
-     */
     let y;
-
-    /**
-     * @type {number}
-     */
     let halfSlope;
-
-    /**
-     * @type {number}
-     */
     let processedCell;
-
-    /**
-     * @type {boolean}
-     */
     let visible;
-
-    /**
-     * @type {boolean}
-     */
     let extended;
-
-    /**
-     * @type {number}
-     */
     let centreSlope;
-
-    /**
-     * @type {number}
-     */
     let startSlope;
-
-    /**
-     * @type {number}
-     */
     let endSlope;
-
-    /**
-     * @type {number}
-     */
     let previousEndSlope;
 
     for (y = this.originY + deltaY; y >= this.minY && y <= this.maxY;
@@ -209,84 +145,21 @@ export class FovMap {
    * Compute the FOV in an octant adjacent to the X axis
    */
   private computeOctantX(deltaX: number, deltaY: number) {
-    /**
-     * @type {Array.<number>}
-     */
     const startSlopes: number[] = [];
-
-    /**
-     * @type {Array.<number>}
-     */
     const endSlopes: number[] = [];
-
-    /**
-     * @type {number}
-     */
     let iteration = 1;
-
-    /**
-     * @type {number}
-     */
     let totalObstacles = 0;
-
-    /**
-     * @type {number}
-     */
     let obstaclesInLastLine = 0;
-
-    /**
-     * @type {number}
-     */
     let minSlope = 0;
-
-    /**
-     * @type {number}
-     */
     let x;
-
-    /**
-     * @type {number}
-     */
     let y;
-
-    /**
-     * @type {number}
-     */
     let halfSlope;
-
-    /**
-     * @type {number}
-     */
     let processedCell;
-
-    /**
-     * @type {boolean}
-     */
     let visible;
-
-    /**
-     * @type {boolean}
-     */
     let extended;
-
-    /**
-     * @type {number}
-     */
     let centreSlope;
-
-    /**
-     * @type {number}
-     */
     let startSlope;
-
-    /**
-     * @type {number}
-     */
     let endSlope;
-
-    /**
-     * @type {number}
-     */
     let previousEndSlope;
 
     for (x = this.originX + deltaX; x >= this.minX && x <= this.maxX;
