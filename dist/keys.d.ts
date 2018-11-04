@@ -11,9 +11,9 @@ export declare class Keys {
     /**
      * Creates a new keyboard module.
      *
-     * @param element DOM element to attach listeners.
+     * @param el DOM el to attach listeners.
      */
-    constructor(element: Element);
+    constructor(el: Element);
     setKey(e: KeyboardEvent, state: boolean): void;
     updateKeys(): void;
     getKey(keyCode: number): Key | null;

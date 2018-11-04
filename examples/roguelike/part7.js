@@ -315,6 +315,26 @@ function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) 
     term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum);
 }
 
+function getNamesUnderMouse() {
+    const x = term.getMouse().x;
+    const y = term.getMouse().y;
+
+    if (!fovMap.isVisible(x, y)) {
+        return '';
+    }
+
+    const names = [];
+
+    for (let i = 0; i < entities.length; i++) {
+        const entity = entities[i];
+        if (entity.x === x && entity.y === y) {
+            names.push(entity.name);
+        }
+    }
+
+    return capitalize(names.join(', '));
+}
+
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
 const player = new Entity(40, 25, '@', 'Hero', wglt.COLOR_WHITE, true, new Fighter(20, 2, 5, playerDeath));
@@ -330,10 +350,13 @@ function addMessage(msg, opt_color) {
     while (messages.length >= MSG_HEIGHT) {
         messages.shift();
     }
-    messages.push({text: msg, color: (opt_color || wglt.COLOR_WHITE)});
+    messages.push({ text: msg, color: (opt_color || wglt.COLOR_WHITE) });
 }
 
 function capitalize(str) {
+    if (!str) {
+        return str;
+    }
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
@@ -443,6 +466,9 @@ function renderAll() {
         1, PANEL_Y + 1, BAR_WIDTH,
         'HP', player.fighter.hp, player.fighter.maxHp,
         wglt.COLOR_LIGHT_RED, wglt.COLOR_DARK_RED);
+
+    // Display names of objects under the mouse
+    term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.COLOR_LIGHT_GRAY);
 }
 
 term.update = function () {

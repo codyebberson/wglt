@@ -1,3 +1,4 @@
+import { Mouse } from './mouse';
 export declare class Terminal {
     private canvas;
     private width;
@@ -5,6 +6,7 @@ export declare class Terminal {
     private pixelWidth;
     private pixelHeight;
     private keys;
+    private mouse;
     private gl;
     private program;
     private positionAttribLocation;
@@ -55,6 +57,7 @@ export declare class Terminal {
     isKeyDown(keyCode: number): boolean | null;
     isKeyPressed(keyCode: number): boolean;
     getKeyDownCount(keyCode: number): number;
+    getMouse(): Mouse;
     private buildShader;
     /**
      * Initialize a texture and load an image.

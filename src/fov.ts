@@ -54,10 +54,15 @@ export class FovMap {
   }
 
   setBlocked(x: number, y: number, blocked: boolean) {
-    this.blocked[y][x] = blocked;
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      this.blocked[y][x] = blocked;
+    }
   }
 
   isVisible(x: number, y: number) {
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+      return false;
+    }
     return this.visible[y][x];
   }
 
@@ -83,13 +88,13 @@ export class FovMap {
     let previousEndSlope;
 
     for (y = this.originY + deltaY; y >= this.minY && y <= this.maxY;
-         y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
+      y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (processedCell = Math.floor(minSlope * iteration + 0.5),
-          x = this.originX + (processedCell * deltaX);
-           processedCell <= iteration && x >= this.minX && x <= this.maxX;
-           x += deltaX, ++processedCell, previousEndSlope = endSlope) {
+        x = this.originX + (processedCell * deltaX);
+        processedCell <= iteration && x >= this.minX && x <= this.maxX;
+        x += deltaX, ++processedCell, previousEndSlope = endSlope) {
         visible = true;
         extended = false;
         centreSlope = processedCell / iteration;
@@ -98,22 +103,22 @@ export class FovMap {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.visible[y - deltaY][x] && !this.blocked[y - deltaY][x]) &&
-              !(this.visible[y - deltaY][x - deltaX] &&
-                !this.blocked[y - deltaY][x - deltaX])) {
+            !(this.visible[y - deltaY][x - deltaX] &&
+              !this.blocked[y - deltaY][x - deltaX])) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
-                  endSlope >= startSlopes[idx]) {
+                endSlope >= startSlopes[idx]) {
                 if (!this.blocked[y][x]) {
                   if (centreSlope > startSlopes[idx] &&
-                      centreSlope < endSlopes[idx]) {
+                    centreSlope < endSlopes[idx]) {
                     visible = false;
                     break;
                   }
                 } else {
                   if (startSlope >= startSlopes[idx] &&
-                      endSlope <= endSlopes[idx]) {
+                    endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
                   } else {
@@ -163,13 +168,13 @@ export class FovMap {
     let previousEndSlope;
 
     for (x = this.originX + deltaX; x >= this.minX && x <= this.maxX;
-         x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
+      x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (processedCell = Math.floor(minSlope * iteration + 0.5),
-          y = this.originY + (processedCell * deltaY);
-           processedCell <= iteration && y >= this.minY && y <= this.maxY;
-           y += deltaY, ++processedCell, previousEndSlope = endSlope) {
+        y = this.originY + (processedCell * deltaY);
+        processedCell <= iteration && y >= this.minY && y <= this.maxY;
+        y += deltaY, ++processedCell, previousEndSlope = endSlope) {
         visible = true;
         extended = false;
         centreSlope = processedCell / iteration;
@@ -178,22 +183,22 @@ export class FovMap {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.visible[y][x - deltaX] && !this.blocked[y][x - deltaX]) &&
-              !(this.visible[y - deltaY][x - deltaX] &&
-                !this.blocked[y - deltaY][x - deltaX])) {
+            !(this.visible[y - deltaY][x - deltaX] &&
+              !this.blocked[y - deltaY][x - deltaX])) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
-                  endSlope >= startSlopes[idx]) {
+                endSlope >= startSlopes[idx]) {
                 if (!this.blocked[y][x]) {
                   if (centreSlope > startSlopes[idx] &&
-                      centreSlope < endSlopes[idx]) {
+                    centreSlope < endSlopes[idx]) {
                     visible = false;
                     break;
                   }
                 } else {
                   if (startSlope >= startSlopes[idx] &&
-                      endSlope <= endSlopes[idx]) {
+                    endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
                   } else {

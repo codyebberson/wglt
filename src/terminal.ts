@@ -1,7 +1,8 @@
 
 import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH, FONT_IMAGE} from './font';
-import {Keys} from './keys';
 import {FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE} from './shaders';
+import {Keys} from './keys';
+import {Mouse} from './mouse';
 
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
@@ -21,6 +22,7 @@ export class Terminal {
   private pixelWidth: number;
   private pixelHeight: number;
   private keys: Keys;
+  private mouse: Mouse;
   private gl: WebGLRenderingContext;
   private program: WebGLProgram;
   private positionAttribLocation: GLint;
@@ -58,6 +60,7 @@ export class Terminal {
     canvas.tabIndex = 0;
 
     this.keys = new Keys(canvas);
+    this.mouse = new Mouse(canvas);
 
     // Get the WebGL context from the canvas
     const gl = canvas.getContext('webgl', {antialias: false});
@@ -286,6 +289,10 @@ export class Terminal {
     return key ? key.downCount : 0;
   }
 
+  getMouse() {
+    return this.mouse;
+  }
+
   private buildShader(type: GLint, source: string) {
     const gl = this.gl;
     const sh = gl.createShader(type);
@@ -350,7 +357,7 @@ export class Terminal {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.viewport(0, 0, 640, 400);
+    gl.viewport(0, 0, this.pixelWidth, this.pixelHeight);
 
     // Tell WebGL how to pull out the positions from the position
     // buffer into the vertexPosition attribute

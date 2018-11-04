@@ -23,18 +23,16 @@ export class Keys {
   /**
    * Creates a new keyboard module.
    *
-   * @param element DOM element to attach listeners.
+   * @param el DOM el to attach listeners.
    */
-  constructor(element: Element) {
+  constructor(el: Element) {
     this.keys = new Array(KEY_COUNT);
     for (let i = 0; i < KEY_COUNT; i++) {
       this.keys[i] = new Key();
     }
 
-    element.addEventListener(
-        'keydown', e => this.setKey(e as KeyboardEvent, true));
-    element.addEventListener(
-        'keyup', e => this.setKey(e as KeyboardEvent, false));
+    el.addEventListener('keydown', e => this.setKey(e as KeyboardEvent, true));
+    el.addEventListener('keyup', e => this.setKey(e as KeyboardEvent, false));
   }
 
 
