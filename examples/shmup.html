@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>wglt - examples - shmup</title>
+    <title>WGLT - Examples - Shoot'em Up</title>
     <meta charset="utf-8" />
 </head>
 
@@ -238,6 +238,8 @@
             if (waveTime < 0 && waveTime > -WAVE_WARMUP_TIME + 60) {
                 term.drawCenteredString(WIDTH / 2, HEIGHT / 2, 'WAVE ' + wave.count, wglt.COLOR_WHITE);
             }
+
+            term.drawString(1, HEIGHT - 2, 'Z - SHOOT', wglt.COLOR_WHITE);
 
             time++;
         };
