@@ -1,8 +1,10 @@
+import { Font } from './font';
 import { Mouse } from './mouse';
 export declare class Terminal {
     private canvas;
     private width;
     private height;
+    private font;
     private pixelWidth;
     private pixelHeight;
     private keys;
@@ -27,7 +29,7 @@ export declare class Terminal {
     private backgroundBuffer;
     private texture;
     update?: Function;
-    constructor(canvas: HTMLCanvasElement, width: number, height: number);
+    constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font);
     private getAttribLocation;
     private isOutOfRange;
     setCharCode(x: number, y: number, c: number): void;

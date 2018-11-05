@@ -1,8 +1,9 @@
 
-import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH, FONT_IMAGE} from './font';
-import {FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE} from './shaders';
-import {Keys} from './keys';
-import {Mouse} from './mouse';
+//import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH, FONT_IMAGE} from './font';
+import { Font, DEFAULT_FONT } from './font';
+import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
+import { Keys } from './keys';
+import { Mouse } from './mouse';
 
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
@@ -19,6 +20,7 @@ export class Terminal {
   private canvas: HTMLCanvasElement;
   private width: number;
   private height: number;
+  private font: Font;
   private pixelWidth: number;
   private pixelHeight: number;
   private keys: Keys;
@@ -44,12 +46,13 @@ export class Terminal {
   private texture: WebGLTexture;
   update?: Function;
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number) {
+  constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font) {
     this.canvas = canvas;
     this.width = width;
     this.height = height;
-    this.pixelWidth = width * FONT_CHAR_WIDTH;
-    this.pixelHeight = height * FONT_CHAR_HEIGHT;
+    this.font = font || DEFAULT_FONT;
+    this.pixelWidth = width * this.font.charWidth;
+    this.pixelHeight = height * this.font.charHeight;
 
     canvas.width = this.pixelWidth;
     canvas.height = this.pixelHeight;
@@ -60,28 +63,28 @@ export class Terminal {
     canvas.tabIndex = 0;
 
     this.keys = new Keys(canvas);
-    this.mouse = new Mouse(canvas);
+    this.mouse = new Mouse(canvas, this.font);
 
     // Get the WebGL context from the canvas
-    const gl = canvas.getContext('webgl', {antialias: false});
+    const gl = canvas.getContext('webgl', { antialias: false });
     if (!gl) {
       throw new Error(
-          'Unable to initialize WebGL. Your browser may not support it.');
+        'Unable to initialize WebGL. Your browser may not support it.');
     }
 
     const program = gl.createProgram();
     if (!program) {
       throw new Error(
-          'Unable to initialize WebGL. Your browser may not support it.');
+        'Unable to initialize WebGL. Your browser may not support it.');
     }
 
     this.gl = gl;
     this.program = program;
 
     gl.attachShader(
-        program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
+      program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
     gl.attachShader(
-        program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
+      program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
     gl.linkProgram(program);
     gl.useProgram(program);
 
@@ -144,7 +147,7 @@ export class Terminal {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexArray, gl.STATIC_DRAW);
 
-    this.texture = this.loadTexture(FONT_IMAGE) as WebGLTexture;
+    this.texture = this.loadTexture(this.font.url) as WebGLTexture;
 
     this.renderLoop();
   }
@@ -186,7 +189,7 @@ export class Terminal {
   }
 
   clearRect(
-      rectX: number, rectY: number, rectWidth: number, rectHeight: number) {
+    rectX: number, rectY: number, rectWidth: number, rectHeight: number) {
     const charCode = 0;
     const x2 = rectX + rectWidth;
     const y2 = rectY + rectHeight;
@@ -251,12 +254,12 @@ export class Terminal {
   }
 
   drawCenteredString(
-      x: number, y: number, str: string, fg?: number, bg?: number) {
+    x: number, y: number, str: string, fg?: number, bg?: number) {
     this.drawString((x - str.length / 2) | 0, y, str, fg, bg);
   }
 
   fillForegroundRect(
-      x: number, y: number, w: number, h: number, color: number) {
+    x: number, y: number, w: number, h: number, color: number) {
     for (let i = y; i < y + h; i++) {
       for (let j = x; j < x + w; j++) {
         this.setForegroundColor(j, i, color);
@@ -265,7 +268,7 @@ export class Terminal {
   }
 
   fillBackgroundRect(
-      x: number, y: number, w: number, h: number, color: number) {
+    x: number, y: number, w: number, h: number, color: number) {
     for (let i = y; i < y + h; i++) {
       for (let j = x; j < x + w; j++) {
         this.setBackgroundColor(j, i, color);
@@ -303,7 +306,7 @@ export class Terminal {
     gl.compileShader(sh);
     if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
       throw new Error(
-          'An error occurred compiling the shader: ' + gl.getShaderInfoLog(sh));
+        'An error occurred compiling the shader: ' + gl.getShaderInfoLog(sh));
     }
     return sh;
   }
@@ -332,17 +335,18 @@ export class Terminal {
     const srcType = gl.UNSIGNED_BYTE;
     const pixel = new Uint8Array([0, 0, 0, 255]);  // opaque black
     gl.texImage2D(
-        gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat,
-        srcType, pixel);
+      gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat,
+      srcType, pixel);
 
     const image = new Image();
     image.onload = () => {
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(
-          gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-      gl.generateMipmap(gl.TEXTURE_2D);
+        gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     };
     image.src = url;
 
@@ -369,8 +373,8 @@ export class Terminal {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
       gl.vertexAttribPointer(
-          this.positionAttribLocation, numComponents, type, normalize, stride,
-          offset);
+        this.positionAttribLocation, numComponents, type, normalize, stride,
+        offset);
     }
 
     // Tell WebGL how to pull out the texture coordinates from
@@ -384,8 +388,8 @@ export class Terminal {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.textureArray, gl.DYNAMIC_DRAW);
       gl.vertexAttribPointer(
-          this.textureAttribLocation, numComponents, type, normalize, stride,
-          offset);
+        this.textureAttribLocation, numComponents, type, normalize, stride,
+        offset);
     }
 
     // Foreground color
@@ -397,10 +401,10 @@ export class Terminal {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.foregroundBuffer);
       gl.bufferData(
-          gl.ARRAY_BUFFER, this.foregroundUint8Array, gl.DYNAMIC_DRAW);
+        gl.ARRAY_BUFFER, this.foregroundUint8Array, gl.DYNAMIC_DRAW);
       gl.vertexAttribPointer(
-          this.fgColorAttribLocation, numComponents, type, normalize, stride,
-          offset);
+        this.fgColorAttribLocation, numComponents, type, normalize, stride,
+        offset);
     }
 
     // Background color
@@ -412,10 +416,10 @@ export class Terminal {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.backgroundBuffer);
       gl.bufferData(
-          gl.ARRAY_BUFFER, this.backgroundUint8Array, gl.DYNAMIC_DRAW);
+        gl.ARRAY_BUFFER, this.backgroundUint8Array, gl.DYNAMIC_DRAW);
       gl.vertexAttribPointer(
-          this.bgColorAttribLocation, numComponents, type, normalize, stride,
-          offset);
+        this.bgColorAttribLocation, numComponents, type, normalize, stride,
+        offset);
     }
 
     // Tell WebGL which indices to use to index the vertices

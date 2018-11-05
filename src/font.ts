@@ -1,21 +1,22 @@
 
-/**
- * Character width in pixels.
- */
-export const FONT_CHAR_WIDTH = 8;
+export class Font {
+    url: string;
+    charWidth: number;
+    charHeight: number;
 
-/**
- * Character height in pixels.
- */
-export const FONT_CHAR_HEIGHT = 8;
+    constructor(url: string, charWidth: number, charHeight: number) {
+        this.url = url;
+        this.charWidth = charWidth;
+        this.charHeight = charHeight;
+    }
+}
 
 /**
  * Font image as data URL.
  * IBM terminal font.
  * See img/font.png.
  */
-export const FONT_IMAGE =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAA' +
+const FONT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAA' +
     'ACAAQMAAAD58POIAAAABlBMVEUAAAD///+l2Z/dAAAEtElEQVRIx2WTsYsUMRTGPxT' +
     'OJniWgRMFsbR4oJyDBE+s/AdsrIJKtEixIKwPHOc8tbCwsdNKLCy0tlBQGBCnel55C' +
     'K5y1dqIbKVbhBlfZkYP8UsI2d98ed+bMAtUVTxUHELn3Krb2HwCbHVtUSo4f/5AOHn' +
@@ -42,3 +43,5 @@ export const FONT_IMAGE =
     'Whz9A1YMXAFZXVxei4gwe7YFEGWyNgJkN97Ej+PutEuabFaEAipIHcOLze0IU8EGTQ' +
     'QJ/ZiAC1hUuO9LJW5JQKDjoFWjUtzWBylZlqUDRxzUmDMog4enaQ1Kyp/1Y7v1vfwP' +
     'x3em+Z+50IgAAAABJRU5ErkJggg==';
+
+export const DEFAULT_FONT = new Font(FONT_IMAGE, 8, 8);

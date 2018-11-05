@@ -1,12 +1,15 @@
 
-import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH} from './font';
+// import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH} from './font';
+import {Font} from './font';
 
 export class Mouse {
+    font: Font;
     x: number;
     y: number;
     buttons: boolean[];
 
-    constructor (el: Element) {
+    constructor (el: Element, font: Font) {
+        this.font = font;
         this.x = 0;
         this.y = 0;
         this.buttons = [false, false, false];
@@ -17,8 +20,8 @@ export class Mouse {
     }
 
     update(e: MouseEvent) {
-        this.x = (e.offsetX / FONT_CHAR_WIDTH) | 0;
-        this.y = (e.offsetY / FONT_CHAR_HEIGHT) | 0;
+        this.x = (e.offsetX / this.font.charWidth) | 0;
+        this.y = (e.offsetY / this.font.charHeight) | 0;
 
         if (e.type === 'mousedown') {
             this.buttons[e.button] = true;
