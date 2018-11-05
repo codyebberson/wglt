@@ -3,11 +3,13 @@ export class Font {
     url: string;
     charWidth: number;
     charHeight: number;
+    graphical: boolean;
 
-    constructor(url: string, charWidth: number, charHeight: number) {
+    constructor(url: string, charWidth: number, charHeight: number, graphical?: boolean) {
         this.url = url;
         this.charWidth = charWidth;
         this.charHeight = charHeight;
+        this.graphical = !!graphical;
     }
 }
 

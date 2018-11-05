@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>WGLT - Examples - Graphical Tiles</title>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <canvas></canvas>
+    <script src="../dist/index.umd.js"></script>
+    <script>
+
+        const font = new wglt.Font('graphics.png', 16, 16, true);
+
+        const term = new wglt.Terminal(document.querySelector('canvas'), 20, 15, font, 2.0);
+
+        let x = 4;
+        let y = 4;
+
+        term.update = function () {
+            if (term.isKeyPressed(wglt.VK_UP)) {
+                y--;
+            }
+            if (term.isKeyPressed(wglt.VK_LEFT)) {
+                x--;
+            }
+            if (term.isKeyPressed(wglt.VK_RIGHT)) {
+                x++;
+            }
+            if (term.isKeyPressed(wglt.VK_DOWN)) {
+                y++;
+            }
+
+            term.clear();
+            term.setCharCode(10, 10, 4);
+            term.setCharCode(12, 10, 5);
+            term.setCharCode(14, 10, 6);
+            term.setCharCode(16, 10, 7);
+            term.setCharCode(x, y, 3);
+        };
+
+    </script>
+</body>
+
+</html>

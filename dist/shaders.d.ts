@@ -16,6 +16,7 @@ export declare const VERTEX_SHADER_SOURCE: string;
  * e = varying vec2 vTextureCoord;
  * f = varying vec4 vFgColor;
  * g = varying vec4 vBgColor;
+ * h = uniform bool uGraphicalTiles;
  * s = uniform sampler2D uSampler;
  */
 export declare const FRAGMENT_SHADER_SOURCE: string;

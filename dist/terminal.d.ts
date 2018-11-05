@@ -5,6 +5,7 @@ export declare class Terminal {
     private width;
     private height;
     private font;
+    private scale;
     private pixelWidth;
     private pixelHeight;
     private keys;
@@ -29,7 +30,7 @@ export declare class Terminal {
     private backgroundBuffer;
     private texture;
     update?: Function;
-    constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font);
+    constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font, scale?: number);
     private getAttribLocation;
     private isOutOfRange;
     setCharCode(x: number, y: number, c: number): void;

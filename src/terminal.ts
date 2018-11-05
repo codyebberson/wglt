@@ -21,6 +21,7 @@ export class Terminal {
   private width: number;
   private height: number;
   private font: Font;
+  private scale: number;
   private pixelWidth: number;
   private pixelHeight: number;
   private keys: Keys;
@@ -46,18 +47,19 @@ export class Terminal {
   private texture: WebGLTexture;
   update?: Function;
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font) {
+  constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font, scale?: number) {
     this.canvas = canvas;
     this.width = width;
     this.height = height;
     this.font = font || DEFAULT_FONT;
+    this.scale = scale || 1.0;
     this.pixelWidth = width * this.font.charWidth;
     this.pixelHeight = height * this.font.charHeight;
 
     canvas.width = this.pixelWidth;
     canvas.height = this.pixelHeight;
-    canvas.style.width = this.pixelWidth + 'px';
-    canvas.style.height = this.pixelHeight + 'px';
+    canvas.style.width = (this.scale * this.pixelWidth) + 'px';
+    canvas.style.height = (this.scale * this.pixelHeight) + 'px';
     // canvas.style.imageRendering = 'pixelated';
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
@@ -87,6 +89,11 @@ export class Terminal {
       program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
     gl.linkProgram(program);
     gl.useProgram(program);
+
+    if (this.font.graphical) {
+      // Set the flag to ignore foreground/background colors, and use texture directly
+      gl.uniform1i(gl.getUniformLocation(program, 'h'), 1);
+    }
 
     this.positionAttribLocation = this.getAttribLocation('a');
     this.textureAttribLocation = this.getAttribLocation('b');
