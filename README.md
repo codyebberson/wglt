@@ -31,7 +31,7 @@ import * as wglt from 'wglt';
 Or, simply use the prebuilt:
 
 ```html
-<script src="wglt.min.js"></script>
+<script src="https://unpkg.com/wglt@0.0.1/dist/index.umd.js"></script>
 ```
 
 Use it:

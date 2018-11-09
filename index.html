@@ -100,11 +100,10 @@
     <p>Import library:</p>
     <pre>import * as wglt from 'wglt';</pre>
     <p>Or, simply use the prebuilt:</p>
-    <pre>&lt;script src="wglt.min.js"&gt;&lt;/script&gt;</pre>
+    <pre>&lt;script src="https://unpkg.com/wglt@0.0.1/dist/index.umd.js"&gt;&lt;/script&gt;</pre>
     <p>Use it:</p>
     <pre>const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
-term.fillBackgroundRect(0, 0, 80, 50, wglt.Colors.DARK_BLUE);
-term.fillForegroundRect(0, 0, 80, 50, wglt.Colors.YELLOW);
+term.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
