@@ -21,7 +21,7 @@
                 for (let x = 0; x < WIDTH; x++) {
                     const sat = x / WIDTH;
                     const val = 1.0 - (y / HEIGHT);
-                    term.setBackgroundColor(x, y, wglt.createHsvColor(hue, sat, val));
+                    term.drawChar(x, y, 0, 0, wglt.fromHsv(hue, sat, val));
                 }
             }
             hue += 0.001;

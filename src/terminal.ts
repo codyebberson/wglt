@@ -1,9 +1,10 @@
 
-//import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH, FONT_IMAGE} from './font';
-import { Font, DEFAULT_FONT } from './font';
-import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
-import { Keys } from './keys';
-import { Mouse } from './mouse';
+import {Cell} from './cell';
+import {Console} from './console';
+import {DEFAULT_FONT, Font} from './font';
+import {Keys} from './keys';
+import {Mouse} from './mouse';
+import {FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE} from './shaders';
 
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
@@ -16,10 +17,8 @@ function interpolate(i: number, max: number) {
   return -1.0 + 2.0 * (i / max);
 }
 
-export class Terminal {
+export class Terminal extends Console {
   private canvas: HTMLCanvasElement;
-  private width: number;
-  private height: number;
   private font: Font;
   private scale: number;
   private pixelWidth: number;
@@ -47,10 +46,12 @@ export class Terminal {
   private texture: WebGLTexture;
   update?: Function;
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font, scale?: number) {
+  constructor(
+      canvas: HTMLCanvasElement, width: number, height: number, font?: Font,
+      scale?: number) {
+    super(width, height);
+
     this.canvas = canvas;
-    this.width = width;
-    this.height = height;
     this.font = font || DEFAULT_FONT;
     this.scale = scale || 1.0;
     this.pixelWidth = width * this.font.charWidth;
@@ -68,30 +69,31 @@ export class Terminal {
     this.mouse = new Mouse(canvas, this.font);
 
     // Get the WebGL context from the canvas
-    const gl = canvas.getContext('webgl', { antialias: false });
+    const gl = canvas.getContext('webgl', {antialias: false});
     if (!gl) {
       throw new Error(
-        'Unable to initialize WebGL. Your browser may not support it.');
+          'Unable to initialize WebGL. Your browser may not support it.');
     }
 
     const program = gl.createProgram();
     if (!program) {
       throw new Error(
-        'Unable to initialize WebGL. Your browser may not support it.');
+          'Unable to initialize WebGL. Your browser may not support it.');
     }
 
     this.gl = gl;
     this.program = program;
 
     gl.attachShader(
-      program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
+        program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
     gl.attachShader(
-      program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
+        program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
     gl.linkProgram(program);
     gl.useProgram(program);
 
     if (this.font.graphical) {
-      // Set the flag to ignore foreground/background colors, and use texture directly
+      // Set the flag to ignore foreground/background colors, and use texture
+      // directly
       gl.uniform1i(gl.getUniformLocation(program, 'h'), 1);
     }
 
@@ -165,120 +167,42 @@ export class Terminal {
     return location;
   }
 
-  private isOutOfRange(x: number, y: number) {
-    return x < 0 || x >= this.width || y < 0 || y >= this.height;
-  }
+  flush() {
+    let textureArrayIndex = 0;
+    let colorArrayIndex = 0;
 
-  setCharCode(x: number, y: number, c: number) {
-    if (this.isOutOfRange(x, y)) {
-      return;
-    }
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const cell = this.getCell(x, y) as Cell;
 
-    const textureX = (c % 16) + (0.5 / 256.0);
-    const textureY = ((c / 16) | 0) + (0.5 / 256.0);
-    const textureArrayIndex = 8 * (y * this.width + x);
+        if (!cell.dirty) {
+          textureArrayIndex += 8;
+          colorArrayIndex += 16;
+          continue;
+        }
 
-    this.textureArray[textureArrayIndex + 0] = textureX;
-    this.textureArray[textureArrayIndex + 1] = textureY;
+        const textureX = (cell.charCode % 16) + (0.5 / 256.0);
+        const textureY = ((cell.charCode / 16) | 0) + (0.5 / 256.0);
 
-    this.textureArray[textureArrayIndex + 2] = textureX + 1;
-    this.textureArray[textureArrayIndex + 3] = textureY;
+        this.textureArray[textureArrayIndex++] = textureX;
+        this.textureArray[textureArrayIndex++] = textureY;
 
-    this.textureArray[textureArrayIndex + 4] = textureX + 1;
-    this.textureArray[textureArrayIndex + 5] = textureY + 1;
+        this.textureArray[textureArrayIndex++] = textureX + 1;
+        this.textureArray[textureArrayIndex++] = textureY;
 
-    this.textureArray[textureArrayIndex + 6] = textureX;
-    this.textureArray[textureArrayIndex + 7] = textureY + 1;
-  }
+        this.textureArray[textureArrayIndex++] = textureX + 1;
+        this.textureArray[textureArrayIndex++] = textureY + 1;
 
-  clear() {
-    this.clearRect(0, 0, this.width, this.height);
-  }
+        this.textureArray[textureArrayIndex++] = textureX;
+        this.textureArray[textureArrayIndex++] = textureY + 1;
 
-  clearRect(
-    rectX: number, rectY: number, rectWidth: number, rectHeight: number) {
-    const charCode = 0;
-    const x2 = rectX + rectWidth;
-    const y2 = rectY + rectHeight;
-    for (let y = rectY; y < y2; y++) {
-      for (let x = rectX; x < x2; x++) {
-        this.setCharCode(x, y, charCode);
-      }
-    }
-  }
+        for (let i = 0; i < 4; i++) {
+          this.foregroundDataView.setUint32(colorArrayIndex, cell.fg, false);
+          this.backgroundDataView.setUint32(colorArrayIndex, cell.bg, false);
+          colorArrayIndex += 4;
+        }
 
-  /**
-   * Sets the foreground color of a cell.
-   * @param x The horizontal coordinate.
-   * @param y The vertical coordinate.
-   * @param color The 32-bit color (see createColor).
-   */
-  setForegroundColor(x: number, y: number, color: number) {
-    if (this.isOutOfRange(x, y)) {
-      return;
-    }
-
-    let index = 16 * (y * this.width + x);
-    for (let i = 0; i < 4; i++) {
-      this.foregroundDataView.setUint32(index, color, false);
-      index += 4;
-    }
-  }
-
-  /**
-   * Sets the background color of a cell.
-   * @param x The horizontal coordinate.
-   * @param y The vertical coordinate.
-   * @param color The 32-bit color (see createColor).
-   */
-  setBackgroundColor(x: number, y: number, color: number) {
-    if (this.isOutOfRange(x, y)) {
-      return;
-    }
-
-    let index = 16 * (y * this.width + x);
-    for (let i = 0; i < 4; i++) {
-      this.backgroundDataView.setUint32(index, color, false);
-      index += 4;
-    }
-  }
-
-  /**
-   * Draws a string with optional colors.
-   */
-  drawString(x: number, y: number, str: string, fg?: number, bg?: number) {
-    for (let i = 0; i < str.length; i++) {
-      this.setCharCode(x + i, y, str.charCodeAt(i));
-    }
-
-    if (fg) {
-      this.fillForegroundRect(x, y, str.length, 1, fg);
-    }
-
-    if (bg) {
-      this.fillBackgroundRect(x, y, str.length, 1, bg);
-    }
-  }
-
-  drawCenteredString(
-    x: number, y: number, str: string, fg?: number, bg?: number) {
-    this.drawString((x - str.length / 2) | 0, y, str, fg, bg);
-  }
-
-  fillForegroundRect(
-    x: number, y: number, w: number, h: number, color: number) {
-    for (let i = y; i < y + h; i++) {
-      for (let j = x; j < x + w; j++) {
-        this.setForegroundColor(j, i, color);
-      }
-    }
-  }
-
-  fillBackgroundRect(
-    x: number, y: number, w: number, h: number, color: number) {
-    for (let i = y; i < y + h; i++) {
-      for (let j = x; j < x + w; j++) {
-        this.setBackgroundColor(j, i, color);
+        cell.dirty = false;
       }
     }
   }
@@ -313,7 +237,7 @@ export class Terminal {
     gl.compileShader(sh);
     if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
       throw new Error(
-        'An error occurred compiling the shader: ' + gl.getShaderInfoLog(sh));
+          'An error occurred compiling the shader: ' + gl.getShaderInfoLog(sh));
     }
     return sh;
   }
@@ -342,14 +266,14 @@ export class Terminal {
     const srcType = gl.UNSIGNED_BYTE;
     const pixel = new Uint8Array([0, 0, 0, 255]);  // opaque black
     gl.texImage2D(
-      gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat,
-      srcType, pixel);
+        gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat,
+        srcType, pixel);
 
     const image = new Image();
     image.onload = () => {
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(
-        gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
+          gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -380,8 +304,8 @@ export class Terminal {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
       gl.vertexAttribPointer(
-        this.positionAttribLocation, numComponents, type, normalize, stride,
-        offset);
+          this.positionAttribLocation, numComponents, type, normalize, stride,
+          offset);
     }
 
     // Tell WebGL how to pull out the texture coordinates from
@@ -395,8 +319,8 @@ export class Terminal {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.textureArray, gl.DYNAMIC_DRAW);
       gl.vertexAttribPointer(
-        this.textureAttribLocation, numComponents, type, normalize, stride,
-        offset);
+          this.textureAttribLocation, numComponents, type, normalize, stride,
+          offset);
     }
 
     // Foreground color
@@ -408,10 +332,10 @@ export class Terminal {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.foregroundBuffer);
       gl.bufferData(
-        gl.ARRAY_BUFFER, this.foregroundUint8Array, gl.DYNAMIC_DRAW);
+          gl.ARRAY_BUFFER, this.foregroundUint8Array, gl.DYNAMIC_DRAW);
       gl.vertexAttribPointer(
-        this.fgColorAttribLocation, numComponents, type, normalize, stride,
-        offset);
+          this.fgColorAttribLocation, numComponents, type, normalize, stride,
+          offset);
     }
 
     // Background color
@@ -423,10 +347,10 @@ export class Terminal {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.backgroundBuffer);
       gl.bufferData(
-        gl.ARRAY_BUFFER, this.backgroundUint8Array, gl.DYNAMIC_DRAW);
+          gl.ARRAY_BUFFER, this.backgroundUint8Array, gl.DYNAMIC_DRAW);
       gl.vertexAttribPointer(
-        this.bgColorAttribLocation, numComponents, type, normalize, stride,
-        offset);
+          this.bgColorAttribLocation, numComponents, type, normalize, stride,
+          offset);
     }
 
     // Tell WebGL which indices to use to index the vertices
@@ -455,6 +379,7 @@ export class Terminal {
     if (this.update) {
       this.update();
     }
+    this.flush();
     this.render();
     requestAnimationFrame(this.renderLoop.bind(this));
   }

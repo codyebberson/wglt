@@ -12,8 +12,8 @@ const ROOM_MAX_SIZE = 10;
 const ROOM_MIN_SIZE = 6;
 const MAX_ROOMS = 30;
 
-const COLOR_DARK_WALL = wglt.createColor(0, 0, 100);
-const COLOR_DARK_GROUND = wglt.createColor(50, 50, 150);
+const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
+const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
 
 function Tile(blocked) {
     this.blocked = blocked;
@@ -54,8 +54,7 @@ function Entity(x, y, char, color) {
     };
 
     this.draw = function () {
-        term.setForegroundColor(this.x, this.y, this.color);
-        term.drawString(this.x, this.y, this.char);
+        term.drawString(this.x, this.y, this.char, this.color);
     };
 }
 
@@ -156,8 +155,8 @@ function createMap() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', wglt.COLOR_WHITE);
-const npc = new Entity(40, 20, '@', wglt.COLOR_YELLOW);
+const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
+const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
 const entities = [player, npc];
 const map = createMap();
 
@@ -183,9 +182,9 @@ function renderAll() {
         for (let x = 0; x < MAP_WIDTH; x++) {
             let wall = map[y][x].blockSight;
             if (wall) {
-                term.setBackgroundColor(x, y, COLOR_DARK_WALL);
+                term.drawChar(x, y, 0, 0, COLOR_DARK_WALL);
             } else {
-                term.setBackgroundColor(x, y, COLOR_DARK_GROUND);
+                term.drawChar(x, y, 0, 0, COLOR_DARK_GROUND);
             }
         }
     }

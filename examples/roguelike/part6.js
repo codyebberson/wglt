@@ -14,10 +14,10 @@ const MAX_ROOMS = 30;
 const MAX_ROOM_MONSTERS = 3;
 const TORCH_RADIUS = 10;
 
-const COLOR_DARK_WALL = wglt.createColor(0, 0, 100);
-const COLOR_LIGHT_WALL = wglt.createColor(130, 110, 50);
-const COLOR_DARK_GROUND = wglt.createColor(50, 50, 150);
-const COLOR_LIGHT_GROUND = wglt.createColor(200, 180, 50);
+const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
+const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
+const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
+const COLOR_LIGHT_GROUND = wglt.fromRgb(200, 180, 50);
 
 function Tile(blocked) {
     this.blocked = blocked;
@@ -89,8 +89,7 @@ function Entity(x, y, char, name, color, blocks, fighter, ai) {
 
     this.draw = function () {
         if (fovMap.isVisible(this.x, this.y)) {
-            term.setForegroundColor(this.x, this.y, this.color);
-            term.drawString(this.x, this.y, this.char);
+            term.drawString(this.x, this.y, this.char, this.color);
         }
     };
 }
@@ -278,12 +277,12 @@ function placeObjects(room) {
             // Create an orc
             const fighter = new Fighter(10, 0, 3, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', wglt.COLOR_LIGHT_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, fighter, ai);
         } else {
             // Create a troll
             const fighter = new Fighter(16, 1, 4, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', wglt.COLOR_DARK_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, fighter, ai);
         }
 
         entities.push(monster);
@@ -292,7 +291,7 @@ function placeObjects(room) {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.COLOR_WHITE, true, new Fighter(20, 2, 5, playerDeath));
+const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, new Fighter(20, 2, 5, playerDeath));
 const entities = [player];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
@@ -348,7 +347,7 @@ function playerDeath(player) {
 function monsterDeath(monster) {
     console.log(monster.name + ' is dead');
     monster.char = '%';
-    monster.color = wglt.COLOR_DARK_RED;
+    monster.color = wglt.Colors.DARK_RED;
     monster.blocks = false;
     monster.fighter = null;
     monster.ai = null;
@@ -368,7 +367,7 @@ function renderAll() {
         for (let x = 0; x < MAP_WIDTH; x++) {
             const visible = fovMap.isVisible(x, y);
             const wall = map[y][x].blockSight;
-            let color = wglt.COLOR_BLACK;
+            let color = wglt.Colors.BLACK;
 
             if (visible) {
                 // It's visible
@@ -379,7 +378,7 @@ function renderAll() {
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
 
-            term.setBackgroundColor(x, y, color);
+            term.drawChar(x, y, 0, 0, color);
         }
     }
 

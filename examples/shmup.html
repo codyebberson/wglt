@@ -16,12 +16,7 @@
         const WAVE_WARMUP_TIME = 180;
         const WAVE_GAP_TIME = 10;
         const WAVE_ENEMY_COUNT = 15;
-
-        const COLOR_PLAYER = wglt.createColor(200, 200, 200);
-
         const term = new wglt.Terminal(document.querySelector('canvas'), WIDTH, HEIGHT);
-        term.fillBackgroundRect(0, 0, WIDTH, HEIGHT, wglt.COLOR_BLACK);
-        term.fillForegroundRect(0, 0, WIDTH, HEIGHT, wglt.COLOR_WHITE);
 
         const rng = new wglt.RNG();
 
@@ -39,7 +34,7 @@
             stars.push({
                 x: rng.nextRange(0, WIDTH),
                 y: rng.nextRange(0, HEIGHT),
-                color: wglt.createColor(b, b, b),
+                color: wglt.fromRgb(b, b, b),
                 dy: rng.nextRange(1, 4)
             });
         }
@@ -201,7 +196,7 @@
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
-                term.drawString(bullet.x, bullet.y, '*', wglt.COLOR_YELLOW);
+                term.drawString(bullet.x, bullet.y, '*', wglt.Colors.YELLOW);
                 bullet.y -= 2;
                 if (bullet.y < 0) {
                     bullets.splice(i, 1);
@@ -210,7 +205,7 @@
 
             for (let i = explosions.length - 1; i >= 0; i--) {
                 const explosion = explosions[i];
-                term.drawString(Math.round(explosion.x), Math.round(explosion.y), '%', wglt.COLOR_ORANGE);
+                term.drawString(Math.round(explosion.x), Math.round(explosion.y), '%', wglt.Colors.ORANGE);
                 explosion.x += explosion.dx;
                 explosion.y += explosion.dy;
                 explosion.dx *= 0.9;
@@ -223,23 +218,23 @@
 
             for (let i = enemies.length - 1; i >= 0; i--) {
                 const enemy = enemies[i];
-                term.drawString(enemy.x, enemy.y, '#', wglt.COLOR_LIGHT_GREEN);
-                term.drawString(enemy.x - 1, enemy.y - 1, '@', wglt.COLOR_LIGHT_RED);
-                term.drawString(enemy.x + 1, enemy.y - 1, '@', wglt.COLOR_LIGHT_RED);
-                term.drawString(enemy.x - 1, enemy.y + 1, '@', wglt.COLOR_LIGHT_RED);
-                term.drawString(enemy.x + 1, enemy.y + 1, '@', wglt.COLOR_LIGHT_RED);
+                term.drawString(enemy.x, enemy.y, '#', wglt.Colors.LIGHT_GREEN);
+                term.drawString(enemy.x - 1, enemy.y - 1, '@', wglt.Colors.LIGHT_RED);
+                term.drawString(enemy.x + 1, enemy.y - 1, '@', wglt.Colors.LIGHT_RED);
+                term.drawString(enemy.x - 1, enemy.y + 1, '@', wglt.Colors.LIGHT_RED);
+                term.drawString(enemy.x + 1, enemy.y + 1, '@', wglt.Colors.LIGHT_RED);
             }
 
-            term.drawString(player.x, player.y, '^', COLOR_PLAYER);
-            term.drawString(player.x - 1, player.y + 1, '/', COLOR_PLAYER);
-            term.drawString(player.x + 1, player.y + 1, '\\', COLOR_PLAYER);
-            term.drawString(player.x, player.y + 1, '|', wglt.COLOR_LIGHT_RED);
+            term.drawString(player.x, player.y, '^', wglt.Colors.LIGHT_GRAY);
+            term.drawString(player.x - 1, player.y + 1, '/', wglt.Colors.LIGHT_GRAY);
+            term.drawString(player.x + 1, player.y + 1, '\\', wglt.Colors.LIGHT_GRAY);
+            term.drawString(player.x, player.y + 1, '|', wglt.Colors.LIGHT_RED);
 
             if (waveTime < 0 && waveTime > -WAVE_WARMUP_TIME + 60) {
-                term.drawCenteredString(WIDTH / 2, HEIGHT / 2, 'WAVE ' + wave.count, wglt.COLOR_WHITE);
+                term.drawCenteredString(WIDTH / 2, HEIGHT / 2, 'WAVE ' + wave.count, wglt.Colors.WHITE);
             }
 
-            term.drawString(1, HEIGHT - 2, 'Z - SHOOT', wglt.COLOR_WHITE);
+            term.drawString(1, HEIGHT - 2, 'Z - SHOOT', wglt.Colors.WHITE);
 
             time++;
         };

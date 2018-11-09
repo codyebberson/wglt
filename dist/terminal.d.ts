@@ -1,9 +1,8 @@
+import { Console } from './console';
 import { Font } from './font';
 import { Mouse } from './mouse';
-export declare class Terminal {
+export declare class Terminal extends Console {
     private canvas;
-    private width;
-    private height;
     private font;
     private scale;
     private pixelWidth;
@@ -32,31 +31,7 @@ export declare class Terminal {
     update?: Function;
     constructor(canvas: HTMLCanvasElement, width: number, height: number, font?: Font, scale?: number);
     private getAttribLocation;
-    private isOutOfRange;
-    setCharCode(x: number, y: number, c: number): void;
-    clear(): void;
-    clearRect(rectX: number, rectY: number, rectWidth: number, rectHeight: number): void;
-    /**
-     * Sets the foreground color of a cell.
-     * @param x The horizontal coordinate.
-     * @param y The vertical coordinate.
-     * @param color The 32-bit color (see createColor).
-     */
-    setForegroundColor(x: number, y: number, color: number): void;
-    /**
-     * Sets the background color of a cell.
-     * @param x The horizontal coordinate.
-     * @param y The vertical coordinate.
-     * @param color The 32-bit color (see createColor).
-     */
-    setBackgroundColor(x: number, y: number, color: number): void;
-    /**
-     * Draws a string with optional colors.
-     */
-    drawString(x: number, y: number, str: string, fg?: number, bg?: number): void;
-    drawCenteredString(x: number, y: number, str: string, fg?: number, bg?: number): void;
-    fillForegroundRect(x: number, y: number, w: number, h: number, color: number): void;
-    fillBackgroundRect(x: number, y: number, w: number, h: number, color: number): void;
+    flush(): void;
     isKeyDown(keyCode: number): boolean | null;
     isKeyPressed(keyCode: number): boolean;
     getKeyDownCount(keyCode: number): number;

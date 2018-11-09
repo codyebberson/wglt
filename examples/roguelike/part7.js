@@ -22,10 +22,10 @@ const MAX_ROOMS = 30;
 const MAX_ROOM_MONSTERS = 3;
 const TORCH_RADIUS = 10;
 
-const COLOR_DARK_WALL = wglt.createColor(0, 0, 100);
-const COLOR_LIGHT_WALL = wglt.createColor(130, 110, 50);
-const COLOR_DARK_GROUND = wglt.createColor(50, 50, 150);
-const COLOR_LIGHT_GROUND = wglt.createColor(200, 180, 50);
+const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
+const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
+const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
+const COLOR_LIGHT_GROUND = wglt.fromRgb(200, 180, 50);
 
 function Tile(blocked) {
     this.blocked = blocked;
@@ -97,8 +97,7 @@ function Entity(x, y, char, name, color, blocks, fighter, ai) {
 
     this.draw = function () {
         if (fovMap.isVisible(this.x, this.y)) {
-            term.setForegroundColor(this.x, this.y, this.color);
-            term.drawString(this.x, this.y, this.char);
+            term.drawString(this.x, this.y, this.char, this.color);
         }
     };
 }
@@ -286,12 +285,12 @@ function placeObjects(room) {
             // Create an orc
             const fighter = new Fighter(10, 0, 3, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', wglt.COLOR_LIGHT_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, fighter, ai);
         } else {
             // Create a troll
             const fighter = new Fighter(16, 1, 4, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', wglt.COLOR_DARK_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, fighter, ai);
         }
 
         entities.push(monster);
@@ -303,16 +302,16 @@ function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) 
     const barWidth = Math.round(value / maximum * totalWidth);
 
     // Render the background first
-    term.fillBackgroundRect(x, y, totalWidth, 1, backColor);
+    term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
 
     // Now render the bar on top
     if (barWidth > 0) {
-        term.fillBackgroundRect(x, y, barWidth, 1, barColor);
+        term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
     }
 
     // Finally, some centered text with the values
-    term.fillForegroundRect(x, y, totalWidth, 1, wglt.COLOR_WHITE);
-    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum);
+    // term.fillForegroundRect(x, y, totalWidth, 1, wglt.Colors.WHITE);
+    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, wglt.Colors.WHITE);
 }
 
 function getNamesUnderMouse() {
@@ -337,20 +336,20 @@ function getNamesUnderMouse() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.COLOR_WHITE, true, new Fighter(20, 2, 5, playerDeath));
+const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, new Fighter(20, 2, 5, playerDeath));
 const entities = [player];
 const messages = [];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
 let fovRecompute = true;
 
-addMessage('Welcome stranger! Prepare to perish!', wglt.COLOR_DARK_RED);
+addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 
 function addMessage(msg, opt_color) {
     while (messages.length >= MSG_HEIGHT) {
         messages.shift();
     }
-    messages.push({ text: msg, color: (opt_color || wglt.COLOR_WHITE) });
+    messages.push({ text: msg, color: (opt_color || wglt.Colors.WHITE) });
 }
 
 function capitalize(str) {
@@ -404,13 +403,13 @@ function handleKeys() {
 }
 
 function playerDeath(player) {
-    addMessage('You died!', wglt.COLOR_LIGHT_RED);
+    addMessage('You died!', wglt.Colors.LIGHT_RED);
 }
 
 function monsterDeath(monster) {
-    addMessage(capitalize(monster.name) + ' is dead!', wglt.COLOR_BROWN);
+    addMessage(capitalize(monster.name) + ' is dead!', wglt.Colors.BROWN);
     monster.char = '%';
-    monster.color = wglt.COLOR_DARK_RED;
+    monster.color = wglt.Colors.DARK_RED;
     monster.blocks = false;
     monster.fighter = null;
     monster.ai = null;
@@ -430,7 +429,7 @@ function renderAll() {
         for (let x = 0; x < MAP_WIDTH; x++) {
             const visible = fovMap.isVisible(x, y);
             const wall = map[y][x].blockSight;
-            let color = wglt.COLOR_BLACK;
+            let color = wglt.Colors.BLACK;
 
             if (visible) {
                 // It's visible
@@ -441,7 +440,7 @@ function renderAll() {
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
 
-            term.setBackgroundColor(x, y, color);
+            term.drawChar(x, y, 0, 0, color);
         }
     }
 
@@ -450,14 +449,13 @@ function renderAll() {
     }
 
     // Prepare to render the GUI panel
-    term.clearRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT);
+    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, wglt.Colors.WHITE, wglt.Colors.BLACK);
 
     // Print the game messages, one line at a time
     y = PANEL_Y + 1;
     for (let i = 0; i < messages.length; i++) {
         const message = messages[i];
-        term.fillForegroundRect(MSG_X, y, message.text.length, 1, message.color);
-        term.drawString(MSG_X, y, message.text);
+        term.drawString(MSG_X, y, message.text, message.color);
         y++;
     }
 
@@ -465,10 +463,10 @@ function renderAll() {
     renderBar(
         1, PANEL_Y + 1, BAR_WIDTH,
         'HP', player.fighter.hp, player.fighter.maxHp,
-        wglt.COLOR_LIGHT_RED, wglt.COLOR_DARK_RED);
+        wglt.Colors.LIGHT_RED, wglt.Colors.DARK_RED);
 
     // Display names of objects under the mouse
-    term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.COLOR_LIGHT_GRAY);
+    term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
 }
 
 term.update = function () {

@@ -14,10 +14,10 @@ const MAX_ROOMS = 30;
 const MAX_ROOM_MONSTERS = 3;
 const TORCH_RADIUS = 10;
 
-const COLOR_DARK_WALL = wglt.createColor(0, 0, 100);
-const COLOR_LIGHT_WALL = wglt.createColor(130, 110, 50);
-const COLOR_DARK_GROUND = wglt.createColor(50, 50, 150);
-const COLOR_LIGHT_GROUND = wglt.createColor(200, 180, 50);
+const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
+const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
+const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
+const COLOR_LIGHT_GROUND = wglt.fromRgb(200, 180, 50);
 
 function Tile(blocked) {
     this.blocked = blocked;
@@ -62,8 +62,7 @@ function Entity(x, y, char, name, color, blocks) {
 
     this.draw = function () {
         if (fovMap.isVisible(this.x, this.y)) {
-            term.setForegroundColor(this.x, this.y, this.color);
-            term.drawString(this.x, this.y, this.char);
+            term.drawString(this.x, this.y, this.char, this.color);
         }
     };
 }
@@ -197,10 +196,10 @@ function placeObjects(room) {
         // 80% chance of getting an orc
         if (rng.nextRange(0, 100) < 80) {
             // Create an orc
-            monster = new Entity(x, y, 'o', 'orc', wglt.COLOR_LIGHT_GREEN, true);
+            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true);
         } else {
             // Create a troll
-            monster = new Entity(x, y, 'T', 'troll', wglt.COLOR_DARK_GREEN, true);
+            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true);
         }
 
         entities.push(monster);
@@ -209,7 +208,7 @@ function placeObjects(room) {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.COLOR_WHITE, true);
+const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true);
 const entities = [player];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
@@ -263,7 +262,7 @@ function renderAll() {
         for (let x = 0; x < MAP_WIDTH; x++) {
             const visible = fovMap.isVisible(x, y);
             const wall = map[y][x].blockSight;
-            let color = wglt.COLOR_BLACK;
+            let color = wglt.Colors.BLACK;
 
             if (visible) {
                 // It's visible
@@ -274,7 +273,7 @@ function renderAll() {
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
 
-            term.setBackgroundColor(x, y, color);
+            term.drawChar(x, y, 0, 0, color);
         }
     }
 

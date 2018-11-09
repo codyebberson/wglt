@@ -13,10 +13,10 @@ const ROOM_MIN_SIZE = 6;
 const MAX_ROOMS = 30;
 const TORCH_RADIUS = 10;
 
-const COLOR_DARK_WALL = wglt.createColor(0, 0, 100);
-const COLOR_LIGHT_WALL = wglt.createColor(130, 110, 50);
-const COLOR_DARK_GROUND = wglt.createColor(50, 50, 150);
-const COLOR_LIGHT_GROUND = wglt.createColor(200, 180, 50);
+const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
+const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
+const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
+const COLOR_LIGHT_GROUND = wglt.fromRgb(200, 180, 50);
 
 function Tile(blocked) {
     this.blocked = blocked;
@@ -59,8 +59,7 @@ function Entity(x, y, char, color) {
 
     this.draw = function () {
         if (fovMap.isVisible(this.x, this.y)) {
-            term.setForegroundColor(this.x, this.y, this.color);
-            term.drawString(this.x, this.y, this.char);
+            term.drawString(this.x, this.y, this.char, this.color);
         }
     };
 }
@@ -162,8 +161,8 @@ function createMap() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', wglt.COLOR_WHITE);
-const npc = new Entity(40, 20, '@', wglt.COLOR_YELLOW);
+const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
+const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
 const entities = [player, npc];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
@@ -200,7 +199,7 @@ function renderAll() {
         for (let x = 0; x < MAP_WIDTH; x++) {
             const visible = fovMap.isVisible(x, y);
             const wall = map[y][x].blockSight;
-            let color = wglt.COLOR_BLACK;
+            let color = wglt.Colors.BLACK;
 
             if (visible) {
                 // It's visible
@@ -211,7 +210,7 @@ function renderAll() {
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
 
-            term.setBackgroundColor(x, y, color);
+            term.drawChar(x, y, 0, 0, color);
         }
     }
 

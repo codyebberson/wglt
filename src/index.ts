@@ -1,4 +1,5 @@
 
+export * from './color';
 export * from './colors';
 export * from './font';
 export * from './fov';

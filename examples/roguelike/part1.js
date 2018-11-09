@@ -25,8 +25,7 @@ function handleKeys() {
 
 function renderAll() {
     term.clear();
-    term.fillBackgroundRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, wglt.COLOR_DARK_BLUE);
-    term.fillForegroundRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, wglt.COLOR_YELLOW);
+    term.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE)
     term.drawString(1, 1, 'Hello world!');
     term.drawString(1, 3, 'Use arrow keys to move');
     term.drawString(x, y, '@');

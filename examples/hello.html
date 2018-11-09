@@ -12,8 +12,7 @@
     <script>
 
         const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
-        term.fillBackgroundRect(0, 0, 80, 50, wglt.COLOR_DARK_BLUE);
-        term.fillForegroundRect(0, 0, 80, 50, wglt.COLOR_YELLOW);
+        term.fillRect(0, 0, 80, 50, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
 
         let x = 10;
         let y = 10;
