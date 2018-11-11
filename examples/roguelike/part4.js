@@ -159,15 +159,6 @@ function createMap() {
     return map;
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
-const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
-const entities = [player, npc];
-const map = createMap();
-const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
-let fovRecompute = true;
-
 function handleKeys() {
     if (term.isKeyPressed(wglt.VK_UP)) {
         player.move(0, -1);
@@ -218,6 +209,15 @@ function renderAll() {
         entities[i].draw();
     }
 }
+
+const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const rng = new wglt.RNG(1);
+const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
+const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
+const entities = [player, npc];
+const map = createMap();
+const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
+let fovRecompute = true;
 
 term.update = function () {
     handleKeys();

@@ -154,6 +154,30 @@ function BasicMonster() {
     };
 }
 
+function Item(useFunction) {
+    this.useFunction = useFunction;
+
+    this.pickUp = function() {
+        if (inventory.length >= 26) {
+            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.COLOR_LIGHT_RED);
+        } else {
+            inventory.append(this.owner);
+            objects.remove(this.owner);
+            addMessage('You picked up a ' + this.owner.name + '!', wglt.COLOR_LIGHT_GREEN);
+        }
+    };
+
+    this.use = function() {
+        if (!this.useFunction) {
+            addMessage('The ' + this.owner.name + ' cannot be used.');
+        } else {
+            if (this.useFunction()) {
+                inventory.remove(this.owner);
+            }
+        }
+    };
+}
+
 function isBlocked(x, y) {
     // First test the map tile
     if (map[y][x].blocked) {
@@ -389,6 +413,9 @@ function handleKeys() {
     if (term.isKeyPressed(wglt.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
+    if (term.isKeyPressed(wglt.VK_I)) {
+        inventoryDialog.visible = true;
+    }
 }
 
 function playerDeath(player) {
@@ -456,6 +483,11 @@ function renderAll() {
 
     // Display names of objects under the mouse
     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
+
+    if (inventoryDialog.visible) {
+        term.drawDoubleBox(10, 10, SCREEN_WIDTH - 20, SCREEN_HEIGHT - 20, wglt.Colors.WHITE, wglt.Colors.BLACK);
+        term.drawString(11, 11, 'Inventory');
+    }
 }
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -466,6 +498,9 @@ const messages = [];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
 let fovRecompute = true;
+let inventoryDialog = {
+    visible: false
+};
 
 addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 

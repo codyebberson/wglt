@@ -289,14 +289,6 @@ function placeObjects(room) {
     }
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, new Fighter(20, 2, 5, playerDeath));
-const entities = [player];
-const map = createMap();
-const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
-let fovRecompute = true;
-
 function playerMoveOrAttack(dx, dy) {
     const x = player.x + dx;
     const y = player.y + dy;
@@ -386,6 +378,14 @@ function renderAll() {
         entities[i].draw();
     }
 }
+
+const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const rng = new wglt.RNG(1);
+const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, new Fighter(20, 2, 5, playerDeath));
+const entities = [player];
+const map = createMap();
+const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
+let fovRecompute = true;
 
 term.update = function () {
     handleKeys();

@@ -1,0 +1,35 @@
+* {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    margin: 40px auto;
+    max-width: 700px;
+    line-height: 1.6;
+    font-family: sans-serif;
+    font-size: 15px;
+    color: #34495e;
+    padding: 0 10px
+}
+
+h1, h2, h3 {
+    line-height: 1.2;
+    font-weight: normal;
+}
+
+canvas {
+    image-rendering: pixelated;
+}
+
+pre {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    border: 1px solid #eee;
+    padding: 12px;
+}
+
+a {
+    color: #00f;
+}

@@ -45,17 +45,6 @@ function createMap() {
     return map;
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
-const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
-const entities = [player, npc];
-const map = createMap();
-
-map[22][30].blocked = true;
-map[22][30].blockSight = true;
-map[22][50].blocked = true;
-map[22][50].blockSight = true;
-
 function handleKeys() {
     if (term.isKeyPressed(wglt.VK_UP)) {
         player.move(0, -1);
@@ -89,6 +78,17 @@ function renderAll() {
         entities[i].draw();
     }
 }
+
+const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
+const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
+const entities = [player, npc];
+const map = createMap();
+
+map[22][30].blocked = true;
+map[22][30].blockSight = true;
+map[22][50].blocked = true;
+map[22][50].blockSight = true;
 
 term.update = function () {
     handleKeys();
