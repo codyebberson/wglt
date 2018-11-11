@@ -1,5 +1,6 @@
 export * from './color';
 export * from './colors';
+export * from './console';
 export * from './font';
 export * from './fov';
 export * from './keys';
