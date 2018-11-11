@@ -6,9 +6,9 @@
  * https://stackoverflow.com/a/424445/2051724
  */
 export class RNG {
-  private m: number;
-  private a: number;
-  private c: number;
+  private readonly m: number;
+  private readonly a: number;
+  private readonly c: number;
   private state: number;
 
   /**

@@ -7,7 +7,7 @@ export declare class Key {
     constructor();
 }
 export declare class Keys {
-    private keys;
+    private readonly keys;
     /**
      * Creates a new keyboard module.
      *

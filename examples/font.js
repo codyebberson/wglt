@@ -1,7 +1,7 @@
 
-const font = new wglt.Font('terminal8x14_gs_ro.png', 8, 14);
+const term = new wglt.Terminal(document.querySelector('canvas'), 80, 25,
+    {font: new wglt.Font('terminal8x14_gs_ro.png', 8, 14)});
 
-const term = new wglt.Terminal(document.querySelector('canvas'), 80, 25, font);
 term.fillRect(0, 0, 80, 25, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
 
 let x = 10;

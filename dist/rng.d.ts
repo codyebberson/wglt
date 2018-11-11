@@ -5,9 +5,9 @@
  * https://stackoverflow.com/a/424445/2051724
  */
 export declare class RNG {
-    private m;
-    private a;
-    private c;
+    private readonly m;
+    private readonly a;
+    private readonly c;
     private state;
     /**
      * Creates a new random number generator.

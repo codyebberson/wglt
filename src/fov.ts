@@ -12,10 +12,10 @@ function createBoolMatrix(width: number, height: number) {
 }
 
 export class FovMap {
-  private width: number;
-  private height: number;
-  private blocked: boolean[][];
-  private visible: boolean[][];
+  private readonly width: number;
+  private readonly height: number;
+  private readonly blocked: boolean[][];
+  private readonly visible: boolean[][];
   private originX: number;
   private originY: number;
   private minX: number;

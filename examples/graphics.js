@@ -1,7 +1,6 @@
 
-const font = new wglt.Font('graphics.png', 16, 16, true);
-
-const term = new wglt.Terminal(document.querySelector('canvas'), 20, 15, font, 2.0);
+const term = new wglt.Terminal(document.querySelector('canvas'), 20, 15,
+    {font: new wglt.Font('graphics.png', 16, 16, 2.0, true)});
 
 let x = 4;
 let y = 4;

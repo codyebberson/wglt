@@ -18,7 +18,7 @@ export class Key {
 }
 
 export class Keys {
-  private keys: Key[];
+  private readonly keys: Key[];
 
   /**
    * Creates a new keyboard module.

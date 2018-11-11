@@ -1,6 +1,6 @@
-import { Cell } from './cell';
-import { Chars } from './chars';
-import { Color } from './color';
+import {Cell} from './cell';
+import {Chars} from './chars';
+import {Color} from './color';
 
 export class Console {
   readonly width: number;
@@ -51,27 +51,27 @@ export class Console {
   }
 
   drawCenteredString(
-    x: number, y: number, str: string, fg?: Color, bg?: Color) {
+      x: number, y: number, str: string, fg?: Color, bg?: Color) {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
   }
 
   drawHLine(
-    x: number, y: number, width: number, c: number, fg?: Color, bg?: Color) {
+      x: number, y: number, width: number, c: number, fg?: Color, bg?: Color) {
     for (let xi = x; xi < x + width; xi++) {
       this.drawChar(xi, y, c, fg, bg);
     }
   }
 
   drawVLine(
-    x: number, y: number, height: number, c: number, fg?: Color, bg?: Color) {
+      x: number, y: number, height: number, c: number, fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
   drawRect(
-    x: number, y: number, width: number, height: number, c: number,
-    fg?: Color, bg?: Color) {
+      x: number, y: number, width: number, height: number, c: number,
+      fg?: Color, bg?: Color) {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
     this.drawVLine(x, y, height, c, fg, bg);
@@ -79,9 +79,8 @@ export class Console {
   }
 
   drawDoubleBox(
-    x: number, y: number, width: number, height: number, fg?: Color,
-    bg?: Color) {
-
+      x: number, y: number, width: number, height: number, fg?: Color,
+      bg?: Color) {
     this.fillRect(x, y, width, height, 0, fg, bg);
 
     this.drawHLine(x, y, width, Chars.BOX_DOUBLE_HORIZONTAL);
@@ -91,29 +90,27 @@ export class Console {
     this.drawVLine(x + width - 1, y, height, Chars.BOX_DOUBLE_VERTICAL);
 
     this.drawChar(x, y, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_RIGHT);
+    this.drawChar(x + width - 1, y, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT);
+    this.drawChar(x, y + height - 1, Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT);
     this.drawChar(
-      x + width - 1, y, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT);
-    this.drawChar(
-      x, y + height - 1, Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT);
-    this.drawChar(
-      x + width - 1, y + height - 1, Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT);
+        x + width - 1, y + height - 1, Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT);
   }
 
   fillRect(
-    x: number, y: number, width: number, height: number, c: number,
-    fg?: Color, bg?: Color) {
+      x: number, y: number, width: number, height: number, c: number,
+      fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
     }
   }
 
   drawConsole(
-    dstX: number, dstY: number, srcConsole: Console, srcX: number,
-    srcY: number, srcWidth: number, srcHeight: number) {
+      dstX: number, dstY: number, srcConsole: Console, srcX: number,
+      srcY: number, srcWidth: number, srcHeight: number) {
     for (let y = 0; y < srcHeight; y++) {
       for (let x = 0; x < srcWidth; x++) {
         this.drawCell(
-          dstX + x, dstY + y, srcConsole.getCell(srcX + x, srcY + y));
+            dstX + x, dstY + y, srcConsole.getCell(srcX + x, srcY + y));
       }
     }
   }

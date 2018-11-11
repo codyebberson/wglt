@@ -1,8 +1,8 @@
 export declare class FovMap {
-    private width;
-    private height;
-    private blocked;
-    private visible;
+    private readonly width;
+    private readonly height;
+    private readonly blocked;
+    private readonly visible;
     private originX;
     private originY;
     private minX;

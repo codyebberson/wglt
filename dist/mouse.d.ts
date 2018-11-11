@@ -1,9 +1,12 @@
-import { Font } from './font';
+import { TerminalOptions } from './terminaloptions';
 export declare class Mouse {
-    font: Font;
+    private readonly el;
+    private readonly options;
+    private readonly font;
+    readonly buttons: boolean[];
     x: number;
     y: number;
-    buttons: boolean[];
-    constructor(el: Element, font: Font);
+    constructor(el: Element, options: TerminalOptions);
     update(e: MouseEvent): void;
+    private requestFullscreen;
 }

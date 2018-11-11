@@ -1,15 +1,20 @@
 
-// import {FONT_CHAR_HEIGHT, FONT_CHAR_WIDTH} from './font';
-import {Font} from './font';
+import {DEFAULT_FONT, Font} from './font';
+import {Fullscreenable} from './fullscreenable';
+import {TerminalOptions} from './terminaloptions';
 
 export class Mouse {
-  font: Font;
+  private readonly el: Element;
+  private readonly options: TerminalOptions;
+  private readonly font: Font;
+  readonly buttons: boolean[];
   x: number;
   y: number;
-  buttons: boolean[];
 
-  constructor(el: Element, font: Font) {
-    this.font = font;
+  constructor(el: Element, options: TerminalOptions) {
+    this.el = el;
+    this.options = options;
+    this.font = options.font || DEFAULT_FONT;
     this.x = 0;
     this.y = 0;
     this.buttons = [false, false, false];
@@ -25,10 +30,24 @@ export class Mouse {
 
     if (e.type === 'mousedown') {
       this.buttons[e.button] = true;
+      if (this.options.requestFullscreen) {
+        this.requestFullscreen();
+      }
     }
 
     if (e.type === 'mouseup') {
       this.buttons[e.button] = false;
+    }
+  }
+
+  private requestFullscreen() {
+    const canvas = this.el as Fullscreenable;
+    if (canvas.requestFullscreen) {
+      canvas.requestFullscreen();
+    } else if (canvas.webkitRequestFullscreen) {
+      canvas.webkitRequestFullscreen();
+    } else if (canvas.mozRequestFullScreen) {
+      canvas.mozRequestFullScreen();
     }
   }
 }

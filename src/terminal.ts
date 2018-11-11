@@ -5,6 +5,7 @@ import {DEFAULT_FONT, Font} from './font';
 import {Keys} from './keys';
 import {Mouse} from './mouse';
 import {FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE} from './shaders';
+import {TerminalOptions} from './terminaloptions';
 
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
@@ -17,56 +18,61 @@ function interpolate(i: number, max: number) {
   return -1.0 + 2.0 * (i / max);
 }
 
+const DEFAULT_OPTIONS: TerminalOptions = {
+  font: DEFAULT_FONT,
+  requestFullscreen: false
+};
+
 export class Terminal extends Console {
-  private canvas: HTMLCanvasElement;
-  private font: Font;
-  private scale: number;
-  private pixelWidth: number;
-  private pixelHeight: number;
-  private keys: Keys;
-  private mouse: Mouse;
-  private gl: WebGLRenderingContext;
-  private program: WebGLProgram;
-  private positionAttribLocation: GLint;
-  private textureAttribLocation: GLint;
-  private fgColorAttribLocation: GLint;
-  private bgColorAttribLocation: GLint;
-  private positionsArray: Float32Array;
-  private indexArray: Uint16Array;
-  private textureArray: Float32Array;
-  private foregroundUint8Array: Uint8Array;
-  private foregroundDataView: DataView;
-  private backgroundUint8Array: Uint8Array;
-  private backgroundDataView: DataView;
-  private positionBuffer: WebGLBuffer;
-  private indexBuffer: WebGLBuffer;
-  private textureBuffer: WebGLBuffer;
-  private foregroundBuffer: WebGLBuffer;
-  private backgroundBuffer: WebGLBuffer;
-  private texture: WebGLTexture;
+  private readonly canvas: HTMLCanvasElement;
+  private readonly font: Font;
+  private readonly pixelWidth: number;
+  private readonly pixelHeight: number;
+  private readonly keys: Keys;
+  private readonly mouse: Mouse;
+  private readonly gl: WebGLRenderingContext;
+  private readonly program: WebGLProgram;
+  private readonly positionAttribLocation: GLint;
+  private readonly textureAttribLocation: GLint;
+  private readonly fgColorAttribLocation: GLint;
+  private readonly bgColorAttribLocation: GLint;
+  private readonly positionsArray: Float32Array;
+  private readonly indexArray: Uint16Array;
+  private readonly textureArray: Float32Array;
+  private readonly foregroundUint8Array: Uint8Array;
+  private readonly foregroundDataView: DataView;
+  private readonly backgroundUint8Array: Uint8Array;
+  private readonly backgroundDataView: DataView;
+  private readonly positionBuffer: WebGLBuffer;
+  private readonly indexBuffer: WebGLBuffer;
+  private readonly textureBuffer: WebGLBuffer;
+  private readonly foregroundBuffer: WebGLBuffer;
+  private readonly backgroundBuffer: WebGLBuffer;
+  private readonly texture: WebGLTexture;
   update?: Function;
 
   constructor(
-      canvas: HTMLCanvasElement, width: number, height: number, font?: Font,
-      scale?: number) {
+      canvas: HTMLCanvasElement, width: number, height: number,
+      options?: TerminalOptions) {
     super(width, height);
 
+    options = options || DEFAULT_OPTIONS;
+
     this.canvas = canvas;
-    this.font = font || DEFAULT_FONT;
-    this.scale = scale || 1.0;
+    this.font = options.font || DEFAULT_FONT;
     this.pixelWidth = width * this.font.charWidth;
     this.pixelHeight = height * this.font.charHeight;
 
     canvas.width = this.pixelWidth;
     canvas.height = this.pixelHeight;
-    canvas.style.width = (this.scale * this.pixelWidth) + 'px';
-    canvas.style.height = (this.scale * this.pixelHeight) + 'px';
+    canvas.style.width = (this.font.scale * this.pixelWidth) + 'px';
+    canvas.style.height = (this.font.scale * this.pixelHeight) + 'px';
     // canvas.style.imageRendering = 'pixelated';
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
 
     this.keys = new Keys(canvas);
-    this.mouse = new Mouse(canvas, this.font);
+    this.mouse = new Mouse(canvas, options);
 
     // Get the WebGL context from the canvas
     const gl = canvas.getContext('webgl', {antialias: false});
