@@ -6,10 +6,14 @@ export type Color = number;
  * @param r Red (0-255).
  * @param g Green (0-255).
  * @param b Blue (0-255).
+ * @param a Optional alpha (0-255).
  * @return A 32-bit unsigned integer color.
  */
-export function fromRgb(r: number, g: number, b: number): Color {
-  return ((r << 24) + (g << 16) + (b << 8)) as Color;
+export function fromRgb(r: number, g: number, b: number, a?: number): Color {
+  if (a === undefined) {
+    a = 255;
+  }
+  return ((r << 24) + (g << 16) + (b << 8) + a) as Color;
 }
 
 
@@ -21,15 +25,13 @@ export function fromRgb(r: number, g: number, b: number): Color {
  * @param h Hue (0.0 - 1.0).
  * @param s Saturation (0.0 - 1.0).
  * @param v Value (0.0 - 1.0).
+ * @param a Optional alpha (0.0 - 1.0).
  * @return A 32-bit unsigned integer color.
  */
-export function fromHsv(h: number, s: number, v: number): Color {
-  let r, g, b, i, f, p, q, t;
-  i = (h * 6) | 0;
-  f = h * 6 - i;
-  p = v * (1 - s);
-  q = v * (1 - f * s);
-  t = v * (1 - (1 - f) * s);
+export function fromHsv(h: number, s: number, v: number, a?: number): Color {
+  const i = (h * 6) | 0, f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s),
+        t = v * (1 - (1 - f) * s);
+  let r, g, b;
   switch (i % 6) {
     case 0:
       r = v, g = t, b = p;
@@ -54,5 +56,8 @@ export function fromHsv(h: number, s: number, v: number): Color {
       g = 0;
       b = 0;
   }
-  return fromRgb((r * 255) | 0, (g * 255) | 0, (b * 255) | 0);
+  if (a === undefined) {
+    a = 1.0;
+  }
+  return fromRgb((r * 255) | 0, (g * 255) | 0, (b * 255) | 0, (a * 255) | 0);
 }

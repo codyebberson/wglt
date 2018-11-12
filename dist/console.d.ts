@@ -1,3 +1,4 @@
+import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Color } from './color';
 export declare class Console {
@@ -15,6 +16,6 @@ export declare class Console {
     drawRect(x: number, y: number, width: number, height: number, c: number, fg?: Color, bg?: Color): void;
     drawDoubleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color): void;
     fillRect(x: number, y: number, width: number, height: number, c: number, fg?: Color, bg?: Color): void;
-    drawConsole(dstX: number, dstY: number, srcConsole: Console, srcX: number, srcY: number, srcWidth: number, srcHeight: number): void;
+    drawConsole(dstX: number, dstY: number, srcConsole: Console, srcX: number, srcY: number, srcWidth: number, srcHeight: number, blendMode?: BlendMode): void;
     private drawCell;
 }

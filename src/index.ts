@@ -1,4 +1,5 @@
 
+export * from './blendmode';
 export * from './color';
 export * from './colors';
 export * from './console';

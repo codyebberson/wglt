@@ -1,3 +1,4 @@
+import { BlendMode } from './blendmode';
 import { Color } from './color';
 export declare class Cell {
     charCode: number;
@@ -11,5 +12,7 @@ export declare class Cell {
     setBackground(bg?: Color): void;
     setMeta(meta?: object): void;
     setValue(charCode: number, fg?: Color, bg?: Color, meta?: object): boolean;
-    copy(otherCell: Cell): boolean;
+    drawCell(otherCell: Cell, blendMode: BlendMode): void;
+    private blendColors;
+    private clamp;
 }

@@ -1,3 +1,5 @@
+
+import {BlendMode} from './blendmode';
 import {Cell} from './cell';
 import {Chars} from './chars';
 import {Color} from './color';
@@ -106,18 +108,23 @@ export class Console {
 
   drawConsole(
       dstX: number, dstY: number, srcConsole: Console, srcX: number,
-      srcY: number, srcWidth: number, srcHeight: number) {
+      srcY: number, srcWidth: number, srcHeight: number,
+      blendMode?: BlendMode) {
+    blendMode = blendMode || BlendMode.None;
+
     for (let y = 0; y < srcHeight; y++) {
       for (let x = 0; x < srcWidth; x++) {
-        this.drawCell(
-            dstX + x, dstY + y, srcConsole.getCell(srcX + x, srcY + y));
+        const cell = srcConsole.getCell(srcX + x, srcY + y);
+        if (cell) {
+          this.drawCell(dstX + x, dstY + y, cell, blendMode);
+        }
       }
     }
   }
 
-  private drawCell(x: number, y: number, cell?: Cell) {
-    if (cell && x >= 0 && x < this.width && y >= 0 && y < this.height) {
-      this.grid[y][x].copy(cell);
+  private drawCell(x: number, y: number, cell: Cell, blendMode: BlendMode) {
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      this.grid[y][x].drawCell(cell, blendMode);
     }
   }
 }
