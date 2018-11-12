@@ -29,8 +29,11 @@ export function fromRgb(r: number, g: number, b: number, a?: number): Color {
  * @return A 32-bit unsigned integer color.
  */
 export function fromHsv(h: number, s: number, v: number, a?: number): Color {
-  const i = (h * 6) | 0, f = h * 6 - i, p = v * (1 - s), q = v * (1 - f * s),
-        t = v * (1 - (1 - f) * s);
+  const i = (h * 6) | 0;
+  const f = h * 6 - i;
+  const p = v * (1 - s);
+  const q = v * (1 - f * s);
+  const t = v * (1 - (1 - f) * s);
   let r, g, b;
   switch (i % 6) {
     case 0:

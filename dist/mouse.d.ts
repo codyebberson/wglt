@@ -4,9 +4,14 @@ export declare class Mouse {
     private readonly options;
     private readonly font;
     readonly buttons: boolean[];
+    private prevX;
+    private prevY;
     x: number;
     y: number;
+    dx: number;
+    dy: number;
     constructor(el: Element, options: TerminalOptions);
-    update(e: MouseEvent): void;
+    private handleEvent;
     private requestFullscreen;
+    update(): void;
 }

@@ -22,6 +22,10 @@ term.update = function () {
     if (term.isKeyDown(wglt.VK_DOWN)) {
         y++;
     }
+    if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
+        x = term.mouse.x;
+        y = term.mouse.y;
+    }
 
     term.clear();
     term.drawString(1, 1, 'Hello world!');

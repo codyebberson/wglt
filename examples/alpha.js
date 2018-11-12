@@ -2,7 +2,7 @@
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 50;
 
-const RADIUS = 20;
+const RADIUS = 30;
 const SIZE = 1 + 2 * RADIUS;
 const CENTER = RADIUS;
 const BRIGHTNESS = 0.5;
@@ -67,6 +67,10 @@ term.update = function () {
     }
     if (term.isKeyPressed(wglt.VK_DOWN)) {
         lights[0].y++;
+    }
+    if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
+        lights[0].x = term.mouse.x;
+        lights[0].y = term.mouse.y;
     }
 
     term.fillRect(0, 0, 80, 50, 0, wglt.Colors.BLACK, wglt.Colors.BLACK);

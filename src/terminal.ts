@@ -28,8 +28,6 @@ export class Terminal extends Console {
   private readonly font: Font;
   private readonly pixelWidth: number;
   private readonly pixelHeight: number;
-  private readonly keys: Keys;
-  private readonly mouse: Mouse;
   private readonly gl: WebGLRenderingContext;
   private readonly program: WebGLProgram;
   private readonly positionAttribLocation: GLint;
@@ -49,6 +47,8 @@ export class Terminal extends Console {
   private readonly foregroundBuffer: WebGLBuffer;
   private readonly backgroundBuffer: WebGLBuffer;
   private readonly texture: WebGLTexture;
+  readonly keys: Keys;
+  readonly mouse: Mouse;
   update?: Function;
 
   constructor(
@@ -229,10 +229,6 @@ export class Terminal extends Console {
     return key ? key.downCount : 0;
   }
 
-  getMouse() {
-    return this.mouse;
-  }
-
   private buildShader(type: GLint, source: string) {
     const gl = this.gl;
     const sh = gl.createShader(type);
@@ -382,6 +378,7 @@ export class Terminal extends Console {
 
   private renderLoop() {
     this.keys.updateKeys();
+    this.mouse.update();
     if (this.update) {
       this.update();
     }

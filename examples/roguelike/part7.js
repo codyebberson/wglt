@@ -315,8 +315,8 @@ function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) 
 }
 
 function getNamesUnderMouse() {
-    const x = term.getMouse().x;
-    const y = term.getMouse().y;
+    const x = term.mouse.x;
+    const y = term.mouse.y;
 
     if (!fovMap.isVisible(x, y)) {
         return '';

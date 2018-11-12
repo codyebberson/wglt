@@ -8,23 +8,31 @@ export class Mouse {
   private readonly options: TerminalOptions;
   private readonly font: Font;
   readonly buttons: boolean[];
+  private prevX: number;
+  private prevY: number;
   x: number;
   y: number;
+  dx: number;
+  dy: number;
 
   constructor(el: Element, options: TerminalOptions) {
     this.el = el;
     this.options = options;
     this.font = options.font || DEFAULT_FONT;
+    this.prevX = 0;
+    this.prevY = 0;
     this.x = 0;
     this.y = 0;
+    this.dx = 0;
+    this.dy = 0;
     this.buttons = [false, false, false];
 
-    el.addEventListener('mousedown', e => this.update(e as MouseEvent));
-    el.addEventListener('mouseup', e => this.update(e as MouseEvent));
-    el.addEventListener('mousemove', e => this.update(e as MouseEvent));
+    el.addEventListener('mousedown', e => this.handleEvent(e as MouseEvent));
+    el.addEventListener('mouseup', e => this.handleEvent(e as MouseEvent));
+    el.addEventListener('mousemove', e => this.handleEvent(e as MouseEvent));
   }
 
-  update(e: MouseEvent) {
+  private handleEvent(e: MouseEvent) {
     this.x = (e.offsetX / this.font.charWidth) | 0;
     this.y = (e.offsetY / this.font.charHeight) | 0;
 
@@ -49,5 +57,12 @@ export class Mouse {
     } else if (canvas.mozRequestFullScreen) {
       canvas.mozRequestFullScreen();
     }
+  }
+
+  public update() {
+    this.dx = this.x - this.prevX;
+    this.dy = this.y - this.prevY;
+    this.prevX = this.x;
+    this.prevY = this.y;
   }
 }
