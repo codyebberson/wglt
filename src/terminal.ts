@@ -24,7 +24,7 @@ const DEFAULT_OPTIONS: TerminalOptions = {
 };
 
 export class Terminal extends Console {
-  private readonly canvas: HTMLCanvasElement;
+  readonly canvas: HTMLCanvasElement;
   private readonly font: Font;
   private readonly pixelWidth: number;
   private readonly pixelHeight: number;
@@ -72,7 +72,7 @@ export class Terminal extends Console {
     canvas.tabIndex = 0;
 
     this.keys = new Keys(canvas);
-    this.mouse = new Mouse(canvas, options);
+    this.mouse = new Mouse(this, options);
 
     // Get the WebGL context from the canvas
     const gl = canvas.getContext('webgl', {antialias: false});

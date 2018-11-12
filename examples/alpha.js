@@ -1,6 +1,6 @@
 
 const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
+const SCREEN_HEIGHT = 45;
 
 const RADIUS = 30;
 const SIZE = 1 + 2 * RADIUS;
@@ -25,7 +25,11 @@ function createLightConsole(h, s, v) {
     return c;
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
+const term = new wglt.Terminal(
+    document.querySelector('canvas'),
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    { requestFullscreen: true });
 
 const rng = new wglt.RNG();
 
@@ -40,7 +44,7 @@ const lights = [{
 for (let i = 0; i < 6; i++) {
     lights.push({
         x: 15 + i * 10,
-        y: 25,
+        y: 22,
         console: createLightConsole(i / 6.0, 1.0, 1.0)
     });
 }

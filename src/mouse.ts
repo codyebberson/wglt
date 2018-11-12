@@ -1,12 +1,12 @@
-
-import {DEFAULT_FONT, Font} from './font';
-import {Fullscreenable} from './fullscreenable';
-import {TerminalOptions} from './terminaloptions';
+import {Terminal} from './terminal';
+import { Fullscreenable } from './fullscreenable';
+import { TerminalOptions } from './terminaloptions';
 
 export class Mouse {
-  private readonly el: Element;
+  private readonly el: HTMLElement;
+  private readonly width: number;
+  private readonly height: number;
   private readonly options: TerminalOptions;
-  private readonly font: Font;
   readonly buttons: boolean[];
   private prevX: number;
   private prevY: number;
@@ -15,10 +15,11 @@ export class Mouse {
   dx: number;
   dy: number;
 
-  constructor(el: Element, options: TerminalOptions) {
-    this.el = el;
+  constructor(terminal: Terminal, options: TerminalOptions) {
+    this.el = terminal.canvas;
+    this.width = terminal.width;
+    this.height = terminal.height;
     this.options = options;
-    this.font = options.font || DEFAULT_FONT;
     this.prevX = 0;
     this.prevY = 0;
     this.x = 0;
@@ -27,14 +28,40 @@ export class Mouse {
     this.dy = 0;
     this.buttons = [false, false, false];
 
+    const el = this.el;
     el.addEventListener('mousedown', e => this.handleEvent(e as MouseEvent));
     el.addEventListener('mouseup', e => this.handleEvent(e as MouseEvent));
     el.addEventListener('mousemove', e => this.handleEvent(e as MouseEvent));
+
+    const touchEventHandler = this.handleTouchEvent.bind(this);
+    el.addEventListener('touchstart', touchEventHandler);
+    el.addEventListener('touchend', touchEventHandler);
+    el.addEventListener('touchcancel', touchEventHandler);
+    el.addEventListener('touchmove', touchEventHandler);
+  }
+
+  private handleTouchEvent(e: TouchEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (e.type === 'touchend' && this.options.requestFullscreen) {
+      this.requestFullscreen();
+    }
+
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      this.updatePosition(touch.clientX, touch.clientY);
+      this.buttons[0] = true;
+    } else {
+      this.buttons[0] = false;
+    }
   }
 
   private handleEvent(e: MouseEvent) {
-    this.x = (e.offsetX / this.font.charWidth) | 0;
-    this.y = (e.offsetY / this.font.charHeight) | 0;
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.updatePosition(e.clientX, e.clientY);
 
     if (e.type === 'mousedown') {
       this.buttons[e.button] = true;
@@ -48,6 +75,31 @@ export class Mouse {
     }
   }
 
+  private updatePosition(clientX: number, clientY: number) {
+    let rect: any = this.el.getBoundingClientRect();
+
+    // If the client rect is not the same aspect ratio as canvas,
+    // then we are fullscreen.
+    // Need to update client rect accordingly.
+
+    const terminalAspectRatio = this.width / this.height;
+    const rectAspectRatio = rect.width / rect.height;
+
+    if (rectAspectRatio - terminalAspectRatio > 0.001) {
+      const actualRectWidth = terminalAspectRatio * rect.height;
+      const rectExcess = rect.width - actualRectWidth;
+      rect = {
+        left: Math.floor(rectExcess / 2),
+        top: 0,
+        width: actualRectWidth,
+        height: rect.height
+      }
+    }
+
+    this.x = (this.width * (clientX - rect.left) / rect.width) | 0;
+    this.y = (this.height * (clientY - rect.top) / rect.height) | 0;
+  }
+
   private requestFullscreen() {
     const canvas = this.el as Fullscreenable;
     if (canvas.requestFullscreen) {
@@ -59,7 +111,7 @@ export class Mouse {
     }
   }
 
-  public update() {
+  update() {
     this.dx = this.x - this.prevX;
     this.dy = this.y - this.prevY;
     this.prevX = this.x;

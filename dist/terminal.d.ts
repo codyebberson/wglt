@@ -3,7 +3,7 @@ import { Keys } from './keys';
 import { Mouse } from './mouse';
 import { TerminalOptions } from './terminaloptions';
 export declare class Terminal extends Console {
-    private readonly canvas;
+    readonly canvas: HTMLCanvasElement;
     private readonly font;
     private readonly pixelWidth;
     private readonly pixelHeight;

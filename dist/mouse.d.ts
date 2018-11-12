@@ -1,8 +1,10 @@
+import { Terminal } from './terminal';
 import { TerminalOptions } from './terminaloptions';
 export declare class Mouse {
     private readonly el;
+    private readonly width;
+    private readonly height;
     private readonly options;
-    private readonly font;
     readonly buttons: boolean[];
     private prevX;
     private prevY;
@@ -10,8 +12,10 @@ export declare class Mouse {
     y: number;
     dx: number;
     dy: number;
-    constructor(el: Element, options: TerminalOptions);
+    constructor(terminal: Terminal, options: TerminalOptions);
+    private handleTouchEvent;
     private handleEvent;
+    private updatePosition;
     private requestFullscreen;
     update(): void;
 }
