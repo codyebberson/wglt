@@ -1,6 +1,7 @@
+import {Fullscreenable} from './fullscreenable';
+import {Rect} from './rect';
 import {Terminal} from './terminal';
-import { Fullscreenable } from './fullscreenable';
-import { TerminalOptions } from './terminaloptions';
+import {TerminalOptions} from './terminaloptions';
 
 export class Mouse {
   private readonly el: HTMLElement;
@@ -65,6 +66,9 @@ export class Mouse {
 
     if (e.type === 'mousedown') {
       this.buttons[e.button] = true;
+
+      this.el.focus();
+
       if (this.options.requestFullscreen) {
         this.requestFullscreen();
       }
@@ -76,7 +80,7 @@ export class Mouse {
   }
 
   private updatePosition(clientX: number, clientY: number) {
-    let rect: any = this.el.getBoundingClientRect();
+    let rect: ClientRect|DOMRect|Rect = this.el.getBoundingClientRect();
 
     // If the client rect is not the same aspect ratio as canvas,
     // then we are fullscreen.
@@ -88,12 +92,8 @@ export class Mouse {
     if (rectAspectRatio - terminalAspectRatio > 0.001) {
       const actualRectWidth = terminalAspectRatio * rect.height;
       const rectExcess = rect.width - actualRectWidth;
-      rect = {
-        left: Math.floor(rectExcess / 2),
-        top: 0,
-        width: actualRectWidth,
-        height: rect.height
-      }
+      rect =
+          new Rect(Math.floor(rectExcess / 2), 0, actualRectWidth, rect.height);
     }
 
     this.x = (this.width * (clientX - rect.left) / rect.width) | 0;
