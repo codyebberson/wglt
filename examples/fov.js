@@ -79,16 +79,16 @@ function movePlayer(dx, dy) {
 }
 
 term.update = function () {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         movePlayer(0, -1);
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         movePlayer(-1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         movePlayer(1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         movePlayer(0, 1);
     }
 

@@ -60,16 +60,16 @@ for (let i = 0; i < 500; i++) {
 }
 
 term.update = function () {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         lights[0].y--;
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         lights[0].x--;
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         lights[0].x++;
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         lights[0].y++;
     }
     if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {

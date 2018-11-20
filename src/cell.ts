@@ -72,7 +72,8 @@ export class Cell {
     }
   }
 
-  setValue(charCode: number | string | Cell, fg?: Color, bg?: Color, meta?: object) {
+  setValue(
+      charCode: number|string|Cell, fg?: Color, bg?: Color, meta?: object) {
     if (typeof charCode === 'string') {
       charCode = charCode.charCodeAt(0);
     }

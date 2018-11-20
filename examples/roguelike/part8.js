@@ -20,7 +20,11 @@ const ROOM_MAX_SIZE = 10;
 const ROOM_MIN_SIZE = 6;
 const MAX_ROOMS = 30;
 const MAX_ROOM_MONSTERS = 3;
+const MAX_ROOM_ITEMS = 2;
 const TORCH_RADIUS = 10;
+
+// Spell values
+const HEAL_AMOUNT = 4;
 
 const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
 const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
@@ -52,22 +56,24 @@ function Rect(x, y, w, h) {
     }
 }
 
-function Entity(x, y, char, name, color, blocks, fighter, ai) {
+function Entity(x, y, char, name, color, blocks, components) {
     this.x = x;
     this.y = y;
     this.char = char;
     this.name = name;
     this.color = color;
     this.blocks = !!blocks;
-    this.fighter = fighter || null;
-    this.ai = ai || null;
+    this.fighter = null;
+    this.ai = null;
+    this.item = null;
 
-    if (fighter) {
-        fighter.owner = this;
-    }
-
-    if (ai) {
-        ai.owner = this;
+    if (components) {
+        for (var property in components) {
+            if (components.hasOwnProperty(property)) {
+                this[property] = components[property];
+                this[property].owner = this;
+            }
+        }
     }
 
     this.move = function (dx, dy) {
@@ -90,9 +96,13 @@ function Entity(x, y, char, name, color, blocks, fighter, ai) {
     };
 
     this.sendToBack = function () {
+        this.remove();
+        entities.unshift(this);
+    };
+
+    this.remove = function () {
         const index = entities.indexOf(this);
         entities.splice(index, 1);
-        entities.unshift(this);
     };
 
     this.draw = function () {
@@ -131,6 +141,10 @@ function Fighter(hp, defense, power, deathFunction) {
             }
         }
     };
+
+    this.heal = function (amount) {
+        this.hp = Math.min(this.hp + amount, this.maxHp);
+    };
 }
 
 function BasicMonster() {
@@ -157,22 +171,22 @@ function BasicMonster() {
 function Item(useFunction) {
     this.useFunction = useFunction;
 
-    this.pickUp = function() {
+    this.pickUp = function () {
         if (inventory.length >= 26) {
             addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.COLOR_LIGHT_RED);
         } else {
-            inventory.append(this.owner);
-            objects.remove(this.owner);
+            inventory.push(this.owner);
+            this.owner.remove();
             addMessage('You picked up a ' + this.owner.name + '!', wglt.COLOR_LIGHT_GREEN);
         }
     };
 
-    this.use = function() {
+    this.use = function () {
         if (!this.useFunction) {
             addMessage('The ' + this.owner.name + ' cannot be used.');
         } else {
             if (this.useFunction()) {
-                inventory.remove(this.owner);
+                inventory.splice(inventory.indexOf(this.owner), 1);
             }
         }
     };
@@ -309,15 +323,32 @@ function placeObjects(room) {
             // Create an orc
             const fighter = new Fighter(10, 0, 3, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
         } else {
             // Create a troll
             const fighter = new Fighter(16, 1, 4, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
         }
 
         entities.push(monster);
+    }
+
+    // Choose random number of items
+    const numItems = rng.nextRange(0, MAX_ROOM_ITEMS);
+
+    for (let i = 0; i < numItems; i++) {
+        // Choose random spot for this item
+        const x = rng.nextRange(room.x1 + 1, room.x2 - 1)
+        const y = rng.nextRange(room.y1 + 1, room.y2 - 1)
+
+        // Create a healing potion
+        const itemComponent = new Item(castHeal);
+
+        const item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: itemComponent });
+
+        entities.push(item);
+        item.sendToBack();  // items appear below other objects
     }
 }
 
@@ -401,20 +432,45 @@ function playerMoveOrAttack(dx, dy) {
 }
 
 function handleKeys() {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (gui.handleInput()) {
+        return;
+    }
+
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         playerMoveOrAttack(-1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         playerMoveOrAttack(1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
-    if (term.isKeyPressed(wglt.VK_I)) {
-        inventoryDialog.visible = true;
+    if (term.isKeyPressed(wglt.Keys.VK_G)) {
+        // Pick up an item
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
+            if (entity.x === player.x && entity.y === player.y && entity.item) {
+                entity.item.pickUp();
+            }
+        }
+    }
+    if (term.isKeyPressed(wglt.Keys.VK_I)) {
+        if (inventory.length === 0) {
+            gui.add(new wglt.MessageDialog(term, 'ALERT', 'Inventory is empty'));
+        } else {
+            const options = inventory.map(item => item.name);
+            gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));
+        }
+    }
+}
+
+function useInventory(option) {
+    const index = inventory.map(item => item.name).indexOf(option);
+    if (index >= 0) {
+        inventory[index].item.use();
     }
 }
 
@@ -431,6 +487,18 @@ function monsterDeath(monster) {
     monster.ai = null;
     monster.name = 'remains of ' + monster.name;
     monster.sendToBack();
+}
+
+function castHeal() {
+    // Heal the player
+    if (player.fighter.hp === player.fighter.maxHp) {
+        addMessage('You are already at full health.', wglt.Colors.DARK_RED);
+        return false;
+    }
+
+    addMessage('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
+    player.fighter.heal(HEAL_AMOUNT);
+    return true;
 }
 
 function renderAll() {
@@ -484,23 +552,20 @@ function renderAll() {
     // Display names of objects under the mouse
     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
 
-    if (inventoryDialog.visible) {
-        term.drawDoubleBox(10, 10, SCREEN_WIDTH - 20, SCREEN_HEIGHT - 20, wglt.Colors.WHITE, wglt.Colors.BLACK);
-        term.drawString(11, 11, 'Inventory');
-    }
+    // Draw dialog boxes
+    gui.draw();
 }
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, new Fighter(20, 2, 5, playerDeath));
+const gui = new wglt.GUI(term);
+const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
 const entities = [player];
 const messages = [];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
 let fovRecompute = true;
-let inventoryDialog = {
-    visible: false
-};
+const inventory = [];
 
 addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 

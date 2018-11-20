@@ -61,22 +61,22 @@ scheduleWave();
 term.update = function () {
     const waveTime = time - wave.startTime;
 
-    if (term.isKeyDown(wglt.VK_UP)) {
+    if (term.isKeyDown(wglt.Keys.VK_UP)) {
         player.y = Math.max(0, player.y - 1);
     }
-    if (term.isKeyDown(wglt.VK_LEFT)) {
+    if (term.isKeyDown(wglt.Keys.VK_LEFT)) {
         player.x = Math.max(1, player.x - 1);
     }
-    if (term.isKeyDown(wglt.VK_RIGHT)) {
+    if (term.isKeyDown(wglt.Keys.VK_RIGHT)) {
         player.x = Math.min(WIDTH - 2, player.x + 1);
     }
-    if (term.isKeyDown(wglt.VK_DOWN)) {
+    if (term.isKeyDown(wglt.Keys.VK_DOWN)) {
         player.y = Math.min(HEIGHT - 2, player.y + 1);
     }
     if (player.cooldown > 0) {
         player.cooldown--;
     }
-    if (player.cooldown === 0 && term.isKeyDown(wglt.VK_Z)) {
+    if (player.cooldown === 0 && term.isKeyDown(wglt.Keys.VK_Z)) {
         bullets.push({
             x: player.x,
             y: player.y

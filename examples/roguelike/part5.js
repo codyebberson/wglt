@@ -228,16 +228,16 @@ function playerMoveOrAttack(dx, dy) {
 }
 
 function handleKeys() {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         playerMoveOrAttack(-1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         playerMoveOrAttack(1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
 }

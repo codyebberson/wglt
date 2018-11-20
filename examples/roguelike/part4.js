@@ -160,19 +160,19 @@ function createMap() {
 }
 
 function handleKeys() {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         player.move(0, -1);
         fovRecompute = true;
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         player.move(-1, 0);
         fovRecompute = true;
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         player.move(1, 0);
         fovRecompute = true;
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         player.move(0, 1);
         fovRecompute = true;
     }

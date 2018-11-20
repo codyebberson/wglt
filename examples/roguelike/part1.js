@@ -4,16 +4,16 @@ const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 50;
 
 function handleKeys() {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         y++;
     }
 }

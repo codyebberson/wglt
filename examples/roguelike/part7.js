@@ -52,22 +52,23 @@ function Rect(x, y, w, h) {
     }
 }
 
-function Entity(x, y, char, name, color, blocks, fighter, ai) {
+function Entity(x, y, char, name, color, blocks, components) {
     this.x = x;
     this.y = y;
     this.char = char;
     this.name = name;
     this.color = color;
     this.blocks = !!blocks;
-    this.fighter = fighter || null;
-    this.ai = ai || null;
+    this.fighter = null;
+    this.ai = null;
 
-    if (fighter) {
-        fighter.owner = this;
-    }
-
-    if (ai) {
-        ai.owner = this;
+    if (components) {
+        for (var property in components) {
+            if (components.hasOwnProperty(property)) {
+                this[property] = components[property];
+                this[property].owner = this;
+            }
+        }
     }
 
     this.move = function (dx, dy) {
@@ -285,12 +286,12 @@ function placeObjects(room) {
             // Create an orc
             const fighter = new Fighter(10, 0, 3, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
         } else {
             // Create a troll
             const fighter = new Fighter(16, 1, 4, monsterDeath);
             const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, fighter, ai);
+            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
         }
 
         entities.push(monster);
@@ -377,16 +378,16 @@ function playerMoveOrAttack(dx, dy) {
 }
 
 function handleKeys() {
-    if (term.isKeyPressed(wglt.VK_UP)) {
+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
-    if (term.isKeyPressed(wglt.VK_LEFT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
         playerMoveOrAttack(-1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_RIGHT)) {
+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         playerMoveOrAttack(1, 0);
     }
-    if (term.isKeyPressed(wglt.VK_DOWN)) {
+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
 }
@@ -460,7 +461,7 @@ function renderAll() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, new Fighter(20, 2, 5, playerDeath));
+const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
 const entities = [player];
 const messages = [];
 const map = createMap();

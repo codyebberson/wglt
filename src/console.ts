@@ -40,7 +40,8 @@ export class Console {
     return this.grid[y][x];
   }
 
-  drawChar(x: number, y: number, c: number | string | Cell, fg?: Color, bg?: Color) {
+  drawChar(
+      x: number, y: number, c: number|string|Cell, fg?: Color, bg?: Color) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].setValue(c, fg, bg);
     }
@@ -58,21 +59,23 @@ export class Console {
   }
 
   drawHLine(
-      x: number, y: number, width: number, c: number | Cell, fg?: Color, bg?: Color) {
+      x: number, y: number, width: number, c: number|Cell, fg?: Color,
+      bg?: Color) {
     for (let xi = x; xi < x + width; xi++) {
       this.drawChar(xi, y, c, fg, bg);
     }
   }
 
   drawVLine(
-      x: number, y: number, height: number, c: number | Cell, fg?: Color, bg?: Color) {
+      x: number, y: number, height: number, c: number|Cell, fg?: Color,
+      bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
   drawRect(
-      x: number, y: number, width: number, height: number, c: number | Cell,
+      x: number, y: number, width: number, height: number, c: number|Cell,
       fg?: Color, bg?: Color) {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
@@ -80,26 +83,51 @@ export class Console {
     this.drawVLine(x + width - 1, y, height, c, fg, bg);
   }
 
+  drawBox(
+      x: number, y: number, width: number, height: number, topChar: number,
+      rightChar: number, bottomChar: number, leftChar: number,
+      topLeftChar: number, topRightChar: number, bottomRightChar: number,
+      bottomLeftChar: number, fg?: Color, bg?: Color) {
+    this.fillRect(x, y, width, height, 0, fg, bg);
+
+    this.drawHLine(x, y, width, topChar);
+    this.drawHLine(x, y + height - 1, width, bottomChar);
+
+    this.drawVLine(x, y, height, leftChar);
+    this.drawVLine(x + width - 1, y, height, rightChar);
+
+    this.drawChar(x, y, topLeftChar);
+    this.drawChar(x + width - 1, y, topRightChar);
+    this.drawChar(x, y + height - 1, bottomLeftChar);
+    this.drawChar(x + width - 1, y + height - 1, bottomRightChar);
+  }
+
+  drawSingleBox(
+      x: number, y: number, width: number, height: number, fg?: Color,
+      bg?: Color) {
+    this.drawBox(
+        x, y, width, height, Chars.BOX_SINGLE_HORIZONTAL,
+        Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_HORIZONTAL,
+        Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_DOWN_AND_SINGLE_RIGHT,
+        Chars.BOX_SINGLE_DOWN_AND_SINGLE_LEFT,
+        Chars.BOX_SINGLE_UP_AND_SINGLE_LEFT,
+        Chars.BOX_SINGLE_UP_AND_SINGLE_RIGHT, fg, bg);
+  }
+
   drawDoubleBox(
       x: number, y: number, width: number, height: number, fg?: Color,
       bg?: Color) {
-    this.fillRect(x, y, width, height, 0, fg, bg);
-
-    this.drawHLine(x, y, width, Chars.BOX_DOUBLE_HORIZONTAL);
-    this.drawHLine(x, y + height - 1, width, Chars.BOX_DOUBLE_HORIZONTAL);
-
-    this.drawVLine(x, y, height, Chars.BOX_DOUBLE_VERTICAL);
-    this.drawVLine(x + width - 1, y, height, Chars.BOX_DOUBLE_VERTICAL);
-
-    this.drawChar(x, y, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_RIGHT);
-    this.drawChar(x + width - 1, y, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT);
-    this.drawChar(x, y + height - 1, Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT);
-    this.drawChar(
-        x + width - 1, y + height - 1, Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT);
+    this.drawBox(
+        x, y, width, height, Chars.BOX_DOUBLE_HORIZONTAL,
+        Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_HORIZONTAL,
+        Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_RIGHT,
+        Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT,
+        Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT,
+        Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT, fg, bg);
   }
 
   fillRect(
-      x: number, y: number, width: number, height: number, c: number | Cell,
+      x: number, y: number, width: number, height: number, c: number|Cell,
       fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
