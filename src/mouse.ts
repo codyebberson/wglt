@@ -89,11 +89,16 @@ export class Mouse {
     const terminalAspectRatio = this.width / this.height;
     const rectAspectRatio = rect.width / rect.height;
 
-    if (rectAspectRatio - terminalAspectRatio > 0.001) {
-      const actualRectWidth = terminalAspectRatio * rect.height;
-      const rectExcess = rect.width - actualRectWidth;
-      rect =
-          new Rect(Math.floor(rectExcess / 2), 0, actualRectWidth, rect.height);
+    if (rectAspectRatio - terminalAspectRatio > 0.01) {
+      const actualWidth = terminalAspectRatio * rect.height;
+      const excess = rect.width - actualWidth;
+      rect = new Rect(Math.floor(excess / 2), 0, actualWidth, rect.height);
+    }
+
+    if (rectAspectRatio - terminalAspectRatio < -0.01) {
+      const actualHeight = rect.width / terminalAspectRatio;
+      const excess = rect.height - actualHeight;
+      rect = new Rect(0, Math.floor(excess / 2), rect.width, actualHeight);
     }
 
     this.x = (this.width * (clientX - rect.left) / rect.width) | 0;

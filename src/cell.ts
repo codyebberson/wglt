@@ -72,11 +72,18 @@ export class Cell {
     }
   }
 
-  setValue(charCode: number, fg?: Color, bg?: Color, meta?: object) {
-    this.setCharCode(charCode);
-    this.setForeground(fg);
-    this.setBackground(bg);
-    this.setMeta(meta);
+  setValue(charCode: number | string | Cell, fg?: Color, bg?: Color, meta?: object) {
+    if (typeof charCode === 'string') {
+      charCode = charCode.charCodeAt(0);
+    }
+    if (typeof charCode === 'number') {
+      this.setCharCode(charCode);
+      this.setForeground(fg);
+      this.setBackground(bg);
+      this.setMeta(meta);
+    } else {
+      this.drawCell(charCode, BlendMode.None);
+    }
     return this.dirty;
   }
 
@@ -95,6 +102,8 @@ export class Cell {
     } else if (alpha > 0) {
       this.setBackground(this.blendColors(this.bg, otherCell.bg, blendMode));
     }
+
+    this.setMeta(otherCell.meta);
   }
 
   private blendColors(c1: Color, c2: Color, blendMode: BlendMode): Color {

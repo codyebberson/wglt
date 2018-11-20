@@ -11,7 +11,7 @@ export declare class Cell {
     setForeground(fg?: Color): void;
     setBackground(bg?: Color): void;
     setMeta(meta?: object): void;
-    setValue(charCode: number, fg?: Color, bg?: Color, meta?: object): boolean;
+    setValue(charCode: number | string | Cell, fg?: Color, bg?: Color, meta?: object): boolean;
     drawCell(otherCell: Cell, blendMode: BlendMode): void;
     private blendColors;
     private clamp;

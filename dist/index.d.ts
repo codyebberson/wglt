@@ -1,4 +1,6 @@
 export * from './blendmode';
+export * from './cell';
+export * from './chars';
 export * from './color';
 export * from './colors';
 export * from './console';

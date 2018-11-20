@@ -40,7 +40,7 @@ export class Console {
     return this.grid[y][x];
   }
 
-  drawChar(x: number, y: number, c: number, fg?: Color, bg?: Color) {
+  drawChar(x: number, y: number, c: number | string | Cell, fg?: Color, bg?: Color) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].setValue(c, fg, bg);
     }
@@ -58,21 +58,21 @@ export class Console {
   }
 
   drawHLine(
-      x: number, y: number, width: number, c: number, fg?: Color, bg?: Color) {
+      x: number, y: number, width: number, c: number | Cell, fg?: Color, bg?: Color) {
     for (let xi = x; xi < x + width; xi++) {
       this.drawChar(xi, y, c, fg, bg);
     }
   }
 
   drawVLine(
-      x: number, y: number, height: number, c: number, fg?: Color, bg?: Color) {
+      x: number, y: number, height: number, c: number | Cell, fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
   drawRect(
-      x: number, y: number, width: number, height: number, c: number,
+      x: number, y: number, width: number, height: number, c: number | Cell,
       fg?: Color, bg?: Color) {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
@@ -99,7 +99,7 @@ export class Console {
   }
 
   fillRect(
-      x: number, y: number, width: number, height: number, c: number,
+      x: number, y: number, width: number, height: number, c: number | Cell,
       fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
