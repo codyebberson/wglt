@@ -14,6 +14,8 @@ export declare class Console {
     drawHLine(x: number, y: number, width: number, c: number | Cell, fg?: Color, bg?: Color): void;
     drawVLine(x: number, y: number, height: number, c: number | Cell, fg?: Color, bg?: Color): void;
     drawRect(x: number, y: number, width: number, height: number, c: number | Cell, fg?: Color, bg?: Color): void;
+    drawBox(x: number, y: number, width: number, height: number, topChar: number, rightChar: number, bottomChar: number, leftChar: number, topLeftChar: number, topRightChar: number, bottomRightChar: number, bottomLeftChar: number, fg?: Color, bg?: Color): void;
+    drawSingleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color): void;
     drawDoubleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color): void;
     fillRect(x: number, y: number, width: number, height: number, c: number | Cell, fg?: Color, bg?: Color): void;
     drawConsole(dstX: number, dstY: number, srcConsole: Console, srcX: number, srcY: number, srcWidth: number, srcHeight: number, blendMode?: BlendMode): void;
