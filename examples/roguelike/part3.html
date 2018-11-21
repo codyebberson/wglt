@@ -11,6 +11,167 @@
     <canvas></canvas>
     <p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_3">Part 3: The dungeon</a></p>
     <p>Learn how to code up a neat little dungeon generator.</p>
+    <div class="diff">
+        <!--STARTDIFF--><div class="c3">--- part2.js	2018-11-21 09:00:35.000000000 -0800</div>
+<div class="c2">+++ part3.js	2018-11-21 09:00:35.000000000 -0800</div>
+<div class="c1">@@ -7,6 +7,11 @@</div>
+<div class="c0"> const MAP_WIDTH = 80;</div>
+<div class="c0"> const MAP_HEIGHT = 45;</div>
+<div class="c0"> </div>
+<div class="c2">+// Parameters for dungeon generator</div>
+<div class="c2">+const ROOM_MAX_SIZE = 10;</div>
+<div class="c2">+const ROOM_MIN_SIZE = 6;</div>
+<div class="c2">+const MAX_ROOMS = 30;</div>
+<div class="c2">+</div>
+<div class="c0"> const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);</div>
+<div class="c0"> const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);</div>
+<div class="c0"> </div>
+<div class="c1">@@ -15,6 +20,25 @@</div>
+<div class="c0">     this.blockSight = blocked;</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c2">+function Rect(x, y, w, h) {</div>
+<div class="c2">+    this.x1 = x;</div>
+<div class="c2">+    this.y1 = y;</div>
+<div class="c2">+    this.x2 = x + w;</div>
+<div class="c2">+    this.y2 = y + h;</div>
+<div class="c2">+</div>
+<div class="c2">+    this.getCenter = function () {</div>
+<div class="c2">+        return {</div>
+<div class="c2">+            x: ((this.x1 + this.x2) / 2) | 0,</div>
+<div class="c2">+            y: ((this.y1 + this.y2) / 2) | 0</div>
+<div class="c2">+        };</div>
+<div class="c2">+    }</div>
+<div class="c2">+</div>
+<div class="c2">+    this.intersects = function (other) {</div>
+<div class="c2">+        return this.x1 &lt;= other.x2 &amp;&amp; this.x2 &gt;= other.x1 &amp;&amp;</div>
+<div class="c2">+            this.y1 &lt;= other.y2 &amp;&amp; this.y2 &gt;= other.y1;</div>
+<div class="c2">+    }</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c0"> function Entity(x, y, char, color) {</div>
+<div class="c0">     this.x = x;</div>
+<div class="c0">     this.y = y;</div>
+<div class="c1">@@ -34,14 +58,98 @@</div>
+<div class="c0">     };</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c2">+function createRoom(map, room) {</div>
+<div class="c2">+    for (let y = room.y1 + 1; y &lt; room.y2; y++) {</div>
+<div class="c2">+        for (let x = room.x1 + 1; x &lt; room.x2; x++) {</div>
+<div class="c2">+            map[y][x].blocked = false;</div>
+<div class="c2">+            map[y][x].blockSight = false;</div>
+<div class="c2">+        }</div>
+<div class="c2">+    }</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c2">+function createHTunnel(map, x1, x2, y) {</div>
+<div class="c2">+    for (let x = Math.min(x1, x2); x &lt;= Math.max(x1, x2); x++) {</div>
+<div class="c2">+        map[y][x].blocked = false;</div>
+<div class="c2">+        map[y][x].blockSight = false;</div>
+<div class="c2">+    }</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c2">+function createVTunnel(map, y1, y2, x) {</div>
+<div class="c2">+    for (let y = Math.min(y1, y2); y &lt;= Math.max(y1, y2); y++) {</div>
+<div class="c2">+        map[y][x].blocked = false;</div>
+<div class="c2">+        map[y][x].blockSight = false;</div>
+<div class="c2">+    }</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c0"> function createMap() {</div>
+<div class="c0">     const map = new Array(MAP_HEIGHT);</div>
+<div class="c0">     for (let y = 0; y &lt; MAP_HEIGHT; y++) {</div>
+<div class="c0">         map[y] = new Array(MAP_WIDTH);</div>
+<div class="c0">         for (let x = 0; x &lt; MAP_WIDTH; x++) {</div>
+<div class="c3">-            map[y][x] = new Tile(false);</div>
+<div class="c2">+            map[y][x] = new Tile(true);</div>
+<div class="c0">         }</div>
+<div class="c0">     }</div>
+<div class="c2">+</div>
+<div class="c2">+    const rooms = [];</div>
+<div class="c2">+</div>
+<div class="c2">+    for (let r = 0; r &lt; MAX_ROOMS; r++) {</div>
+<div class="c2">+        // Random width and height</div>
+<div class="c2">+        const w = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);</div>
+<div class="c2">+        const h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);</div>
+<div class="c2">+</div>
+<div class="c2">+        // Random position without going out of the boundaries of the map</div>
+<div class="c2">+        const x = rng.nextRange(0, MAP_WIDTH - w - 1);</div>
+<div class="c2">+        const y = rng.nextRange(0, MAP_HEIGHT - h - 1);</div>
+<div class="c2">+</div>
+<div class="c2">+        // "Rect" class makes rectangles easier to work with</div>
+<div class="c2">+        const newRoom = new Rect(x, y, w, h);</div>
+<div class="c2">+</div>
+<div class="c2">+        // Run through the other rooms and see if they intersect with this one</div>
+<div class="c2">+        let failed = false;</div>
+<div class="c2">+        for (let j = 0; j &lt; rooms.length; j++) {</div>
+<div class="c2">+            if (newRoom.intersects(rooms[j])) {</div>
+<div class="c2">+                failed = true;</div>
+<div class="c2">+                break;</div>
+<div class="c2">+            }</div>
+<div class="c2">+        }</div>
+<div class="c2">+</div>
+<div class="c2">+        if (!failed) {</div>
+<div class="c2">+            // This means there are no intersections, so this room is valid</div>
+<div class="c2">+</div>
+<div class="c2">+            // "paint" it to the map's tiles</div>
+<div class="c2">+            createRoom(map, newRoom);</div>
+<div class="c2">+</div>
+<div class="c2">+            // Center coordinates of new room, will be useful later</div>
+<div class="c2">+            const center = newRoom.getCenter();</div>
+<div class="c2">+</div>
+<div class="c2">+            if (rooms.length === 0) {</div>
+<div class="c2">+                // This is the first room, where the player starts at</div>
+<div class="c2">+                player.x = center.x;</div>
+<div class="c2">+                player.y = center.y;</div>
+<div class="c2">+            } else {</div>
+<div class="c2">+                // All rooms after the first:</div>
+<div class="c2">+                // Connect it to the previous room with a tunnel</div>
+<div class="c2">+</div>
+<div class="c2">+                // Center coordinates of previous room</div>
+<div class="c2">+                const prev = rooms[rooms.length - 1].getCenter();</div>
+<div class="c2">+</div>
+<div class="c2">+                // Draw a coin (random number that is either 0 or 1)</div>
+<div class="c2">+                if (rng.nextRange(0, 1) === 1) {</div>
+<div class="c2">+                    // First move horizontally, then vertically</div>
+<div class="c2">+                    createHTunnel(map, prev.x, center.x, prev.y);</div>
+<div class="c2">+                    createVTunnel(map, prev.y, center.y, center.x);</div>
+<div class="c2">+                } else {</div>
+<div class="c2">+                    // First move vertically, then horizontally</div>
+<div class="c2">+                    createVTunnel(map, prev.y, center.y, prev.x);</div>
+<div class="c2">+                    createHTunnel(map, prev.x, center.x, center.y);</div>
+<div class="c2">+                }</div>
+<div class="c2">+            }</div>
+<div class="c2">+</div>
+<div class="c2">+            // Finally, append the new room to the list</div>
+<div class="c2">+            rooms.push(newRoom);</div>
+<div class="c2">+        }</div>
+<div class="c2">+    }</div>
+<div class="c2">+</div>
+<div class="c0">     return map;</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c1">@@ -80,16 +188,12 @@</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c0"> const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c2">+const rng = new wglt.RNG(1);</div>
+<div class="c0"> const player = new Entity(40, 25, '@', wglt.Colors.WHITE);</div>
+<div class="c0"> const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);</div>
+<div class="c0"> const entities = [player, npc];</div>
+<div class="c0"> const map = createMap();</div>
+<div class="c0"> </div>
+<div class="c3">-map[22][30].blocked = true;</div>
+<div class="c3">-map[22][30].blockSight = true;</div>
+<div class="c3">-map[22][50].blocked = true;</div>
+<div class="c3">-map[22][50].blockSight = true;</div>
+<div class="c3">-</div>
+<div class="c0"> term.update = function () {</div>
+<div class="c0">     handleKeys();</div>
+<div class="c0">     renderAll();</div>
+<!--ENDDIFF-->
+    </div>
     <script src="../../dist/index.umd.js"></script>
     <script src="part3.js"></script>
 </body>

@@ -33,3 +33,27 @@ pre {
 a {
     color: #00f;
 }
+
+.diff {
+    border-top: 1px solid #aaa;
+    padding-top: 10px;
+}
+
+.diff div {
+    white-space: pre;
+    font-family: monospace;
+    line-height: 1.0;
+    font-size: 10px;
+}
+
+.c1 {
+    color: #aaa;
+}
+
+.c2 {
+    color: #0a0;
+}
+
+.c3 {
+    color: #a00;
+}
