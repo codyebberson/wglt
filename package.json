@@ -10,7 +10,8 @@
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
-    "fix": "gts fix"
+    "fix": "gts fix",
+    "docs": "typedoc --out docs --readme none --excludePrivate --excludeProtected src"
   },
   "author": "Cody Ebberson",
   "license": "MIT",
@@ -18,6 +19,7 @@
     "gts": "^0.8.0",
     "http-serve": "^1.0.1",
     "microbundle": "^0.7.0",
+    "typedoc": "^0.13.0",
     "typescript": "^3.1.6"
   },
   "repository": {
