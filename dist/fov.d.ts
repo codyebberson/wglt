@@ -1,8 +1,17 @@
+export declare class FovCell {
+    readonly x: number;
+    readonly y: number;
+    blocked: boolean;
+    visible: boolean;
+    g: number;
+    h: number;
+    prev: FovCell | null;
+    constructor(x: number, y: number);
+}
 export declare class FovMap {
-    private readonly width;
-    private readonly height;
-    private readonly blocked;
-    private readonly visible;
+    readonly width: number;
+    readonly height: number;
+    readonly grid: FovCell[][];
     private originX;
     private originY;
     private minX;
@@ -18,6 +27,7 @@ export declare class FovMap {
      * @param blockedFunc
      */
     constructor(width: number, height: number, blockedFunc?: Function);
+    getCell(x: number, y: number): FovCell;
     setBlocked(x: number, y: number, blocked: boolean): void;
     isVisible(x: number, y: number): boolean;
     /**

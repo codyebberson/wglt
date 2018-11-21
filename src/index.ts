@@ -10,6 +10,8 @@ export * from './fov';
 export * from './gui';
 export * from './keys';
 export * from './messagedialog';
+export * from './path';
+export * from './point';
 export * from './rng';
 export * from './selectdialog';
 export * from './terminal';

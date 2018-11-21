@@ -3,19 +3,30 @@
 // Mingos' Restrictive Precise Angle Shadowcasting
 // https://bitbucket.org/mingos/mrpas/overview
 
-function createBoolMatrix(width: number, height: number) {
-  const result = new Array(height);
-  for (let y = 0; y < height; y++) {
-    result[y] = new Array(width);
+export class FovCell {
+  readonly x: number;
+  readonly y: number;
+  blocked: boolean;
+  visible: boolean;
+  g: number;
+  h: number;
+  prev: FovCell|null;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+    this.blocked = false;
+    this.visible = false;
+    this.g = 0.0;
+    this.h = 0.0;
+    this.prev = null;
   }
-  return result;
 }
 
 export class FovMap {
-  private readonly width: number;
-  private readonly height: number;
-  private readonly blocked: boolean[][];
-  private readonly visible: boolean[][];
+  readonly width: number;
+  readonly height: number;
+  readonly grid: FovCell[][];
   private originX: number;
   private originY: number;
   private minX: number;
@@ -34,8 +45,15 @@ export class FovMap {
   constructor(width: number, height: number, blockedFunc?: Function) {
     this.width = width;
     this.height = height;
-    this.blocked = createBoolMatrix(width, height);
-    this.visible = createBoolMatrix(width, height);
+
+    this.grid = new Array(height);
+    for (let y = 0; y < height; y++) {
+      this.grid[y] = new Array(width);
+      for (let x = 0; x < width; x++) {
+        this.grid[y][x] = new FovCell(x, y);
+      }
+    }
+
     this.originX = 0;
     this.originY = 0;
     this.minX = 0;
@@ -47,15 +65,19 @@ export class FovMap {
     if (blockedFunc) {
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          this.blocked[y][x] = blockedFunc(x, y);
+          this.grid[y][x].blocked = blockedFunc(x, y);
         }
       }
     }
   }
 
+  getCell(x: number, y: number): FovCell {
+    return this.grid[y][x];
+  }
+
   setBlocked(x: number, y: number, blocked: boolean) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-      this.blocked[y][x] = blocked;
+      this.grid[y][x].blocked = blocked;
     }
   }
 
@@ -63,7 +85,7 @@ export class FovMap {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
       return false;
     }
-    return this.visible[y][x];
+    return this.grid[y][x].visible;
   }
 
   /**
@@ -102,15 +124,16 @@ export class FovMap {
         endSlope = centreSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
-          if (!(this.visible[y - deltaY][x] && !this.blocked[y - deltaY][x]) &&
-              !(this.visible[y - deltaY][x - deltaX] &&
-                !this.blocked[y - deltaY][x - deltaX])) {
+          if (!(this.grid[y - deltaY][x].visible &&
+                !this.grid[y - deltaY][x].blocked) &&
+              !(this.grid[y - deltaY][x - deltaX].visible &&
+                !this.grid[y - deltaY][x - deltaX].blocked)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
                   endSlope >= startSlopes[idx]) {
-                if (!this.blocked[y][x]) {
+                if (!this.grid[y][x].blocked) {
                   if (centreSlope > startSlopes[idx] &&
                       centreSlope < endSlopes[idx]) {
                     visible = false;
@@ -132,8 +155,8 @@ export class FovMap {
           }
         }
         if (visible) {
-          this.visible[y][x] = true;
-          if (this.blocked[y][x]) {
+          this.grid[y][x].visible = true;
+          if (this.grid[y][x].blocked) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
@@ -182,15 +205,16 @@ export class FovMap {
         endSlope = centreSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
-          if (!(this.visible[y][x - deltaX] && !this.blocked[y][x - deltaX]) &&
-              !(this.visible[y - deltaY][x - deltaX] &&
-                !this.blocked[y - deltaY][x - deltaX])) {
+          if (!(this.grid[y][x - deltaX].visible &&
+                !this.grid[y][x - deltaX].blocked) &&
+              !(this.grid[y - deltaY][x - deltaX].visible &&
+                !this.grid[y - deltaY][x - deltaX].blocked)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
                   endSlope >= startSlopes[idx]) {
-                if (!this.blocked[y][x]) {
+                if (!this.grid[y][x].blocked) {
                   if (centreSlope > startSlopes[idx] &&
                       centreSlope < endSlopes[idx]) {
                     visible = false;
@@ -212,8 +236,8 @@ export class FovMap {
           }
         }
         if (visible) {
-          this.visible[y][x] = true;
-          if (this.blocked[y][x]) {
+          this.grid[y][x].visible = true;
+          if (this.grid[y][x].blocked) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
@@ -229,11 +253,11 @@ export class FovMap {
   computeFov(originX: number, originY: number, radius: number) {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        this.visible[y][x] = false;
+        this.grid[y][x].visible = false;
       }
     }
 
-    this.visible[originY][originX] = true;
+    this.grid[originY][originX].visible = true;
     this.originX = originX;
     this.originY = originY;
     this.radius = radius;
