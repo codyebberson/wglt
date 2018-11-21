@@ -173,11 +173,11 @@ function Item(useFunction) {
 
     this.pickUp = function () {
         if (inventory.length >= 26) {
-            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.COLOR_LIGHT_RED);
+            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.Colors.LIGHT_RED);
         } else {
             inventory.push(this.owner);
             this.owner.remove();
-            addMessage('You picked up a ' + this.owner.name + '!', wglt.COLOR_LIGHT_GREEN);
+            addMessage('You picked up a ' + this.owner.name + '!', wglt.Colors.LIGHT_GREEN);
         }
     };
 

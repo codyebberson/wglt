@@ -13,7 +13,7 @@
 	<p>The player gets to collect ("borrow") items from the dungeon and use them, with a neat inventory screen. More items added in the next part.</p>
     <div class="diff">
         <!--STARTDIFF--><div class="c3">--- part7.js	2018-11-21 09:00:35.000000000 -0800</div>
-<div class="c2">+++ part8.js	2018-11-21 09:00:35.000000000 -0800</div>
+<div class="c2">+++ part8.js	2018-11-21 14:54:30.000000000 -0800</div>
 <div class="c1">@@ -20,8 +20,12 @@</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
@@ -70,11 +70,11 @@
 <div class="c2">+</div>
 <div class="c2">+    this.pickUp = function () {</div>
 <div class="c2">+        if (inventory.length &gt;= 26) {</div>
-<div class="c2">+            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.COLOR_LIGHT_RED);</div>
+<div class="c2">+            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.Colors.LIGHT_RED);</div>
 <div class="c2">+        } else {</div>
 <div class="c2">+            inventory.push(this.owner);</div>
 <div class="c2">+            this.owner.remove();</div>
-<div class="c2">+            addMessage('You picked up a ' + this.owner.name + '!', wglt.COLOR_LIGHT_GREEN);</div>
+<div class="c2">+            addMessage('You picked up a ' + this.owner.name + '!', wglt.Colors.LIGHT_GREEN);</div>
 <div class="c2">+        }</div>
 <div class="c2">+    };</div>
 <div class="c2">+</div>
