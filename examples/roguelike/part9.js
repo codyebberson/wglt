@@ -25,6 +25,13 @@ const TORCH_RADIUS = 10;
 
 // Spell values
 const HEAL_AMOUNT = 4;
+const LIGHTNING_DAMAGE = 20;
+const LIGHTNING_RANGE = 5;
+const CONFUSE_RANGE = 8;
+const CONFUSE_NUM_TURNS = 10;
+const FIREBALL_RANGE = 10;
+const FIREBALL_RADIUS = 3;
+const FIREBALL_DAMAGE = 12;
 
 const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
 const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
@@ -93,6 +100,10 @@ function Entity(x, y, char, name, color, blocks, components) {
 
     this.distanceTo = function (other) {
         return Math.hypot(other.x - this.x, other.y - this.y);
+    };
+
+    this.distance = function (x, y) {
+        return Math.hypot(x - this.x, y - this.y);
     };
 
     this.sendToBack = function () {
@@ -168,6 +179,24 @@ function BasicMonster() {
     };
 }
 
+function ConfusedMonster(oldAi) {
+    this.owner = null;
+    this.oldAi = oldAi;
+    this.numTurns = CONFUSE_NUM_TURNS;
+
+    this.takeTurn = function () {
+        if (this.numTurns > 0) {
+            // Still confused...
+            // Move in a random direction, and decrease the number of turns confused
+            this.owner.move(rng.nextRange(-1, 1), rng.nextRange(-1, 1));
+            this.numTurns--;
+        } else {
+            this.owner.ai = this.oldAi;
+            addMessage('The ' + this.owner.name + ' is no longer confused!', wglt.Colors.LIGHT_RED);
+        }
+    }
+}
+
 function Item(useFunction) {
     this.useFunction = useFunction;
 
@@ -189,7 +218,7 @@ function Item(useFunction) {
         }
     };
 
-    this.remove = function() {
+    this.remove = function () {
         inventory.splice(inventory.indexOf(this.owner), 1);
     };
 }
@@ -344,10 +373,25 @@ function placeObjects(room) {
         const x = rng.nextRange(room.x1 + 1, room.x2 - 1)
         const y = rng.nextRange(room.y1 + 1, room.y2 - 1)
 
-        // Create a healing potion
-        const itemComponent = new Item(castHeal);
+        const dice = rng.nextRange(0, 100);
+        let item = null;
 
-        const item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: itemComponent });
+        if (dice < 50) {
+            // Create a healing potion (50% chance)
+            item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: new Item(castHeal) });
+
+        } else if (dice < 50 + 20) {
+            // Create a lightning bolt scroll (20% chance)
+            item = new Entity(x, y, '#', 'scroll of lightning bolt', wglt.Colors.YELLOW, false, { item: new Item(castLightning) });
+
+        } else if (dice < 50 + 20 + 15) {
+            // Create a fireball scroll (15% chance)
+            item = new Entity(x, y, '#', 'scroll of fireball', wglt.Colors.YELLOW, false, { item: new Item(castFireball) });
+
+        } else {
+            // Create a confuse scroll (15% chance)
+            item = new Entity(x, y, '#', 'scroll of confusion', wglt.Colors.YELLOW, false, { item: new Item(castConfuse) });
+        }
 
         entities.push(item);
         item.sendToBack();  // items appear below other objects
@@ -438,6 +482,32 @@ function handleKeys() {
         return;
     }
 
+    if (targetFunction) {
+        if (term.isKeyPressed(wglt.Keys.VK_ENTER) || term.mouse.buttons[0]) {
+            endTargeting(targetCursor.x, targetCursor.y);
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_ESCAPE) || term.mouse.buttons[2]) {
+            cancelTargeting();
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_UP)) {
+            targetCursor.y--;
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
+            targetCursor.x--;
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
+            targetCursor.x++;
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
+            targetCursor.y++;
+        }
+        if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
+            targetCursor.x = term.mouse.x;
+            targetCursor.y = term.mouse.y;
+        }
+        return;
+    }
+
     if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
@@ -491,6 +561,26 @@ function monsterDeath(monster) {
     monster.sendToBack();
 }
 
+function getClosestMonster(x, y, range) {
+    let minDist = range + 1;
+    let result = null;
+    for (let i = 0; i < entities.length; i++) {
+        const entity = entities[i];
+        if (entity.fighter && entity !== player) {
+            const dist = entity.distance(x, y);
+            if (dist < minDist) {
+                minDist = dist;
+                result = entity;
+            }
+        }
+    }
+    return result;
+}
+
+function getMonsterAt(x, y) {
+    return getClosestMonster(x, y, 0);
+}
+
 function castHeal(item) {
     // Heal the player
     if (player.fighter.hp === player.fighter.maxHp) {
@@ -501,6 +591,81 @@ function castHeal(item) {
     addMessage('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
     player.fighter.heal(HEAL_AMOUNT);
     item.remove();
+}
+
+function castLightning(item) {
+    // Find closest enemy (inside a maximum range) and damage it
+    const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
+    if (!monster) {
+        addMessage('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
+        return;
+    }
+
+    // Zap it!
+    addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
+    addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
+    monster.fighter.takeDamage(LIGHTNING_DAMAGE);
+    item.remove();
+}
+
+function castFireball(item) {
+    // Ask the player for a target tile to throw a fireball at
+    addMessage('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    startTargeting((x, y) => {
+        if (player.distance(x, y) > FIREBALL_RANGE) {
+            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            return;
+        }
+
+        addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
+
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
+            if (entity.fighter && entity.distance(x, y) <= FIREBALL_RADIUS) {
+                addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
+                entity.fighter.takeDamage(FIREBALL_DAMAGE);
+            }
+        }
+
+        item.remove();
+    });
+}
+
+function castConfuse(item) {
+    // Ask the player for a target to confuse
+    addMessage('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    startTargeting((x, y) => {
+        if (player.distance(x, y) > CONFUSE_RANGE) {
+            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            return;
+        }
+
+        const monster = getMonsterAt(x, y);
+        if (!monster) {
+            addMessage('No monster there.', wglt.Colors.LIGHT_GRAY);
+            return;
+        }
+
+        monster.ai = new ConfusedMonster(monster.ai);
+        monster.ai.owner = monster;
+        addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
+        item.remove();
+    });
+}
+
+function startTargeting(callback) {
+    targetFunction = callback;
+    targetCursor.x = player.x;
+    targetCursor.y = player.y;
+}
+
+function endTargeting(x, y) {
+    targetFunction(x, y);
+    cancelTargeting();
+}
+
+function cancelTargeting() {
+    targetFunction = null;
 }
 
 function renderAll() {
@@ -554,6 +719,10 @@ function renderAll() {
     // Display names of objects under the mouse
     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
 
+    if (targetFunction) {
+        term.getCell(targetCursor.x, targetCursor.y).setBackground(wglt.Colors.WHITE);
+    }
+
     // Draw dialog boxes
     gui.draw();
 }
@@ -568,6 +737,8 @@ const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
 let fovRecompute = true;
 const inventory = [];
+let targetFunction = null;
+let targetCursor = { x: 0, y: 0 };
 
 addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 

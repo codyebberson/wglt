@@ -1,6 +1,4 @@
 
-// find . -name '*.js' -exec sed -i -e 's/wglt.Keys.VK_/wglt.VK_/g' {} \;
-
 /**
  * Number of keys to track.
  */
@@ -66,8 +64,7 @@ export class Keys {
   static readonly VK_BACK_SPACE = 8;
   static readonly VK_TAB = 9;
   static readonly VK_CLEAR = 12;
-  static readonly VK_RETURN = 13;
-  static readonly VK_ENTER = 14;
+  static readonly VK_ENTER = 13;
   static readonly VK_SHIFT = 16;
   static readonly VK_CONTROL = 17;
   static readonly VK_ALT = 18;

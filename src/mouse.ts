@@ -33,6 +33,7 @@ export class Mouse {
     el.addEventListener('mousedown', e => this.handleEvent(e as MouseEvent));
     el.addEventListener('mouseup', e => this.handleEvent(e as MouseEvent));
     el.addEventListener('mousemove', e => this.handleEvent(e as MouseEvent));
+    el.addEventListener('contextmenu', e => this.handleEvent(e as MouseEvent));
 
     const touchEventHandler = this.handleTouchEvent.bind(this);
     el.addEventListener('touchstart', touchEventHandler);

@@ -38,23 +38,22 @@ Use it:
 
 ```typescript
 const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
-term.fillBackgroundRect(0, 0, 80, 50, wglt.COLOR_DARK_BLUE);
-term.fillForegroundRect(0, 0, 80, 50, wglt.COLOR_YELLOW);
+term.fillRect(0, 0, 80, 50, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
 
 term.update = function () {
-    if (term.isKeyDown(wglt.VK_UP)) {
+    if (term.isKeyDown(wglt.Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyDown(wglt.VK_LEFT)) {
+    if (term.isKeyDown(wglt.Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyDown(wglt.VK_RIGHT)) {
+    if (term.isKeyDown(wglt.Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyDown(wglt.VK_DOWN)) {
+    if (term.isKeyDown(wglt.Keys.VK_DOWN)) {
         y++;
     }
 

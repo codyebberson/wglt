@@ -12,8 +12,8 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_8">Part 8: Items and Inventory</a></p>
 	<p>The player gets to collect ("borrow") items from the dungeon and use them, with a neat inventory screen. More items added in the next part.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part7.js	2018-11-21 09:00:35.000000000 -0800</div>
-<div class="c2">+++ part8.js	2018-11-21 14:54:30.000000000 -0800</div>
+        <!--STARTDIFF--><div class="c3">--- part7.js	2018-11-20 15:58:55.488962200 -0800</div>
+<div class="c2">+++ part8.js	2018-11-22 13:06:26.308045700 -0800</div>
 <div class="c1">@@ -20,8 +20,12 @@</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
@@ -61,7 +61,7 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function BasicMonster() {</div>
-<div class="c1">@@ -155,6 +168,30 @@</div>
+<div class="c1">@@ -155,6 +168,32 @@</div>
 <div class="c0">     };</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -82,17 +82,19 @@
 <div class="c2">+        if (!this.useFunction) {</div>
 <div class="c2">+            addMessage('The ' + this.owner.name + ' cannot be used.');</div>
 <div class="c2">+        } else {</div>
-<div class="c2">+            if (this.useFunction()) {</div>
-<div class="c2">+                inventory.splice(inventory.indexOf(this.owner), 1);</div>
-<div class="c2">+            }</div>
+<div class="c2">+            this.useFunction(this);</div>
 <div class="c2">+        }</div>
+<div class="c2">+    };</div>
+<div class="c2">+</div>
+<div class="c2">+    this.remove = function() {</div>
+<div class="c2">+        inventory.splice(inventory.indexOf(this.owner), 1);</div>
 <div class="c2">+    };</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c0"> function isBlocked(x, y) {</div>
 <div class="c0">     // First test the map tile</div>
 <div class="c0">     if (map[y][x].blocked) {</div>
-<div class="c1">@@ -296,6 +333,23 @@</div>
+<div class="c1">@@ -296,6 +335,23 @@</div>
 <div class="c0"> </div>
 <div class="c0">         entities.push(monster);</div>
 <div class="c0">     }</div>
@@ -116,7 +118,7 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {</div>
-<div class="c1">@@ -378,6 +432,10 @@</div>
+<div class="c1">@@ -378,6 +434,10 @@</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function handleKeys() {</div>
@@ -127,7 +129,7 @@
 <div class="c0">     if (term.isKeyPressed(wglt.Keys.VK_UP)) {</div>
 <div class="c0">         playerMoveOrAttack(0, -1);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -390,6 +448,30 @@</div>
+<div class="c1">@@ -390,6 +450,30 @@</div>
 <div class="c0">     if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {</div>
 <div class="c0">         playerMoveOrAttack(0, 1);</div>
 <div class="c0">     }</div>
@@ -158,26 +160,26 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function playerDeath(player) {</div>
-<div class="c1">@@ -407,6 +489,18 @@</div>
+<div class="c1">@@ -407,6 +491,18 @@</div>
 <div class="c0">     monster.sendToBack();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function castHeal() {</div>
+<div class="c2">+function castHeal(item) {</div>
 <div class="c2">+    // Heal the player</div>
 <div class="c2">+    if (player.fighter.hp === player.fighter.maxHp) {</div>
 <div class="c2">+        addMessage('You are already at full health.', wglt.Colors.DARK_RED);</div>
-<div class="c2">+        return false;</div>
+<div class="c2">+        return;</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    addMessage('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);</div>
 <div class="c2">+    player.fighter.heal(HEAL_AMOUNT);</div>
-<div class="c2">+    return true;</div>
+<div class="c2">+    item.remove();</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c0"> function renderAll() {</div>
 <div class="c0">     if (fovRecompute) {</div>
 <div class="c0">         fovMap.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -457,16 +551,21 @@</div>
+<div class="c1">@@ -457,16 +553,21 @@</div>
 <div class="c0"> </div>
 <div class="c0">     // Display names of objects under the mouse</div>
 <div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);</div>
