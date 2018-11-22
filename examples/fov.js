@@ -93,12 +93,22 @@ term.update = function () {
     }
 
     term.clear();
+    game.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, wglt.Colors.BLACK);
 
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
             const c = getTile(x, y);
             const color = fov.isVisible(x, y) ? wglt.Colors.WHITE : wglt.Colors.DARK_GRAY;
             game.drawString(x, y, c, color);
+        }
+    }
+
+    const dest = {x: term.mouse.x - 15, y: term.mouse.y - 8};
+    const path = wglt.computePath(fov, player, dest, 1000);
+    if (path) {
+        for (let i = 1; i < path.length; i++) {
+            const step = path[i];
+            game.getCell(step.x, step.y).setBackground(wglt.Colors.DARK_RED);
         }
     }
 

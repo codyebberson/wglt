@@ -36,9 +36,7 @@ export function computePath(
       if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
         const v = map.grid[y][x];
         const alt = u.g + costs[i];
-        if (alt < v.g &&
-            ((dest.x === v.x && dest.y === v.y) || !map.grid[y][x].blocked) &&
-            (alt <= maxDist)) {
+        if (alt < v.g && alt <= maxDist && !map.grid[y][x].blocked) {
           v.g = alt;
           v.prev = u;
           q.push(v);
