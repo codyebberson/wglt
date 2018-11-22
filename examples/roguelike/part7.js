@@ -91,9 +91,12 @@ function Entity(x, y, char, name, color, blocks, components) {
     };
 
     this.sendToBack = function () {
-        const index = entities.indexOf(this);
-        entities.splice(index, 1);
+        this.remove();
         entities.unshift(this);
+    };
+
+    this.remove = function () {
+        entities.splice(entities.indexOf(this), 1);
     };
 
     this.draw = function () {
@@ -127,6 +130,7 @@ function Fighter(hp, defense, power, deathFunction) {
 
         // Check for death. if there's a death function, call it
         if (this.hp <= 0) {
+            this.hp = 0;
             if (this.deathFunction) {
                 this.deathFunction(this.owner);
             }
@@ -378,6 +382,9 @@ function playerMoveOrAttack(dx, dy) {
 }
 
 function handleKeys() {
+    if (player.fighter.hp <= 0) {
+        return;
+    }
     if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
@@ -461,7 +468,7 @@ function renderAll() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
+const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
 const entities = [player];
 const messages = [];
 const map = createMap();

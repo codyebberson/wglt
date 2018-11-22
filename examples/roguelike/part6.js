@@ -71,21 +71,24 @@ function Entity(x, y, char, name, color, blocks, components) {
         this.y += dy;
     };
 
-    this.moveToward = function(targetX, targetY) {
+    this.moveToward = function (targetX, targetY) {
         const dx = targetX - this.x;
         const dy = targetY - this.y;
         const distance = Math.hypot(dx, dy);
         this.move(Math.round(dx / distance), Math.round(dy / distance));
     };
 
-    this.distanceTo = function(other) {
+    this.distanceTo = function (other) {
         return Math.hypot(other.x - this.x, other.y - this.y);
     };
 
-    this.sendToBack = function() {
-        const index = entities.indexOf(this);
-        entities.splice(index, 1);
+    this.sendToBack = function () {
+        this.remove();
         entities.unshift(this);
+    };
+
+    this.remove = function () {
+        entities.splice(entities.indexOf(this), 1);
     };
 
     this.draw = function () {
@@ -103,7 +106,7 @@ function Fighter(hp, defense, power, deathFunction) {
     this.power = power;
     this.deathFunction = deathFunction || null;
 
-    this.attack = function(target) {
+    this.attack = function (target) {
         const damage = this.power - target.fighter.defense;
 
         if (damage > 0) {
@@ -114,11 +117,12 @@ function Fighter(hp, defense, power, deathFunction) {
         }
     };
 
-    this.takeDamage = function(damage) {
+    this.takeDamage = function (damage) {
         this.hp -= damage;
 
         // Check for death. if there's a death function, call it
         if (this.hp <= 0) {
+            this.hp = 0;
             if (this.deathFunction) {
                 this.deathFunction(this.owner);
             }
@@ -129,7 +133,7 @@ function Fighter(hp, defense, power, deathFunction) {
 function BasicMonster() {
     this.owner = null;
 
-    this.takeTurn = function() {
+    this.takeTurn = function () {
         const monster = this.owner;
 
         // A basic monster takes its turn. if you can see it, it can see you
@@ -319,6 +323,9 @@ function playerMoveOrAttack(dx, dy) {
 }
 
 function handleKeys() {
+    if (player.fighter.hp <= 0) {
+        return;
+    }
     if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
@@ -382,7 +389,7 @@ function renderAll() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
+const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
 const entities = [player];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);

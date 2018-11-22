@@ -276,7 +276,7 @@ function renderAll() {
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'Hero', wglt.Colors.WHITE, true);
+const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true);
 const entities = [player];
 const map = createMap();
 const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);

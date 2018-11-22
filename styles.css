@@ -21,6 +21,8 @@ h1, h2, h3 {
 
 canvas {
     image-rendering: pixelated;
+    width: 640px;
+    height: 400px;
 }
 
 pre {
