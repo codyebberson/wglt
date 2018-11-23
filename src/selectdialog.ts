@@ -35,7 +35,7 @@ export class SelectDialog extends Dialog {
   handleInput() {
     for (let i = 0; i < this.options.length; i++) {
       if (this.terminal.isKeyPressed(Keys.VK_A + i)) {
-        this.callback(this.options[i]);
+        this.callback(i);
         return true;
       }
     }

@@ -512,6 +512,10 @@ function handleKeys() {
         return;
     }
 
+    if (term.isKeyPressed(wglt.Keys.VK_ESCAPE)) {
+        saveGame();
+        appState = 'menu';
+    }
     if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
@@ -730,22 +734,84 @@ function renderAll() {
     gui.draw();
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const gui = new wglt.GUI(term);
-const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
-const entities = [player];
-const messages = [];
-const map = createMap();
-const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
-let fovRecompute = true;
-const inventory = [];
-let targetFunction = null;
-let targetCursor = { x: 0, y: 0 };
+function saveGame() {
+    // TODO: JSON.stringify does not support prototypes and circular references
+    // Investigate Cryo: https://github.com/hunterloftis/cryo
+}
 
-addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+function loadGame() {
+    // TODO
+    appState = 'game';
+}
 
-term.update = function () {
+function newGame() {
+    rng = new wglt.RNG(Date.now());
+    player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
+    entities = [player];
+    messages = [];
+    map = createMap();
+    fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
+    fovRecompute = true;
+    inventory = [];
+    addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+    appState = 'game';
+}
+
+function playGame() {
     handleKeys();
     renderAll();
+}
+
+function mainMenu() {
+    if (gui.dialogs.length === 0) {
+        const options = ['Play a new game', 'Continue last game'];
+        gui.add(new wglt.SelectDialog(term, 'MAIN MENU', options, (choice) => {
+            if (choice === 0) {
+                newGame();
+            } else if (choice === 1) {
+                loadGame();
+            }
+        }));
+    }
+
+    gui.handleInput();
+
+    term.clear();
+
+    if (menuBg) {
+        term.drawConsole(0, 0, menuBg, 0, 0, 80, 50);
+    }
+
+    term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', wglt.Colors.YELLOW);
+    term.drawCenteredString(40, 12, 'By Jotaf', wglt.Colors.YELLOW);
+    gui.draw();
+}
+
+const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const gui = new wglt.GUI(term);
+let rng = null;
+let player = null;
+let entities = null;
+let messages = null;
+let map = null;
+let fovMap = null;
+let fovRecompute = true;
+let inventory = null;
+let targetFunction = null;
+let targetCursor = { x: 0, y: 0 };
+let appState = 'menu';
+let menuBg = null;
+
+wglt.loadImage2x('menu.png', (result) => {menuBg = result});
+
+term.update = function () {
+    switch (appState) {
+        case 'menu':
+            mainMenu();
+            break;
+
+        case 'game':
+            playGame();
+            break;
+    }
 };

@@ -473,10 +473,9 @@ function handleKeys() {
     }
 }
 
-function useInventory(option) {
-    const index = inventory.map(item => item.name).indexOf(option);
-    if (index >= 0) {
-        inventory[index].item.use();
+function useInventory(choice) {
+    if (choice >= 0) {
+        inventory[choice].item.use();
     }
 }
 
@@ -563,8 +562,8 @@ function renderAll() {
 }
 
 const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const rng = new wglt.RNG(1);
 const gui = new wglt.GUI(term);
+const rng = new wglt.RNG(1);
 const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
 const entities = [player];
 const messages = [];
