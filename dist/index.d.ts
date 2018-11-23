@@ -7,6 +7,7 @@ export * from './console';
 export * from './font';
 export * from './fov';
 export * from './gui';
+export * from './image';
 export * from './keys';
 export * from './messagedialog';
 export * from './path';

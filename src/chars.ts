@@ -41,5 +41,11 @@ export class Chars {
   static readonly BOX_SINGLE_UP_AND_SINGLE_LEFT = 13 * 16 + 9;
   static readonly BOX_SINGLE_DOWN_AND_SINGLE_RIGHT = 13 * 16 + 10;
 
-  static readonly CHECKER = 14 * 16 + 6;
+  static readonly BLOCK_TOP_LEFT = 14 * 16 + 2;
+  static readonly BLOCK_TOP_RIGHT = 14 * 16 + 3;
+  static readonly BLOCK_TOP_HALF = 14 * 16 + 4;
+  static readonly BLOCK_BOTTOM_LEFT = 14 * 16 + 8;
+  static readonly BLOCK_BOTTOM_RIGHT = 14 * 16 + 5;
+  static readonly BLOCK_RIGHT_HALF = 14 * 16 + 7;
+  static readonly BLOCK_CHECKER = 14 * 16 + 6;
 }
