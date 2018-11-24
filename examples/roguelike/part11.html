@@ -12,19 +12,30 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_11">Part 11: Dungeon levels and character progression</a></p>
 	<p>Let the player venture deeper into the dungeon and grow stronger, including experience gain, levels and raising stats!</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part10.js	2018-11-23 14:56:15.686143900 -0800</div>
-<div class="c2">+++ part11.js	2018-11-23 15:56:34.670328500 -0800</div>
-<div class="c1">@@ -33,6 +33,10 @@</div>
-<div class="c0"> const FIREBALL_RADIUS = 3;</div>
-<div class="c0"> const FIREBALL_DAMAGE = 12;</div>
+        <!--STARTDIFF--><div class="c3">--- part10.js	2018-11-23 16:31:26.156388500 -0800</div>
+<div class="c2">+++ part11.js	2018-11-23 16:31:32.219131000 -0800</div>
+<div class="c1">@@ -24,14 +24,18 @@</div>
+<div class="c0"> const TORCH_RADIUS = 10;</div>
 <div class="c0"> </div>
+<div class="c0"> // Spell values</div>
+<div class="c3">-const HEAL_AMOUNT = 4;</div>
+<div class="c3">-const LIGHTNING_DAMAGE = 20;</div>
+<div class="c2">+const HEAL_AMOUNT = 40;</div>
+<div class="c2">+const LIGHTNING_DAMAGE = 40;</div>
+<div class="c0"> const LIGHTNING_RANGE = 5;</div>
+<div class="c0"> const CONFUSE_RANGE = 8;</div>
+<div class="c0"> const CONFUSE_NUM_TURNS = 10;</div>
+<div class="c0"> const FIREBALL_RANGE = 10;</div>
+<div class="c0"> const FIREBALL_RADIUS = 3;</div>
+<div class="c3">-const FIREBALL_DAMAGE = 12;</div>
+<div class="c2">+const FIREBALL_DAMAGE = 25;</div>
+<div class="c2">+</div>
 <div class="c2">+// Experience and level-ups</div>
 <div class="c2">+const LEVEL_UP_BASE = 200;</div>
 <div class="c2">+const LEVEL_UP_FACTOR = 150;</div>
-<div class="c2">+</div>
+<div class="c0"> </div>
 <div class="c0"> const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);</div>
 <div class="c0"> const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);</div>
-<div class="c0"> const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);</div>
 <div class="c1">@@ -122,12 +126,13 @@</div>
 <div class="c0">     };</div>
 <div class="c0"> }</div>
@@ -86,12 +97,12 @@
 <div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_C)) {</div>
 <div class="c2">+        const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;</div>
 <div class="c2">+        gui.add(new wglt.MessageDialog(term, 'CHARACTER',</div>
-<div class="c2">+                'Level: ' + player.level +</div>
-<div class="c2">+                '\nExperience: ' + player.fighter.xp +</div>
-<div class="c2">+                '\nExperience to level up: ' + levelUpXp +</div>
-<div class="c2">+                '\n\nMaximum HP: ' + player.fighter.maxHp +</div>
-<div class="c2">+                '\nAttack: ' + player.fighter.power +</div>
-<div class="c2">+                '\nDefense: ' + player.fighter.defense));</div>
+<div class="c2">+            'Level: ' + player.level +</div>
+<div class="c2">+            '\nExperience: ' + player.fighter.xp +</div>
+<div class="c2">+            '\nExperience to level up: ' + levelUpXp +</div>
+<div class="c2">+            '\n\nMaximum HP: ' + player.fighter.maxHp +</div>
+<div class="c2">+            '\nAttack: ' + player.fighter.power +</div>
+<div class="c2">+            '\nDefense: ' + player.fighter.defense));</div>
 <div class="c2">+    }</div>
 <div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_COMMA)) {</div>
 <div class="c2">+        if (player.x === stairs.x &amp;&amp; player.y === stairs.y) {</div>
@@ -113,7 +124,7 @@
 <div class="c2">+        player.fighter.xp -= levelUpXp;</div>
 <div class="c2">+        addMessage('Your battle skills grow stronger! You reached level ' + player.level + '!', wglt.Colors.YELLOW);</div>
 <div class="c2">+</div>
-<div class="c2">+        const options =  [</div>
+<div class="c2">+        const options = [</div>
 <div class="c2">+            'Constitution (+20 HP, from ' + player.fighter.maxHp + ')',</div>
 <div class="c2">+            'Strength (+1 attack, from ' + player.fighter.power + ')',</div>
 <div class="c2">+            'Agility (+1 defense, from ' + player.fighter.defense + ')'</div>

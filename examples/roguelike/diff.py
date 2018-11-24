@@ -34,7 +34,7 @@ def update_diff(html_file, old_js, new_js):
         f.write(html)
 
 if __name__ == "__main__":
-    for i in range(1, 12):
+    for i in range(1, 13):
         prev = 'part' + str(i - 1)
         curr = 'part' + str(i)
         update_diff(curr + '.html', prev + '.js', curr + '.js')

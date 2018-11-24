@@ -5,7 +5,7 @@ const SCREEN_HEIGHT = 50;
 
 // Size of the map
 const MAP_WIDTH = 80;
-const MAP_HEIGHT = 45;
+const MAP_HEIGHT = 43;
 
 // Sizes and coordinates relevant for the GUI
 const BAR_WIDTH = 20;
@@ -741,6 +741,9 @@ function saveGame() {
 
 function loadGame() {
     // TODO
+    if (!player) {
+        return;
+    }
     appState = 'game';
 }
 
@@ -802,7 +805,7 @@ let targetCursor = { x: 0, y: 0 };
 let appState = 'menu';
 let menuBg = null;
 
-wglt.loadImage2x('menu.png', (result) => {menuBg = result});
+wglt.loadImage2x('menu.png', (result) => { menuBg = result });
 
 term.update = function () {
     switch (appState) {

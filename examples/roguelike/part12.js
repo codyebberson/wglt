@@ -19,12 +19,21 @@ const MSG_HEIGHT = PANEL_HEIGHT - 1;
 const ROOM_MAX_SIZE = 10;
 const ROOM_MIN_SIZE = 6;
 const MAX_ROOMS = 30;
-const MAX_ROOM_MONSTERS = 3;
-const MAX_ROOM_ITEMS = 2;
 const TORCH_RADIUS = 10;
 
 // Spell values
 const HEAL_AMOUNT = 4;
+const LIGHTNING_DAMAGE = 20;
+const LIGHTNING_RANGE = 5;
+const CONFUSE_RANGE = 8;
+const CONFUSE_NUM_TURNS = 10;
+const FIREBALL_RANGE = 10;
+const FIREBALL_RADIUS = 3;
+const FIREBALL_DAMAGE = 12;
+
+// Experience and level-ups
+const LEVEL_UP_BASE = 200;
+const LEVEL_UP_FACTOR = 150;
 
 const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
 const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
@@ -95,6 +104,10 @@ function Entity(x, y, char, name, color, blocks, components) {
         return Math.hypot(other.x - this.x, other.y - this.y);
     };
 
+    this.distance = function (x, y) {
+        return Math.hypot(x - this.x, y - this.y);
+    };
+
     this.sendToBack = function () {
         this.remove();
         entities.unshift(this);
@@ -111,12 +124,13 @@ function Entity(x, y, char, name, color, blocks, components) {
     };
 }
 
-function Fighter(hp, defense, power, deathFunction) {
+function Fighter(hp, defense, power, xp, deathFunction) {
     this.owner = null;
     this.maxHp = hp;
     this.hp = hp;
     this.defense = defense;
     this.power = power;
+    this.xp = xp;
     this.deathFunction = deathFunction || null;
 
     this.attack = function (target) {
@@ -138,6 +152,10 @@ function Fighter(hp, defense, power, deathFunction) {
             this.hp = 0;
             if (this.deathFunction) {
                 this.deathFunction(this.owner);
+            }
+            if (this.owner !== player) {
+                player.fighter.xp += this.xp;
+                checkLevelUp();
             }
         }
     };
@@ -166,6 +184,24 @@ function BasicMonster() {
             }
         }
     };
+}
+
+function ConfusedMonster(oldAi) {
+    this.owner = null;
+    this.oldAi = oldAi;
+    this.numTurns = CONFUSE_NUM_TURNS;
+
+    this.takeTurn = function () {
+        if (this.numTurns > 0) {
+            // Still confused...
+            // Move in a random direction, and decrease the number of turns confused
+            this.owner.move(rng.nextRange(-1, 1), rng.nextRange(-1, 1));
+            this.numTurns--;
+        } else {
+            this.owner.ai = this.oldAi;
+            addMessage('The ' + this.owner.name + ' is no longer confused!', wglt.Colors.LIGHT_RED);
+        }
+    }
 }
 
 function Item(useFunction) {
@@ -306,12 +342,53 @@ function createMap() {
         }
     }
 
+    // Create stairs at the center of the last room
+    const stairsLoc = rooms[rooms.length - 1].getCenter();
+    stairs = new Entity(stairsLoc.x, stairsLoc.y, '<', 'stairs', wglt.Colors.WHITE);
+    entities.push(stairs);
+    stairs.sendToBack();
+
     return map;
 }
 
+function fromDungeonLevel(table) {
+    // Returns a value that depends on level.
+    // The table specifies what value occurs after each level, default is 0.
+    for (let i = 0; i < table.length; i++) {
+        const value = table[i][0];
+        const level = table[i][1];
+        if (dungeonLevel >= level) {
+            return value;
+        }
+    }
+    return 0;
+}
+
 function placeObjects(room) {
+    // This is where we decide the chance of each monster or item appearing.
+
+    // Maximum number of monsters per room
+    const maxMonsters = fromDungeonLevel([[2, 1], [3, 4], [5, 6]]);
+
+    // Chance of each monster
+    const monsterChances = {
+        'orc': 80, // orc always shows up, even if all other monsters have 0 chance
+        'troll': fromDungeonLevel([[15, 3], [30, 5], [60, 7]])
+    };
+
+    // Maximum number of items per room
+    const maxItems = fromDungeonLevel([[1, 1], [2, 4]])
+
+    // Chance of each item (by default they have a chance of 0 at level 1, which then goes up)
+    const itemChances = {
+        'heal': 35,  // healing potion always shows up, even if all other items have 0 chance
+        'lightning': fromDungeonLevel([[25, 4]]),
+        'fireball': fromDungeonLevel([[25, 6]]),
+        'confuse': fromDungeonLevel([[10, 2]])
+    };
+
     // Choose random number of monsters
-    const numMonsters = rng.nextRange(0, MAX_ROOM_MONSTERS);
+    const numMonsters = rng.nextRange(0, maxMonsters + 1);
 
     for (let i = 0; i < numMonsters; i++) {
         // Choose random spot for this monster
@@ -319,16 +396,14 @@ function placeObjects(room) {
         const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
         let monster = null;
 
-        // Only place it if the tile is not blocked
-        // 80% chance of getting an orc
-        if (rng.nextRange(0, 100) < 80) {
-            // Create an orc
-            const fighter = new Fighter(10, 0, 3, monsterDeath);
+        const choice = rng.chooseKey(monsterChances);
+        if (choice === 'orc') {
+            const fighter = new Fighter(20, 0, 4, 35, monsterDeath);
             const ai = new BasicMonster();
             monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
-        } else {
-            // Create a troll
-            const fighter = new Fighter(16, 1, 4, monsterDeath);
+
+        } else if (choice === 'troll') {
+            const fighter = new Fighter(30, 2, 8, 100, monsterDeath);
             const ai = new BasicMonster();
             monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
         }
@@ -337,17 +412,31 @@ function placeObjects(room) {
     }
 
     // Choose random number of items
-    const numItems = rng.nextRange(0, MAX_ROOM_ITEMS);
+    const numItems = rng.nextRange(0, maxItems + 1);
 
     for (let i = 0; i < numItems; i++) {
         // Choose random spot for this item
         const x = rng.nextRange(room.x1 + 1, room.x2 - 1)
         const y = rng.nextRange(room.y1 + 1, room.y2 - 1)
+        let item = null;
 
-        // Create a healing potion
-        const itemComponent = new Item(castHeal);
+        const choice = rng.chooseKey(itemChances);
+        if (choice === 'heal') {
+            // Create a healing potion
+            item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: new Item(castHeal) });
 
-        const item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: itemComponent });
+        } else if (choice === 'lightning') {
+            // Create a lightning bolt scroll
+            item = new Entity(x, y, '#', 'scroll of lightning bolt', wglt.Colors.YELLOW, false, { item: new Item(castLightning) });
+
+        } else if (choice === 'fireball') {
+            // Create a fireball scroll
+            item = new Entity(x, y, '#', 'scroll of fireball', wglt.Colors.YELLOW, false, { item: new Item(castFireball) });
+
+        } else if (choice === 'confuse') {
+            // Create a confuse scroll
+            item = new Entity(x, y, '#', 'scroll of confusion', wglt.Colors.YELLOW, false, { item: new Item(castConfuse) });
+        }
 
         entities.push(item);
         item.sendToBack();  // items appear below other objects
@@ -442,6 +531,36 @@ function handleKeys() {
         return;
     }
 
+    if (targetFunction) {
+        if (term.isKeyPressed(wglt.Keys.VK_ENTER) || term.mouse.buttons[0]) {
+            endTargeting(targetCursor.x, targetCursor.y);
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_ESCAPE) || term.mouse.buttons[2]) {
+            cancelTargeting();
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_UP)) {
+            targetCursor.y--;
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
+            targetCursor.x--;
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
+            targetCursor.x++;
+        }
+        if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
+            targetCursor.y++;
+        }
+        if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
+            targetCursor.x = term.mouse.x;
+            targetCursor.y = term.mouse.y;
+        }
+        return;
+    }
+
+    if (term.isKeyPressed(wglt.Keys.VK_ESCAPE)) {
+        saveGame();
+        appState = 'menu';
+    }
     if (term.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
@@ -471,6 +590,21 @@ function handleKeys() {
             gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));
         }
     }
+    if (term.isKeyPressed(wglt.Keys.VK_C)) {
+        const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
+        gui.add(new wglt.MessageDialog(term, 'CHARACTER',
+            'Level: ' + player.level +
+            '\nExperience: ' + player.fighter.xp +
+            '\nExperience to level up: ' + levelUpXp +
+            '\n\nMaximum HP: ' + player.fighter.maxHp +
+            '\nAttack: ' + player.fighter.power +
+            '\nDefense: ' + player.fighter.defense));
+    }
+    if (term.isKeyPressed(wglt.Keys.VK_COMMA)) {
+        if (player.x === stairs.x && player.y === stairs.y) {
+            nextLevel();
+        }
+    }
 }
 
 function useInventory(choice) {
@@ -479,12 +613,39 @@ function useInventory(choice) {
     }
 }
 
+function checkLevelUp() {
+    // See if the player's experience is enough to level-up
+    const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
+    if (player.fighter.xp >= levelUpXp) {
+        player.level++;
+        player.fighter.xp -= levelUpXp;
+        addMessage('Your battle skills grow stronger! You reached level ' + player.level + '!', wglt.Colors.YELLOW);
+
+        const options = [
+            'Constitution (+20 HP, from ' + player.fighter.maxHp + ')',
+            'Strength (+1 attack, from ' + player.fighter.power + ')',
+            'Agility (+1 defense, from ' + player.fighter.defense + ')'
+        ];
+
+        gui.add(new wglt.SelectDialog(term, 'LEVEL UP', options, (choice) => {
+            if (choice === 0) {
+                player.fighter.maxHp += 20;
+                player.fighter.hp += 20;
+            } else if (choice === 1) {
+                player.fighter.power += 1;
+            } else if (choice === 2) {
+                player.fighter.defense += 1;
+            }
+        }));
+    }
+}
+
 function playerDeath(player) {
     addMessage('You died!', wglt.Colors.LIGHT_RED);
 }
 
 function monsterDeath(monster) {
-    addMessage(capitalize(monster.name) + ' is dead!', wglt.Colors.BROWN);
+    addMessage(capitalize(monster.name) + ' is dead! You gain ' + monster.fighter.xp + ' XP.', wglt.Colors.ORANGE);
     monster.char = '%';
     monster.color = wglt.Colors.DARK_RED;
     monster.blocks = false;
@@ -492,6 +653,26 @@ function monsterDeath(monster) {
     monster.ai = null;
     monster.name = 'remains of ' + monster.name;
     monster.sendToBack();
+}
+
+function getClosestMonster(x, y, range) {
+    let minDist = range + 1;
+    let result = null;
+    for (let i = 0; i < entities.length; i++) {
+        const entity = entities[i];
+        if (entity.fighter && entity !== player) {
+            const dist = entity.distance(x, y);
+            if (dist < minDist) {
+                minDist = dist;
+                result = entity;
+            }
+        }
+    }
+    return result;
+}
+
+function getMonsterAt(x, y) {
+    return getClosestMonster(x, y, 0);
 }
 
 function castHeal(item) {
@@ -504,6 +685,81 @@ function castHeal(item) {
     addMessage('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
     player.fighter.heal(HEAL_AMOUNT);
     item.remove();
+}
+
+function castLightning(item) {
+    // Find closest enemy (inside a maximum range) and damage it
+    const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
+    if (!monster) {
+        addMessage('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
+        return;
+    }
+
+    // Zap it!
+    addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
+    addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
+    monster.fighter.takeDamage(LIGHTNING_DAMAGE);
+    item.remove();
+}
+
+function castFireball(item) {
+    // Ask the player for a target tile to throw a fireball at
+    addMessage('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    startTargeting((x, y) => {
+        if (player.distance(x, y) > FIREBALL_RANGE) {
+            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            return;
+        }
+
+        addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
+
+        for (let i = 0; i < entities.length; i++) {
+            const entity = entities[i];
+            if (entity.fighter && entity.distance(x, y) <= FIREBALL_RADIUS) {
+                addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
+                entity.fighter.takeDamage(FIREBALL_DAMAGE);
+            }
+        }
+
+        item.remove();
+    });
+}
+
+function castConfuse(item) {
+    // Ask the player for a target to confuse
+    addMessage('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    startTargeting((x, y) => {
+        if (player.distance(x, y) > CONFUSE_RANGE) {
+            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            return;
+        }
+
+        const monster = getMonsterAt(x, y);
+        if (!monster) {
+            addMessage('No monster there.', wglt.Colors.LIGHT_GRAY);
+            return;
+        }
+
+        monster.ai = new ConfusedMonster(monster.ai);
+        monster.ai.owner = monster;
+        addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
+        item.remove();
+    });
+}
+
+function startTargeting(callback) {
+    targetFunction = callback;
+    targetCursor.x = player.x;
+    targetCursor.y = player.y;
+}
+
+function endTargeting(x, y) {
+    targetFunction(x, y);
+    cancelTargeting();
+}
+
+function cancelTargeting() {
+    targetFunction = null;
 }
 
 function renderAll() {
@@ -554,27 +810,121 @@ function renderAll() {
         'HP', player.fighter.hp, player.fighter.maxHp,
         wglt.Colors.LIGHT_RED, wglt.Colors.DARK_RED);
 
+    renderBar(
+        1, PANEL_Y + 2, BAR_WIDTH,
+        'XP', player.fighter.xp, LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR,
+        wglt.Colors.LIGHT_MAGENTA, wglt.Colors.DARK_MAGENTA);
+
+    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + dungeonLevel, wglt.Colors.ORANGE);
+
     // Display names of objects under the mouse
     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
+
+    if (targetFunction) {
+        term.getCell(targetCursor.x, targetCursor.y).setBackground(wglt.Colors.WHITE);
+    }
 
     // Draw dialog boxes
     gui.draw();
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const gui = new wglt.GUI(term);
-const rng = new wglt.RNG(1);
-const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
-const entities = [player];
-const messages = [];
-const map = createMap();
-const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
-let fovRecompute = true;
-const inventory = [];
+function saveGame() {
+    // TODO: JSON.stringify does not support prototypes and circular references
+    // Investigate Cryo: https://github.com/hunterloftis/cryo
+}
 
-addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+function loadGame() {
+    // TODO
+    if (!player) {
+        return;
+    }
+    appState = 'game';
+}
 
-term.update = function () {
+function newGame() {
+    rng = new wglt.RNG(Date.now());
+    player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(100, 1, 4, 0, playerDeath) });
+    player.level = 1;
+    entities = [player];
+    messages = [];
+    dungeonLevel = 1;
+    map = createMap();
+    fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
+    fovRecompute = true;
+    inventory = [];
+    addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+    appState = 'game';
+}
+
+function nextLevel() {
+    // Advance to the next level
+    addMessage('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
+    player.fighter.heal(player.fighter.maxHp / 2); // heal the player by 50%
+    dungeonLevel++;
+    addMessage('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
+    entities = [player];
+    map = createMap(); // Create a fresh new level!
+    fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
+    fovRecompute = true;
+}
+
+function playGame() {
     handleKeys();
     renderAll();
+}
+
+function mainMenu() {
+    if (gui.dialogs.length === 0) {
+        const options = ['Play a new game', 'Continue last game'];
+        gui.add(new wglt.SelectDialog(term, 'MAIN MENU', options, (choice) => {
+            if (choice === 0) {
+                newGame();
+            } else if (choice === 1) {
+                loadGame();
+            }
+        }));
+    }
+
+    gui.handleInput();
+
+    term.clear();
+
+    if (menuBg) {
+        term.drawConsole(0, 0, menuBg, 0, 0, 80, 50);
+    }
+
+    term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', wglt.Colors.YELLOW);
+    term.drawCenteredString(40, 12, 'By Jotaf', wglt.Colors.YELLOW);
+    gui.draw();
+}
+
+const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const gui = new wglt.GUI(term);
+let rng = null;
+let player = null;
+let stairs = null;
+let entities = null;
+let messages = null;
+let dungeonLevel = 0;
+let map = null;
+let fovMap = null;
+let fovRecompute = true;
+let inventory = null;
+let targetFunction = null;
+let targetCursor = { x: 0, y: 0 };
+let appState = 'menu';
+let menuBg = null;
+
+wglt.loadImage2x('menu.png', (result) => { menuBg = result });
+
+term.update = function () {
+    switch (appState) {
+        case 'menu':
+            mainMenu();
+            break;
+
+        case 'game':
+            playGame();
+            break;
+    }
 };

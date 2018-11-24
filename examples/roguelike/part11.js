@@ -5,7 +5,7 @@ const SCREEN_HEIGHT = 50;
 
 // Size of the map
 const MAP_WIDTH = 80;
-const MAP_HEIGHT = 45;
+const MAP_HEIGHT = 43;
 
 // Sizes and coordinates relevant for the GUI
 const BAR_WIDTH = 20;
@@ -24,14 +24,14 @@ const MAX_ROOM_ITEMS = 2;
 const TORCH_RADIUS = 10;
 
 // Spell values
-const HEAL_AMOUNT = 4;
-const LIGHTNING_DAMAGE = 20;
+const HEAL_AMOUNT = 40;
+const LIGHTNING_DAMAGE = 40;
 const LIGHTNING_RANGE = 5;
 const CONFUSE_RANGE = 8;
 const CONFUSE_NUM_TURNS = 10;
 const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
-const FIREBALL_DAMAGE = 12;
+const FIREBALL_DAMAGE = 25;
 
 // Experience and level-ups
 const LEVEL_UP_BASE = 200;
@@ -563,12 +563,12 @@ function handleKeys() {
     if (term.isKeyPressed(wglt.Keys.VK_C)) {
         const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
         gui.add(new wglt.MessageDialog(term, 'CHARACTER',
-                'Level: ' + player.level +
-                '\nExperience: ' + player.fighter.xp +
-                '\nExperience to level up: ' + levelUpXp +
-                '\n\nMaximum HP: ' + player.fighter.maxHp +
-                '\nAttack: ' + player.fighter.power +
-                '\nDefense: ' + player.fighter.defense));
+            'Level: ' + player.level +
+            '\nExperience: ' + player.fighter.xp +
+            '\nExperience to level up: ' + levelUpXp +
+            '\n\nMaximum HP: ' + player.fighter.maxHp +
+            '\nAttack: ' + player.fighter.power +
+            '\nDefense: ' + player.fighter.defense));
     }
     if (term.isKeyPressed(wglt.Keys.VK_COMMA)) {
         if (player.x === stairs.x && player.y === stairs.y) {
@@ -591,7 +591,7 @@ function checkLevelUp() {
         player.fighter.xp -= levelUpXp;
         addMessage('Your battle skills grow stronger! You reached level ' + player.level + '!', wglt.Colors.YELLOW);
 
-        const options =  [
+        const options = [
             'Constitution (+20 HP, from ' + player.fighter.maxHp + ')',
             'Strength (+1 attack, from ' + player.fighter.power + ')',
             'Agility (+1 defense, from ' + player.fighter.defense + ')'
@@ -805,6 +805,9 @@ function saveGame() {
 
 function loadGame() {
     // TODO
+    if (!player) {
+        return;
+    }
     appState = 'game';
 }
 
@@ -882,7 +885,7 @@ let targetCursor = { x: 0, y: 0 };
 let appState = 'menu';
 let menuBg = null;
 
-wglt.loadImage2x('menu.png', (result) => {menuBg = result});
+wglt.loadImage2x('menu.png', (result) => { menuBg = result });
 
 term.update = function () {
     switch (appState) {

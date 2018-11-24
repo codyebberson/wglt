@@ -18,4 +18,6 @@ export declare class RNG {
     private nextInt;
     nextFloat(): number;
     nextRange(start: number, end: number): number;
+    chooseIndex(chances: number[]): number;
+    chooseKey(chancesMap: Map<string, number>): string;
 }

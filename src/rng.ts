@@ -41,4 +41,33 @@ export class RNG {
     const randomUnder1 = this.nextInt() / this.m;
     return start + ((randomUnder1 * rangeSize) | 0);
   }
+
+  chooseIndex(chances: number[]) {
+    const total = chances.reduce((a, b) => a + b);
+    const roll = this.nextRange(1, total);
+    let runningTotal = 0;
+
+    for (let i = 0; i < chances.length; i++) {
+      runningTotal += chances[i];
+      if (roll <= runningTotal) {
+        return i;
+      }
+    }
+
+    return chances.length - 1;
+  }
+
+  chooseKey(chancesMap: Map<string, number>) {
+    const values: string[] = [];
+    const chances: number[] = [];
+
+    for (var property in chancesMap) {
+      if (chancesMap.hasOwnProperty(property)) {
+        values.push(property);
+        chances.push((chancesMap as any)[property] as number);
+      }
+    }
+
+    return values[this.chooseIndex(chances)];
+  }
 }
