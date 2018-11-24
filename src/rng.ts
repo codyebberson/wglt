@@ -57,14 +57,14 @@ export class RNG {
     return chances.length - 1;
   }
 
-  chooseKey(chancesMap: Map<string, number>) {
+  chooseKey(chancesMap: {[key: string]: number}) {
     const values: string[] = [];
     const chances: number[] = [];
 
-    for (var property in chancesMap) {
+    for (const property in chancesMap) {
       if (chancesMap.hasOwnProperty(property)) {
         values.push(property);
-        chances.push((chancesMap as any)[property] as number);
+        chances.push(chancesMap[property]);
       }
     }
 
