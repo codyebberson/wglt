@@ -3,14 +3,14 @@
 * Fast, lightweight, terminal emulator using WebGL
 * 100% TypeScript
 * MIT license
-* ~10kb minified JS, ~5kb gzipped
+* ~20kb minified JS, ~10kb gzipped
 * No external dependencies
 
 ## What is it?
 
 WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.
 
-WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU usage.
+WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU.
 
 WGLT is modelled after libtcod and rot.js.
 
@@ -31,7 +31,7 @@ import * as wglt from 'wglt';
 Or, simply use the prebuilt:
 
 ```html
-<script src="https://unpkg.com/wglt@0.0.1/dist/index.umd.js"></script>
+<script src="https://unpkg.com/wglt@0.0.2/dist/index.umd.js"></script>
 ```
 
 Use it:
