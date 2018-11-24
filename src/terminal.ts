@@ -187,8 +187,8 @@ export class Terminal extends Console {
           continue;
         }
 
-        const textureX = (cell.charCode % 16) + (0.5 / 256.0);
-        const textureY = ((cell.charCode / 16) | 0) + (0.5 / 256.0);
+        const textureX = (cell.charCode % 16);
+        const textureY = ((cell.charCode / 16) | 0);
 
         this.textureArray[textureArrayIndex++] = textureX;
         this.textureArray[textureArrayIndex++] = textureY;

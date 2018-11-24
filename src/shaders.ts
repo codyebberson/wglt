@@ -40,10 +40,23 @@ export const FRAGMENT_SHADER_SOURCE = 'varying highp vec2 e;' +
     'uniform sampler2D s;' +
     'void main(void){' +
     'gl_FragColor=texture2D(s,e);' +
-    'if(!h){' +
+    'if(h){' +
+    // Using graphical tiles
+    'if(gl_FragColor.a<0.1){' +
+    // The current pixel of the foreground sprite is transparent.
+    // Draw the background tile instead.
+    // Use the background red channel for the tile X coordinate.
+    // Use the background green channel for the tile Y coordinate.
+    // Use the fractional component of the texture coord for the pixel offset.
+    'gl_FragColor=texture2D(s,g.rg*16.0+fract(e*16.0)/16.0);' +
+    '}' +
+    '}else{' +
+    // Using ASCII characters
     'if(gl_FragColor.r<0.1) {' +
+    // Black background, so use bgColor
     'gl_FragColor=g;' +
     '} else {' +
+    // White background, so use fgColor
     'gl_FragColor=f;' +
     '}' +
     '}' +
