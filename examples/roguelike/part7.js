@@ -59,8 +59,6 @@ function Entity(x, y, char, name, color, blocks, components) {
     this.name = name;
     this.color = color;
     this.blocks = !!blocks;
-    this.fighter = null;
-    this.ai = null;
 
     if (components) {
         for (var property in components) {

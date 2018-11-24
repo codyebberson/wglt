@@ -123,12 +123,30 @@ function Entity(x, y, char, name, color, blocks, components) {
 
 function Fighter(hp, defense, power, xp, deathFunction) {
     this.owner = null;
-    this.maxHp = hp;
+    this.baseMaxHp = hp;
+    this.baseDefense = defense;
+    this.basePower = power;
     this.hp = hp;
-    this.defense = defense;
-    this.power = power;
     this.xp = xp;
     this.deathFunction = deathFunction || null;
+
+    Object.defineProperty(this, 'maxHp', {
+        get: function () {
+            return this.baseMaxHp + getAllEquipped(this.owner).reduce((acc, item) => acc + item.maxHpBonus, 0);
+        }
+    });
+
+    Object.defineProperty(this, 'defense', {
+        get: function () {
+            return this.baseDefense + getAllEquipped(this.owner).reduce((acc, item) => acc + item.defenseBonus, 0);
+        }
+    });
+
+    Object.defineProperty(this, 'power', {
+        get: function () {
+            return this.basePower + getAllEquipped(this.owner).reduce((acc, item) => acc + item.powerBonus, 0);
+        }
+    });
 
     this.attack = function (target) {
         const damage = this.power - target.fighter.defense;
@@ -217,6 +235,8 @@ function Item(useFunction) {
     this.use = function () {
         if (this.useFunction) {
             this.useFunction(this);
+        } else if (this.owner.equipment) {
+            this.owner.equipment.toggleEquip();
         } else {
             addMessage('The ' + this.owner.name + ' cannot be used.');
         }
@@ -225,6 +245,61 @@ function Item(useFunction) {
     this.remove = function () {
         inventory.splice(inventory.indexOf(this.owner), 1);
     };
+}
+
+function Equipment(slot, powerBonus, defenseBonus, maxHpBonus) {
+    this.slot = slot;
+    this.powerBonus = powerBonus;
+    this.defenseBonus = defenseBonus;
+    this.maxHpBonus = maxHpBonus;
+    this.equipped = false;
+
+    this.toggleEquip = function () {
+        if (this.equipped) {
+            this.dequip();
+        } else {
+            this.equip();
+        }
+    };
+
+    this.equip = function () {
+        // If the slot is already being used, dequip whatever is there first
+        const old = getEquippedInSlot(this.slot);
+        if (old) {
+            old.dequip();
+        }
+
+        // Equip object and show a message about it
+        this.equipped = true;
+        addMessage('Equipped ' + this.owner.name + ' on ' + this.slot + '.', wglt.Colors.LIGHT_GREEN);
+    };
+
+    this.dequip = function () {
+        // Dequip object and show a message about it
+        if (!this.equipped) {
+            return;
+        }
+        this.equipped = false;
+        addMessage('Dequipped ' + this.owner.name + ' on ' + this.slot + '.', wglt.Colors.YELLOW);
+    };
+}
+
+function getEquippedInSlot(slot) {
+    for (let i = 0; i < inventory.length; i++) {
+        const obj = inventory[i];
+        if (obj.equipment && obj.equipment.slot === slot && obj.equipment.equipped) {
+            return obj.equipment;
+        }
+    }
+    return null;
+}
+
+function getAllEquipped(obj) {
+    if (obj === player) {
+        return inventory.filter(item => item.equipment && item.equipment.equipped).map(item => item.equipment);
+    } else {
+        return [];
+    }
 }
 
 function isBlocked(x, y) {
@@ -381,7 +456,9 @@ function placeObjects(room) {
         'heal': 35,  // healing potion always shows up, even if all other items have 0 chance
         'lightning': fromDungeonLevel([[25, 4]]),
         'fireball': fromDungeonLevel([[25, 6]]),
-        'confuse': fromDungeonLevel([[10, 2]])
+        'confuse': fromDungeonLevel([[10, 2]]),
+        'sword': fromDungeonLevel([[5, 4]]),
+        'shield': fromDungeonLevel([[15, 8]])
     };
 
     // Choose random number of monsters
@@ -433,6 +510,20 @@ function placeObjects(room) {
         } else if (choice === 'confuse') {
             // Create a confuse scroll
             item = new Entity(x, y, '#', 'scroll of confusion', wglt.Colors.YELLOW, false, { item: new Item(castConfuse) });
+
+        } else if (choice === 'sword') {
+            // Create a sword
+            item = new Entity(x, y, '/', 'sword', wglt.Colors.LIGHT_CYAN, false, {
+                equipment: new Equipment('right hand', 3, 0, 0),
+                item: new Item()
+            });
+
+        } else if (choice === 'shield') {
+            // Create a shield
+            item = new Entity(x, y, '[', 'shield', wglt.Colors.BROWN, false, {
+                equipment: new Equipment('left hand', 3, 0, 0),
+                item: new Item()
+            });
         }
 
         entities.push(item);
@@ -583,7 +674,13 @@ function handleKeys() {
         if (inventory.length === 0) {
             gui.add(new wglt.MessageDialog(term, 'ALERT', 'Inventory is empty'));
         } else {
-            const options = inventory.map(item => item.name);
+            const options = inventory.map(item => {
+                if (item.equipment && item.equipment.equipped) {
+                    return item.name + ' (on ' + item.equipment.slot + ')';
+                } else {
+                    return item.name;
+                }
+            });
             gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));
         }
     }
@@ -626,12 +723,12 @@ function checkLevelUp() {
 
         gui.add(new wglt.SelectDialog(term, 'LEVEL UP', options, (choice) => {
             if (choice === 0) {
-                player.fighter.maxHp += 20;
+                player.fighter.baseMaxHp += 20;
                 player.fighter.hp += 20;
             } else if (choice === 1) {
-                player.fighter.power += 1;
+                player.fighter.basePower += 1;
             } else if (choice === 2) {
-                player.fighter.defense += 1;
+                player.fighter.baseDefense += 1;
             }
         }));
     }
@@ -850,6 +947,15 @@ function newGame() {
     fovRecompute = true;
     inventory = [];
     addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+
+    // Initial equipment: a dagger
+    const dagger = new Entity(0, 0, '-', 'dagger', wglt.Colors.LIGHT_CYAN, false, {
+        equipment: new Equipment('right hand', 2, 0, 0),
+        item: new Item()
+    });
+    inventory.push(dagger);
+    dagger.equipment.equip();
+
     appState = 'game';
 }
 

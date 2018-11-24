@@ -63,9 +63,6 @@ function Entity(x, y, char, name, color, blocks, components) {
     this.name = name;
     this.color = color;
     this.blocks = !!blocks;
-    this.fighter = null;
-    this.ai = null;
-    this.item = null;
 
     if (components) {
         for (var property in components) {
@@ -182,10 +179,10 @@ function Item(useFunction) {
     };
 
     this.use = function () {
-        if (!this.useFunction) {
-            addMessage('The ' + this.owner.name + ' cannot be used.');
-        } else {
+        if (this.useFunction) {
             this.useFunction(this);
+        } else {
+            addMessage('The ' + this.owner.name + ' cannot be used.');
         }
     };
 
