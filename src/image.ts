@@ -17,7 +17,7 @@ const PATTERNS = [
   {charCode: Chars.BLOCK_CHECKER, active: [1, 0, 0, 1]},
 ];
 
-export function loadImage(url: string, callback: Function) {
+export function loadImage(url: string, callback: (result: Console) => void) {
   const img = new Image();
   img.onload = () => {
     const w = img.width;
@@ -38,7 +38,7 @@ export function loadImage(url: string, callback: Function) {
   img.src = url;
 }
 
-export function loadImage2x(url: string, callback: Function) {
+export function loadImage2x(url: string, callback: (result: Console) => void) {
   const img = new Image();
   img.onload = () => {
     const w = img.width;

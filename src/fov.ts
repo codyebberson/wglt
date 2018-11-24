@@ -42,7 +42,9 @@ export class FovMap {
    * @param height
    * @param blockedFunc
    */
-  constructor(width: number, height: number, blockedFunc?: Function) {
+  constructor(
+      width: number, height: number,
+      blockedFunc?: (x: number, y: number) => boolean) {
     this.width = width;
     this.height = height;
 

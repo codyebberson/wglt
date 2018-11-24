@@ -26,7 +26,7 @@ export declare class FovMap {
      * @param height
      * @param blockedFunc
      */
-    constructor(width: number, height: number, blockedFunc?: Function);
+    constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean);
     getCell(x: number, y: number): FovCell;
     setBlocked(x: number, y: number, blocked: boolean): void;
     isVisible(x: number, y: number): boolean;

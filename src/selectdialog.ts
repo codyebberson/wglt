@@ -10,7 +10,7 @@ export class SelectDialog extends Dialog {
 
   constructor(
       terminal: Terminal, title: string, options: string[],
-      callback: Function) {
+      callback: (choice: number) => void) {
     let width = title.length + 6;
     for (let i = 0; i < options.length; i++) {
       width = Math.max(width, options[i].length + 9);
