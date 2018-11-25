@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1543171838382" clover="3.2.0">
+  <project timestamp="1543171838382" name="All files">
+    <metrics statements="26" coveredstatements="25" conditionals="6" coveredconditionals="4" methods="7" coveredmethods="7" elements="39" coveredelements="36" complexity="0" loc="26" ncloc="26" packages="1" files="1" classes="1">
+      <file name="rng.ts" path="C:\Users\cody\dev\wglt\src\rng.ts">
+        <metrics statements="26" coveredstatements="25" conditionals="6" coveredconditionals="4" methods="7" coveredmethods="7"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="21" count="5" type="stmt"/>
+        <line num="22" count="5" type="stmt"/>
+        <line num="23" count="5" type="stmt"/>
+        <line num="24" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="28" count="3002" type="stmt"/>
+        <line num="29" count="3002" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="48" count="3001" type="stmt"/>
+        <line num="49" count="3001" type="stmt"/>
+        <line num="50" count="3001" type="stmt"/>
+        <line num="54" count="3000" type="stmt"/>
+        <line num="55" count="3000" type="stmt"/>
+        <line num="56" count="3000" type="stmt"/>
+        <line num="58" count="3000" type="stmt"/>
+        <line num="59" count="4037" type="stmt"/>
+        <line num="60" count="4037" type="cond" truecount="2" falsecount="0"/>
+        <line num="61" count="3000" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="69" count="1000" type="stmt"/>
+        <line num="70" count="1000" type="stmt"/>
+        <line num="72" count="1000" type="stmt"/>
+        <line num="73" count="2000" type="cond" truecount="1" falsecount="1"/>
+        <line num="74" count="2000" type="stmt"/>
+        <line num="75" count="2000" type="stmt"/>
+        <line num="79" count="1000" type="stmt"/>
+      </file>
+    </metrics>
+  </project>
+</coverage>
