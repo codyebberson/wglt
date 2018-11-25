@@ -5,7 +5,7 @@ const SCREEN_HEIGHT = 45;
 const RADIUS = 30;
 const SIZE = 1 + 2 * RADIUS;
 const CENTER = RADIUS;
-const BRIGHTNESS = 0.5;
+const BRIGHTNESS = 0.35;
 
 function createLightConsole(h, s, v) {
     const c = new wglt.Console(SIZE, SIZE);
@@ -14,8 +14,7 @@ function createLightConsole(h, s, v) {
         for (let x = 0; x < SIZE; x++) {
             const distance = Math.hypot(x - CENTER, y - CENTER);
             const inverseDistance = Math.max(0.0, Math.min(1.0, 1.0 - distance / RADIUS));
-            const inverseDistanceSquared = inverseDistance * inverseDistance;
-            const alpha = BRIGHTNESS * inverseDistanceSquared * inverseDistanceSquared;
+            const alpha = BRIGHTNESS * inverseDistance * inverseDistance;
             const bg = wglt.fromHsv(h, s, v, alpha);
             c.drawChar(x, y, 0, 0, bg);
         }
@@ -32,8 +31,6 @@ const term = new wglt.Terminal(
     { requestFullscreen: true });
 
 const rng = new wglt.RNG();
-
-const con = createLightConsole(0.5, 0.0, 1.0);
 
 const lights = [{
     x: 10,
