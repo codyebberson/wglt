@@ -532,10 +532,10 @@ function handleKeys() {
     }
     if (term.isKeyPressed(wglt.Keys.VK_I)) {
         if (inventory.length === 0) {
-            gui.add(new wglt.MessageDialog(term, 'ALERT', 'Inventory is empty'));
+            gui.add(new wglt.MessageDialog('ALERT', 'Inventory is empty'));
         } else {
             const options = inventory.map(item => item.name);
-            gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));
+            gui.add(new wglt.SelectDialog('INVENTORY', options, useInventory));
         }
     }
 }

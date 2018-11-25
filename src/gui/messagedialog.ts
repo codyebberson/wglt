@@ -1,37 +1,35 @@
 
-import {Dialog} from './dialog';
+import {Console} from '../console';
 import {Keys} from '../keys';
+import {Point} from '../point';
 import {Rect} from '../rect';
 import {Terminal} from '../terminal';
+
+import {Dialog} from './dialog';
 
 export class MessageDialog extends Dialog {
   readonly lines: string[];
 
-  constructor(terminal: Terminal, title: string, message: string) {
+  constructor(title: string, message: string) {
     const lines = message.split('\n');
-    let width = title.length + 6;
+    let width = title.length;
     for (let i = 0; i < lines.length; i++) {
-      width = Math.max(width, lines[i].length + 6);
+      width = Math.max(width, lines[i].length);
     }
 
-    const height = 4 + lines.length;
-    const x = ((terminal.width - width) / 2) | 0;
-    const y = ((terminal.height - height) / 2) | 0;
-    const rect = new Rect(x, y, width, height);
-    super(terminal, rect, title);
+    const height = lines.length;
+    const rect = new Rect(0, 0, width, height);
+    super(rect, title);
     this.lines = lines;
   }
 
-  drawContents() {
-    const centerX = this.rect.x + (this.rect.width / 2) | 0;
-    const startY = this.rect.y + 2;
-
+  drawContents(console: Console, offset: Point) {
     for (let i = 0; i < this.lines.length; i++) {
-      this.terminal.drawCenteredString(centerX, startY + i, this.lines[i]);
+      console.drawString(offset.x, offset.y + i, this.lines[i]);
     }
   }
 
-  handleInput() {
-    return this.terminal.isKeyPressed(Keys.VK_ESCAPE);
+  handleInput(terminal: Terminal, offset: Point) {
+    return terminal.isKeyPressed(Keys.VK_ESCAPE);
   }
 }

@@ -536,10 +536,10 @@ function handleKeys() {
     }
     if (term.isKeyPressed(wglt.Keys.VK_I)) {
         if (inventory.length === 0) {
-            gui.add(new wglt.MessageDialog(term, 'ALERT', 'Inventory is empty'));
+            gui.add(new wglt.MessageDialog('ALERT', 'Inventory is empty'));
         } else {
             const options = inventory.map(item => item.name);
-            gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));
+            gui.add(new wglt.SelectDialog('INVENTORY', options, useInventory));
         }
     }
 }
@@ -765,7 +765,7 @@ function playGame() {
 function mainMenu() {
     if (gui.dialogs.length === 0) {
         const options = ['Play a new game', 'Continue last game'];
-        gui.add(new wglt.SelectDialog(term, 'MAIN MENU', options, (choice) => {
+        gui.add(new wglt.SelectDialog('MAIN MENU', options, (choice) => {
             if (choice === 0) {
                 newGame();
             } else if (choice === 1) {

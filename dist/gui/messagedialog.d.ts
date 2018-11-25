@@ -1,8 +1,10 @@
-import { Dialog } from './dialog';
+import { Console } from '../console';
+import { Point } from '../point';
 import { Terminal } from '../terminal';
+import { Dialog } from './dialog';
 export declare class MessageDialog extends Dialog {
     readonly lines: string[];
-    constructor(terminal: Terminal, title: string, message: string);
-    drawContents(): void;
-    handleInput(): boolean;
+    constructor(title: string, message: string);
+    drawContents(console: Console, offset: Point): void;
+    handleInput(terminal: Terminal, offset: Point): boolean;
 }

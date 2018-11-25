@@ -22,6 +22,6 @@
 # Exclude output from diff
 package-lock.json -diff
 package-lock.json linguist-generated=true
-dist/* -diff
-dist/* linguist-generated=true
+dist/**/* -diff
+dist/**/* linguist-generated=true
 

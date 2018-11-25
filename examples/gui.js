@@ -10,10 +10,6 @@ const options = [
     'Red Stapler'
 ];
 
-function handleOption(option) {
-    gui.add(new wglt.MessageDialog(term, 'ALERT', 'You chose: ' + option));
-}
-
 let x = 10;
 let y = 10;
 
@@ -32,10 +28,12 @@ term.update = function () {
             y++;
         }
         if (term.isKeyPressed(wglt.Keys.VK_H)) {
-            gui.add(new wglt.MessageDialog(term, 'ALERT', 'Hello World'));
+            gui.add(new wglt.MessageDialog('ALERT', 'Hello World'));
         }
         if (term.isKeyPressed(wglt.Keys.VK_I)) {
-            gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, handleOption));
+            gui.add(new wglt.SelectDialog('INVENTORY', options, (choice) => {
+                gui.add(new wglt.MessageDialog('ALERT', 'You chose: ' + options[choice]));
+            }));
         }
     }
 

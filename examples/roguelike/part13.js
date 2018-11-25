@@ -672,7 +672,7 @@ function handleKeys() {
     }
     if (term.isKeyPressed(wglt.Keys.VK_I)) {
         if (inventory.length === 0) {
-            gui.add(new wglt.MessageDialog(term, 'ALERT', 'Inventory is empty'));
+            gui.add(new wglt.MessageDialog('ALERT', 'Inventory is empty'));
         } else {
             const options = inventory.map(item => {
                 if (item.equipment && item.equipment.equipped) {
@@ -681,12 +681,12 @@ function handleKeys() {
                     return item.name;
                 }
             });
-            gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));
+            gui.add(new wglt.SelectDialog('INVENTORY', options, useInventory));
         }
     }
     if (term.isKeyPressed(wglt.Keys.VK_C)) {
         const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
-        gui.add(new wglt.MessageDialog(term, 'CHARACTER',
+        gui.add(new wglt.MessageDialog('CHARACTER',
             'Level: ' + player.level +
             '\nExperience: ' + player.fighter.xp +
             '\nExperience to level up: ' + levelUpXp +
@@ -721,7 +721,7 @@ function checkLevelUp() {
             'Agility (+1 defense, from ' + player.fighter.defense + ')'
         ];
 
-        gui.add(new wglt.SelectDialog(term, 'LEVEL UP', options, (choice) => {
+        gui.add(new wglt.SelectDialog('LEVEL UP', options, (choice) => {
             if (choice === 0) {
                 player.fighter.baseMaxHp += 20;
                 player.fighter.hp += 20;
@@ -979,7 +979,7 @@ function playGame() {
 function mainMenu() {
     if (gui.dialogs.length === 0) {
         const options = ['Play a new game', 'Continue last game'];
-        gui.add(new wglt.SelectDialog(term, 'MAIN MENU', options, (choice) => {
+        gui.add(new wglt.SelectDialog('MAIN MENU', options, (choice) => {
             if (choice === 0) {
                 newGame();
             } else if (choice === 1) {

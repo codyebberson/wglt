@@ -1,18 +1,23 @@
 
+import {DefaultDialogRenderer} from './gui/defaultdialogrenderer';
 import {Dialog} from './gui/dialog';
+import {DialogRenderer} from './gui/dialogrenderer';
+import {DialogState} from './gui/dialogstate';
 import {Terminal} from './terminal';
 
 export class GUI {
   private readonly terminal: Terminal;
-  dialogs: Dialog[];
+  private readonly renderer: DialogRenderer;
+  dialogs: DialogState[];
 
-  constructor(terminal: Terminal) {
+  constructor(terminal: Terminal, renderer?: DialogRenderer) {
     this.terminal = terminal;
+    this.renderer = renderer || new DefaultDialogRenderer();
     this.dialogs = [];
   }
 
   add(dialog: Dialog) {
-    this.dialogs.push(dialog);
+    this.dialogs.push(this.renderer.getState(this.terminal, dialog));
   }
 
   handleInput(): boolean {
@@ -20,9 +25,11 @@ export class GUI {
       return false;
     }
 
-    const active = this.dialogs[this.dialogs.length - 1];
-    if (active.handleInput()) {
-      this.dialogs.splice(this.dialogs.indexOf(active), 1);
+    const activeIndex = this.dialogs.length - 1;
+    const activeState = this.dialogs[this.dialogs.length - 1];
+    const activeDialog = activeState.dialog;
+    if (activeDialog.handleInput(this.terminal, activeState.contentsOffset)) {
+      this.dialogs.splice(activeIndex, 1);
     }
 
     return true;
@@ -30,7 +37,7 @@ export class GUI {
 
   draw() {
     for (let i = 0; i < this.dialogs.length; i++) {
-      this.dialogs[i].draw(this.terminal);
+      this.renderer.draw(this.terminal, this.dialogs[i]);
     }
   }
 }

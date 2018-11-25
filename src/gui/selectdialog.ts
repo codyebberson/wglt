@@ -1,44 +1,44 @@
 
-import {Dialog} from './dialog';
+import {Console} from '../console';
 import {Keys} from '../keys';
+import {Point} from '../point';
 import {Rect} from '../rect';
 import {Terminal} from '../terminal';
+
+import {Dialog} from './dialog';
 
 export class SelectDialog extends Dialog {
   options: string[];
   callback: Function;
 
   constructor(
-      terminal: Terminal, title: string, options: string[],
-      callback: (choice: number) => void) {
-    let width = title.length + 6;
+      title: string, options: string[], callback: (choice: number) => void) {
+    let width = title.length;
     for (let i = 0; i < options.length; i++) {
-      width = Math.max(width, options[i].length + 9);
+      width = Math.max(width, options[i].length + 4);
     }
 
-    const height = 4 + options.length;
-    const x = ((terminal.width - width) / 2) | 0;
-    const y = ((terminal.height - height) / 2) | 0;
-    const rect = new Rect(x, y, width, height);
-    super(terminal, rect, title);
+    const height = options.length;
+    const rect = new Rect(0, 0, width, height);
+    super(rect, title);
     this.options = options;
     this.callback = callback;
   }
 
-  drawContents() {
+  drawContents(console: Console, offset: Point) {
     for (let i = 0; i < this.options.length; i++) {
       const str = String.fromCharCode(65 + i) + ' - ' + this.options[i];
-      this.terminal.drawString(this.rect.x + 2, this.rect.y + 2 + i, str);
+      console.drawString(offset.x, offset.y + i, str);
     }
   }
 
-  handleInput() {
+  handleInput(terminal: Terminal, offset: Point) {
     for (let i = 0; i < this.options.length; i++) {
-      if (this.terminal.isKeyPressed(Keys.VK_A + i)) {
+      if (terminal.isKeyPressed(Keys.VK_A + i)) {
         this.callback(i);
         return true;
       }
     }
-    return this.terminal.isKeyPressed(Keys.VK_ESCAPE);
+    return terminal.isKeyPressed(Keys.VK_ESCAPE);
   }
 }
