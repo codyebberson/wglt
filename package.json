@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "source": "src/index.ts",
   "scripts": {
-    "dev": "microbundle watch",
-    "build": "microbundle",
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
@@ -18,9 +18,11 @@
   "devDependencies": {
     "gts": "^0.8.0",
     "http-serve": "^1.0.1",
-    "microbundle": "^0.7.0",
+    "ts-loader": "^5.3.0",
     "typedoc": "^0.13.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.1.6",
+    "webpack": "^4.26.0",
+    "webpack-cli": "^3.1.2"
   },
   "repository": {
     "type": "git",

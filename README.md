@@ -3,7 +3,7 @@
 * Fast, lightweight, terminal emulator using WebGL
 * 100% TypeScript
 * MIT license
-* ~20kb minified JS, ~10kb gzipped
+* ~30kb minified JS, ~10kb gzipped
 * No external dependencies
 
 ## What is it?
@@ -31,7 +31,7 @@ import * as wglt from 'wglt';
 Or, simply use the prebuilt:
 
 ```html
-<script src="https://unpkg.com/wglt@0.0.2/dist/index.umd.js"></script>
+<script src="https://unpkg.com/wglt@0.0.4/dist/index.js"></script>
 ```
 
 Use it:

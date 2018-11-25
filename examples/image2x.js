@@ -6,7 +6,9 @@ let x = 10;
 let y = 10;
 
 let img = null;
-wglt.loadImage2x('starry2x.png', (result) => {img = result});
+wglt.loadImage2x('starry2x.png', (result) => {
+    img = result
+});
 
 term.update = function () {
     if (term.isKeyDown(wglt.Keys.VK_UP)) {

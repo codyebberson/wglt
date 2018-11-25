@@ -15,12 +15,12 @@
         <li>Fast, lightweight, terminal emulator using WebGL</li>
         <li>100% TypeScript</li>
         <li>MIT license</li>
-        <li>~20kb minified JS, ~10kb gzipped</li>
+        <li>~30kb minified JS, ~10kb gzipped</li>
         <li>No external dependencies</li>
     </ul>
 
     <canvas></canvas>
-    <script src="dist/index.umd.js"></script>
+    <script src="dist/index.js"></script>
     <script src="examples/hello.js"></script>
 
     <h2>What is it?</h2>
@@ -34,7 +34,7 @@
     <p>Import library:</p>
     <pre>import * as wglt from 'wglt';</pre>
     <p>Or, simply use the prebuilt:</p>
-    <pre>&lt;script src="https://unpkg.com/wglt@0.0.2/dist/index.umd.js"&gt;&lt;/script&gt;</pre>
+    <pre>&lt;script src="https://unpkg.com/wglt@0.0.4/dist/index.js"&gt;&lt;/script&gt;</pre>
     <p>Use it:</p>
     <pre>const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
 term.fillRect(0, 0, 80, 50, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
