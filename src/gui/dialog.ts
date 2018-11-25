@@ -1,7 +1,7 @@
 
-import {Colors} from './colors';
-import {Rect} from './rect';
-import {Terminal} from './terminal';
+import {Colors} from '../colors';
+import {Rect} from '../rect';
+import {Terminal} from '../terminal';
 
 export abstract class Dialog {
   readonly terminal: Terminal;

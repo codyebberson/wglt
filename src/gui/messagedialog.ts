@@ -1,8 +1,8 @@
 
 import {Dialog} from './dialog';
-import {Keys} from './keys';
-import {Rect} from './rect';
-import {Terminal} from './terminal';
+import {Keys} from '../keys';
+import {Rect} from '../rect';
+import {Terminal} from '../terminal';
 
 export class MessageDialog extends Dialog {
   readonly lines: string[];

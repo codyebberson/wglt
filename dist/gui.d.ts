@@ -1,4 +1,4 @@
-import { Dialog } from './dialog';
+import { Dialog } from './gui/dialog';
 import { Terminal } from './terminal';
 export declare class GUI {
     private readonly terminal;

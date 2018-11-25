@@ -1,5 +1,5 @@
 
-import {Dialog} from './dialog';
+import {Dialog} from './gui/dialog';
 import {Terminal} from './terminal';
 
 export class GUI {
