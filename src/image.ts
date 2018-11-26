@@ -6,15 +6,11 @@ import {Console} from './console';
 
 /**
  * All available 2x2 patterns for 2x image loading.
+ * Note: The strict IBM CGA font only has halves, not quadrants.
  */
 const PATTERNS = [
-  {charCode: Chars.BLOCK_TOP_LEFT, active: [1, 0, 0, 0]},
-  {charCode: Chars.BLOCK_TOP_RIGHT, active: [0, 1, 0, 0]},
   {charCode: Chars.BLOCK_TOP_HALF, active: [1, 1, 0, 0]},
-  {charCode: Chars.BLOCK_BOTTOM_LEFT, active: [0, 0, 1, 0]},
-  {charCode: Chars.BLOCK_BOTTOM_RIGHT, active: [0, 0, 0, 1]},
   {charCode: Chars.BLOCK_RIGHT_HALF, active: [0, 1, 0, 1]},
-  {charCode: Chars.BLOCK_CHECKER, active: [1, 0, 0, 1]},
 ];
 
 export function loadImage(url: string, callback: (result: Console) => void) {
