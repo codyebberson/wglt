@@ -40,6 +40,13 @@ export class Console {
     return this.grid[y][x];
   }
 
+  getCharCode(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
+      return undefined;
+    }
+    return this.grid[y][x].charCode;
+  }
+
   drawChar(
       x: number, y: number, c: number|string|Cell, fg?: Color, bg?: Color) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {

@@ -8,6 +8,7 @@ export declare class Console {
     constructor(width: number, height: number);
     clear(): void;
     getCell(x: number, y: number): Cell | undefined;
+    getCharCode(x: number, y: number): number | undefined;
     drawChar(x: number, y: number, c: number | string | Cell, fg?: Color, bg?: Color): void;
     drawString(x: number, y: number, str: string, fg?: Color, bg?: Color): void;
     drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color): void;

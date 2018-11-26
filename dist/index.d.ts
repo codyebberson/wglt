@@ -1,4 +1,5 @@
 export * from './blendmode';
+export * from './boxutils';
 export * from './cell';
 export * from './chars';
 export * from './color';
