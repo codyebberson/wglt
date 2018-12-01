@@ -32,11 +32,8 @@ export declare class Chars {
     static readonly BOX_DOUBLE_VERTICAL_AND_DOUBLE_HORIZONTAL = 206;
     static readonly BOX_SINGLE_UP_AND_SINGLE_LEFT: number;
     static readonly BOX_SINGLE_DOWN_AND_SINGLE_RIGHT: number;
-    static readonly BLOCK_TOP_LEFT: number;
-    static readonly BLOCK_TOP_RIGHT: number;
-    static readonly BLOCK_TOP_HALF: number;
-    static readonly BLOCK_BOTTOM_LEFT: number;
-    static readonly BLOCK_BOTTOM_RIGHT: number;
+    static readonly BLOCK_BOTTOM_HALF: number;
+    static readonly BLOCK_LEFT_HALF: number;
     static readonly BLOCK_RIGHT_HALF: number;
-    static readonly BLOCK_CHECKER: number;
+    static readonly BLOCK_TOP_HALF: number;
 }
