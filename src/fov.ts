@@ -84,7 +84,7 @@ export class FovMap {
   }
 
   isVisible(x: number, y: number) {
-    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+    if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
       return false;
     }
     return this.grid[y][x].visible;
@@ -253,13 +253,6 @@ export class FovMap {
   }
 
   computeFov(originX: number, originY: number, radius: number) {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        this.grid[y][x].visible = false;
-      }
-    }
-
-    this.grid[originY][originX].visible = true;
     this.originX = originX;
     this.originY = originY;
     this.radius = radius;
@@ -267,6 +260,14 @@ export class FovMap {
     this.minY = Math.max(0, originY - radius);
     this.maxX = Math.min(this.width - 1, originX + radius);
     this.maxY = Math.min(this.height - 1, originY + radius);
+
+    for (let y = this.minY; y <= this.maxY; y++) {
+      for (let x = this.minX; x <= this.maxX; x++) {
+        this.grid[y][x].visible = false;
+      }
+    }
+
+    this.grid[originY][originX].visible = true;
 
     this.computeOctantY(1, 1);
     this.computeOctantX(1, 1);
