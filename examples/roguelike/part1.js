@@ -1,37 +1,24 @@
 
-// Actual size of the window
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
+const app = new wglt.App({
+    canvas: document.querySelector('canvas'),
+    imageUrl: '../graphics.png',
+    width: 400,
+    height: 224
+});
 
-function handleKeys() {
-    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
-        y--;
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
-        x--;
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
-        x++;
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
-        y++;
-    }
-}
+const game = new wglt.Game(app, {
+    tileWidth: 16,
+    tileHeight: 16
+});
 
-function renderAll() {
-    term.clear();
-    term.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE)
-    term.drawString(1, 1, 'Hello world!');
-    term.drawString(1, 3, 'Use arrow keys to move');
-    term.drawString(x, y, '@');
-}
+const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
+const player = new wglt.Entity(game, 30, 20, 'Player', sprite, true);
+game.player = player;
+game.entities.push(player);
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 1, 100, 100));
+messageLog.add('Hello world!');
+messageLog.add('Use arrow keys to move');
+game.gui.add(messageLog);
 
-let x = 10;
-let y = 10;
-
-term.update = function () {
-    handleKeys();
-    renderAll();
-};
+app.state = game;

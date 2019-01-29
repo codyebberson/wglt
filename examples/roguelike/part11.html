@@ -12,204 +12,187 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_11">Part 11: Dungeon levels and character progression</a></p>
 	<p>Let the player venture deeper into the dungeon and grow stronger, including experience gain, levels and raising stats!</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part10.js	2018-11-23 18:01:15.547298300 -0800</div>
-<div class="c2">+++ part11.js	2018-11-23 18:01:23.898355900 -0800</div>
-<div class="c1">@@ -24,14 +24,18 @@</div>
-<div class="c0"> const TORCH_RADIUS = 10;</div>
-<div class="c0"> </div>
-<div class="c0"> // Spell values</div>
-<div class="c3">-const HEAL_AMOUNT = 4;</div>
-<div class="c3">-const LIGHTNING_DAMAGE = 20;</div>
-<div class="c2">+const HEAL_AMOUNT = 40;</div>
-<div class="c2">+const LIGHTNING_DAMAGE = 40;</div>
-<div class="c0"> const LIGHTNING_RANGE = 5;</div>
-<div class="c0"> const CONFUSE_RANGE = 8;</div>
-<div class="c0"> const CONFUSE_NUM_TURNS = 10;</div>
-<div class="c0"> const FIREBALL_RANGE = 10;</div>
-<div class="c0"> const FIREBALL_RADIUS = 3;</div>
-<div class="c3">-const FIREBALL_DAMAGE = 12;</div>
-<div class="c2">+const FIREBALL_DAMAGE = 25;</div>
-<div class="c2">+</div>
-<div class="c2">+// Experience and level-ups</div>
-<div class="c2">+const LEVEL_UP_BASE = 200;</div>
-<div class="c2">+const LEVEL_UP_FACTOR = 150;</div>
-<div class="c0"> </div>
-<div class="c0"> const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);</div>
-<div class="c0"> const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);</div>
-<div class="c1">@@ -119,12 +123,13 @@</div>
-<div class="c0">     };</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c3">-function Fighter(hp, defense, power, deathFunction) {</div>
-<div class="c2">+function Fighter(hp, defense, power, xp, deathFunction) {</div>
-<div class="c0">     this.owner = null;</div>
-<div class="c0">     this.maxHp = hp;</div>
-<div class="c0">     this.hp = hp;</div>
-<div class="c0">     this.defense = defense;</div>
-<div class="c0">     this.power = power;</div>
-<div class="c2">+    this.xp = xp;</div>
-<div class="c0">     this.deathFunction = deathFunction || null;</div>
-<div class="c0"> </div>
-<div class="c0">     this.attack = function (target) {</div>
-<div class="c1">@@ -147,6 +152,10 @@</div>
-<div class="c0">             if (this.deathFunction) {</div>
-<div class="c0">                 this.deathFunction(this.owner);</div>
-<div class="c0">             }</div>
-<div class="c2">+            if (this.owner !== player) {</div>
-<div class="c2">+                player.fighter.xp += this.xp;</div>
-<div class="c2">+                checkLevelUp();</div>
-<div class="c2">+            }</div>
-<div class="c0">         }</div>
-<div class="c0">     };</div>
-<div class="c0"> </div>
-<div class="c1">@@ -332,6 +341,12 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part10.js	2019-02-16 17:52:56.000000000 -0800</div>
+<div class="c2">+++ part11.js	2019-02-17 17:09:04.000000000 -0800</div>
+<div class="c1">@@ -53,6 +53,9 @@</div>
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
+<div class="c2">+    // Reset field-of-view</div>
+<div class="c2">+    map.resetFov();</div>
+<div class="c2">+</div>
+<div class="c0">     const rooms = [];</div>
+<div class="c0"> </div>
+<div class="c0">     for (let r = 0; r &lt; MAX_ROOMS; r++) {</div>
+<div class="c1">@@ -93,7 +96,7 @@</div>
+<div class="c0">                 // TEMP: Give the player a fireball</div>
+<div class="c0">                 const item = new wglt.Item(game, player.x, player.y + 1, &#x27;fireball&#x27;, new wglt.Sprite(144, 16, 16, 16, 1));</div>
+<div class="c0">                 item.onPickup = pickupCallback;</div>
+<div class="c3">-                item.onUse = castFireball;</div>
+<div class="c2">+                item.onUse = castConfuse;</div>
+<div class="c0">                 game.items.push(item);</div>
+<div class="c0"> </div>
+<div class="c0">             } else {</div>
+<div class="c1">@@ -122,6 +125,12 @@</div>
+<div class="c0">             rooms.push(newRoom);</div>
+<div class="c0">         }</div>
+<div class="c0">     }</div>
+<div class="c2">+</div>
 <div class="c2">+    // Create stairs at the center of the last room</div>
 <div class="c2">+    const stairsLoc = rooms[rooms.length - 1].getCenter();</div>
-<div class="c2">+    stairs = new Entity(stairsLoc.x, stairsLoc.y, '&lt;', 'stairs', wglt.Colors.WHITE);</div>
-<div class="c2">+    entities.push(stairs);</div>
-<div class="c2">+    stairs.sendToBack();</div>
+<div class="c2">+    stairs = new wglt.Entity(game, stairsLoc.x, stairsLoc.y, &#x27;stairs&#x27;, new wglt.Sprite(32, 32, 16, 16, 1), true);</div>
+<div class="c2">+    game.entities.push(stairs);</div>
+<div class="c2">+    // stairs.sendToBack();</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c0"> function placeObjects(room) {</div>
+<div class="c1">@@ -145,6 +154,7 @@</div>
+<div class="c0">         }</div>
+<div class="c0"> </div>
+<div class="c0">         monster.health = 20;</div>
+<div class="c2">+        monster.canAttack = true;</div>
+<div class="c0">         monster.ai = new wglt.BasicMonster(monster);</div>
+<div class="c0">         monster.onAttack = attackCallback;</div>
+<div class="c0">         monster.onDeath = monsterDeath;</div>
+<div class="c1">@@ -205,7 +215,7 @@</div>
+<div class="c0">     let result = null;</div>
+<div class="c0">     for (let i = 0; i &lt; game.entities.length; i++) {</div>
+<div class="c0">         const entity = game.entities[i];</div>
+<div class="c3">-        if (entity !== app.player) {</div>
+<div class="c2">+        if (entity !== player) {</div>
+<div class="c0">             const dist = entity.distance(x, y);</div>
+<div class="c0">             if (dist &lt; minDist) {</div>
+<div class="c0">                 minDist = dist;</div>
+<div class="c1">@@ -222,13 +232,13 @@</div>
+<div class="c0"> </div>
+<div class="c0"> function castHeal(item, entity) {</div>
+<div class="c0">     // Heal the player</div>
+<div class="c3">-    if (entity.health === entity.maxHealth) {</div>
+<div class="c2">+    if (player.health === player.maxHealth) {</div>
+<div class="c0">         messageLog.add(&#x27;You are already at full health.&#x27;, wglt.Colors.DARK_RED);</div>
+<div class="c0">         return;</div>
+<div class="c0">     }</div>
+<div class="c0"> </div>
+<div class="c0">     messageLog.add(&#x27;Your wounds start to feel better!&#x27;, wglt.Colors.LIGHT_MAGENTA);</div>
+<div class="c3">-    entity.health += HEAL_AMOUNT;</div>
+<div class="c2">+    player.health += HEAL_AMOUNT;</div>
+<div class="c0">     item.remove();</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c1">@@ -278,7 +288,7 @@</div>
+<div class="c0"> </div>
+<div class="c0">         messageLog.add(&#x27;The fireball explodes, burning everything within &#x27; + FIREBALL_RADIUS + &#x27; tiles!&#x27;, wglt.Colors.ORANGE);</div>
+<div class="c0"> </div>
+<div class="c3">-        for (let i = 0; i &lt; game.entities.length; i++) {</div>
+<div class="c2">+        for (let i = game.entities.length - 1; i &gt;= 0; i--) {</div>
+<div class="c0">             const entity = game.entities[i];</div>
+<div class="c0">             if (entity.distance(x, y) &lt;= FIREBALL_RADIUS) {</div>
+<div class="c0">                 messageLog.add(&#x27;The &#x27; + entity.name + &#x27; gets burned for &#x27; + FIREBALL_DAMAGE + &#x27; hit points.&#x27;, wglt.Colors.ORANGE);</div>
+<div class="c1">@@ -294,7 +304,7 @@</div>
+<div class="c0"> function castConfuse(item) {</div>
+<div class="c0">     // Ask the player for a target to confuse</div>
+<div class="c0">     messageLog.add(&#x27;Left-click to cast confuse, or right-click to cancel.&#x27;, wglt.Colors.LIGHT_CYAN);</div>
+<div class="c3">-    app.startTargeting((x, y) =&gt; {</div>
+<div class="c2">+    game.startTargeting((x, y) =&gt; {</div>
+<div class="c0">         if (player.distance(x, y) &gt; CONFUSE_RANGE) {</div>
+<div class="c0">             messageLog.add(&#x27;Target out of range.&#x27;, wglt.Colors.LIGHT_GRAY);</div>
+<div class="c0">             return;</div>
+<div class="c1">@@ -306,8 +316,8 @@</div>
+<div class="c0">             return;</div>
+<div class="c0">         }</div>
+<div class="c0"> </div>
+<div class="c3">-        monster.ai = new ConfusedMonster(monster.ai);</div>
+<div class="c3">-        monster.ai.owner = monster;</div>
+<div class="c2">+        monster.ai = new wglt.ConfusedMonster(monster);</div>
+<div class="c2">+        // monster.ai.owner = monster;</div>
+<div class="c0">         messageLog.add(&#x27;The eyes of the &#x27; + monster.name + &#x27; look vacant, as he stumbles around!&#x27;, wglt.Colors.LIGHT_GREEN);</div>
+<div class="c0">         item.remove();</div>
+<div class="c0">     });</div>
+<div class="c1">@@ -333,6 +343,32 @@</div>
+<div class="c0">     monster.ai = null;</div>
+<div class="c0">     monster.name = &#x27;remains of &#x27; + monster.name;</div>
+<div class="c0">     monster.sendToBack();</div>
 <div class="c2">+</div>
-<div class="c0">     return map;</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c1">@@ -349,12 +364,12 @@</div>
-<div class="c0">         // 80% chance of getting an orc</div>
-<div class="c0">         if (rng.nextRange(0, 100) &lt; 80) {</div>
-<div class="c0">             // Create an orc</div>
-<div class="c3">-            const fighter = new Fighter(10, 0, 3, monsterDeath);</div>
-<div class="c2">+            const fighter = new Fighter(10, 0, 3, 35, monsterDeath);</div>
-<div class="c0">             const ai = new BasicMonster();</div>
-<div class="c0">             monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });</div>
-<div class="c0">         } else {</div>
-<div class="c0">             // Create a troll</div>
-<div class="c3">-            const fighter = new Fighter(16, 1, 4, monsterDeath);</div>
-<div class="c2">+            const fighter = new Fighter(16, 1, 4, 100, monsterDeath);</div>
-<div class="c0">             const ai = new BasicMonster();</div>
-<div class="c0">             monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });</div>
-<div class="c0">         }</div>
-<div class="c1">@@ -542,6 +557,21 @@</div>
-<div class="c0">             gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));</div>
-<div class="c0">         }</div>
-<div class="c0">     }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_C)) {</div>
-<div class="c2">+        const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;</div>
-<div class="c2">+        gui.add(new wglt.MessageDialog(term, 'CHARACTER',</div>
-<div class="c2">+            'Level: ' + player.level +</div>
-<div class="c2">+            '\nExperience: ' + player.fighter.xp +</div>
-<div class="c2">+            '\nExperience to level up: ' + levelUpXp +</div>
-<div class="c2">+            '\n\nMaximum HP: ' + player.fighter.maxHp +</div>
-<div class="c2">+            '\nAttack: ' + player.fighter.power +</div>
-<div class="c2">+            '\nDefense: ' + player.fighter.defense));</div>
-<div class="c2">+    }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_COMMA)) {</div>
-<div class="c2">+        if (player.x === stairs.x &amp;&amp; player.y === stairs.y) {</div>
-<div class="c2">+            nextLevel();</div>
-<div class="c2">+        }</div>
-<div class="c2">+    }</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c0"> function useInventory(choice) {</div>
-<div class="c1">@@ -550,12 +580,39 @@</div>
-<div class="c0">     }</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c2">+function checkLevelUp() {</div>
-<div class="c2">+    // See if the player's experience is enough to level-up</div>
-<div class="c2">+    const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;</div>
-<div class="c2">+    if (player.fighter.xp &gt;= levelUpXp) {</div>
+<div class="c2">+    const xpGain = 10;</div>
+<div class="c2">+    player.xp += xpGain;</div>
+<div class="c2">+</div>
+<div class="c2">+    while (player.xp &gt;= player.maxXp) {</div>
 <div class="c2">+        player.level++;</div>
-<div class="c2">+        player.fighter.xp -= levelUpXp;</div>
-<div class="c2">+        addMessage('Your battle skills grow stronger! You reached level ' + player.level + '!', wglt.Colors.YELLOW);</div>
-<div class="c2">+</div>
-<div class="c2">+        const options = [</div>
-<div class="c2">+            'Constitution (+20 HP, from ' + player.fighter.maxHp + ')',</div>
-<div class="c2">+            'Strength (+1 attack, from ' + player.fighter.power + ')',</div>
-<div class="c2">+            'Agility (+1 defense, from ' + player.fighter.defense + ')'</div>
-<div class="c2">+        ];</div>
-<div class="c2">+</div>
-<div class="c2">+        gui.add(new wglt.SelectDialog(term, 'LEVEL UP', options, (choice) =&gt; {</div>
-<div class="c2">+            if (choice === 0) {</div>
-<div class="c2">+                player.fighter.maxHp += 20;</div>
-<div class="c2">+                player.fighter.hp += 20;</div>
-<div class="c2">+            } else if (choice === 1) {</div>
-<div class="c2">+                player.fighter.power += 1;</div>
-<div class="c2">+            } else if (choice === 2) {</div>
-<div class="c2">+                player.fighter.defense += 1;</div>
-<div class="c2">+            }</div>
-<div class="c2">+        }));</div>
+<div class="c2">+        player.xp = 0;</div>
+<div class="c2">+        player.maxXp *= 2;</div>
+<div class="c2">+        messageLog.add(&#x27;You reached level &#x27; + player.level, 0xFF8000FF);</div>
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function playerDeath(player) {</div>
-<div class="c0">     addMessage('You died!', wglt.Colors.LIGHT_RED);</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c0"> function monsterDeath(monster) {</div>
-<div class="c3">-    addMessage(capitalize(monster.name) + ' is dead!', wglt.Colors.BROWN);</div>
-<div class="c2">+    addMessage(capitalize(monster.name) + ' is dead! You gain ' + monster.fighter.xp + ' XP.', wglt.Colors.ORANGE);</div>
-<div class="c0">     monster.char = '%';</div>
-<div class="c0">     monster.color = wglt.Colors.DARK_RED;</div>
-<div class="c0">     monster.blocks = false;</div>
-<div class="c1">@@ -720,6 +777,13 @@</div>
-<div class="c0">         'HP', player.fighter.hp, player.fighter.maxHp,</div>
-<div class="c0">         wglt.Colors.LIGHT_RED, wglt.Colors.DARK_RED);</div>
-<div class="c0"> </div>
-<div class="c2">+    renderBar(</div>
-<div class="c2">+        1, PANEL_Y + 2, BAR_WIDTH,</div>
-<div class="c2">+        'XP', player.fighter.xp, LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR,</div>
-<div class="c2">+        wglt.Colors.LIGHT_MAGENTA, wglt.Colors.DARK_MAGENTA);</div>
-<div class="c2">+</div>
-<div class="c2">+    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + dungeonLevel, wglt.Colors.ORANGE);</div>
-<div class="c2">+</div>
-<div class="c0">     // Display names of objects under the mouse</div>
-<div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);</div>
-<div class="c0"> </div>
-<div class="c1">@@ -746,9 +810,11 @@</div>
-<div class="c0"> </div>
-<div class="c0"> function newGame() {</div>
-<div class="c0">     rng = new wglt.RNG(Date.now());</div>
-<div class="c3">-    player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
-<div class="c2">+    player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, 0, playerDeath) });</div>
-<div class="c2">+    player.level = 1;</div>
-<div class="c0">     entities = [player];</div>
-<div class="c0">     messages = [];</div>
-<div class="c2">+    dungeonLevel = 1;</div>
-<div class="c0">     map = createMap();</div>
-<div class="c0">     fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
-<div class="c0">     fovRecompute = true;</div>
-<div class="c1">@@ -757,6 +823,18 @@</div>
-<div class="c0">     appState = 'game';</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
 <div class="c2">+function nextLevel() {</div>
 <div class="c2">+    // Advance to the next level</div>
-<div class="c2">+    addMessage('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);</div>
-<div class="c2">+    player.fighter.heal(player.fighter.maxHp / 2); // heal the player by 50%</div>
-<div class="c2">+    dungeonLevel++;</div>
-<div class="c2">+    addMessage('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);</div>
-<div class="c2">+    entities = [player];</div>
-<div class="c2">+    map = createMap(); // Create a fresh new level!</div>
-<div class="c2">+    fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
-<div class="c2">+    fovRecompute = true;</div>
-<div class="c2">+}</div>
+<div class="c2">+    messageLog.add(&#x27;You take a moment to rest, and recover your strength.&#x27;, wglt.Colors.LIGHT_MAGENTA);</div>
+<div class="c2">+    // player.fighter.heal(player.fighter.maxHp / 2); // heal the player by 50%</div>
+<div class="c2">+    // dungeonLevel++;</div>
+<div class="c2">+    messageLog.add(&#x27;After a rare moment of peace, you descend deeper...&#x27;, wglt.Colors.LIGHT_RED);</div>
+<div class="c2">+    game.entities = [player];</div>
+<div class="c2">+    // map = createMap(); // Create a fresh new level!</div>
+<div class="c2">+    createMap();</div>
+<div class="c2">+    // fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
+<div class="c2">+    // fovRecompute = true;</div>
 <div class="c2">+</div>
-<div class="c0"> function playGame() {</div>
-<div class="c0">     handleKeys();</div>
-<div class="c0">     renderAll();</div>
-<div class="c1">@@ -791,8 +869,10 @@</div>
-<div class="c0"> const gui = new wglt.GUI(term);</div>
-<div class="c0"> let rng = null;</div>
-<div class="c0"> let player = null;</div>
-<div class="c2">+let stairs = null;</div>
-<div class="c0"> let entities = null;</div>
-<div class="c0"> let messages = null;</div>
-<div class="c2">+let dungeonLevel = 0;</div>
-<div class="c0"> let map = null;</div>
-<div class="c0"> let fovMap = null;</div>
-<div class="c0"> let fovRecompute = true;</div>
+<div class="c2">+    // Initial FOV</div>
+<div class="c2">+    game.tileMap.computeFov(player.x, player.y, 12);</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c0"> const app = new wglt.App({</div>
+<div class="c1">@@ -355,6 +391,23 @@</div>
+<div class="c0"> const player = new wglt.Entity(game, 30, 20, &#x27;Player&#x27;, sprite, true);</div>
+<div class="c0"> player.onAttack = attackCallback;</div>
+<div class="c0"> player.onDeath = playerDeath;</div>
+<div class="c2">+player.level = 1;</div>
+<div class="c2">+player.xp = 0;</div>
+<div class="c2">+player.maxXp = 10;</div>
+<div class="c2">+player.onBump = function (other) {</div>
+<div class="c2">+    // if (other.canPickup) {</div>
+<div class="c2">+</div>
+<div class="c2">+    // }</div>
+<div class="c2">+    if (other.canAttack) {</div>
+<div class="c2">+        player.attack(other);</div>
+<div class="c2">+        return true;</div>
+<div class="c2">+    }</div>
+<div class="c2">+    if (other.name === &#x27;stairs&#x27;) {</div>
+<div class="c2">+        //console.log(&#x27;up da stairs&#x27;);</div>
+<div class="c2">+        nextLevel();</div>
+<div class="c2">+        return true;</div>
+<div class="c2">+    }</div>
+<div class="c2">+};</div>
+<div class="c0"> </div>
+<div class="c0"> const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);</div>
+<div class="c0"> game.tileMap = map;</div>
+<div class="c1">@@ -368,11 +421,17 @@</div>
+<div class="c0"> const playerStats = new wglt.Panel(game.gui, new wglt.Rect(1, 1, 100, 100));</div>
+<div class="c0"> playerStats.drawContents = function () {</div>
+<div class="c0">     const frameY = 0;</div>
+<div class="c3">-    const hpPercent = player.health / player.maxHealth;</div>
+<div class="c0">     app.drawString(player.name, 1, frameY);</div>
+<div class="c2">+</div>
+<div class="c2">+    const hpPercent = player.health / player.maxHealth;</div>
+<div class="c0">     app.drawImage(0, frameY + 7, 32, 64, 32, 12);</div>
+<div class="c0">     app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));</div>
+<div class="c0">     app.drawString(player.health + &#x27;/&#x27; + player.maxHealth, 3, frameY + 10);</div>
+<div class="c2">+</div>
+<div class="c2">+    const xpPercent = player.xp / player.maxXp;</div>
+<div class="c2">+    app.drawImage(32, frameY + 7, 32, 64, 32, 12);</div>
+<div class="c2">+    app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));</div>
+<div class="c2">+    app.drawString(player.xp + &#x27;/&#x27; + player.maxXp, 35, frameY + 10);</div>
+<div class="c0"> };</div>
+<div class="c0"> game.gui.add(playerStats);</div>
+<div class="c0"> </div>
+<div class="c1">@@ -397,7 +456,7 @@</div>
+<div class="c0"> game.tileMap.computeFov(player.x, player.y, 12);</div>
+<div class="c0"> </div>
+<div class="c0"> const mainMenu = new wglt.AppState(app);</div>
+<div class="c3">-mainMenu.update = function() {</div>
+<div class="c2">+mainMenu.update = function () {</div>
+<div class="c0">     // Draw background</div>
+<div class="c0">     app.drawImage(0, 0, 0, 768, 400, 224);</div>
+<div class="c0"> </div>
 <!--ENDDIFF-->
     </div>
     <script src="../../dist/index.js"></script>

@@ -1,119 +1,99 @@
 
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
-
 const MAP = [
-    '    ########        #########        ########    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #...#...#        #......#    ',
-    '    #....#.#        #.#####.#        #......#    ',
-    '    #....#.#        #...#...#        #......#    ',
-    '    #..###.#        #.......#        #......#    ',
-    '    #......##########.......##########......#    ',
-    '#####.......................................#####',
-    '#...............................................#',
-    '#...............................................#',
-    '#...............................................#',
-    '#...............................................#',
-    '#...............................................#',
-    '#####.......................................#####',
-    '    #......##########.......##########......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    #......##########.......##########......#    ',
-    '#####.......................................#####',
-    '#...............................................#',
-    '#...............................................#',
-    '#...............................................#',
-    '#...............................................#',
-    '#...............................................#',
-    '#####.......................................#####',
-    '    #......#############.#############......#    ',
-    '    #......#        #..#.#..#        #......#    ',
-    '    #..#####        #..#.#..#        #......#    ',
-    '    #......#        #..#.#..#        #......#    ',
-    '    #####..#        #.......#        #......#    ',
-    '    #......#        #.......#        #......#    ',
-    '    ########        #########        ########    ',
+    '                                                   ',
+    '     ########        #########        ########     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #...#...#        #......#     ',
+    '     #....#.#        #.#####.#        #......#     ',
+    '     #....#.#        #...#...#        #......#     ',
+    '     #..###.#        #.......#        #......#     ',
+    '     #......##########.......##########......#     ',
+    ' #####.......................................##### ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #####.......................................##### ',
+    '     #......##########.......##########......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     #......##########.......##########......#     ',
+    ' #####.......................................##### ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #...............................................# ',
+    ' #####.......................................##### ',
+    '     #......#############.#############......#     ',
+    '     #......#        #..#.#..#        #......#     ',
+    '     #..#####        #..#.#..#        #......#     ',
+    '     #......#        #..#.#..#        #......#     ',
+    '     #####..#        #.......#        #......#     ',
+    '     #......#        #.......#        #......#     ',
+    '     ########        #########        ########     ',
+    '                                                   ',
 ];
 
 const MAP_WIDTH = MAP[0].length;
 const MAP_HEIGHT = MAP.length;
 
+const TILE_EMPTY = 0;
+const TILE_WALL = 1 + 13 * 64 + 4;
+const TILE_HALF_WALL = 1 + 14 * 64 + 4;
+const TILE_FLOOR = 1 + 13 * 64 + 6;
+
 const VIEW_DISTANCE = 15;
 
-function getTile(x, y) {
-    return MAP[y].charAt(x);
-}
+const app = new wglt.App({
+    canvas: document.querySelector('canvas'),
+    imageUrl: 'graphics.png',
+    width: 224,
+    height: 400,
+    fillWindow: true,
+});
 
-function isBlocked(x, y) {
-    return getTile(x, y) !== '.';
-}
+const game = new wglt.Game(app, {
+    tileWidth: 16,
+    tileHeight: 24
+});
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const sprite = new wglt.Sprite(0, 120, 16, 24, 2, true, undefined, 0xffcf5cff);
+const player = new wglt.Entity(game, 8, 3, 'Player', sprite, true);
+game.player = player;
+game.entities.push(player);
 
-const game = new wglt.Console(MAP_WIDTH, MAP_HEIGHT);
+const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);
+map.tileWidth = 16;
+map.tileHeight = 24;
+game.tileMap = map;
 
-const player = {
-    x: Math.floor(MAP_WIDTH / 2),
-    y: Math.floor(MAP_HEIGHT / 2)
-};
-
-const fov = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, isBlocked);
-fov.computeFov(player.x, player.y, VIEW_DISTANCE);
-
-function movePlayer(dx, dy) {
-    const x = player.x + dx;
-    const y = player.y + dy;
-    if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT || isBlocked(x, y)) {
-        return;
-    }
-    player.x = x;
-    player.y = y;
-    fov.computeFov(player.x, player.y, VIEW_DISTANCE);
-}
-
-term.update = function () {
-    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
-        movePlayer(0, -1);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
-        movePlayer(-1, 0);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
-        movePlayer(1, 0);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
-        movePlayer(0, 1);
-    }
-
-    term.clear();
-    game.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, wglt.Colors.BLACK);
-
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            const c = getTile(x, y);
-            const color = fov.isVisible(x, y) ? wglt.Colors.WHITE : wglt.Colors.DARK_GRAY;
-            game.drawString(x, y, c, color);
+// Clear the map to all walls
+for (let y = 0; y < MAP_HEIGHT; y++) {
+    for (let x = 0; x < MAP_WIDTH; x++) {
+        const c = MAP[y].charAt(x);
+        if (c === '#') {
+            const c2 = MAP[y + 1].charAt(x);
+            if (c2 === '#') {
+                map.setTile(0, x, y, TILE_WALL, true);
+            } else {
+                map.setTile(0, x, y, TILE_HALF_WALL, true);
+            }
+        } else if (c === '.') {
+            map.setTile(0, x, y, TILE_FLOOR, false);
+        } else {
+            map.setTile(0, x, y, TILE_EMPTY, true);
         }
     }
+}
 
-    const dest = {x: term.mouse.x - 15, y: term.mouse.y - 8};
-    const path = wglt.computePath(fov, player, dest, 1000);
-    if (path) {
-        for (let i = 1; i < path.length; i++) {
-            const step = path[i];
-            game.getCell(step.x, step.y).setBackground(wglt.Colors.DARK_RED);
-        }
-    }
+// Initial FOV
+game.tileMap.computeFov(player.x, player.y, 12);
 
-    term.drawString(1, 1, 'Hello world!');
-    term.drawString(1, 3, 'Use arrow keys to move');
-    game.drawString(player.x, player.y, '@');
-    term.drawConsole(15, 8, game, 0, 0, MAP_WIDTH, MAP_HEIGHT);
-};
+app.state = game;

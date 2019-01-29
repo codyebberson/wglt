@@ -1,96 +1,53 @@
 
-// Actual size of the window
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
-
 // Size of the map
-const MAP_WIDTH = 80;
-const MAP_HEIGHT = 45;
+const MAP_WIDTH = 60;
+const MAP_HEIGHT = 40;
 
-const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
-const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
-
-function Tile(blocked) {
-    this.blocked = blocked;
-    this.blockSight = blocked;
-}
-
-function Entity(x, y, char, color) {
-    this.x = x;
-    this.y = y;
-    this.char = char;
-    this.color = color;
-
-    this.move = function (dx, dy) {
-        if (map[this.y + dy][this.x + dx].blocked) {
-            return;
-        }
-        this.x += dx;
-        this.y += dy;
-    };
-
-    this.draw = function () {
-        term.drawString(this.x, this.y, this.char, this.color);
-    };
-}
+const TILE_SIZE = 16;
+const TILE_WALL = 1 + 2 * 64 + 0;
+const TILE_FLOOR = 1 + 2 * 64 + 1;
 
 function createMap() {
-    const map = new Array(MAP_HEIGHT);
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        map[y] = new Array(MAP_WIDTH);
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            map[y][x] = new Tile(false);
-        }
-    }
-    return map;
-}
-
-function handleKeys() {
-    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
-        player.move(0, -1);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
-        player.move(-1, 0);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
-        player.move(1, 0);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
-        player.move(0, 1);
-    }
-}
-
-function renderAll() {
-    term.clear();
-
+    // Clear the map to all floor
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
-            let wall = map[y][x].blockSight;
-            if (wall) {
-                term.drawChar(x, y, 0, 0, COLOR_DARK_WALL);
-            } else {
-                term.drawChar(x, y, 0, 0, COLOR_DARK_GROUND);
-            }
+            map.setTile(0, x, y, TILE_FLOOR, false);
         }
     }
 
-    for (let i = 0; i < entities.length; i++) {
-        entities[i].draw();
-    }
+    // Add a couple walls
+    map.setTile(0, 25, 22, TILE_WALL, true);
+    map.setTile(0, 35, 22, TILE_WALL, true);
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const player = new Entity(40, 25, '@', wglt.Colors.WHITE);
-const npc = new Entity(40, 20, '@', wglt.Colors.YELLOW);
-const entities = [player, npc];
-const map = createMap();
+const app = new wglt.App({
+    canvas: document.querySelector('canvas'),
+    imageUrl: '../graphics.png',
+    width: 400,
+    height: 224
+});
 
-map[22][30].blocked = true;
-map[22][30].blockSight = true;
-map[22][50].blocked = true;
-map[22][50].blockSight = true;
+const game = new wglt.Game(app, {
+    tileWidth: 16,
+    tileHeight: 16
+});
 
-term.update = function () {
-    handleKeys();
-    renderAll();
-};
+const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
+const player = new wglt.Entity(game, 30, 20, 'Player', sprite, true);
+const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);
+game.tileMap = map;
+game.player = player;
+game.entities.push(player);
+
+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 1, 100, 100));
+messageLog.add('Hello world!');
+messageLog.add('Use arrow keys to move');
+game.gui.add(messageLog);
+
+// Generate the map
+createMap();
+
+// Initial FOV
+game.tileMap.computeFov(player.x, player.y, 12);
+
+app.state = game;

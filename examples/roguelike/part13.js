@@ -116,7 +116,7 @@ function Entity(x, y, char, name, color, blocks, components) {
 
     this.draw = function () {
         if (fovMap.isVisible(this.x, this.y)) {
-            term.drawString(this.x, this.y, this.char, this.color);
+            app.drawString(this.x, this.y, this.char, this.color);
         }
     };
 }
@@ -536,21 +536,21 @@ function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) 
     const barWidth = Math.round(value / maximum * totalWidth);
 
     // Render the background first
-    term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
+    //app.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
 
     // Now render the bar on top
     if (barWidth > 0) {
-        term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
+        //app.fillRect(x, y, barWidth, 1, 0, 0, barColor);
     }
 
     // Finally, some centered text with the values
-    // term.fillForegroundRect(x, y, totalWidth, 1, wglt.Colors.WHITE);
-    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, wglt.Colors.WHITE);
+    // app.fillForegroundRect(x, y, totalWidth, 1, wglt.Colors.WHITE);
+    app.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, wglt.Colors.WHITE);
 }
 
 function getNamesUnderMouse() {
-    const x = term.mouse.x;
-    const y = term.mouse.y;
+    const x = app.mouse.x;
+    const y = app.mouse.y;
 
     if (!fovMap.isVisible(x, y)) {
         return '';
@@ -620,48 +620,48 @@ function handleKeys() {
     }
 
     if (targetFunction) {
-        if (term.isKeyPressed(wglt.Keys.VK_ENTER) || term.mouse.buttons[0]) {
+        if (app.isKeyPressed(wglt.Keys.VK_ENTER) || app.mouse.buttons[0]) {
             endTargeting(targetCursor.x, targetCursor.y);
         }
-        if (term.isKeyPressed(wglt.Keys.VK_ESCAPE) || term.mouse.buttons[2]) {
+        if (app.isKeyPressed(wglt.Keys.VK_ESCAPE) || app.mouse.buttons[2]) {
             cancelTargeting();
         }
-        if (term.isKeyPressed(wglt.Keys.VK_UP)) {
+        if (app.isKeyPressed(wglt.Keys.VK_UP)) {
             targetCursor.y--;
         }
-        if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
+        if (app.isKeyPressed(wglt.Keys.VK_LEFT)) {
             targetCursor.x--;
         }
-        if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
+        if (app.isKeyPressed(wglt.Keys.VK_RIGHT)) {
             targetCursor.x++;
         }
-        if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
+        if (app.isKeyPressed(wglt.Keys.VK_DOWN)) {
             targetCursor.y++;
         }
-        if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
-            targetCursor.x = term.mouse.x;
-            targetCursor.y = term.mouse.y;
+        if (app.mouse.dx !== 0 || app.mouse.dy !== 0) {
+            targetCursor.x = app.mouse.x;
+            targetCursor.y = app.mouse.y;
         }
         return;
     }
 
-    if (term.isKeyPressed(wglt.Keys.VK_ESCAPE)) {
+    if (app.isKeyPressed(wglt.Keys.VK_ESCAPE)) {
         saveGame();
         appState = 'menu';
     }
-    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
+    if (app.isKeyPressed(wglt.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
-    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
+    if (app.isKeyPressed(wglt.Keys.VK_LEFT)) {
         playerMoveOrAttack(-1, 0);
     }
-    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
+    if (app.isKeyPressed(wglt.Keys.VK_RIGHT)) {
         playerMoveOrAttack(1, 0);
     }
-    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
+    if (app.isKeyPressed(wglt.Keys.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
-    if (term.isKeyPressed(wglt.Keys.VK_G)) {
+    if (app.isKeyPressed(wglt.Keys.VK_G)) {
         // Pick up an item
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
@@ -670,7 +670,7 @@ function handleKeys() {
             }
         }
     }
-    if (term.isKeyPressed(wglt.Keys.VK_I)) {
+    if (app.isKeyPressed(wglt.Keys.VK_I)) {
         if (inventory.length === 0) {
             gui.add(new wglt.MessageDialog('ALERT', 'Inventory is empty'));
         } else {
@@ -684,7 +684,7 @@ function handleKeys() {
             gui.add(new wglt.SelectDialog('INVENTORY', options, useInventory));
         }
     }
-    if (term.isKeyPressed(wglt.Keys.VK_C)) {
+    if (app.isKeyPressed(wglt.Keys.VK_C)) {
         const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
         gui.add(new wglt.MessageDialog('CHARACTER',
             'Level: ' + player.level +
@@ -694,7 +694,7 @@ function handleKeys() {
             '\nAttack: ' + player.fighter.power +
             '\nDefense: ' + player.fighter.defense));
     }
-    if (term.isKeyPressed(wglt.Keys.VK_COMMA)) {
+    if (app.isKeyPressed(wglt.Keys.VK_COMMA)) {
         if (player.x === stairs.x && player.y === stairs.y) {
             nextLevel();
         }
@@ -862,7 +862,7 @@ function renderAll() {
         fovRecompute = false;
     }
 
-    term.clear();
+    //app.clear();
 
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
@@ -879,7 +879,7 @@ function renderAll() {
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
 
-            term.drawChar(x, y, 0, 0, color);
+            app.drawChar(x, y, 0, 0, color);
         }
     }
 
@@ -888,13 +888,13 @@ function renderAll() {
     }
 
     // Prepare to render the GUI panel
-    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, wglt.Colors.WHITE, wglt.Colors.BLACK);
+    //app.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, wglt.Colors.WHITE, wglt.Colors.BLACK);
 
     // Print the game messages, one line at a time
     y = PANEL_Y + 1;
     for (let i = 0; i < messages.length; i++) {
         const message = messages[i];
-        term.drawString(MSG_X, y, message.text, message.color);
+        app.drawString(MSG_X, y, message.text, message.color);
         y++;
     }
 
@@ -909,13 +909,13 @@ function renderAll() {
         'XP', player.fighter.xp, LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR,
         wglt.Colors.LIGHT_MAGENTA, wglt.Colors.DARK_MAGENTA);
 
-    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + dungeonLevel, wglt.Colors.ORANGE);
+    app.drawString(1, PANEL_Y + 4, 'Dungeon level ' + dungeonLevel, wglt.Colors.ORANGE);
 
     // Display names of objects under the mouse
-    term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
+    app.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
 
     if (targetFunction) {
-        term.getCell(targetCursor.x, targetCursor.y).setBackground(wglt.Colors.WHITE);
+        app.getCell(targetCursor.x, targetCursor.y).setBackground(wglt.Colors.WHITE);
     }
 
     // Draw dialog boxes
@@ -990,19 +990,19 @@ function mainMenu() {
 
     gui.handleInput();
 
-    term.clear();
+    //app.clear();
 
     if (menuBg) {
-        term.drawConsole(0, 0, menuBg, 0, 0, 80, 50);
+        app.drawConsole(0, 0, menuBg, 0, 0, 80, 50);
     }
 
-    term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', wglt.Colors.YELLOW);
-    term.drawCenteredString(40, 12, 'By Jotaf', wglt.Colors.YELLOW);
+    app.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', wglt.Colors.YELLOW);
+    app.drawCenteredString(40, 12, 'By Jotaf', wglt.Colors.YELLOW);
     gui.draw();
 }
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const gui = new wglt.GUI(term);
+const app = new wglt.App(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const gui = new wglt.GUI(app);
 let rng = null;
 let player = null;
 let stairs = null;
@@ -1020,7 +1020,7 @@ let menuBg = null;
 
 wglt.loadImage2x('menu.png', (result) => { menuBg = result });
 
-term.update = function () {
+app.update = function () {
     switch (appState) {
         case 'menu':
             mainMenu();

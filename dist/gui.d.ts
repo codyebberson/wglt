@@ -1,13 +1,12 @@
-import { Dialog } from './gui/dialog';
+import { App } from './app';
 import { DialogRenderer } from './gui/dialogrenderer';
-import { DialogState } from './gui/dialogstate';
-import { Terminal } from './terminal';
+import { Panel } from './gui/panel';
 export declare class GUI {
-    private readonly terminal;
-    private readonly renderer;
-    dialogs: DialogState[];
-    constructor(terminal: Terminal, renderer?: DialogRenderer);
-    add(dialog: Dialog): void;
+    readonly app: App;
+    readonly panels: Panel[];
+    readonly renderer: DialogRenderer;
+    constructor(app: App);
+    add(panel: Panel): void;
     handleInput(): boolean;
     draw(): void;
 }

@@ -1,215 +1,158 @@
 
-/**
- * Number of keys to track.
- */
-const KEY_COUNT = 256;
-
-/**
- * Creates a new key instance.
- */
-export class Key {
-  down: boolean;
-  downCount: number;
-
-  constructor() {
-    this.down = false;
-    this.downCount = 0;
-  }
-}
+export type Key = number;
 
 export class Keys {
-  private readonly keys: Key[];
-
-  /**
-   * Creates a new keyboard module.
-   *
-   * @param el DOM el to attach listeners.
-   */
-  constructor(el: Element) {
-    this.keys = new Array(KEY_COUNT);
-    for (let i = 0; i < KEY_COUNT; i++) {
-      this.keys[i] = new Key();
-    }
-
-    el.addEventListener('keydown', e => this.setKey(e as KeyboardEvent, true));
-    el.addEventListener('keyup', e => this.setKey(e as KeyboardEvent, false));
-  }
-
-
-  setKey(e: KeyboardEvent, state: boolean) {
-    e.stopPropagation();
-    e.preventDefault();
-    const keyCode = e.keyCode;
-    if (keyCode >= 0 && keyCode < KEY_COUNT) {
-      this.keys[keyCode].down = state;
-    }
-  }
-
-  updateKeys() {
-    for (let i = 0; i < KEY_COUNT; i++) {
-      if (this.keys[i].down) {
-        this.keys[i].downCount++;
-      } else {
-        this.keys[i].downCount = 0;
-      }
-    }
-  }
-
-  getKey(keyCode: number) {
-    return keyCode >= 0 && keyCode < KEY_COUNT ? this.keys[keyCode] : null;
-  }
-
-  static readonly VK_CANCEL = 3;
-  static readonly VK_HELP = 6;
-  static readonly VK_BACK_SPACE = 8;
-  static readonly VK_TAB = 9;
-  static readonly VK_CLEAR = 12;
-  static readonly VK_ENTER = 13;
-  static readonly VK_SHIFT = 16;
-  static readonly VK_CONTROL = 17;
-  static readonly VK_ALT = 18;
-  static readonly VK_PAUSE = 19;
-  static readonly VK_CAPS_LOCK = 20;
-  static readonly VK_ESCAPE = 27;
-  static readonly VK_SPACE = 32;
-  static readonly VK_PAGE_UP = 33;
-  static readonly VK_PAGE_DOWN = 34;
-  static readonly VK_END = 35;
-  static readonly VK_HOME = 36;
-  static readonly VK_LEFT = 37;
-  static readonly VK_UP = 38;
-  static readonly VK_RIGHT = 39;
-  static readonly VK_DOWN = 40;
-  static readonly VK_PRINTSCREEN = 44;
-  static readonly VK_INSERT = 45;
-  static readonly VK_DELETE = 46;
-  static readonly VK_0 = 48;
-  static readonly VK_1 = 49;
-  static readonly VK_2 = 50;
-  static readonly VK_3 = 51;
-  static readonly VK_4 = 52;
-  static readonly VK_5 = 53;
-  static readonly VK_6 = 54;
-  static readonly VK_7 = 55;
-  static readonly VK_8 = 56;
-  static readonly VK_9 = 57;
-  static readonly VK_COLON = 58;
-  static readonly VK_SEMICOLON = 59;
-  static readonly VK_LESS_THAN = 60;
-  static readonly VK_EQUALS = 61;
-  static readonly VK_GREATER_THAN = 62;
-  static readonly VK_QUESTION_MARK = 63;
-  static readonly VK_AT = 64;
-  static readonly VK_A = 65;
-  static readonly VK_B = 66;
-  static readonly VK_C = 67;
-  static readonly VK_D = 68;
-  static readonly VK_E = 69;
-  static readonly VK_F = 70;
-  static readonly VK_G = 71;
-  static readonly VK_H = 72;
-  static readonly VK_I = 73;
-  static readonly VK_J = 74;
-  static readonly VK_K = 75;
-  static readonly VK_L = 76;
-  static readonly VK_M = 77;
-  static readonly VK_N = 78;
-  static readonly VK_O = 79;
-  static readonly VK_P = 80;
-  static readonly VK_Q = 81;
-  static readonly VK_R = 82;
-  static readonly VK_S = 83;
-  static readonly VK_T = 84;
-  static readonly VK_U = 85;
-  static readonly VK_V = 86;
-  static readonly VK_W = 87;
-  static readonly VK_X = 88;
-  static readonly VK_Y = 89;
-  static readonly VK_Z = 90;
-  static readonly VK_CONTEXT_MENU = 93;
-  static readonly VK_NUMPAD0 = 96;
-  static readonly VK_NUMPAD1 = 97;
-  static readonly VK_NUMPAD2 = 98;
-  static readonly VK_NUMPAD3 = 99;
-  static readonly VK_NUMPAD4 = 100;
-  static readonly VK_NUMPAD5 = 101;
-  static readonly VK_NUMPAD6 = 102;
-  static readonly VK_NUMPAD7 = 103;
-  static readonly VK_NUMPAD8 = 104;
-  static readonly VK_NUMPAD9 = 105;
-  static readonly VK_MULTIPLY = 106;
-  static readonly VK_ADD = 107;
-  static readonly VK_SEPARATOR = 108;
-  static readonly VK_SUBTRACT = 109;
-  static readonly VK_DECIMAL = 110;
-  static readonly VK_DIVIDE = 111;
-  static readonly VK_F1 = 112;
-  static readonly VK_F2 = 113;
-  static readonly VK_F3 = 114;
-  static readonly VK_F4 = 115;
-  static readonly VK_F5 = 116;
-  static readonly VK_F6 = 117;
-  static readonly VK_F7 = 118;
-  static readonly VK_F8 = 119;
-  static readonly VK_F9 = 120;
-  static readonly VK_F10 = 121;
-  static readonly VK_F11 = 122;
-  static readonly VK_F12 = 123;
-  static readonly VK_F13 = 124;
-  static readonly VK_F14 = 125;
-  static readonly VK_F15 = 126;
-  static readonly VK_F16 = 127;
-  static readonly VK_F17 = 128;
-  static readonly VK_F18 = 129;
-  static readonly VK_F19 = 130;
-  static readonly VK_F20 = 131;
-  static readonly VK_F21 = 132;
-  static readonly VK_F22 = 133;
-  static readonly VK_F23 = 134;
-  static readonly VK_F24 = 135;
-  static readonly VK_NUM_LOCK = 144;
-  static readonly VK_SCROLL_LOCK = 145;
-  static readonly VK_CIRCUMFLEX = 160;
-  static readonly VK_EXCLAMATION = 161;
-  static readonly VK_DOUBLE_QUOTE = 162;
-  static readonly VK_HASH = 163;
-  static readonly VK_DOLLAR = 164;
-  static readonly VK_PERCENT = 165;
-  static readonly VK_AMPERSAND = 166;
-  static readonly VK_UNDERSCORE = 167;
-  static readonly VK_OPEN_PAREN = 168;
-  static readonly VK_CLOSE_PAREN = 169;
-  static readonly VK_ASTERISK = 170;
-  static readonly VK_PLUS = 171;
-  static readonly VK_PIPE = 172;
-  static readonly VK_HYPHEN_MINUS = 173;
-  static readonly VK_OPEN_CURLY_BRACKET = 174;
-  static readonly VK_CLOSE_CURLY_BRACKET = 175;
-  static readonly VK_TILDE = 176;
-  static readonly VK_COMMA = 188;
-  static readonly VK_PERIOD = 190;
-  static readonly VK_SLASH = 191;
-  static readonly VK_BACK_QUOTE = 192;
-  static readonly VK_OPEN_BRACKET = 219;
-  static readonly VK_BACK_SLASH = 220;
-  static readonly VK_CLOSE_BRACKET = 221;
-  static readonly VK_QUOTE = 222;
-  static readonly VK_META = 224;
-  static readonly VK_ALTGR = 225;
-  static readonly VK_WIN = 91;
-  static readonly VK_KANA = 21;
-  static readonly VK_HANGUL = 21;
-  static readonly VK_EISU = 22;
-  static readonly VK_JUNJA = 23;
-  static readonly VK_FINAL = 24;
-  static readonly VK_HANJA = 25;
-  static readonly VK_KANJI = 25;
-  static readonly VK_CONVERT = 28;
-  static readonly VK_NONCONVERT = 29;
-  static readonly VK_ACCEPT = 30;
-  static readonly VK_MODECHANGE = 31;
-  static readonly VK_SELECT = 41;
-  static readonly VK_PRINT = 42;
-  static readonly VK_EXECUTE = 43;
-  static readonly VK_SLEEP = 95;
+  static readonly VK_CANCEL: Key = 3;
+  static readonly VK_HELP: Key = 6;
+  static readonly VK_BACK_SPACE: Key = 8;
+  static readonly VK_TAB: Key = 9;
+  static readonly VK_CLEAR: Key = 12;
+  static readonly VK_ENTER: Key = 13;
+  static readonly VK_SHIFT: Key = 16;
+  static readonly VK_CONTROL: Key = 17;
+  static readonly VK_ALT: Key = 18;
+  static readonly VK_PAUSE: Key = 19;
+  static readonly VK_CAPS_LOCK: Key = 20;
+  static readonly VK_ESCAPE: Key = 27;
+  static readonly VK_SPACE: Key = 32;
+  static readonly VK_PAGE_UP: Key = 33;
+  static readonly VK_PAGE_DOWN: Key = 34;
+  static readonly VK_END: Key = 35;
+  static readonly VK_HOME: Key = 36;
+  static readonly VK_LEFT: Key = 37;
+  static readonly VK_UP: Key = 38;
+  static readonly VK_RIGHT: Key = 39;
+  static readonly VK_DOWN: Key = 40;
+  static readonly VK_PRINTSCREEN: Key = 44;
+  static readonly VK_INSERT: Key = 45;
+  static readonly VK_DELETE: Key = 46;
+  static readonly VK_0: Key = 48;
+  static readonly VK_1: Key = 49;
+  static readonly VK_2: Key = 50;
+  static readonly VK_3: Key = 51;
+  static readonly VK_4: Key = 52;
+  static readonly VK_5: Key = 53;
+  static readonly VK_6: Key = 54;
+  static readonly VK_7: Key = 55;
+  static readonly VK_8: Key = 56;
+  static readonly VK_9: Key = 57;
+  static readonly VK_COLON: Key = 58;
+  static readonly VK_SEMICOLON: Key = 59;
+  static readonly VK_LESS_THAN: Key = 60;
+  static readonly VK_EQUALS: Key = 61;
+  static readonly VK_GREATER_THAN: Key = 62;
+  static readonly VK_QUESTION_MARK: Key = 63;
+  static readonly VK_AT: Key = 64;
+  static readonly VK_A: Key = 65;
+  static readonly VK_B: Key = 66;
+  static readonly VK_C: Key = 67;
+  static readonly VK_D: Key = 68;
+  static readonly VK_E: Key = 69;
+  static readonly VK_F: Key = 70;
+  static readonly VK_G: Key = 71;
+  static readonly VK_H: Key = 72;
+  static readonly VK_I: Key = 73;
+  static readonly VK_J: Key = 74;
+  static readonly VK_K: Key = 75;
+  static readonly VK_L: Key = 76;
+  static readonly VK_M: Key = 77;
+  static readonly VK_N: Key = 78;
+  static readonly VK_O: Key = 79;
+  static readonly VK_P: Key = 80;
+  static readonly VK_Q: Key = 81;
+  static readonly VK_R: Key = 82;
+  static readonly VK_S: Key = 83;
+  static readonly VK_T: Key = 84;
+  static readonly VK_U: Key = 85;
+  static readonly VK_V: Key = 86;
+  static readonly VK_W: Key = 87;
+  static readonly VK_X: Key = 88;
+  static readonly VK_Y: Key = 89;
+  static readonly VK_Z: Key = 90;
+  static readonly VK_CONTEXT_MENU: Key = 93;
+  static readonly VK_NUMPAD0: Key = 96;
+  static readonly VK_NUMPAD1: Key = 97;
+  static readonly VK_NUMPAD2: Key = 98;
+  static readonly VK_NUMPAD3: Key = 99;
+  static readonly VK_NUMPAD4: Key = 100;
+  static readonly VK_NUMPAD5: Key = 101;
+  static readonly VK_NUMPAD6: Key = 102;
+  static readonly VK_NUMPAD7: Key = 103;
+  static readonly VK_NUMPAD8: Key = 104;
+  static readonly VK_NUMPAD9: Key = 105;
+  static readonly VK_MULTIPLY: Key = 106;
+  static readonly VK_ADD: Key = 107;
+  static readonly VK_SEPARATOR: Key = 108;
+  static readonly VK_SUBTRACT: Key = 109;
+  static readonly VK_DECIMAL: Key = 110;
+  static readonly VK_DIVIDE: Key = 111;
+  static readonly VK_F1: Key = 112;
+  static readonly VK_F2: Key = 113;
+  static readonly VK_F3: Key = 114;
+  static readonly VK_F4: Key = 115;
+  static readonly VK_F5: Key = 116;
+  static readonly VK_F6: Key = 117;
+  static readonly VK_F7: Key = 118;
+  static readonly VK_F8: Key = 119;
+  static readonly VK_F9: Key = 120;
+  static readonly VK_F10: Key = 121;
+  static readonly VK_F11: Key = 122;
+  static readonly VK_F12: Key = 123;
+  static readonly VK_F13: Key = 124;
+  static readonly VK_F14: Key = 125;
+  static readonly VK_F15: Key = 126;
+  static readonly VK_F16: Key = 127;
+  static readonly VK_F17: Key = 128;
+  static readonly VK_F18: Key = 129;
+  static readonly VK_F19: Key = 130;
+  static readonly VK_F20: Key = 131;
+  static readonly VK_F21: Key = 132;
+  static readonly VK_F22: Key = 133;
+  static readonly VK_F23: Key = 134;
+  static readonly VK_F24: Key = 135;
+  static readonly VK_NUM_LOCK: Key = 144;
+  static readonly VK_SCROLL_LOCK: Key = 145;
+  static readonly VK_CIRCUMFLEX: Key = 160;
+  static readonly VK_EXCLAMATION: Key = 161;
+  static readonly VK_DOUBLE_QUOTE: Key = 162;
+  static readonly VK_HASH: Key = 163;
+  static readonly VK_DOLLAR: Key = 164;
+  static readonly VK_PERCENT: Key = 165;
+  static readonly VK_AMPERSAND: Key = 166;
+  static readonly VK_UNDERSCORE: Key = 167;
+  static readonly VK_OPEN_PAREN: Key = 168;
+  static readonly VK_CLOSE_PAREN: Key = 169;
+  static readonly VK_ASTERISK: Key = 170;
+  static readonly VK_PLUS: Key = 171;
+  static readonly VK_PIPE: Key = 172;
+  static readonly VK_HYPHEN_MINUS: Key = 173;
+  static readonly VK_OPEN_CURLY_BRACKET: Key = 174;
+  static readonly VK_CLOSE_CURLY_BRACKET: Key = 175;
+  static readonly VK_TILDE: Key = 176;
+  static readonly VK_COMMA: Key = 188;
+  static readonly VK_PERIOD: Key = 190;
+  static readonly VK_SLASH: Key = 191;
+  static readonly VK_BACK_QUOTE: Key = 192;
+  static readonly VK_OPEN_BRACKET: Key = 219;
+  static readonly VK_BACK_SLASH: Key = 220;
+  static readonly VK_CLOSE_BRACKET: Key = 221;
+  static readonly VK_QUOTE: Key = 222;
+  static readonly VK_META: Key = 224;
+  static readonly VK_ALTGR: Key = 225;
+  static readonly VK_WIN: Key = 91;
+  static readonly VK_KANA: Key = 21;
+  static readonly VK_HANGUL: Key = 21;
+  static readonly VK_EISU: Key = 22;
+  static readonly VK_JUNJA: Key = 23;
+  static readonly VK_FINAL: Key = 24;
+  static readonly VK_HANJA: Key = 25;
+  static readonly VK_KANJI: Key = 25;
+  static readonly VK_CONVERT: Key = 28;
+  static readonly VK_NONCONVERT: Key = 29;
+  static readonly VK_ACCEPT: Key = 30;
+  static readonly VK_MODECHANGE: Key = 31;
+  static readonly VK_SELECT: Key = 41;
+  static readonly VK_PRINT: Key = 42;
+  static readonly VK_EXECUTE: Key = 43;
+  static readonly VK_SLEEP: Key = 95;
 }

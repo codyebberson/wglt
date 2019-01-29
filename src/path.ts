@@ -1,27 +1,30 @@
+import {Entity} from './entity';
+import {TileMap, TileMapCell} from './tilemap';
+import {Vec2} from './vec2';
 
-import {FovCell, FovMap} from './fov';
-import {Point} from './point';
+// const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
+// const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
+// const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
 
-const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
-const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
-const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
+const dxs = [0, -1, 1, 0];
+const dys = [-1, 0, 0, 1];
+const costs = [1, 1, 1, 1];
 
 /**
  * Calculates Dijkstra's algorithm.
  *
  * @param {!Object} source Starting point, must have x and y properties.
- * @param {!Object=} opt_dest Optional destination point, must have x and y properties.
- * @param {!number=} opt_maxDist Optional maximum distance to examine.
+ * @param {!Object=} dest Optional destination point, must have x and y properties.
+ * @param {!number=} maxDist Optional maximum distance to examine.
  * @return {?Array} Array of steps if destination found; null otherwise.
  */
-export function computePath(
-    map: FovMap, source: Point, dest: Point, maxDist: number) {
+export function computePath(map: TileMap, source: Vec2, dest: Vec2, maxDist: number) {
   clearDijkstra(map, dest);
 
   const sourceCell = map.grid[source.y][source.x];
   sourceCell.g = 0.0;
 
-  const q: FovCell[] = [sourceCell];
+  const q: TileMapCell[] = [sourceCell];
 
   while (q.length > 0) {
     const u = getMinCell(q);
@@ -44,10 +47,10 @@ export function computePath(
       }
     }
   }
-  return null;
+  return undefined;
 }
 
-function clearDijkstra(map: FovMap, dest: Point) {
+function clearDijkstra(map: TileMap, dest: Vec2) {
   for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       const cell = map.grid[y][x];
@@ -58,7 +61,7 @@ function clearDijkstra(map: FovMap, dest: Point) {
   }
 }
 
-function getMinCell(q: FovCell[]): FovCell {
+function getMinCell(q: TileMapCell[]): TileMapCell {
   let bestCell = null;
   let bestIndex = -1;
   let minDist = Infinity;
@@ -73,12 +76,12 @@ function getMinCell(q: FovCell[]): FovCell {
   }
 
   q.splice(bestIndex, 1);
-  return bestCell as FovCell;
+  return bestCell as TileMapCell;
 }
 
-function buildPath(cell: FovCell) {
+function buildPath(cell: TileMapCell) {
   const result = [];
-  let curr: FovCell|null = cell;
+  let curr: TileMapCell|null = cell;
   while (curr) {
     result.push(curr);
     curr = curr.prev;

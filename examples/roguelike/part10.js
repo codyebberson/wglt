@@ -1,19 +1,11 @@
 
-// Actual size of the window
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
-
 // Size of the map
-const MAP_WIDTH = 80;
-const MAP_HEIGHT = 43;
+const MAP_WIDTH = 60;
+const MAP_HEIGHT = 40;
 
-// Sizes and coordinates relevant for the GUI
-const BAR_WIDTH = 20;
-const PANEL_HEIGHT = 7;
-const PANEL_Y = SCREEN_HEIGHT - PANEL_HEIGHT;
-const MSG_X = BAR_WIDTH + 2;
-const MSG_WIDTH = SCREEN_WIDTH - BAR_WIDTH - 2;
-const MSG_HEIGHT = PANEL_HEIGHT - 1;
+const TILE_SIZE = 16;
+const TILE_WALL = 1 + 2 * 64 + 0;
+const TILE_FLOOR = 1 + 2 * 64 + 1;
 
 // Parameters for dungeon generator
 const ROOM_MAX_SIZE = 10;
@@ -33,239 +25,31 @@ const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
 
-const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);
-const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);
-const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);
-const COLOR_LIGHT_GROUND = wglt.fromRgb(200, 180, 50);
-
-function Tile(blocked) {
-    this.blocked = blocked;
-    this.blockSight = blocked;
-    this.explored = false;
-}
-
-function Rect(x, y, w, h) {
-    this.x1 = x;
-    this.y1 = y;
-    this.x2 = x + w;
-    this.y2 = y + h;
-
-    this.getCenter = function () {
-        return {
-            x: ((this.x1 + this.x2) / 2) | 0,
-            y: ((this.y1 + this.y2) / 2) | 0
-        };
-    }
-
-    this.intersects = function (other) {
-        return this.x1 <= other.x2 && this.x2 >= other.x1 &&
-            this.y1 <= other.y2 && this.y2 >= other.y1;
-    }
-}
-
-function Entity(x, y, char, name, color, blocks, components) {
-    this.x = x;
-    this.y = y;
-    this.char = char;
-    this.name = name;
-    this.color = color;
-    this.blocks = !!blocks;
-
-    if (components) {
-        for (var property in components) {
-            if (components.hasOwnProperty(property)) {
-                this[property] = components[property];
-                this[property].owner = this;
-            }
-        }
-    }
-
-    this.move = function (dx, dy) {
-        if (isBlocked(this.x + dx, this.y + dy)) {
-            return;
-        }
-        this.x += dx;
-        this.y += dy;
-    };
-
-    this.moveToward = function (targetX, targetY) {
-        const dx = targetX - this.x;
-        const dy = targetY - this.y;
-        const distance = Math.hypot(dx, dy);
-        this.move(Math.round(dx / distance), Math.round(dy / distance));
-    };
-
-    this.distanceTo = function (other) {
-        return Math.hypot(other.x - this.x, other.y - this.y);
-    };
-
-    this.distance = function (x, y) {
-        return Math.hypot(x - this.x, y - this.y);
-    };
-
-    this.sendToBack = function () {
-        this.remove();
-        entities.unshift(this);
-    };
-
-    this.remove = function () {
-        entities.splice(entities.indexOf(this), 1);
-    };
-
-    this.draw = function () {
-        if (fovMap.isVisible(this.x, this.y)) {
-            term.drawString(this.x, this.y, this.char, this.color);
-        }
-    };
-}
-
-function Fighter(hp, defense, power, deathFunction) {
-    this.owner = null;
-    this.maxHp = hp;
-    this.hp = hp;
-    this.defense = defense;
-    this.power = power;
-    this.deathFunction = deathFunction || null;
-
-    this.attack = function (target) {
-        const damage = this.power - target.fighter.defense;
-
-        if (damage > 0) {
-            addMessage(capitalize(this.owner.name) + ' attacks ' + target.name + ' for ' + damage + ' hit points.');
-            target.fighter.takeDamage(damage);
-        } else {
-            addMessage(capitalize(this.owner.name) + ' attacks ' + target.name + ' but it has no effect!');
-        }
-    };
-
-    this.takeDamage = function (damage) {
-        this.hp -= damage;
-
-        // Check for death. if there's a death function, call it
-        if (this.hp <= 0) {
-            this.hp = 0;
-            if (this.deathFunction) {
-                this.deathFunction(this.owner);
-            }
-        }
-    };
-
-    this.heal = function (amount) {
-        this.hp = Math.min(this.hp + amount, this.maxHp);
-    };
-}
-
-function BasicMonster() {
-    this.owner = null;
-
-    this.takeTurn = function () {
-        const monster = this.owner;
-
-        // A basic monster takes its turn. if you can see it, it can see you
-        if (fovMap.isVisible(monster.x, monster.y)) {
-
-            if (monster.distanceTo(player) >= 2) {
-                // Move towards player if far away
-                monster.moveToward(player.x, player.y);
-
-            } else if (player.fighter.hp > 0) {
-                // Close enough, attack! (if the player is still alive.)
-                monster.fighter.attack(player);
-            }
-        }
-    };
-}
-
-function ConfusedMonster(oldAi) {
-    this.owner = null;
-    this.oldAi = oldAi;
-    this.numTurns = CONFUSE_NUM_TURNS;
-
-    this.takeTurn = function () {
-        if (this.numTurns > 0) {
-            // Still confused...
-            // Move in a random direction, and decrease the number of turns confused
-            this.owner.move(rng.nextRange(-1, 1), rng.nextRange(-1, 1));
-            this.numTurns--;
-        } else {
-            this.owner.ai = this.oldAi;
-            addMessage('The ' + this.owner.name + ' is no longer confused!', wglt.Colors.LIGHT_RED);
-        }
-    }
-}
-
-function Item(useFunction) {
-    this.useFunction = useFunction;
-
-    this.pickUp = function () {
-        if (inventory.length >= 26) {
-            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.Colors.LIGHT_RED);
-        } else {
-            inventory.push(this.owner);
-            this.owner.remove();
-            addMessage('You picked up a ' + this.owner.name + '!', wglt.Colors.LIGHT_GREEN);
-        }
-    };
-
-    this.use = function () {
-        if (this.useFunction) {
-            this.useFunction(this);
-        } else {
-            addMessage('The ' + this.owner.name + ' cannot be used.');
-        }
-    };
-
-    this.remove = function () {
-        inventory.splice(inventory.indexOf(this.owner), 1);
-    };
-}
-
-function isBlocked(x, y) {
-    // First test the map tile
-    if (map[y][x].blocked) {
-        return true;
-    }
-
-    // Now check for any blocking objects
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
-        if (entity.blocks && entity.x === x && entity.y === y) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function createRoom(map, room) {
     for (let y = room.y1 + 1; y < room.y2; y++) {
         for (let x = room.x1 + 1; x < room.x2; x++) {
-            map[y][x].blocked = false;
-            map[y][x].blockSight = false;
+            map.setTile(0, x, y, TILE_FLOOR, false);
         }
     }
 }
 
 function createHTunnel(map, x1, x2, y) {
     for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-        map[y][x].blocked = false;
-        map[y][x].blockSight = false;
+        map.setTile(0, x, y, TILE_FLOOR, false);
     }
 }
 
 function createVTunnel(map, y1, y2, x) {
     for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-        map[y][x].blocked = false;
-        map[y][x].blockSight = false;
+        map.setTile(0, x, y, TILE_FLOOR, false);
     }
 }
 
 function createMap() {
-    const map = new Array(MAP_HEIGHT);
+    // Clear the map to all walls
     for (let y = 0; y < MAP_HEIGHT; y++) {
-        map[y] = new Array(MAP_WIDTH);
         for (let x = 0; x < MAP_WIDTH; x++) {
-            map[y][x] = new Tile(true);
+            map.setTile(0, x, y, TILE_WALL, true);
         }
     }
 
@@ -277,11 +61,11 @@ function createMap() {
         const h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
 
         // Random position without going out of the boundaries of the map
-        const x = rng.nextRange(0, MAP_WIDTH - w - 1);
-        const y = rng.nextRange(0, MAP_HEIGHT - h - 1);
+        const x = rng.nextRange(1, MAP_WIDTH - w - 2);
+        const y = rng.nextRange(1, MAP_HEIGHT - h - 2);
 
         // "Rect" class makes rectangles easier to work with
-        const newRoom = new Rect(x, y, w, h);
+        const newRoom = new wglt.Rect(x, y, w, h);
 
         // Run through the other rooms and see if they intersect with this one
         let failed = false;
@@ -305,6 +89,13 @@ function createMap() {
                 // This is the first room, where the player starts at
                 player.x = center.x;
                 player.y = center.y;
+
+                // TEMP: Give the player a fireball
+                const item = new wglt.Item(game, player.x, player.y + 1, 'fireball', new wglt.Sprite(144, 16, 16, 16, 1));
+                item.onPickup = pickupCallback;
+                item.onUse = castFireball;
+                game.items.push(item);
+
             } else {
                 // All rooms after the first:
                 // Connect it to the previous room with a tunnel
@@ -331,8 +122,6 @@ function createMap() {
             rooms.push(newRoom);
         }
     }
-
-    return map;
 }
 
 function placeObjects(room) {
@@ -349,17 +138,17 @@ function placeObjects(room) {
         // 80% chance of getting an orc
         if (rng.nextRange(0, 100) < 80) {
             // Create an orc
-            const fighter = new Fighter(10, 0, 3, monsterDeath);
-            const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', wglt.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
+            monster = new wglt.Entity(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
         } else {
             // Create a troll
-            const fighter = new Fighter(16, 1, 4, monsterDeath);
-            const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', wglt.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
+            monster = new wglt.Entity(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
         }
 
-        entities.push(monster);
+        monster.health = 20;
+        monster.ai = new wglt.BasicMonster(monster);
+        monster.onAttack = attackCallback;
+        monster.onDeath = monsterDeath;
+        game.entities.push(monster);
     }
 
     // Choose random number of items
@@ -367,210 +156,56 @@ function placeObjects(room) {
 
     for (let i = 0; i < numItems; i++) {
         // Choose random spot for this item
-        const x = rng.nextRange(room.x1 + 1, room.x2 - 1)
-        const y = rng.nextRange(room.y1 + 1, room.y2 - 1)
+        const x = rng.nextRange(room.x1 + 1, room.x2 - 1);
+        const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
 
         const dice = rng.nextRange(0, 100);
-        let item = null;
+        let itemName = null;
+        let itemSprite = null;
+        let itemUse = null;
 
         if (dice < 50) {
             // Create a healing potion (50% chance)
-            item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: new Item(castHeal) });
+            itemName = 'healing potion';
+            itemSprite = new wglt.Sprite(128, 16, 16, 16, 1);
+            itemUse = castHeal;
 
         } else if (dice < 50 + 20) {
             // Create a lightning bolt scroll (20% chance)
-            item = new Entity(x, y, '#', 'scroll of lightning bolt', wglt.Colors.YELLOW, false, { item: new Item(castLightning) });
+            itemName = 'scroll of lightning bolt';
+            itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
+            itemUse = castLightning;
 
         } else if (dice < 50 + 20 + 15) {
             // Create a fireball scroll (15% chance)
-            item = new Entity(x, y, '#', 'scroll of fireball', wglt.Colors.YELLOW, false, { item: new Item(castFireball) });
+            itemName = 'scroll of fireball';
+            itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
+            itemUse = castFireball;
 
         } else {
             // Create a confuse scroll (15% chance)
-            item = new Entity(x, y, '#', 'scroll of confusion', wglt.Colors.YELLOW, false, { item: new Item(castConfuse) });
+            itemName = 'scroll of confusion';
+            itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
+            itemUse = castConfuse;
         }
 
-        entities.push(item);
-        item.sendToBack();  // items appear below other objects
+        const item = new wglt.Item(game, x, y, itemName, itemSprite);
+        item.onPickup = pickupCallback;
+        item.onUse = itemUse;
+        game.items.push(item);
     }
 }
 
-function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {
-    // Render a bar (HP, experience, etc). first calculate the width of the bar
-    const barWidth = Math.round(value / maximum * totalWidth);
-
-    // Render the background first
-    term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
-
-    // Now render the bar on top
-    if (barWidth > 0) {
-        term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
-    }
-
-    // Finally, some centered text with the values
-    // term.fillForegroundRect(x, y, totalWidth, 1, wglt.Colors.WHITE);
-    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, wglt.Colors.WHITE);
-}
-
-function getNamesUnderMouse() {
-    const x = term.mouse.x;
-    const y = term.mouse.y;
-
-    if (!fovMap.isVisible(x, y)) {
-        return '';
-    }
-
-    const names = [];
-
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
-        if (entity.x === x && entity.y === y) {
-            names.push(entity.name);
-        }
-    }
-
-    return capitalize(names.join(', '));
-}
-
-function addMessage(msg, opt_color) {
-    while (messages.length >= MSG_HEIGHT) {
-        messages.shift();
-    }
-    messages.push({ text: msg, color: (opt_color || wglt.Colors.WHITE) });
-}
-
-function capitalize(str) {
-    if (!str) {
-        return str;
-    }
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function playerMoveOrAttack(dx, dy) {
-    const x = player.x + dx;
-    const y = player.y + dy;
-
-    let target = null;
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
-        if (entity.fighter && entity.x === x && entity.y === y) {
-            target = entity;
-            break;
-        }
-    }
-
-    if (target) {
-        player.fighter.attack(target);
-    } else {
-        player.move(dx, dy);
-        fovRecompute = true;
-    }
-
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
-        if (entity.ai) {
-            entity.ai.takeTurn();
-        }
-    }
-}
-
-function handleKeys() {
-    if (player.fighter.hp <= 0) {
-        return;
-    }
-
-    if (gui.handleInput()) {
-        return;
-    }
-
-    if (targetFunction) {
-        if (term.isKeyPressed(wglt.Keys.VK_ENTER) || term.mouse.buttons[0]) {
-            endTargeting(targetCursor.x, targetCursor.y);
-        }
-        if (term.isKeyPressed(wglt.Keys.VK_ESCAPE) || term.mouse.buttons[2]) {
-            cancelTargeting();
-        }
-        if (term.isKeyPressed(wglt.Keys.VK_UP)) {
-            targetCursor.y--;
-        }
-        if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
-            targetCursor.x--;
-        }
-        if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
-            targetCursor.x++;
-        }
-        if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
-            targetCursor.y++;
-        }
-        if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
-            targetCursor.x = term.mouse.x;
-            targetCursor.y = term.mouse.y;
-        }
-        return;
-    }
-
-    if (term.isKeyPressed(wglt.Keys.VK_ESCAPE)) {
-        saveGame();
-        appState = 'menu';
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_UP)) {
-        playerMoveOrAttack(0, -1);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {
-        playerMoveOrAttack(-1, 0);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {
-        playerMoveOrAttack(1, 0);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {
-        playerMoveOrAttack(0, 1);
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_G)) {
-        // Pick up an item
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            if (entity.x === player.x && entity.y === player.y && entity.item) {
-                entity.item.pickUp();
-            }
-        }
-    }
-    if (term.isKeyPressed(wglt.Keys.VK_I)) {
-        if (inventory.length === 0) {
-            gui.add(new wglt.MessageDialog('ALERT', 'Inventory is empty'));
-        } else {
-            const options = inventory.map(item => item.name);
-            gui.add(new wglt.SelectDialog('INVENTORY', options, useInventory));
-        }
-    }
-}
-
-function useInventory(choice) {
-    if (choice >= 0) {
-        inventory[choice].item.use();
-    }
-}
-
-function playerDeath(player) {
-    addMessage('You died!', wglt.Colors.LIGHT_RED);
-}
-
-function monsterDeath(monster) {
-    addMessage(capitalize(monster.name) + ' is dead!', wglt.Colors.BROWN);
-    monster.char = '%';
-    monster.color = wglt.Colors.DARK_RED;
-    monster.blocks = false;
-    monster.fighter = null;
-    monster.ai = null;
-    monster.name = 'remains of ' + monster.name;
-    monster.sendToBack();
+function pickupCallback(entity, item) {
+    messageLog.add(entity.name + ' picked up a ' + item.name, wglt.Colors.LIGHT_GREEN);
 }
 
 function getClosestMonster(x, y, range) {
     let minDist = range + 1;
     let result = null;
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
-        if (entity.fighter && entity !== player) {
+    for (let i = 0; i < game.entities.length; i++) {
+        const entity = game.entities[i];
+        if (entity !== app.player) {
             const dist = entity.distance(x, y);
             if (dist < minDist) {
                 minDist = dist;
@@ -585,15 +220,15 @@ function getMonsterAt(x, y) {
     return getClosestMonster(x, y, 0);
 }
 
-function castHeal(item) {
+function castHeal(item, entity) {
     // Heal the player
-    if (player.fighter.hp === player.fighter.maxHp) {
-        addMessage('You are already at full health.', wglt.Colors.DARK_RED);
+    if (entity.health === entity.maxHealth) {
+        messageLog.add('You are already at full health.', wglt.Colors.DARK_RED);
         return;
     }
 
-    addMessage('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
-    player.fighter.heal(HEAL_AMOUNT);
+    messageLog.add('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
+    entity.health += HEAL_AMOUNT;
     item.remove();
 }
 
@@ -601,217 +236,186 @@ function castLightning(item) {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
     if (!monster) {
-        addMessage('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
+        messageLog.add('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
         return;
     }
 
     // Zap it!
-    addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
-    addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
-    monster.fighter.takeDamage(LIGHTNING_DAMAGE);
+    messageLog.add('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
+    messageLog.add('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
+    monster.takeDamage(LIGHTNING_DAMAGE);
     item.remove();
 }
 
 function castFireball(item) {
     // Ask the player for a target tile to throw a fireball at
-    addMessage('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
-    startTargeting((x, y) => {
-        if (player.distance(x, y) > FIREBALL_RANGE) {
-            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);
+    messageLog.add('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    game.startTargeting((x, y) => {
+        const distance = player.distance(x, y);
+        if (distance > FIREBALL_RANGE) {
+            messageLog.add('Target out of range.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
-        addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
+        const speed = 8;
+        const count = distance * (game.tileWidth / speed);
+        const dx = (x * game.tileWidth - player.pixelX) / count;
+        const dy = (y * game.tileHeight - player.pixelY) / count;
 
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
-            if (entity.fighter && entity.distance(x, y) <= FIREBALL_RADIUS) {
-                addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
-                entity.fighter.takeDamage(FIREBALL_DAMAGE);
+        game.effects.push(new wglt.ProjectileEffect(
+            new wglt.Sprite(128, 32, 16, 16, 3, false),
+            new wglt.MutVec2(player.pixelX, player.pixelY),
+            new wglt.Vec2(dx, dy),
+            count
+        ));
+
+        game.effects.push(new wglt.ProjectileEffect(
+            new wglt.Sprite(176, 32, 16, 16, 4, false, 4),
+            new wglt.MutVec2(x * game.tileWidth, y * game.tileHeight),
+            new wglt.Vec2(0, 0),
+            16
+        ));
+
+        messageLog.add('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
+
+        for (let i = 0; i < game.entities.length; i++) {
+            const entity = game.entities[i];
+            if (entity.distance(x, y) <= FIREBALL_RADIUS) {
+                messageLog.add('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
+                entity.takeDamage(FIREBALL_DAMAGE);
             }
         }
 
-        item.remove();
+        player.actionPoints = 0;
+        //item.remove();
     });
 }
 
 function castConfuse(item) {
     // Ask the player for a target to confuse
-    addMessage('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
-    startTargeting((x, y) => {
+    messageLog.add('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    app.startTargeting((x, y) => {
         if (player.distance(x, y) > CONFUSE_RANGE) {
-            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            messageLog.add('Target out of range.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
         const monster = getMonsterAt(x, y);
         if (!monster) {
-            addMessage('No monster there.', wglt.Colors.LIGHT_GRAY);
+            messageLog.add('No monster there.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
         monster.ai = new ConfusedMonster(monster.ai);
         monster.ai.owner = monster;
-        addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
+        messageLog.add('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
         item.remove();
     });
 }
 
-function startTargeting(callback) {
-    targetFunction = callback;
-    targetCursor.x = player.x;
-    targetCursor.y = player.y;
-}
-
-function endTargeting(x, y) {
-    targetFunction(x, y);
-    cancelTargeting();
-}
-
-function cancelTargeting() {
-    targetFunction = null;
-}
-
-function renderAll() {
-    if (fovRecompute) {
-        fovMap.computeFov(player.x, player.y, TORCH_RADIUS);
-        fovRecompute = false;
+function attackCallback(attacker, target, damage) {
+    if (damage > 0) {
+        messageLog.add(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
+    } else {
+        messageLog.add(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
     }
-
-    term.clear();
-
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            const visible = fovMap.isVisible(x, y);
-            const wall = map[y][x].blockSight;
-            let color = wglt.Colors.BLACK;
-
-            if (visible) {
-                // It's visible
-                color = wall ? COLOR_LIGHT_WALL : COLOR_LIGHT_GROUND;
-                map[y][x].explored = true;
-            } else if (map[y][x].explored) {
-                // It's remembered
-                color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
-            }
-
-            term.drawChar(x, y, 0, 0, color);
-        }
-    }
-
-    for (let i = 0; i < entities.length; i++) {
-        entities[i].draw();
-    }
-
-    // Prepare to render the GUI panel
-    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, wglt.Colors.WHITE, wglt.Colors.BLACK);
-
-    // Print the game messages, one line at a time
-    y = PANEL_Y + 1;
-    for (let i = 0; i < messages.length; i++) {
-        const message = messages[i];
-        term.drawString(MSG_X, y, message.text, message.color);
-        y++;
-    }
-
-    // Show the player's stats
-    renderBar(
-        1, PANEL_Y + 1, BAR_WIDTH,
-        'HP', player.fighter.hp, player.fighter.maxHp,
-        wglt.Colors.LIGHT_RED, wglt.Colors.DARK_RED);
-
-    // Display names of objects under the mouse
-    term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);
-
-    if (targetFunction) {
-        term.getCell(targetCursor.x, targetCursor.y).setBackground(wglt.Colors.WHITE);
-    }
-
-    // Draw dialog boxes
-    gui.draw();
 }
 
-function saveGame() {
-    // TODO: JSON.stringify does not support prototypes and circular references
-    // Investigate Cryo: https://github.com/hunterloftis/cryo
+function playerDeath(player) {
+    messageLog.add('You died!');
 }
 
-function loadGame() {
-    // TODO
-    if (!player) {
-        return;
-    }
-    appState = 'game';
+function monsterDeath(monster) {
+    messageLog.add(monster.name + ' is dead');
+    monster.char = '%';
+    monster.color = wglt.Colors.DARK_RED;
+    monster.blocks = false;
+    monster.ai = null;
+    monster.name = 'remains of ' + monster.name;
+    monster.sendToBack();
 }
 
-function newGame() {
-    rng = new wglt.RNG(Date.now());
-    player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
-    entities = [player];
-    messages = [];
-    map = createMap();
-    fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
-    fovRecompute = true;
-    inventory = [];
-    addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
-    appState = 'game';
-}
+const app = new wglt.App({
+    canvas: document.querySelector('canvas'),
+    imageUrl: '../graphics.png',
+    width: 400,
+    height: 224,
+});
 
-function playGame() {
-    handleKeys();
-    renderAll();
-}
+const game = new wglt.Game(app, {
+    tileWidth: 16,
+    tileHeight: 16
+});
 
-function mainMenu() {
-    if (gui.dialogs.length === 0) {
-        const options = ['Play a new game', 'Continue last game'];
-        gui.add(new wglt.SelectDialog('MAIN MENU', options, (choice) => {
-            if (choice === 0) {
-                newGame();
-            } else if (choice === 1) {
-                loadGame();
-            }
-        }));
-    }
+game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
+game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 
-    gui.handleInput();
+const rng = new wglt.RNG(1);
+const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
+const player = new wglt.Entity(game, 30, 20, 'Player', sprite, true);
+player.onAttack = attackCallback;
+player.onDeath = playerDeath;
 
-    term.clear();
+const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);
+game.tileMap = map;
+game.player = player;
+game.entities.push(player);
 
-    if (menuBg) {
-        term.drawConsole(0, 0, menuBg, 0, 0, 80, 50);
-    }
+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 224 - 50, 100, 100));
+messageLog.add('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+game.gui.add(messageLog);
 
-    term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', wglt.Colors.YELLOW);
-    term.drawCenteredString(40, 12, 'By Jotaf', wglt.Colors.YELLOW);
-    gui.draw();
-}
+const playerStats = new wglt.Panel(game.gui, new wglt.Rect(1, 1, 100, 100));
+playerStats.drawContents = function () {
+    const frameY = 0;
+    const hpPercent = player.health / player.maxHealth;
+    app.drawString(player.name, 1, frameY);
+    app.drawImage(0, frameY + 7, 32, 64, 32, 12);
+    app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
+    app.drawString(player.health + '/' + player.maxHealth, 3, frameY + 10);
+};
+game.gui.add(playerStats);
 
-const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const gui = new wglt.GUI(term);
-let rng = null;
-let player = null;
-let entities = null;
-let messages = null;
-let map = null;
-let fovMap = null;
-let fovRecompute = true;
-let inventory = null;
-let targetFunction = null;
-let targetCursor = { x: 0, y: 0 };
-let appState = 'menu';
-let menuBg = null;
-
-wglt.loadImage2x('menu.png', (result) => { menuBg = result });
-
-term.update = function () {
-    switch (appState) {
-        case 'menu':
-            mainMenu();
-            break;
-
-        case 'game':
-            playGame();
-            break;
+game.onUpdate = function () {
+    if (app.isKeyPressed(wglt.Keys.VK_I)) {
+        // Show inventory
+        game.gui.add(new wglt.SelectDialog(
+            game.gui,
+            new wglt.Rect(40, 40, 100, 100),
+            'INVENTORY',
+            player.inventory,
+            (choice) => {
+                choice.use(player);
+            }));
     }
 };
+
+// Generate the map
+createMap();
+
+// Initial FOV
+game.tileMap.computeFov(player.x, player.y, 12);
+
+const mainMenu = new wglt.AppState(app);
+mainMenu.update = function() {
+    // Draw background
+    app.drawImage(0, 0, 0, 768, 400, 224);
+
+    // Draw menu
+    app.drawCenteredString('NEW GAME', app.center.x + 1, 100, wglt.Colors.BLACK);
+    app.drawCenteredString('NEW GAME', app.center.x, 101, wglt.Colors.BLACK);
+    app.drawCenteredString('NEW GAME', app.center.x + 1, 101, wglt.Colors.BLACK);
+    app.drawCenteredString('NEW GAME', app.center.x, 100, wglt.Colors.WHITE);
+
+    app.drawCenteredString('CONTINUE', app.center.x + 1, 120, wglt.Colors.BLACK);
+    app.drawCenteredString('CONTINUE', app.center.x, 121, wglt.Colors.BLACK);
+    app.drawCenteredString('CONTINUE', app.center.x + 1, 121, wglt.Colors.BLACK);
+    app.drawCenteredString('CONTINUE', app.center.x, 120, wglt.Colors.LIGHT_GRAY);
+
+    if (app.isKeyPressed(wglt.Keys.VK_ENTER)) {
+        app.state = game;
+    }
+};
+
+// app.state = game;
+app.state = mainMenu;

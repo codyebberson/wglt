@@ -12,150 +12,70 @@
     <p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_7">Part 7: The GUI</a></p>
     <p>A juicy Graphical User Interface with status bars and a colored message log for maximum eye-candy. Also, the infamous "look" command, with a twist: you can use the mouse.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part6.js	2018-11-23 18:00:42.442518600 -0800</div>
-<div class="c2">+++ part7.js	2018-11-23 18:00:47.846571200 -0800</div>
-<div class="c1">@@ -5,7 +5,15 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part6.js	2019-02-16 11:58:24.000000000 -0800</div>
+<div class="c2">+++ part7.js	2019-02-16 12:00:06.000000000 -0800</div>
+<div class="c1">@@ -128,17 +128,26 @@</div>
 <div class="c0"> </div>
-<div class="c0"> // Size of the map</div>
-<div class="c0"> const MAP_WIDTH = 80;</div>
-<div class="c3">-const MAP_HEIGHT = 45;</div>
-<div class="c2">+const MAP_HEIGHT = 43;</div>
-<div class="c2">+</div>
-<div class="c2">+// Sizes and coordinates relevant for the GUI</div>
-<div class="c2">+const BAR_WIDTH = 20;</div>
-<div class="c2">+const PANEL_HEIGHT = 7;</div>
-<div class="c2">+const PANEL_Y = SCREEN_HEIGHT - PANEL_HEIGHT;</div>
-<div class="c2">+const MSG_X = BAR_WIDTH + 2;</div>
-<div class="c2">+const MSG_WIDTH = SCREEN_WIDTH - BAR_WIDTH - 2;</div>
-<div class="c2">+const MSG_HEIGHT = PANEL_HEIGHT - 1;</div>
-<div class="c0"> </div>
-<div class="c0"> // Parameters for dungeon generator</div>
-<div class="c0"> const ROOM_MAX_SIZE = 10;</div>
-<div class="c1">@@ -108,10 +116,10 @@</div>
-<div class="c0">         const damage = this.power - target.fighter.defense;</div>
-<div class="c0"> </div>
-<div class="c0">         if (damage &gt; 0) {</div>
-<div class="c3">-            console.log(this.owner.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.');</div>
-<div class="c2">+            addMessage(capitalize(this.owner.name) + ' attacks ' + target.name + ' for ' + damage + ' hit points.');</div>
-<div class="c0">             target.fighter.takeDamage(damage);</div>
-<div class="c0">         } else {</div>
-<div class="c3">-            console.log(this.owner.name + ' attacks ' + target.name + ' but it has no effect!');</div>
-<div class="c2">+            addMessage(capitalize(this.owner.name) + ' attacks ' + target.name + ' but it has no effect!');</div>
-<div class="c0">         }</div>
-<div class="c0">     };</div>
-<div class="c0"> </div>
-<div class="c1">@@ -292,6 +300,57 @@</div>
+<div class="c0">         monster.health = 20;</div>
+<div class="c0">         monster.ai = new wglt.BasicMonster(monster);</div>
+<div class="c2">+        monster.onAttack = attackCallback;</div>
+<div class="c0">         monster.onDeath = monsterDeath;</div>
+<div class="c0">         game.entities.push(monster);</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {</div>
-<div class="c2">+    // Render a bar (HP, experience, etc). first calculate the width of the bar</div>
-<div class="c2">+    const barWidth = Math.round(value / maximum * totalWidth);</div>
-<div class="c2">+</div>
-<div class="c2">+    // Render the background first</div>
-<div class="c2">+    term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);</div>
-<div class="c2">+</div>
-<div class="c2">+    // Now render the bar on top</div>
-<div class="c2">+    if (barWidth &gt; 0) {</div>
-<div class="c2">+        term.fillRect(x, y, barWidth, 1, 0, 0, barColor);</div>
+<div class="c2">+function attackCallback(attacker, target, damage) {</div>
+<div class="c2">+    if (damage &gt; 0) {</div>
+<div class="c2">+        messageLog.add(attacker.name + &#x27; attacks &#x27; + target.name + &#x27; for &#x27; + damage + &#x27; hit points.&#x27;, 0x808080FF);</div>
+<div class="c2">+    } else {</div>
+<div class="c2">+        messageLog.add(attacker.name + &#x27; attacks &#x27; + target.name + &#x27; but it has no effect!&#x27;, 0x808080FF);</div>
 <div class="c2">+    }</div>
-<div class="c2">+</div>
-<div class="c2">+    // Finally, some centered text with the values</div>
-<div class="c2">+    // term.fillForegroundRect(x, y, totalWidth, 1, wglt.Colors.WHITE);</div>
-<div class="c2">+    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, wglt.Colors.WHITE);</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function getNamesUnderMouse() {</div>
-<div class="c2">+    const x = term.mouse.x;</div>
-<div class="c2">+    const y = term.mouse.y;</div>
-<div class="c2">+</div>
-<div class="c2">+    if (!fovMap.isVisible(x, y)) {</div>
-<div class="c2">+        return '';</div>
-<div class="c2">+    }</div>
-<div class="c2">+</div>
-<div class="c2">+    const names = [];</div>
-<div class="c2">+</div>
-<div class="c2">+    for (let i = 0; i &lt; entities.length; i++) {</div>
-<div class="c2">+        const entity = entities[i];</div>
-<div class="c2">+        if (entity.x === x &amp;&amp; entity.y === y) {</div>
-<div class="c2">+            names.push(entity.name);</div>
-<div class="c2">+        }</div>
-<div class="c2">+    }</div>
-<div class="c2">+</div>
-<div class="c2">+    return capitalize(names.join(', '));</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c2">+function addMessage(msg, opt_color) {</div>
-<div class="c2">+    while (messages.length &gt;= MSG_HEIGHT) {</div>
-<div class="c2">+        messages.shift();</div>
-<div class="c2">+    }</div>
-<div class="c2">+    messages.push({ text: msg, color: (opt_color || wglt.Colors.WHITE) });</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c2">+function capitalize(str) {</div>
-<div class="c2">+    if (!str) {</div>
-<div class="c2">+        return str;</div>
-<div class="c2">+    }</div>
-<div class="c2">+    return str.charAt(0).toUpperCase() + str.slice(1);</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c0"> function playerMoveOrAttack(dx, dy) {</div>
-<div class="c0">     const x = player.x + dx;</div>
-<div class="c0">     const y = player.y + dy;</div>
-<div class="c1">@@ -339,11 +398,11 @@</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
 <div class="c0"> function playerDeath(player) {</div>
-<div class="c3">-    console.log('You died!');</div>
-<div class="c2">+    addMessage('You died!', wglt.Colors.LIGHT_RED);</div>
+<div class="c3">-    console.log(&#x27;You died!&#x27;);</div>
+<div class="c2">+    messageLog.add(&#x27;You died!&#x27;);</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function monsterDeath(monster) {</div>
-<div class="c3">-    console.log(monster.name + ' is dead');</div>
-<div class="c2">+    addMessage(capitalize(monster.name) + ' is dead!', wglt.Colors.BROWN);</div>
-<div class="c0">     monster.char = '%';</div>
+<div class="c3">-    console.log(monster.name + &#x27; is dead&#x27;);</div>
+<div class="c2">+    messageLog.add(monster.name + &#x27; is dead&#x27;);</div>
+<div class="c0">     monster.char = &#x27;%&#x27;;</div>
 <div class="c0">     monster.color = wglt.Colors.DARK_RED;</div>
 <div class="c0">     monster.blocks = false;</div>
-<div class="c1">@@ -383,16 +442,39 @@</div>
-<div class="c0">     for (let i = 0; i &lt; entities.length; i++) {</div>
-<div class="c0">         entities[i].draw();</div>
-<div class="c0">     }</div>
-<div class="c2">+</div>
-<div class="c2">+    // Prepare to render the GUI panel</div>
-<div class="c2">+    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, wglt.Colors.WHITE, wglt.Colors.BLACK);</div>
-<div class="c2">+</div>
-<div class="c2">+    // Print the game messages, one line at a time</div>
-<div class="c2">+    y = PANEL_Y + 1;</div>
-<div class="c2">+    for (let i = 0; i &lt; messages.length; i++) {</div>
-<div class="c2">+        const message = messages[i];</div>
-<div class="c2">+        term.drawString(MSG_X, y, message.text, message.color);</div>
-<div class="c2">+        y++;</div>
-<div class="c2">+    }</div>
-<div class="c2">+</div>
-<div class="c2">+    // Show the player's stats</div>
-<div class="c2">+    renderBar(</div>
-<div class="c2">+        1, PANEL_Y + 1, BAR_WIDTH,</div>
-<div class="c2">+        'HP', player.fighter.hp, player.fighter.maxHp,</div>
-<div class="c2">+        wglt.Colors.LIGHT_RED, wglt.Colors.DARK_RED);</div>
-<div class="c2">+</div>
-<div class="c2">+    // Display names of objects under the mouse</div>
-<div class="c2">+    term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c0"> const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c1">@@ -163,16 +172,29 @@</div>
 <div class="c0"> const rng = new wglt.RNG(1);</div>
-<div class="c0"> const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
-<div class="c0"> const entities = [player];</div>
-<div class="c2">+const messages = [];</div>
-<div class="c0"> const map = createMap();</div>
-<div class="c0"> const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
-<div class="c0"> let fovRecompute = true;</div>
-<div class="c0"> </div>
-<div class="c2">+addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);</div>
+<div class="c0"> const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);</div>
+<div class="c0"> const player = new wglt.Entity(game, 30, 20, &#x27;Player&#x27;, sprite, true);</div>
+<div class="c2">+player.onAttack = attackCallback;</div>
+<div class="c2">+player.onDeath = playerDeath;</div>
 <div class="c2">+</div>
-<div class="c0"> term.update = function () {</div>
-<div class="c0">     handleKeys();</div>
-<div class="c0">     renderAll();</div>
+<div class="c0"> const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);</div>
+<div class="c0"> game.tileMap = map;</div>
+<div class="c0"> game.player = player;</div>
+<div class="c0"> game.entities.push(player);</div>
+<div class="c0"> </div>
+<div class="c3">-const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 1, 100, 100));</div>
+<div class="c3">-messageLog.add(&#x27;Hello world!&#x27;);</div>
+<div class="c3">-messageLog.add(&#x27;Use arrow keys to move&#x27;);</div>
+<div class="c2">+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 224 - 50, 100, 100));</div>
+<div class="c2">+messageLog.add(&#x27;Welcome stranger! Prepare to perish!&#x27;, wglt.Colors.DARK_RED);</div>
+<div class="c0"> game.gui.add(messageLog);</div>
+<div class="c0"> </div>
+<div class="c2">+const playerStats = new wglt.Panel(game.gui, new wglt.Rect(1, 1, 100, 100));</div>
+<div class="c2">+playerStats.drawContents = function() {</div>
+<div class="c2">+    const frameY = 0;</div>
+<div class="c2">+    const hpPercent = player.health / player.maxHealth;</div>
+<div class="c2">+    app.drawString(player.name, 1, frameY);</div>
+<div class="c2">+    app.drawImage(0, frameY + 7, 32, 64, 32, 12);</div>
+<div class="c2">+    app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));</div>
+<div class="c2">+    app.drawString(player.health + &#x27;/&#x27; + player.maxHealth, 3, frameY + 10);</div>
+<div class="c2">+};</div>
+<div class="c2">+game.gui.add(playerStats);</div>
+<div class="c2">+</div>
+<div class="c0"> // Generate the map</div>
+<div class="c0"> createMap();</div>
+<div class="c0"> </div>
 <!--ENDDIFF-->
     </div>
     <script src="../../dist/index.js"></script>

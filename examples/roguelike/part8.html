@@ -12,68 +12,19 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_8">Part 8: Items and Inventory</a></p>
 	<p>The player gets to collect ("borrow") items from the dungeon and use them, with a neat inventory screen. More items added in the next part.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part7.js	2018-11-23 18:00:47.846571200 -0800</div>
-<div class="c2">+++ part8.js	2018-11-23 18:00:58.025463300 -0800</div>
-<div class="c1">@@ -20,8 +20,12 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part7.js	2019-02-16 12:00:06.000000000 -0800</div>
+<div class="c2">+++ part8.js	2019-02-16 12:00:13.000000000 -0800</div>
+<div class="c1">@@ -12,6 +12,7 @@</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
 <div class="c0"> const MAX_ROOM_MONSTERS = 3;</div>
 <div class="c2">+const MAX_ROOM_ITEMS = 2;</div>
 <div class="c0"> const TORCH_RADIUS = 10;</div>
 <div class="c0"> </div>
-<div class="c2">+// Spell values</div>
-<div class="c2">+const HEAL_AMOUNT = 4;</div>
-<div class="c2">+</div>
-<div class="c0"> const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);</div>
-<div class="c0"> const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);</div>
-<div class="c0"> const COLOR_DARK_GROUND = wglt.fromRgb(50, 50, 150);</div>
-<div class="c1">@@ -134,6 +138,10 @@</div>
-<div class="c0">             }</div>
-<div class="c0">         }</div>
-<div class="c0">     };</div>
-<div class="c2">+</div>
-<div class="c2">+    this.heal = function (amount) {</div>
-<div class="c2">+        this.hp = Math.min(this.hp + amount, this.maxHp);</div>
-<div class="c2">+    };</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c0"> function BasicMonster() {</div>
-<div class="c1">@@ -157,6 +165,32 @@</div>
-<div class="c0">     };</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c2">+function Item(useFunction) {</div>
-<div class="c2">+    this.useFunction = useFunction;</div>
-<div class="c2">+</div>
-<div class="c2">+    this.pickUp = function () {</div>
-<div class="c2">+        if (inventory.length &gt;= 26) {</div>
-<div class="c2">+            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', wglt.Colors.LIGHT_RED);</div>
-<div class="c2">+        } else {</div>
-<div class="c2">+            inventory.push(this.owner);</div>
-<div class="c2">+            this.owner.remove();</div>
-<div class="c2">+            addMessage('You picked up a ' + this.owner.name + '!', wglt.Colors.LIGHT_GREEN);</div>
-<div class="c2">+        }</div>
-<div class="c2">+    };</div>
-<div class="c2">+</div>
-<div class="c2">+    this.use = function () {</div>
-<div class="c2">+        if (this.useFunction) {</div>
-<div class="c2">+            this.useFunction(this);</div>
-<div class="c2">+        } else {</div>
-<div class="c2">+            addMessage('The ' + this.owner.name + ' cannot be used.');</div>
-<div class="c2">+        }</div>
-<div class="c2">+    };</div>
-<div class="c2">+</div>
-<div class="c2">+    this.remove = function () {</div>
-<div class="c2">+        inventory.splice(inventory.indexOf(this.owner), 1);</div>
-<div class="c2">+    };</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c0"> function isBlocked(x, y) {</div>
-<div class="c0">     // First test the map tile</div>
-<div class="c0">     if (map[y][x].blocked) {</div>
-<div class="c1">@@ -298,6 +332,23 @@</div>
-<div class="c0"> </div>
-<div class="c0">         entities.push(monster);</div>
+<div class="c0"> function createRoom(map, room) {</div>
+<div class="c1">@@ -132,6 +133,37 @@</div>
+<div class="c0">         monster.onDeath = monsterDeath;</div>
+<div class="c0">         game.entities.push(monster);</div>
 <div class="c0">     }</div>
 <div class="c2">+</div>
 <div class="c2">+    // Choose random number of items</div>
@@ -81,102 +32,80 @@
 <div class="c2">+</div>
 <div class="c2">+    for (let i = 0; i &lt; numItems; i++) {</div>
 <div class="c2">+        // Choose random spot for this item</div>
-<div class="c2">+        const x = rng.nextRange(room.x1 + 1, room.x2 - 1)</div>
-<div class="c2">+        const y = rng.nextRange(room.y1 + 1, room.y2 - 1)</div>
+<div class="c2">+        const x = rng.nextRange(room.x1 + 1, room.x2 - 1);</div>
+<div class="c2">+        const y = rng.nextRange(room.y1 + 1, room.y2 - 1);</div>
 <div class="c2">+</div>
 <div class="c2">+        // Create a healing potion</div>
-<div class="c2">+        const itemComponent = new Item(castHeal);</div>
-<div class="c2">+</div>
-<div class="c2">+        const item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: itemComponent });</div>
-<div class="c2">+</div>
-<div class="c2">+        entities.push(item);</div>
-<div class="c2">+        item.sendToBack();  // items appear below other objects</div>
-<div class="c2">+    }</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c0"> function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {</div>
-<div class="c1">@@ -383,6 +434,11 @@</div>
-<div class="c0">     if (player.fighter.hp &lt;= 0) {</div>
-<div class="c0">         return;</div>
-<div class="c0">     }</div>
-<div class="c2">+</div>
-<div class="c2">+    if (gui.handleInput()) {</div>
-<div class="c2">+        return;</div>
-<div class="c2">+    }</div>
-<div class="c2">+</div>
-<div class="c0">     if (term.isKeyPressed(wglt.Keys.VK_UP)) {</div>
-<div class="c0">         playerMoveOrAttack(0, -1);</div>
-<div class="c0">     }</div>
-<div class="c1">@@ -395,6 +451,29 @@</div>
-<div class="c0">     if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {</div>
-<div class="c0">         playerMoveOrAttack(0, 1);</div>
-<div class="c0">     }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_G)) {</div>
-<div class="c2">+        // Pick up an item</div>
-<div class="c2">+        for (let i = 0; i &lt; entities.length; i++) {</div>
-<div class="c2">+            const entity = entities[i];</div>
-<div class="c2">+            if (entity.x === player.x &amp;&amp; entity.y === player.y &amp;&amp; entity.item) {</div>
-<div class="c2">+                entity.item.pickUp();</div>
-<div class="c2">+            }</div>
-<div class="c2">+        }</div>
-<div class="c2">+    }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_I)) {</div>
-<div class="c2">+        if (inventory.length === 0) {</div>
-<div class="c2">+            gui.add(new wglt.MessageDialog(term, 'ALERT', 'Inventory is empty'));</div>
-<div class="c2">+        } else {</div>
-<div class="c2">+            const options = inventory.map(item =&gt; item.name);</div>
-<div class="c2">+            gui.add(new wglt.SelectDialog(term, 'INVENTORY', options, useInventory));</div>
-<div class="c2">+        }</div>
+<div class="c2">+        const item = new wglt.Item(app, x, y, &#x27;healing potion&#x27;, new wglt.Sprite(128, 16, 16, 16, 1));</div>
+<div class="c2">+        item.onPickup = pickupCallback;</div>
+<div class="c2">+        item.onUse = castHeal;</div>
+<div class="c2">+        app.items.push(item);</div>
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function useInventory(choice) {</div>
-<div class="c2">+    if (choice &gt;= 0) {</div>
-<div class="c2">+        inventory[choice].item.use();</div>
-<div class="c2">+    }</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c0"> function playerDeath(player) {</div>
-<div class="c1">@@ -412,6 +491,18 @@</div>
-<div class="c0">     monster.sendToBack();</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c2">+function castHeal(item) {</div>
+<div class="c2">+function pickupCallback(entity, item) {</div>
+<div class="c2">+    messageLog.add(entity.name + &#x27; picked up a &#x27; + item.name, wglt.Colors.LIGHT_GREEN);</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c2">+function castHeal(item, entity) {</div>
 <div class="c2">+    // Heal the player</div>
-<div class="c2">+    if (player.fighter.hp === player.fighter.maxHp) {</div>
-<div class="c2">+        addMessage('You are already at full health.', wglt.Colors.DARK_RED);</div>
+<div class="c2">+    if (entity.health === entity.maxHealth) {</div>
+<div class="c2">+        messageLog.add(&#x27;You are already at full health.&#x27;, wglt.Colors.DARK_RED);</div>
 <div class="c2">+        return;</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
-<div class="c2">+    addMessage('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);</div>
-<div class="c2">+    player.fighter.heal(HEAL_AMOUNT);</div>
+<div class="c2">+    messageLog.add(&#x27;Your wounds start to feel better!&#x27;, wglt.Colors.LIGHT_MAGENTA);</div>
+<div class="c2">+    entity.health += HEAL_AMOUNT;</div>
 <div class="c2">+    item.remove();</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c0"> function renderAll() {</div>
-<div class="c0">     if (fovRecompute) {</div>
-<div class="c0">         fovMap.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -462,9 +553,13 @@</div>
-<div class="c0"> </div>
-<div class="c0">     // Display names of objects under the mouse</div>
-<div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);</div>
-<div class="c2">+</div>
-<div class="c2">+    // Draw dialog boxes</div>
-<div class="c2">+    gui.draw();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
-<div class="c2">+const gui = new wglt.GUI(term);</div>
-<div class="c0"> const rng = new wglt.RNG(1);</div>
-<div class="c0"> const player = new Entity(40, 25, '@', 'player', wglt.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
-<div class="c0"> const entities = [player];</div>
-<div class="c1">@@ -472,6 +567,7 @@</div>
-<div class="c0"> const map = createMap();</div>
-<div class="c0"> const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
-<div class="c0"> let fovRecompute = true;</div>
-<div class="c2">+const inventory = [];</div>
+<div class="c0"> function attackCallback(attacker, target, damage) {</div>
+<div class="c1">@@ -151,7 +183,6 @@</div>
+<div class="c0">     monster.char = &#x27;%&#x27;;</div>
+<div class="c0">     monster.color = wglt.Colors.DARK_RED;</div>
+<div class="c0">     monster.blocks = false;</div>
+<div class="c3">-    monster.fighter = null;</div>
+<div class="c0">     monster.ai = null;</div>
+<div class="c0">     monster.name = &#x27;remains of &#x27; + monster.name;</div>
+<div class="c0">     monster.sendToBack();</div>
+<div class="c1">@@ -169,6 +200,8 @@</div>
+<div class="c0">     tileHeight: 16</div>
+<div class="c0"> });</div>
 <div class="c0"> </div>
-<div class="c0"> addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);</div>
+<div class="c2">+app.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);</div>
+<div class="c2">+</div>
+<div class="c0"> const rng = new wglt.RNG(1);</div>
+<div class="c0"> const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);</div>
+<div class="c0"> const player = new wglt.Entity(game, 30, 20, &#x27;Player&#x27;, sprite, true);</div>
+<div class="c1">@@ -185,7 +218,7 @@</div>
+<div class="c0"> game.gui.add(messageLog);</div>
+<div class="c0"> </div>
+<div class="c0"> const playerStats = new wglt.Panel(game.gui, new wglt.Rect(1, 1, 100, 100));</div>
+<div class="c3">-playerStats.drawContents = function() {</div>
+<div class="c2">+playerStats.drawContents = function () {</div>
+<div class="c0">     const frameY = 0;</div>
+<div class="c0">     const hpPercent = player.health / player.maxHealth;</div>
+<div class="c0">     app.drawString(player.name, 1, frameY);</div>
+<div class="c1">@@ -195,6 +228,20 @@</div>
+<div class="c0"> };</div>
+<div class="c0"> game.gui.add(playerStats);</div>
+<div class="c0"> </div>
+<div class="c2">+game.onUpdate = function () {</div>
+<div class="c2">+    if (app.isKeyPressed(wglt.Keys.VK_I)) {</div>
+<div class="c2">+        // Show inventory</div>
+<div class="c2">+        game.gui.add(new wglt.SelectDialog(</div>
+<div class="c2">+            game.gui,</div>
+<div class="c2">+            new wglt.Rect(40, 40, 100, 100),</div>
+<div class="c2">+            &#x27;INVENTORY&#x27;,</div>
+<div class="c2">+            player.inventory,</div>
+<div class="c2">+            (choice) =&gt; {</div>
+<div class="c2">+                choice.use(player);</div>
+<div class="c2">+            }));</div>
+<div class="c2">+    }</div>
+<div class="c2">+};</div>
+<div class="c2">+</div>
+<div class="c0"> // Generate the map</div>
+<div class="c0"> createMap();</div>
 <div class="c0"> </div>
 <!--ENDDIFF-->
     </div>

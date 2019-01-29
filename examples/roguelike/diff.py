@@ -1,12 +1,12 @@
 
-import cgi
+import html
 import subprocess
 
 def diff(old_file, new_file):
     proc = subprocess.Popen(["diff", "-u", old_file, new_file],
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     out, err = proc.communicate()
-    return out
+    return out.decode("utf-8")
 
 def diff2html(diff):
     result = ''
@@ -18,7 +18,7 @@ def diff2html(diff):
             classname = 'c2'
         elif line.startswith('-'):
             classname = 'c3'
-        result = result + '<div class="' + classname + '">' + cgi.escape(line) + '</div>\n'
+        result = result + '<div class="' + classname + '">' + html.escape(line) + '</div>\n'
     return result
 
 def update_diff(html_file, old_js, new_js):

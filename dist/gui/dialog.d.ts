@@ -1,11 +1,10 @@
-import { Console } from '../console';
-import { Point } from '../point';
+import { GUI } from '../gui';
 import { Rect } from '../rect';
-import { Terminal } from '../terminal';
-export declare abstract class Dialog {
-    readonly contentsRect: Rect;
+import { Panel } from './panel';
+export declare class Dialog extends Panel {
     readonly title: string;
-    constructor(contentsRect: Rect, title: string);
-    abstract drawContents(console: Console, offset: Point): void;
-    abstract handleInput(terminal: Terminal, offset: Point): object | boolean;
+    constructor(gui: GUI, rect: Rect, title: string);
+    drawContents(): void;
+    handleInput(): boolean;
+    close(): void;
 }

@@ -1,19 +1,29 @@
-
-import {Console} from '../console';
-import {Point} from '../point';
+import {GUI} from '../gui';
 import {Rect} from '../rect';
-import {Terminal} from '../terminal';
 
-export abstract class Dialog {
-  readonly contentsRect: Rect;
+import {Panel} from './panel';
+
+export class Dialog extends Panel {
   readonly title: string;
 
-  constructor(contentsRect: Rect, title: string) {
-    this.contentsRect = contentsRect;
+  constructor(gui: GUI, rect: Rect, title: string) {
+    super(gui, rect, true);
     this.title = title;
   }
 
-  abstract drawContents(console: Console, offset: Point): void;
+  drawContents() {
+    this.gui.renderer.draw(this.gui.app, this);
+  }
 
-  abstract handleInput(terminal: Terminal, offset: Point): object|boolean;
+  handleInput() {
+    return false;
+  }
+
+  close() {
+    const panels = this.gui.panels;
+    const index = panels.indexOf(this);
+    if (index >= 0) {
+      panels.splice(index, 1);
+    }
+  }
 }

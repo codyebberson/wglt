@@ -1,11 +1,11 @@
-import { FovCell, FovMap } from './fov';
-import { Point } from './point';
+import { TileMap, TileMapCell } from './tilemap';
+import { Vec2 } from './vec2';
 /**
  * Calculates Dijkstra's algorithm.
  *
  * @param {!Object} source Starting point, must have x and y properties.
- * @param {!Object=} opt_dest Optional destination point, must have x and y properties.
- * @param {!number=} opt_maxDist Optional maximum distance to examine.
+ * @param {!Object=} dest Optional destination point, must have x and y properties.
+ * @param {!number=} maxDist Optional maximum distance to examine.
  * @return {?Array} Array of steps if destination found; null otherwise.
  */
-export declare function computePath(map: FovMap, source: Point, dest: Point, maxDist: number): FovCell[] | null;
+export declare function computePath(map: TileMap, source: Vec2, dest: Vec2, maxDist: number): TileMapCell[] | undefined;

@@ -1,11 +1,11 @@
-import { Console } from '../console';
-import { Point } from '../point';
-import { Terminal } from '../terminal';
+import { GUI } from '../gui';
+import { Rect } from '../rect';
 import { Dialog } from './dialog';
+import { SelectOption } from './selectoption';
 export declare class SelectDialog extends Dialog {
-    options: string[];
+    options: SelectOption[];
     callback: Function;
-    constructor(title: string, options: string[], callback: (choice: number) => void);
-    drawContents(console: Console, offset: Point): void;
-    handleInput(terminal: Terminal, offset: Point): boolean;
+    constructor(gui: GUI, rect: Rect, title: string, options: SelectOption[], callback: Function);
+    drawContents(): void;
+    handleInput(): boolean;
 }

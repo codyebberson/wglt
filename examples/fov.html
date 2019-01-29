@@ -5,10 +5,32 @@
     <meta charset="utf-8">
     <title>WGLT - Examples - Field of View</title>
     <link href="../styles.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            image-rendering: pixelated;
+            border: 0;
+            outline: none;
+        }
+    </style>
 </head>
 
 <body>
-    <canvas></canvas>
+    <canvas style="width:224px; height:400px;"></canvas>
     <script src="../dist/index.js"></script>
     <script src="fov.js"></script>
 </body>

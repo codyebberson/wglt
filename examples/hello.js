@@ -1,26 +1,33 @@
 
-const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
-term.fillRect(0, 0, 80, 50, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
+const app = new wglt.App({
+    canvas: document.querySelector('canvas'),
+    imageUrl: 'graphics.png',
+    width: 400,
+    height: 224
+});
 
-let x = 10;
-let y = 10;
+const game = new wglt.Game(app, {});
 
-term.update = function () {
-    if (term.isKeyDown(wglt.Keys.VK_UP)) {
+let x = 20;
+let y = 20;
+
+game.onUpdate = function () {
+    if (app.isKeyDown(wglt.Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyDown(wglt.Keys.VK_LEFT)) {
+    if (app.isKeyDown(wglt.Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyDown(wglt.Keys.VK_RIGHT)) {
+    if (app.isKeyDown(wglt.Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyDown(wglt.Keys.VK_DOWN)) {
+    if (app.isKeyDown(wglt.Keys.VK_DOWN)) {
         y++;
     }
 
-    term.clear();
-    term.drawString(1, 1, 'Hello world!');
-    term.drawString(1, 3, 'Use arrow keys to move');
-    term.drawString(x, y, '@');
+    app.drawString('Hello world!', 1, 1);
+    app.drawString('Use arrow keys to move', 1, 11);
+    app.drawString('@', x, y);
 };
+
+app.state = game;

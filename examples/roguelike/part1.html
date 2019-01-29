@@ -12,46 +12,33 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_1">Part 1: Graphics</a></p>
 	<p>Start your game right away by setting up the screen, printing the stereotypical @ character and moving it around with the arrow keys.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part0.js	2018-11-21 15:53:47.735894500 -0800</div>
-<div class="c2">+++ part1.js	2018-11-22 14:06:47.009119000 -0800</div>
-<div class="c1">@@ -0,0 +1,37 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part0.js	2019-01-29 11:52:10.000000000 -0800</div>
+<div class="c2">+++ part1.js	2019-02-16 11:50:18.000000000 -0800</div>
+<div class="c1">@@ -0,0 +1,24 @@</div>
 <div class="c2">+</div>
-<div class="c2">+// Actual size of the window</div>
-<div class="c2">+const SCREEN_WIDTH = 80;</div>
-<div class="c2">+const SCREEN_HEIGHT = 50;</div>
+<div class="c2">+const app = new wglt.App({</div>
+<div class="c2">+    canvas: document.querySelector(&#x27;canvas&#x27;),</div>
+<div class="c2">+    imageUrl: &#x27;../graphics.png&#x27;,</div>
+<div class="c2">+    width: 400,</div>
+<div class="c2">+    height: 224</div>
+<div class="c2">+});</div>
 <div class="c2">+</div>
-<div class="c2">+function handleKeys() {</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_UP)) {</div>
-<div class="c2">+        y--;</div>
-<div class="c2">+    }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {</div>
-<div class="c2">+        x--;</div>
-<div class="c2">+    }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {</div>
-<div class="c2">+        x++;</div>
-<div class="c2">+    }</div>
-<div class="c2">+    if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {</div>
-<div class="c2">+        y++;</div>
-<div class="c2">+    }</div>
-<div class="c2">+}</div>
+<div class="c2">+const game = new wglt.Game(app, {</div>
+<div class="c2">+    tileWidth: 16,</div>
+<div class="c2">+    tileHeight: 16</div>
+<div class="c2">+});</div>
 <div class="c2">+</div>
-<div class="c2">+function renderAll() {</div>
-<div class="c2">+    term.clear();</div>
-<div class="c2">+    term.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE)</div>
-<div class="c2">+    term.drawString(1, 1, 'Hello world!');</div>
-<div class="c2">+    term.drawString(1, 3, 'Use arrow keys to move');</div>
-<div class="c2">+    term.drawString(x, y, '@');</div>
-<div class="c2">+}</div>
+<div class="c2">+const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);</div>
+<div class="c2">+const player = new wglt.Entity(game, 30, 20, &#x27;Player&#x27;, sprite, true);</div>
+<div class="c2">+game.player = player;</div>
+<div class="c2">+game.entities.push(player);</div>
 <div class="c2">+</div>
-<div class="c2">+const term = new wglt.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c2">+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 1, 100, 100));</div>
+<div class="c2">+messageLog.add(&#x27;Hello world!&#x27;);</div>
+<div class="c2">+messageLog.add(&#x27;Use arrow keys to move&#x27;);</div>
+<div class="c2">+game.gui.add(messageLog);</div>
 <div class="c2">+</div>
-<div class="c2">+let x = 10;</div>
-<div class="c2">+let y = 10;</div>
-<div class="c2">+</div>
-<div class="c2">+term.update = function () {</div>
-<div class="c2">+    handleKeys();</div>
-<div class="c2">+    renderAll();</div>
-<div class="c2">+};</div>
+<div class="c2">+app.state = game;</div>
 <!--ENDDIFF-->
     </div>
     <script src="../../dist/index.js"></script>

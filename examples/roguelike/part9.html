@@ -12,12 +12,14 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_9">Part 9: Spells and ranged combat</a></p>
 	<p>The player's strategic choices increase exponentially as we add a few magic scrolls to the mix. Covers damage and mind spells, as well as ranged combat.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part8.js	2018-11-23 18:00:58.025463300 -0800</div>
-<div class="c2">+++ part9.js	2018-11-23 18:01:07.306132700 -0800</div>
-<div class="c1">@@ -25,6 +25,13 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part8.js	2019-02-16 12:00:13.000000000 -0800</div>
+<div class="c2">+++ part9.js	2019-02-16 17:38:20.000000000 -0800</div>
+<div class="c1">@@ -15,6 +15,16 @@</div>
+<div class="c0"> const MAX_ROOM_ITEMS = 2;</div>
+<div class="c0"> const TORCH_RADIUS = 10;</div>
 <div class="c0"> </div>
-<div class="c0"> // Spell values</div>
-<div class="c0"> const HEAL_AMOUNT = 4;</div>
+<div class="c2">+// Spell values</div>
+<div class="c2">+const HEAL_AMOUNT = 4;</div>
 <div class="c2">+const LIGHTNING_DAMAGE = 20;</div>
 <div class="c2">+const LIGHTNING_RANGE = 5;</div>
 <div class="c2">+const CONFUSE_RANGE = 8;</div>
@@ -25,117 +27,79 @@
 <div class="c2">+const FIREBALL_RANGE = 10;</div>
 <div class="c2">+const FIREBALL_RADIUS = 3;</div>
 <div class="c2">+const FIREBALL_DAMAGE = 12;</div>
-<div class="c0"> </div>
-<div class="c0"> const COLOR_DARK_WALL = wglt.fromRgb(0, 0, 100);</div>
-<div class="c0"> const COLOR_LIGHT_WALL = wglt.fromRgb(130, 110, 50);</div>
-<div class="c1">@@ -92,6 +99,10 @@</div>
-<div class="c0">         return Math.hypot(other.x - this.x, other.y - this.y);</div>
-<div class="c0">     };</div>
-<div class="c0"> </div>
-<div class="c2">+    this.distance = function (x, y) {</div>
-<div class="c2">+        return Math.hypot(x - this.x, y - this.y);</div>
-<div class="c2">+    };</div>
 <div class="c2">+</div>
-<div class="c0">     this.sendToBack = function () {</div>
-<div class="c0">         this.remove();</div>
-<div class="c0">         entities.unshift(this);</div>
-<div class="c1">@@ -165,6 +176,24 @@</div>
-<div class="c0">     };</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c2">+function ConfusedMonster(oldAi) {</div>
-<div class="c2">+    this.owner = null;</div>
-<div class="c2">+    this.oldAi = oldAi;</div>
-<div class="c2">+    this.numTurns = CONFUSE_NUM_TURNS;</div>
+<div class="c0"> function createRoom(map, room) {</div>
+<div class="c0">     for (let y = room.y1 + 1; y &lt; room.y2; y++) {</div>
+<div class="c0">         for (let x = room.x1 + 1; x &lt; room.x2; x++) {</div>
+<div class="c1">@@ -79,6 +89,13 @@</div>
+<div class="c0">                 // This is the first room, where the player starts at</div>
+<div class="c0">                 player.x = center.x;</div>
+<div class="c0">                 player.y = center.y;</div>
 <div class="c2">+</div>
-<div class="c2">+    this.takeTurn = function () {</div>
-<div class="c2">+        if (this.numTurns &gt; 0) {</div>
-<div class="c2">+            // Still confused...</div>
-<div class="c2">+            // Move in a random direction, and decrease the number of turns confused</div>
-<div class="c2">+            this.owner.move(rng.nextRange(-1, 1), rng.nextRange(-1, 1));</div>
-<div class="c2">+            this.numTurns--;</div>
-<div class="c2">+        } else {</div>
-<div class="c2">+            this.owner.ai = this.oldAi;</div>
-<div class="c2">+            addMessage('The ' + this.owner.name + ' is no longer confused!', wglt.Colors.LIGHT_RED);</div>
-<div class="c2">+        }</div>
-<div class="c2">+    }</div>
-<div class="c2">+}</div>
+<div class="c2">+                // TEMP: Give the player a fireball</div>
+<div class="c2">+                const item = new wglt.Item(game, player.x, player.y + 1, &#x27;fireball&#x27;, new wglt.Sprite(144, 16, 16, 16, 1));</div>
+<div class="c2">+                item.onPickup = pickupCallback;</div>
+<div class="c2">+                item.onUse = castFireball;</div>
+<div class="c2">+                game.items.push(item);</div>
 <div class="c2">+</div>
-<div class="c0"> function Item(useFunction) {</div>
-<div class="c0">     this.useFunction = useFunction;</div>
-<div class="c0"> </div>
-<div class="c1">@@ -341,10 +370,25 @@</div>
-<div class="c0">         const x = rng.nextRange(room.x1 + 1, room.x2 - 1)</div>
-<div class="c0">         const y = rng.nextRange(room.y1 + 1, room.y2 - 1)</div>
+<div class="c0">             } else {</div>
+<div class="c0">                 // All rooms after the first:</div>
+<div class="c0">                 // Connect it to the previous room with a tunnel</div>
+<div class="c1">@@ -142,11 +159,40 @@</div>
+<div class="c0">         const x = rng.nextRange(room.x1 + 1, room.x2 - 1);</div>
+<div class="c0">         const y = rng.nextRange(room.y1 + 1, room.y2 - 1);</div>
 <div class="c0"> </div>
 <div class="c3">-        // Create a healing potion</div>
-<div class="c3">-        const itemComponent = new Item(castHeal);</div>
+<div class="c3">-        const item = new wglt.Item(app, x, y, &#x27;healing potion&#x27;, new wglt.Sprite(128, 16, 16, 16, 1));</div>
 <div class="c2">+        const dice = rng.nextRange(0, 100);</div>
-<div class="c2">+        let item = null;</div>
+<div class="c2">+        let itemName = null;</div>
+<div class="c2">+        let itemSprite = null;</div>
+<div class="c2">+        let itemUse = null;</div>
 <div class="c2">+</div>
 <div class="c2">+        if (dice &lt; 50) {</div>
 <div class="c2">+            // Create a healing potion (50% chance)</div>
-<div class="c2">+            item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: new Item(castHeal) });</div>
+<div class="c2">+            itemName = &#x27;healing potion&#x27;;</div>
+<div class="c2">+            itemSprite = new wglt.Sprite(128, 16, 16, 16, 1);</div>
+<div class="c2">+            itemUse = castHeal;</div>
 <div class="c2">+</div>
 <div class="c2">+        } else if (dice &lt; 50 + 20) {</div>
 <div class="c2">+            // Create a lightning bolt scroll (20% chance)</div>
-<div class="c2">+            item = new Entity(x, y, '#', 'scroll of lightning bolt', wglt.Colors.YELLOW, false, { item: new Item(castLightning) });</div>
+<div class="c2">+            itemName = &#x27;scroll of lightning bolt&#x27;;</div>
+<div class="c2">+            itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);</div>
+<div class="c2">+            itemUse = castLightning;</div>
 <div class="c2">+</div>
 <div class="c2">+        } else if (dice &lt; 50 + 20 + 15) {</div>
 <div class="c2">+            // Create a fireball scroll (15% chance)</div>
-<div class="c2">+            item = new Entity(x, y, '#', 'scroll of fireball', wglt.Colors.YELLOW, false, { item: new Item(castFireball) });</div>
-<div class="c0"> </div>
-<div class="c3">-        const item = new Entity(x, y, '!', 'healing potion', wglt.Colors.DARK_MAGENTA, false, { item: itemComponent });</div>
+<div class="c2">+            itemName = &#x27;scroll of fireball&#x27;;</div>
+<div class="c2">+            itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);</div>
+<div class="c2">+            itemUse = castFireball;</div>
+<div class="c2">+</div>
 <div class="c2">+        } else {</div>
 <div class="c2">+            // Create a confuse scroll (15% chance)</div>
-<div class="c2">+            item = new Entity(x, y, '#', 'scroll of confusion', wglt.Colors.YELLOW, false, { item: new Item(castConfuse) });</div>
+<div class="c2">+            itemName = &#x27;scroll of confusion&#x27;;</div>
+<div class="c2">+            itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);</div>
+<div class="c2">+            itemUse = castConfuse;</div>
 <div class="c2">+        }</div>
-<div class="c0"> </div>
-<div class="c0">         entities.push(item);</div>
-<div class="c0">         item.sendToBack();  // items appear below other objects</div>
-<div class="c1">@@ -439,6 +483,32 @@</div>
-<div class="c0">         return;</div>
-<div class="c0">     }</div>
-<div class="c0"> </div>
-<div class="c2">+    if (targetFunction) {</div>
-<div class="c2">+        if (term.isKeyPressed(wglt.Keys.VK_ENTER) || term.mouse.buttons[0]) {</div>
-<div class="c2">+            endTargeting(targetCursor.x, targetCursor.y);</div>
-<div class="c2">+        }</div>
-<div class="c2">+        if (term.isKeyPressed(wglt.Keys.VK_ESCAPE) || term.mouse.buttons[2]) {</div>
-<div class="c2">+            cancelTargeting();</div>
-<div class="c2">+        }</div>
-<div class="c2">+        if (term.isKeyPressed(wglt.Keys.VK_UP)) {</div>
-<div class="c2">+            targetCursor.y--;</div>
-<div class="c2">+        }</div>
-<div class="c2">+        if (term.isKeyPressed(wglt.Keys.VK_LEFT)) {</div>
-<div class="c2">+            targetCursor.x--;</div>
-<div class="c2">+        }</div>
-<div class="c2">+        if (term.isKeyPressed(wglt.Keys.VK_RIGHT)) {</div>
-<div class="c2">+            targetCursor.x++;</div>
-<div class="c2">+        }</div>
-<div class="c2">+        if (term.isKeyPressed(wglt.Keys.VK_DOWN)) {</div>
-<div class="c2">+            targetCursor.y++;</div>
-<div class="c2">+        }</div>
-<div class="c2">+        if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {</div>
-<div class="c2">+            targetCursor.x = term.mouse.x;</div>
-<div class="c2">+            targetCursor.y = term.mouse.y;</div>
-<div class="c2">+        }</div>
-<div class="c2">+        return;</div>
-<div class="c2">+    }</div>
 <div class="c2">+</div>
-<div class="c0">     if (term.isKeyPressed(wglt.Keys.VK_UP)) {</div>
-<div class="c0">         playerMoveOrAttack(0, -1);</div>
+<div class="c2">+        const item = new wglt.Item(game, x, y, itemName, itemSprite);</div>
+<div class="c0">         item.onPickup = pickupCallback;</div>
+<div class="c3">-        item.onUse = castHeal;</div>
+<div class="c3">-        app.items.push(item);</div>
+<div class="c2">+        item.onUse = itemUse;</div>
+<div class="c2">+        game.items.push(item);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -491,6 +561,26 @@</div>
-<div class="c0">     monster.sendToBack();</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c1">@@ -154,6 +200,26 @@</div>
+<div class="c0">     messageLog.add(entity.name + &#x27; picked up a &#x27; + item.name, wglt.Colors.LIGHT_GREEN);</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c2">+function getClosestMonster(x, y, range) {</div>
 <div class="c2">+    let minDist = range + 1;</div>
 <div class="c2">+    let result = null;</div>
-<div class="c2">+    for (let i = 0; i &lt; entities.length; i++) {</div>
-<div class="c2">+        const entity = entities[i];</div>
-<div class="c2">+        if (entity.fighter &amp;&amp; entity !== player) {</div>
+<div class="c2">+    for (let i = 0; i &lt; game.entities.length; i++) {</div>
+<div class="c2">+        const entity = game.entities[i];</div>
+<div class="c2">+        if (entity !== app.player) {</div>
 <div class="c2">+            const dist = entity.distance(x, y);</div>
 <div class="c2">+            if (dist &lt; minDist) {</div>
 <div class="c2">+                minDist = dist;</div>
@@ -150,10 +114,10 @@
 <div class="c2">+    return getClosestMonster(x, y, 0);</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function castHeal(item) {</div>
+<div class="c0"> function castHeal(item, entity) {</div>
 <div class="c0">     // Heal the player</div>
-<div class="c0">     if (player.fighter.hp === player.fighter.maxHp) {</div>
-<div class="c1">@@ -503,6 +593,81 @@</div>
+<div class="c0">     if (entity.health === entity.maxHealth) {</div>
+<div class="c1">@@ -166,6 +232,87 @@</div>
 <div class="c0">     item.remove();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -161,100 +125,105 @@
 <div class="c2">+    // Find closest enemy (inside a maximum range) and damage it</div>
 <div class="c2">+    const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);</div>
 <div class="c2">+    if (!monster) {</div>
-<div class="c2">+        addMessage('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);</div>
+<div class="c2">+        messageLog.add(&#x27;No enemy is close enough to strike.&#x27;, wglt.Colors.LIGHT_RED);</div>
 <div class="c2">+        return;</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    // Zap it!</div>
-<div class="c2">+    addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);</div>
-<div class="c2">+    addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);</div>
-<div class="c2">+    monster.fighter.takeDamage(LIGHTNING_DAMAGE);</div>
+<div class="c2">+    messageLog.add(&#x27;A lightning bolt strikes the &#x27; + monster.name + &#x27; with a loud thunder!&#x27;, wglt.Colors.LIGHT_BLUE);</div>
+<div class="c2">+    messageLog.add(&#x27;The damage is &#x27; + LIGHTNING_DAMAGE + &#x27; hit points&#x27;, wglt.Colors.LIGHT_BLUE);</div>
+<div class="c2">+    monster.takeDamage(LIGHTNING_DAMAGE);</div>
 <div class="c2">+    item.remove();</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+function castFireball(item) {</div>
 <div class="c2">+    // Ask the player for a target tile to throw a fireball at</div>
-<div class="c2">+    addMessage('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);</div>
-<div class="c2">+    startTargeting((x, y) =&gt; {</div>
-<div class="c2">+        if (player.distance(x, y) &gt; FIREBALL_RANGE) {</div>
-<div class="c2">+            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);</div>
+<div class="c2">+    messageLog.add(&#x27;Left-click to cast fireball, or right-click to cancel.&#x27;, wglt.Colors.LIGHT_CYAN);</div>
+<div class="c2">+    game.startTargeting((x, y) =&gt; {</div>
+<div class="c2">+        const distance = player.distance(x, y);</div>
+<div class="c2">+        if (distance &gt; FIREBALL_RANGE) {</div>
+<div class="c2">+            messageLog.add(&#x27;Target out of range.&#x27;, wglt.Colors.LIGHT_GRAY);</div>
 <div class="c2">+            return;</div>
 <div class="c2">+        }</div>
 <div class="c2">+</div>
-<div class="c2">+        addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);</div>
+<div class="c2">+        const speed = 8;</div>
+<div class="c2">+        const count = distance * (game.tileWidth / speed);</div>
+<div class="c2">+        const dx = (x * game.tileWidth - player.pixelX) / count;</div>
+<div class="c2">+        const dy = (y * game.tileHeight - player.pixelY) / count;</div>
 <div class="c2">+</div>
-<div class="c2">+        for (let i = 0; i &lt; entities.length; i++) {</div>
-<div class="c2">+            const entity = entities[i];</div>
-<div class="c2">+            if (entity.fighter &amp;&amp; entity.distance(x, y) &lt;= FIREBALL_RADIUS) {</div>
-<div class="c2">+                addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);</div>
-<div class="c2">+                entity.fighter.takeDamage(FIREBALL_DAMAGE);</div>
+<div class="c2">+        game.effects.push(new wglt.ProjectileEffect(</div>
+<div class="c2">+            new wglt.Sprite(128, 32, 16, 16, 3, false),</div>
+<div class="c2">+            new wglt.MutablePoint(player.pixelX, player.pixelY),</div>
+<div class="c2">+            new wglt.Point(dx, dy),</div>
+<div class="c2">+            count</div>
+<div class="c2">+        ));</div>
+<div class="c2">+</div>
+<div class="c2">+        game.effects.push(new wglt.ProjectileEffect(</div>
+<div class="c2">+            new wglt.Sprite(176, 32, 16, 16, 4, false, 4),</div>
+<div class="c2">+            new wglt.MutablePoint(x * game.tileWidth, y * game.tileHeight),</div>
+<div class="c2">+            new wglt.Point(0, 0),</div>
+<div class="c2">+            16</div>
+<div class="c2">+        ));</div>
+<div class="c2">+</div>
+<div class="c2">+        messageLog.add(&#x27;The fireball explodes, burning everything within &#x27; + FIREBALL_RADIUS + &#x27; tiles!&#x27;, wglt.Colors.ORANGE);</div>
+<div class="c2">+</div>
+<div class="c2">+        for (let i = 0; i &lt; game.entities.length; i++) {</div>
+<div class="c2">+            const entity = game.entities[i];</div>
+<div class="c2">+            if (entity.distance(x, y) &lt;= FIREBALL_RADIUS) {</div>
+<div class="c2">+                messageLog.add(&#x27;The &#x27; + entity.name + &#x27; gets burned for &#x27; + FIREBALL_DAMAGE + &#x27; hit points.&#x27;, wglt.Colors.ORANGE);</div>
+<div class="c2">+                entity.takeDamage(FIREBALL_DAMAGE);</div>
 <div class="c2">+            }</div>
 <div class="c2">+        }</div>
 <div class="c2">+</div>
-<div class="c2">+        item.remove();</div>
+<div class="c2">+        player.actionPoints = 0;</div>
+<div class="c2">+        //item.remove();</div>
 <div class="c2">+    });</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+function castConfuse(item) {</div>
 <div class="c2">+    // Ask the player for a target to confuse</div>
-<div class="c2">+    addMessage('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);</div>
-<div class="c2">+    startTargeting((x, y) =&gt; {</div>
+<div class="c2">+    messageLog.add(&#x27;Left-click to cast confuse, or right-click to cancel.&#x27;, wglt.Colors.LIGHT_CYAN);</div>
+<div class="c2">+    app.startTargeting((x, y) =&gt; {</div>
 <div class="c2">+        if (player.distance(x, y) &gt; CONFUSE_RANGE) {</div>
-<div class="c2">+            addMessage('Target out of range.', wglt.Colors.LIGHT_GRAY);</div>
+<div class="c2">+            messageLog.add(&#x27;Target out of range.&#x27;, wglt.Colors.LIGHT_GRAY);</div>
 <div class="c2">+            return;</div>
 <div class="c2">+        }</div>
 <div class="c2">+</div>
 <div class="c2">+        const monster = getMonsterAt(x, y);</div>
 <div class="c2">+        if (!monster) {</div>
-<div class="c2">+            addMessage('No monster there.', wglt.Colors.LIGHT_GRAY);</div>
+<div class="c2">+            messageLog.add(&#x27;No monster there.&#x27;, wglt.Colors.LIGHT_GRAY);</div>
 <div class="c2">+            return;</div>
 <div class="c2">+        }</div>
 <div class="c2">+</div>
 <div class="c2">+        monster.ai = new ConfusedMonster(monster.ai);</div>
 <div class="c2">+        monster.ai.owner = monster;</div>
-<div class="c2">+        addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);</div>
+<div class="c2">+        messageLog.add(&#x27;The eyes of the &#x27; + monster.name + &#x27; look vacant, as he stumbles around!&#x27;, wglt.Colors.LIGHT_GREEN);</div>
 <div class="c2">+        item.remove();</div>
 <div class="c2">+    });</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function startTargeting(callback) {</div>
-<div class="c2">+    targetFunction = callback;</div>
-<div class="c2">+    targetCursor.x = player.x;</div>
-<div class="c2">+    targetCursor.y = player.y;</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c2">+function endTargeting(x, y) {</div>
-<div class="c2">+    targetFunction(x, y);</div>
-<div class="c2">+    cancelTargeting();</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c2">+function cancelTargeting() {</div>
-<div class="c2">+    targetFunction = null;</div>
-<div class="c2">+}</div>
-<div class="c2">+</div>
-<div class="c0"> function renderAll() {</div>
-<div class="c0">     if (fovRecompute) {</div>
-<div class="c0">         fovMap.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -554,6 +719,10 @@</div>
-<div class="c0">     // Display names of objects under the mouse</div>
-<div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), wglt.Colors.LIGHT_GRAY);</div>
+<div class="c0"> function attackCallback(attacker, target, damage) {</div>
+<div class="c0">     if (damage &gt; 0) {</div>
+<div class="c0">         messageLog.add(attacker.name + &#x27; attacks &#x27; + target.name + &#x27; for &#x27; + damage + &#x27; hit points.&#x27;, 0x808080FF);</div>
+<div class="c1">@@ -192,7 +339,7 @@</div>
+<div class="c0">     canvas: document.querySelector(&#x27;canvas&#x27;),</div>
+<div class="c0">     imageUrl: &#x27;../graphics.png&#x27;,</div>
+<div class="c0">     width: 400,</div>
+<div class="c3">-    height: 224</div>
+<div class="c2">+    height: 224,</div>
+<div class="c0"> });</div>
 <div class="c0"> </div>
-<div class="c2">+    if (targetFunction) {</div>
-<div class="c2">+        term.getCell(targetCursor.x, targetCursor.y).setBackground(wglt.Colors.WHITE);</div>
-<div class="c2">+    }</div>
-<div class="c2">+</div>
-<div class="c0">     // Draw dialog boxes</div>
-<div class="c0">     gui.draw();</div>
-<div class="c0"> }</div>
-<div class="c1">@@ -568,6 +737,8 @@</div>
-<div class="c0"> const fovMap = new wglt.FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
-<div class="c0"> let fovRecompute = true;</div>
-<div class="c0"> const inventory = [];</div>
-<div class="c2">+let targetFunction = null;</div>
-<div class="c2">+let targetCursor = { x: 0, y: 0 };</div>
+<div class="c0"> const game = new wglt.Game(app, {</div>
+<div class="c1">@@ -200,7 +347,8 @@</div>
+<div class="c0">     tileHeight: 16</div>
+<div class="c0"> });</div>
 <div class="c0"> </div>
-<div class="c0"> addMessage('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);</div>
+<div class="c3">-app.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);</div>
+<div class="c2">+game.targetSprite = new wglt.Sprite(0, 48, 16, 16);</div>
+<div class="c2">+game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);</div>
 <div class="c0"> </div>
+<div class="c0"> const rng = new wglt.RNG(1);</div>
+<div class="c0"> const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);</div>
 <!--ENDDIFF-->
     </div>
     <script src="../../dist/index.js"></script>

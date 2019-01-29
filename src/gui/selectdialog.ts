@@ -1,44 +1,56 @@
-
-import {Console} from '../console';
+import {GUI} from '../gui';
 import {Keys} from '../keys';
-import {Point} from '../point';
 import {Rect} from '../rect';
-import {Terminal} from '../terminal';
-
 import {Dialog} from './dialog';
+import {SelectOption} from './selectoption';
+
+const MARGIN = 4;
+const LINE_HEIGHT = 10;
 
 export class SelectDialog extends Dialog {
-  options: string[];
+  options: SelectOption[];
   callback: Function;
 
-  constructor(
-      title: string, options: string[], callback: (choice: number) => void) {
-    let width = title.length;
-    for (let i = 0; i < options.length; i++) {
-      width = Math.max(width, options[i].length + 4);
-    }
-
-    const height = options.length;
-    const rect = new Rect(0, 0, width, height);
-    super(rect, title);
+  constructor(gui: GUI, rect: Rect, title: string, options: SelectOption[], callback: Function) {
+    super(gui, rect, title);
     this.options = options;
     this.callback = callback;
   }
 
-  drawContents(console: Console, offset: Point) {
+  drawContents() {
+    super.drawContents();
+    const offset = this.rect;
     for (let i = 0; i < this.options.length; i++) {
-      const str = String.fromCharCode(65 + i) + ' - ' + this.options[i];
-      console.drawString(offset.x, offset.y + i, str);
+      const str = String.fromCharCode(65 + i) + ' - ' + this.options[i].name;
+      this.gui.app.drawString(str, offset.x + MARGIN, offset.y + MARGIN + i * LINE_HEIGHT);
     }
   }
 
-  handleInput(terminal: Terminal, offset: Point) {
+  handleInput() {
     for (let i = 0; i < this.options.length; i++) {
-      if (terminal.isKeyPressed(Keys.VK_A + i)) {
-        this.callback(i);
-        return true;
+      if (this.gui.app.isKeyPressed(Keys.VK_A + i)) {
+        this.callback(this.options[i]);
+        this.close();
       }
     }
-    return terminal.isKeyPressed(Keys.VK_ESCAPE);
+
+    if (this.gui.app.isKeyPressed(Keys.VK_ESCAPE)) {
+      this.close();
+    }
+
+    const mouse = this.gui.app.mouse;
+    const offset = this.rect;
+    if (mouse.upCount === 1 && mouse.x >= offset.x1 && mouse.x < offset.x2) {
+      for (let i = 0; i < this.options.length; i++) {
+        const startY = offset.y + MARGIN + i * LINE_HEIGHT;
+        const endY = startY + LINE_HEIGHT;
+        if (mouse.y >= startY && mouse.y < endY) {
+          this.callback(this.options[i]);
+          this.close();
+        }
+      }
+    }
+
+    return true;
   }
 }
