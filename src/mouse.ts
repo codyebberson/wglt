@@ -73,7 +73,7 @@ export class Mouse extends Input {
     // then we are fullscreen.
     // Need to update client rect accordingly.
 
-    const terminalAspectRatio = this.app.width / this.app.height;
+    const terminalAspectRatio = this.app.size.width / this.app.size.height;
     const rectAspectRatio = rect.width / rect.height;
 
     if (rectAspectRatio - terminalAspectRatio > 0.01) {
@@ -88,8 +88,8 @@ export class Mouse extends Input {
       rect = new Rect(0, Math.floor(excess / 2), rect.width, actualHeight);
     }
 
-    this.x = (this.app.width * (clientX - rect.left) / rect.width) | 0;
-    this.y = (this.app.height * (clientY - rect.top) / rect.height) | 0;
+    this.x = (this.app.size.width * (clientX - rect.left) / rect.width) | 0;
+    this.y = (this.app.size.height * (clientY - rect.top) / rect.height) | 0;
   }
 
   update() {

@@ -14,8 +14,7 @@ const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 
 export class Game extends AppState {
-  readonly tileWidth: number;
-  readonly tileHeight: number;
+  readonly tileSize: Rect;
   readonly viewport: Rect;
   readonly effects: Effect[];
   readonly entities: Entity[];
@@ -34,9 +33,8 @@ export class Game extends AppState {
 
   constructor(app: App, options: GameOptions) {
     super(app);
-    this.tileWidth = options.tileWidth || DEFAULT_TILE_WIDTH;
-    this.tileHeight = options.tileHeight || DEFAULT_TILE_HEIGHT;
-    this.viewport = new Rect(0, 0, app.width, app.height);
+    this.tileSize = options.tileSize || new Rect(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
+    this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.effects = [];
     this.entities = [];
     this.turnIndex = 0;
@@ -131,27 +129,27 @@ export class Game extends AppState {
 
   private updateViewport() {
     if (this.player) {
-      const horizontalMargin = (this.app.width * 0.4) | 0;
-      const verticalMargin = (this.app.height * 0.4) | 0;
+      const horizontalMargin = (this.app.size.width * 0.4) | 0;
+      const verticalMargin = (this.app.size.height * 0.4) | 0;
 
       if (this.player.pixelX - this.viewport.x < horizontalMargin) {
         this.viewport.x = this.player.pixelX - horizontalMargin;
       }
 
-      if (this.viewport.x + this.viewport.width - (this.player.pixelX + this.tileWidth) < horizontalMargin) {
-        this.viewport.x = this.player.pixelX + this.tileWidth + horizontalMargin - this.viewport.width;
+      if (this.viewport.x + this.viewport.width - (this.player.pixelX + this.tileSize.width) < horizontalMargin) {
+        this.viewport.x = this.player.pixelX + this.tileSize.width + horizontalMargin - this.viewport.width;
       }
 
       if (this.player.pixelY - this.viewport.y < verticalMargin) {
         this.viewport.y = this.player.pixelY - verticalMargin;
       }
 
-      if (this.viewport.y + this.viewport.height - (this.player.pixelY + this.tileHeight) < verticalMargin) {
-        this.viewport.y = this.player.pixelY + this.tileHeight + verticalMargin - this.viewport.height;
+      if (this.viewport.y + this.viewport.height - (this.player.pixelY + this.tileSize.height) < verticalMargin) {
+        this.viewport.y = this.player.pixelY + this.tileSize.height + verticalMargin - this.viewport.height;
       }
 
-      this.viewport.width = this.app.width;
-      this.viewport.height = this.app.height;
+      this.viewport.width = this.app.size.width;
+      this.viewport.height = this.app.size.height;
     }
   }
 
@@ -163,8 +161,8 @@ export class Game extends AppState {
 
   private drawTargeting() {
     if (this.isTargeting() && this.targetSprite) {
-      const x = this.cursor.x * this.tileWidth - this.viewport.x;
-      const y = this.cursor.y * this.tileHeight - this.viewport.y;
+      const x = this.cursor.x * this.tileSize.width - this.viewport.x;
+      const y = this.cursor.y * this.tileSize.height - this.viewport.y;
       this.targetSprite.draw(this.app, x, y);
     }
   }
@@ -220,8 +218,8 @@ export class Game extends AppState {
     }
 
     if (this.app.mouse.dx !== 0 || this.app.mouse.dy !== 0) {
-      this.cursor.x = ((this.viewport.x + this.app.mouse.x) / this.tileWidth) | 0;
-      this.cursor.y = ((this.viewport.y + this.app.mouse.y) / this.tileHeight) | 0;
+      this.cursor.x = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
+      this.cursor.y = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
     }
 
     if (this.isTargeting()) {
@@ -247,8 +245,8 @@ export class Game extends AppState {
     }
 
     if (this.app.mouse.upCount === 1) {
-      const tx = ((this.viewport.x + this.app.mouse.x) / this.tileWidth) | 0;
-      const ty = ((this.viewport.y + this.app.mouse.y) / this.tileHeight) | 0;
+      const tx = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
+      const ty = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
 
       this.targetEntity = this.getEnemyAt(tx, ty);
       if (this.targetEntity) {

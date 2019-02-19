@@ -1,9 +1,7 @@
 
 import {Color} from './color';
 import {createTexture, ExtendedTexture, initShaderProgram} from './glutils';
-
-const CHAR_WIDTH = 4;
-const CHAR_HEIGHT = 8;
+import {Rect} from './rect';
 
 /**
  * Maximum number of elements per buffer.
@@ -58,6 +56,7 @@ const spriteFragmentShader = 'precision highp float;' +
     '}';
 
 export class RenderSet {
+  readonly glyphSize: Rect;
   readonly gl: WebGLRenderingContext;
   readonly program: WebGLProgram;
   readonly viewportSizeLocation: WebGLUniformLocation;
@@ -76,8 +75,9 @@ export class RenderSet {
   readonly colorDataView: DataView;
   colorArrayIndex: number;
 
-  constructor(gl: WebGLRenderingContext, url: string) {
+  constructor(gl: WebGLRenderingContext, url: string, glyphSize: Rect) {
     this.gl = gl;
+    this.glyphSize = glyphSize;
 
     const program = initShaderProgram(gl, spriteVertexShader, spriteFragmentShader);
 
@@ -107,7 +107,7 @@ export class RenderSet {
    * @param {number=} color Optional color.
    */
   drawCenteredString(str: string, x: number, y: number, color?: Color) {
-    const x2 = x - ((CHAR_WIDTH * str.length) / 2) | 0;
+    const x2 = x - ((this.glyphSize.width * str.length) / 2) | 0;
     this.drawString(str, x2, y, color);
   }
 
@@ -120,9 +120,11 @@ export class RenderSet {
    */
   drawString(str: string, x: number, y: number, color?: Color) {
     const lines = str.toUpperCase().split('\n');
+    const glyphWidth = this.glyphSize.width;
+    const glyphHeight = this.glyphSize.height;
     for (let i = 0; i < lines.length; i++) {
       for (let j = 0; j < lines[i].length; j++) {
-        this.drawChar(lines[i].charCodeAt(j), x + j * CHAR_WIDTH, y + i * CHAR_HEIGHT, color);
+        this.drawChar(lines[i].charCodeAt(j), x + j * glyphWidth, y + i * glyphHeight, color);
       }
     }
   }

@@ -1,6 +1,8 @@
 import { Color } from './color';
 import { ExtendedTexture } from './glutils';
+import { Rect } from './rect';
 export declare class RenderSet {
+    readonly glyphSize: Rect;
     readonly gl: WebGLRenderingContext;
     readonly program: WebGLProgram;
     readonly viewportSizeLocation: WebGLUniformLocation;
@@ -18,7 +20,7 @@ export declare class RenderSet {
     readonly colorUint8Array: Uint8Array;
     readonly colorDataView: DataView;
     colorArrayIndex: number;
-    constructor(gl: WebGLRenderingContext, url: string);
+    constructor(gl: WebGLRenderingContext, url: string, glyphSize: Rect);
     /**
      * Draws a string horizontally centered.
      * @param {string} str The text string to draw.

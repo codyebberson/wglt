@@ -3,13 +3,14 @@ import { AppState } from './appstate';
 import { Color } from './color';
 import { Keyboard } from './keyboard';
 import { Mouse } from './mouse';
+import { Rect } from './rect';
 import { RenderSet } from './renderset';
 import { Vec2 } from './vec2';
 export declare class App {
     readonly canvas: HTMLCanvasElement;
     readonly gl: WebGLRenderingContext;
-    width: number;
-    height: number;
+    readonly size: Rect;
+    readonly glyphSize: Rect;
     fillWindow: boolean;
     scaleFactor: number;
     aspectRatio: number;

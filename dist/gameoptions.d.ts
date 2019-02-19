@@ -1,4 +1,4 @@
+import { Rect } from './rect';
 export interface GameOptions {
-    tileWidth: number;
-    tileHeight: number;
+    tileSize?: Rect;
 }

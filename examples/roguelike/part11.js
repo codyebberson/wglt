@@ -265,9 +265,9 @@ function castFireball(item) {
         }
 
         const speed = 8;
-        const count = distance * (game.tileWidth / speed);
-        const dx = (x * game.tileWidth - player.pixelX) / count;
-        const dy = (y * game.tileHeight - player.pixelY) / count;
+        const count = distance * (game.tileSize.width / speed);
+        const dx = (x * game.tileSize.width - player.pixelX) / count;
+        const dy = (y * game.tileSize.height - player.pixelY) / count;
 
         game.effects.push(new wglt.ProjectileEffect(
             new wglt.Sprite(128, 32, 16, 16, 3, false),
@@ -278,7 +278,7 @@ function castFireball(item) {
 
         game.effects.push(new wglt.ProjectileEffect(
             new wglt.Sprite(176, 32, 16, 16, 4, false, 4),
-            new wglt.Vec2(x * game.tileWidth, y * game.tileHeight),
+            new wglt.Vec2(x * game.tileSize.width, y * game.tileSize.height),
             new wglt.Vec2(0, 0),
             16
         ));
@@ -363,8 +363,7 @@ function nextLevel() {
 const app = new wglt.App({
     canvas: document.querySelector('canvas'),
     imageUrl: '../graphics.png',
-    width: 400,
-    height: 224,
+    size: new wglt.Rect(0, 0, 400, 224)
 });
 
 const game = new wglt.Game(app, {

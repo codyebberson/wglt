@@ -8,8 +8,7 @@ import { Sprite } from './sprite';
 import { TileMap, TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
 export declare class Game extends AppState {
-    readonly tileWidth: number;
-    readonly tileHeight: number;
+    readonly tileSize: Rect;
     readonly viewport: Rect;
     readonly effects: Effect[];
     readonly entities: Entity[];

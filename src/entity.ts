@@ -47,11 +47,11 @@ export class Entity extends Vec2 implements SelectOption {
   }
 
   get pixelX(): number {
-    return this.x * this.game.tileWidth + this.offsetX;
+    return this.x * this.game.tileSize.width + this.offsetX;
   }
 
   get pixelY(): number {
-    return this.y * this.game.tileHeight + this.offsetY;
+    return this.y * this.game.tileSize.height + this.offsetY;
   }
 
   move(dx: number, dy: number) {
@@ -63,8 +63,8 @@ export class Entity extends Vec2 implements SelectOption {
     }
 
     const count = 4;
-    const xSpeed = this.game.tileWidth / count;
-    const ySpeed = this.game.tileHeight / count;
+    const xSpeed = this.game.tileSize.width / count;
+    const ySpeed = this.game.tileSize.height / count;
     this.game.effects.push(new SlideEffect(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
     this.actionPoints--;

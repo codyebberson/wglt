@@ -1,11 +1,10 @@
+import {Rect} from './rect';
 
 export interface AppOptions {
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement|null;
   imageUrl: string;
-  width: number;
-  height: number;
+  size: Rect;
+  glyphSize?: Rect;
   fillWindow: boolean;
-  scaleFactor: number;
-  tileWidth: number;
-  tileHeight: number;
+  scaleFactor?: number;
 }
