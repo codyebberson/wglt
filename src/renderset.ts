@@ -119,7 +119,7 @@ export class RenderSet {
    * @param {number=} color Optional color.
    */
   drawString(str: string, x: number, y: number, color?: Color) {
-    const lines = str.toUpperCase().split('\n');
+    const lines = str.split('\n');
     const glyphWidth = this.glyphSize.width;
     const glyphHeight = this.glyphSize.height;
     for (let i = 0; i < lines.length; i++) {

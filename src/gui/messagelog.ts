@@ -37,6 +37,10 @@ export class MessageLog extends Panel {
     const x = this.rect.x;
     let y = this.rect.y;
 
+    if (y < 0) {
+      y = this.gui.app.size.height - y;
+    }
+
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];
       this.gui.app.drawString(msg.text, x, y, msg.color);
