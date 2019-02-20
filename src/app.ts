@@ -20,7 +20,6 @@ export class App {
   readonly font: Font;
   fillWindow: boolean;
   scaleFactor: number;
-  aspectRatio: number;
   readonly center: Vec2;
   readonly renderSet: RenderSet;
   readonly keyboard: Keyboard;
@@ -44,7 +43,6 @@ export class App {
     this.font = options.font || FONT_04B03;
     this.fillWindow = options.fillWindow || DEFAULT_FILL_WINDOW;
     this.scaleFactor = options.scaleFactor || DEFAULT_SCALE_FACTOR;
-    this.aspectRatio = this.size.width / this.size.height;
     this.center = new Vec2((this.size.width / 2) | 0, (this.size.height / 2) | 0);
 
     gl.disable(gl.DEPTH_TEST);
@@ -55,6 +53,7 @@ export class App {
     canvas.height = this.size.height;
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
+    canvas.focus();
 
     this.renderSet = new RenderSet(gl, options.imageUrl, this.font);
     this.keyboard = new Keyboard(canvas);
@@ -94,7 +93,6 @@ export class App {
 
     this.size.width = Math.round(width / this.scaleFactor);
     this.size.height = Math.round(height / this.scaleFactor);
-    this.aspectRatio = this.size.width / this.size.height;
     this.center.x = (this.size.width / 2) | 0;
     this.center.y = (this.size.height / 2) | 0;
 

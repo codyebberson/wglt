@@ -4,6 +4,8 @@ export declare class Mouse extends Input {
     private readonly app;
     private prevX;
     private prevY;
+    startX: number;
+    startY: number;
     x: number;
     y: number;
     dx: number;
@@ -13,4 +15,5 @@ export declare class Mouse extends Input {
     private handleEvent;
     private updatePosition;
     update(): void;
+    isClicked(): boolean;
 }

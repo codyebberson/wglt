@@ -7,6 +7,8 @@ export class Mouse extends Input {
   private readonly app: App;
   private prevX: number;
   private prevY: number;
+  startX: number;
+  startY: number;
   x: number;
   y: number;
   dx: number;
@@ -17,6 +19,8 @@ export class Mouse extends Input {
     this.app = app;
     this.prevX = 0;
     this.prevY = 0;
+    this.startX = 0;
+    this.startY = 0;
     this.x = 0;
     this.y = 0;
     this.dx = 0;
@@ -58,6 +62,8 @@ export class Mouse extends Input {
 
     if (e.type === 'mousedown') {
       this.down = true;
+      this.startX = this.x;
+      this.startY = this.y;
       this.app.canvas.focus();
     }
 
@@ -98,5 +104,9 @@ export class Mouse extends Input {
     this.dy = this.y - this.prevY;
     this.prevX = this.x;
     this.prevY = this.y;
+  }
+
+  isClicked() {
+    return this.upCount === 1 && Math.hypot(this.x - this.startX, this.y - this.startY) < 16;
   }
 }

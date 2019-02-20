@@ -14,7 +14,6 @@ export declare class App {
     readonly font: Font;
     fillWindow: boolean;
     scaleFactor: number;
-    aspectRatio: number;
     readonly center: Vec2;
     readonly renderSet: RenderSet;
     readonly keyboard: Keyboard;

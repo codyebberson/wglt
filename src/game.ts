@@ -129,8 +129,8 @@ export class Game extends AppState {
 
   private updateViewport() {
     if (this.player) {
-      const horizontalMargin = (this.app.size.width * 0.4) | 0;
-      const verticalMargin = (this.app.size.height * 0.4) | 0;
+      const horizontalMargin = (this.app.size.width * 0.25) | 0;
+      const verticalMargin = (this.app.size.height * 0.25) | 0;
 
       if (this.player.pixelX - this.viewport.x < horizontalMargin) {
         this.viewport.x = this.player.pixelX - horizontalMargin;
@@ -150,6 +150,11 @@ export class Game extends AppState {
 
       this.viewport.width = this.app.size.width;
       this.viewport.height = this.app.size.height;
+    }
+
+    if (this.app.mouse.down) {
+      this.viewport.x -= this.app.mouse.dx;
+      this.viewport.y -= this.app.mouse.dy;
     }
   }
 
@@ -223,7 +228,7 @@ export class Game extends AppState {
     }
 
     if (this.isTargeting()) {
-      if (this.app.isKeyPressed(Keys.VK_ENTER) || this.app.mouse.upCount === 1) {
+      if (this.app.isKeyPressed(Keys.VK_ENTER) || this.app.mouse.isClicked()) {
         this.endTargeting();
       }
       if (this.app.isKeyPressed(Keys.VK_ESCAPE)) {
@@ -244,7 +249,7 @@ export class Game extends AppState {
       return;
     }
 
-    if (this.app.mouse.upCount === 1) {
+    if (this.app.mouse.isClicked()) {
       const tx = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
       const ty = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
 
