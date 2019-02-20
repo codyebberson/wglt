@@ -110,7 +110,7 @@ export class App {
    * Returns if the browser is on a mobile device.
    */
   isMobile() {
-    return navigator.userAgent.match(/Android|iPhone|iPad|iPod|IEMobile|WPDesktop|Opera Mini/i);
+    return navigator.userAgent.match(/Android|iPhone|iPod|IEMobile|WPDesktop|Opera Mini/i);
   }
 
   renderLoop() {
