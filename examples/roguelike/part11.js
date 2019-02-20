@@ -334,8 +334,6 @@ function playerDeath(player) {
 
 function monsterDeath(monster) {
     messageLog.add(monster.name + ' is dead');
-    monster.char = '%';
-    monster.color = wglt.Colors.DARK_RED;
     monster.blocks = false;
     monster.ai = null;
     monster.name = 'remains of ' + monster.name;
@@ -404,7 +402,7 @@ game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, -50, 100, 100));
+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, -50, 100, 50));
 messageLog.add('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 game.gui.add(messageLog);
 

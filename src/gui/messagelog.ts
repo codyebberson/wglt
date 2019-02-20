@@ -38,7 +38,9 @@ export class MessageLog extends Panel {
     let y = this.rect.y;
 
     if (y < 0) {
-      y = this.gui.app.size.height + y;
+      // Negative y value indicates attached to bottom of screen
+      const bottom = this.gui.app.size.height + y + this.rect.height;
+      y = bottom - this.messages.length * 10;
     }
 
     for (let i = 0; i < this.messages.length; i++) {
