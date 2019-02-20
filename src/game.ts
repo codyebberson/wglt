@@ -1,6 +1,7 @@
 import {App} from './app';
 import {AppState} from './appstate';
 import {Effect} from './effects/effect';
+import {ScrollEffect} from './effects/scrolleffect';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
 import {Keys} from './keys';
@@ -225,6 +226,25 @@ export class Game extends AppState {
     if (this.app.mouse.dx !== 0 || this.app.mouse.dy !== 0) {
       this.cursor.x = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
       this.cursor.y = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
+    }
+
+    if (this.app.isKeyDown(Keys.VK_SHIFT)) {
+      const scrollSpeed = 2;
+      const scrollDx = this.tileSize.width / scrollSpeed;
+      const scrollDy = this.tileSize.height / scrollSpeed;
+      if (this.app.isKeyPressed(Keys.VK_UP)) {
+        this.effects.push(new ScrollEffect(this.viewport, 0, -scrollDy, scrollSpeed));
+      }
+      if (this.app.isKeyPressed(Keys.VK_LEFT)) {
+        this.effects.push(new ScrollEffect(this.viewport, -scrollDx, 0, scrollSpeed));
+      }
+      if (this.app.isKeyPressed(Keys.VK_RIGHT)) {
+        this.effects.push(new ScrollEffect(this.viewport, scrollDx, 0, scrollSpeed));
+      }
+      if (this.app.isKeyPressed(Keys.VK_DOWN)) {
+        this.effects.push(new ScrollEffect(this.viewport, 0, scrollDy, scrollSpeed));
+      }
+      return;
     }
 
     if (this.isTargeting()) {

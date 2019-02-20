@@ -224,7 +224,6 @@ class App {
         this.font = options.font || font_1.FONT_04B03;
         this.fillWindow = options.fillWindow || DEFAULT_FILL_WINDOW;
         this.scaleFactor = options.scaleFactor || DEFAULT_SCALE_FACTOR;
-        // this.aspectRatio = this.size.width / this.size.height;
         this.center = new vec2_1.Vec2((this.size.width / 2) | 0, (this.size.height / 2) | 0);
         gl.disable(gl.DEPTH_TEST);
         gl.enable(gl.BLEND);
@@ -257,7 +256,7 @@ class App {
         //  * Find the integer scaling factor that best fits the minimum vector
         const mobile = this.isMobile();
         const minMajorAxis = mobile ? 320.0 : 400.0;
-        const minMinorAxis = mobile ? 180.0 : 224.0;
+        const minMinorAxis = mobile ? 180.0 : 300.0;
         this.scaleFactor = 1.0;
         if (width > height) {
             this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMajorAxis), Math.round(height / minMinorAxis)));
@@ -267,7 +266,6 @@ class App {
         }
         this.size.width = Math.round(width / this.scaleFactor);
         this.size.height = Math.round(height / this.scaleFactor);
-        // this.aspectRatio = this.size.width / this.size.height;
         this.center.x = (this.size.width / 2) | 0;
         this.center.y = (this.size.height / 2) | 0;
         this.canvas.width = this.size.width;
@@ -625,6 +623,37 @@ exports.ProjectileEffect = ProjectileEffect;
 
 /***/ }),
 
+/***/ "./src/effects/scrolleffect.ts":
+/*!*************************************!*\
+  !*** ./src/effects/scrolleffect.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+class ScrollEffect extends effect_1.Effect {
+    constructor(entity, dx, dy, count) {
+        super(count, true);
+        this.viewport = entity;
+        this.dx = dx;
+        this.dy = dy;
+    }
+    update() {
+        this.countdown--;
+        if (this.countdown >= 0) {
+            this.viewport.x += this.dx;
+            this.viewport.y += this.dy;
+        }
+    }
+}
+exports.ScrollEffect = ScrollEffect;
+
+
+/***/ }),
+
 /***/ "./src/effects/slideeffect.ts":
 /*!************************************!*\
   !*** ./src/effects/slideeffect.ts ***!
@@ -893,6 +922,7 @@ const path_1 = __webpack_require__(/*! ./path */ "./src/path.ts");
 const rect_1 = __webpack_require__(/*! ./rect */ "./src/rect.ts");
 const sprite_1 = __webpack_require__(/*! ./sprite */ "./src/sprite.ts");
 const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+const scrolleffect_1 = __webpack_require__(/*! ./effects/scrolleffect */ "./src/effects/scrolleffect.ts");
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 class Game extends appstate_1.AppState {
@@ -1062,6 +1092,24 @@ class Game extends appstate_1.AppState {
         if (this.app.mouse.dx !== 0 || this.app.mouse.dy !== 0) {
             this.cursor.x = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
             this.cursor.y = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
+        }
+        if (this.app.isKeyDown(keys_1.Keys.VK_SHIFT)) {
+            const scrollSpeed = 2;
+            const scrollDx = this.tileSize.width / scrollSpeed;
+            const scrollDy = this.tileSize.height / scrollSpeed;
+            if (this.app.isKeyPressed(keys_1.Keys.VK_UP)) {
+                this.effects.push(new scrolleffect_1.ScrollEffect(this.viewport, 0, -scrollDy, scrollSpeed));
+            }
+            if (this.app.isKeyPressed(keys_1.Keys.VK_LEFT)) {
+                this.effects.push(new scrolleffect_1.ScrollEffect(this.viewport, -scrollDx, 0, scrollSpeed));
+            }
+            if (this.app.isKeyPressed(keys_1.Keys.VK_RIGHT)) {
+                this.effects.push(new scrolleffect_1.ScrollEffect(this.viewport, scrollDx, 0, scrollSpeed));
+            }
+            if (this.app.isKeyPressed(keys_1.Keys.VK_DOWN)) {
+                this.effects.push(new scrolleffect_1.ScrollEffect(this.viewport, 0, scrollDy, scrollSpeed));
+            }
+            return;
         }
         if (this.isTargeting()) {
             if (this.app.isKeyPressed(keys_1.Keys.VK_ENTER) || this.app.mouse.isClicked()) {
