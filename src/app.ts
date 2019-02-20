@@ -1,6 +1,7 @@
 import {AppOptions} from './appoptions';
 import {AppState} from './appstate';
 import {Color} from './color';
+import {Font, FONT_04B03} from './font';
 import {Keyboard} from './keyboard';
 import {Mouse} from './mouse';
 import {Rect} from './rect';
@@ -9,8 +10,6 @@ import {Vec2} from './vec2';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 224;
-const DEFAULT_GLYPH_WIDTH = 4;
-const DEFAULT_GLYPH_HEIGHT = 8;
 const DEFAULT_FILL_WINDOW = false;
 const DEFAULT_SCALE_FACTOR = 2.0;
 
@@ -18,7 +17,7 @@ export class App {
   readonly canvas: HTMLCanvasElement;
   readonly gl: WebGLRenderingContext;
   readonly size: Rect;
-  readonly glyphSize: Rect;
+  readonly font: Font;
   fillWindow: boolean;
   scaleFactor: number;
   aspectRatio: number;
@@ -42,7 +41,7 @@ export class App {
     this.canvas = canvas;
     this.gl = gl;
     this.size = options.size || new Rect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-    this.glyphSize = options.glyphSize || new Rect(0, 0, DEFAULT_GLYPH_WIDTH, DEFAULT_GLYPH_HEIGHT);
+    this.font = options.font || FONT_04B03;
     this.fillWindow = options.fillWindow || DEFAULT_FILL_WINDOW;
     this.scaleFactor = options.scaleFactor || DEFAULT_SCALE_FACTOR;
     this.aspectRatio = this.size.width / this.size.height;
@@ -57,7 +56,7 @@ export class App {
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
 
-    this.renderSet = new RenderSet(gl, options.imageUrl, this.glyphSize);
+    this.renderSet = new RenderSet(gl, options.imageUrl, this.font);
     this.keyboard = new Keyboard(canvas);
     this.mouse = new Mouse(this);
 

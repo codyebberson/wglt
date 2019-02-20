@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>WGLT - FontGen</title>
+    <style>
+        * {
+            font-family: '04b03';
+        }
+
+        canvas {
+            image-rendering: optimizeSpeed;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimize-contrast;
+            image-rendering: pixelated;
+            -ms-interpolation-mode: nearest-neighbor;
+            -webkit-font-smoothing: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c" width="1024" height="8" style="width:2048px; height:16px"></canvas>
+    <textarea id="out" rows="80" cols="25" style="width:400px; height:400px"></textarea>
+    <script>
+        var ctx = document.getElementById('c').getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, 1024, 32);
+        ctx.font = '8px "04b03"';
+        ctx.fillStyle = 'white';
+        var str = '';
+        var widths = [];
+        for (var i = 0; i < 128 - 32; i++) {
+            var x = i * 8;
+            var c = String.fromCharCode(32 + i);
+            // ctx.fillText(c, x, 7);
+            str += c;
+            var width = ctx.measureText(c).width;
+            widths.push(width);
+        }
+        ctx.fillText(str, 0, 7);
+        console.log(widths);
+        document.getElementById('out').innerHTML = widths.toString();
+    </script>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 
 import {Color} from './color';
+import {Font} from './font';
 import {createTexture, ExtendedTexture, initShaderProgram} from './glutils';
-import {Rect} from './rect';
 
 /**
  * Maximum number of elements per buffer.
@@ -56,7 +56,7 @@ const spriteFragmentShader = 'precision highp float;' +
     '}';
 
 export class RenderSet {
-  readonly glyphSize: Rect;
+  readonly font: Font;
   readonly gl: WebGLRenderingContext;
   readonly program: WebGLProgram;
   readonly viewportSizeLocation: WebGLUniformLocation;
@@ -75,9 +75,9 @@ export class RenderSet {
   readonly colorDataView: DataView;
   colorArrayIndex: number;
 
-  constructor(gl: WebGLRenderingContext, url: string, glyphSize: Rect) {
+  constructor(gl: WebGLRenderingContext, url: string, font: Font) {
     this.gl = gl;
-    this.glyphSize = glyphSize;
+    this.font = font;
 
     const program = initShaderProgram(gl, spriteVertexShader, spriteFragmentShader);
 
@@ -107,25 +107,33 @@ export class RenderSet {
    * @param {number=} color Optional color.
    */
   drawCenteredString(str: string, x: number, y: number, color?: Color) {
-    const x2 = x - ((this.glyphSize.width * str.length) / 2) | 0;
+    const x2 = x - (this.font.getStringWidth(str) / 2) | 0;
     this.drawString(str, x2, y, color);
   }
 
   /**
    * Draws a string.
    * @param {string} str The text string to draw.
-   * @param {number} x The x-coordinate of the top-left corner.
-   * @param {number} y The y-coordinate of the top-left corner.
+   * @param {number} x0 The x-coordinate of the top-left corner.
+   * @param {number} y0 The y-coordinate of the top-left corner.
    * @param {number=} color Optional color.
    */
-  drawString(str: string, x: number, y: number, color?: Color) {
+  drawString(str: string, x0: number, y0: number, color?: Color) {
     const lines = str.split('\n');
-    const glyphWidth = this.glyphSize.width;
-    const glyphHeight = this.glyphSize.height;
+    const height = this.font.getHeight();
+    let y = y0;
     for (let i = 0; i < lines.length; i++) {
+      let x = x0;
       for (let j = 0; j < lines[i].length; j++) {
-        this.drawChar(lines[i].charCodeAt(j), x + j * glyphWidth, y + i * glyphHeight, color);
+        const charCode = lines[i].charCodeAt(j);
+        if (this.font.isInRange(charCode)) {
+          const offset = this.font.getOffset(charCode);
+          const width = this.font.getWidth(charCode);
+          this.drawImage(x, y, offset, 0, width, height, color);
+          x += width;
+        }
       }
+      y += height;
     }
   }
 
@@ -137,8 +145,11 @@ export class RenderSet {
    * @param {number=} color Optional color.
    */
   drawChar(c: number, x: number, y: number, color?: Color) {
-    if (c >= 33 && c <= 127) {
-      this.drawImage(x, y, (c - 33) * 8, 0, 8, 10, color);
+    if (this.font.isInRange(c)) {
+      const offset = this.font.getOffset(c);
+      const width = this.font.getWidth(c);
+      const height = this.font.getHeight();
+      this.drawImage(x, y, offset, 0, width, height, color);
     }
   }
 

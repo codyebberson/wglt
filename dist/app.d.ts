@@ -1,6 +1,7 @@
 import { AppOptions } from './appoptions';
 import { AppState } from './appstate';
 import { Color } from './color';
+import { Font } from './font';
 import { Keyboard } from './keyboard';
 import { Mouse } from './mouse';
 import { Rect } from './rect';
@@ -10,7 +11,7 @@ export declare class App {
     readonly canvas: HTMLCanvasElement;
     readonly gl: WebGLRenderingContext;
     readonly size: Rect;
-    readonly glyphSize: Rect;
+    readonly font: Font;
     fillWindow: boolean;
     scaleFactor: number;
     aspectRatio: number;

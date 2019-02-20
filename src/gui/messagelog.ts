@@ -38,7 +38,7 @@ export class MessageLog extends Panel {
     let y = this.rect.y;
 
     if (y < 0) {
-      y = this.gui.app.size.height - y;
+      y = this.gui.app.size.height + y;
     }
 
     for (let i = 0; i < this.messages.length; i++) {

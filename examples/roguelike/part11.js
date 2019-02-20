@@ -404,7 +404,7 @@ game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 224 - 50, 100, 100));
+const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, -50, 100, 100));
 messageLog.add('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 game.gui.add(messageLog);
 
