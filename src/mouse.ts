@@ -48,7 +48,15 @@ export class Mouse extends Input {
     if (e.touches.length > 0) {
       const touch = e.touches[0];
       this.updatePosition(touch.clientX, touch.clientY);
-      this.down = true;
+      if (!this.down) {
+        this.down = true;
+        this.prevX = this.x;
+        this.prevY = this.y;
+        this.startX = this.x;
+        this.startY = this.y;
+        this.dx = 0;
+        this.dy = 0;
+      }
     } else {
       this.down = false;
     }

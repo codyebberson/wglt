@@ -1,5 +1,5 @@
-import { Effect } from './effect';
 import { Rect } from '../rect';
+import { Effect } from './effect';
 export declare class ScrollEffect extends Effect {
     readonly viewport: Rect;
     readonly dx: number;
