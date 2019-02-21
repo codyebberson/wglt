@@ -41,4 +41,5 @@ export declare class Game extends AppState {
     private doAi;
     private nextTurn;
     getEnemyAt(x: number, y: number): Entity | undefined;
+    recomputeFov(): void;
 }

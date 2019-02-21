@@ -126,7 +126,7 @@ function createMap() {
     game.entities.push(stairs);
 
     // Initial FOV
-    game.tileMap.computeFov(player.x, player.y, 12);
+    game.recomputeFov();
 }
 
 function placeObjects(room) {
@@ -428,7 +428,7 @@ game.onUpdate = function () {
         // Show inventory
         game.gui.add(new wglt.SelectDialog(
             game.gui,
-            new wglt.Rect(40, 40, 100, 100),
+            new wglt.Rect(40, 40, 150, 100),
             'INVENTORY',
             player.inventory,
             (choice) => {

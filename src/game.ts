@@ -13,6 +13,7 @@ import {Vec2} from './vec2';
 
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
+const DEFAULT_VIEW_DISTANCE = 13;
 
 export class Game extends AppState {
   readonly tileSize: Rect;
@@ -357,7 +358,7 @@ export class Game extends AppState {
 
       // Update FOV
       if (this.player && this.tileMap) {
-        this.tileMap.computeFov(this.player.x, this.player.y, 13);
+        this.recomputeFov();
 
         // Determine which entities are activated
         for (let i = 0; i < this.entities.length; i++) {
@@ -404,5 +405,11 @@ export class Game extends AppState {
       }
     }
     return undefined;
+  }
+
+  recomputeFov() {
+    if (this.player && this.tileMap) {
+      this.tileMap.computeFov(this.player.x, this.player.y, DEFAULT_VIEW_DISTANCE);
+    }
   }
 }
