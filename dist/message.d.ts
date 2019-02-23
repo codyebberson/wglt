@@ -1,4 +1,4 @@
-import { Color } from "./color";
+import { Color } from './color';
 export declare class Message {
     readonly text: string;
     readonly color: Color;

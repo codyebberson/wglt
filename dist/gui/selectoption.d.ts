@@ -1,5 +1,5 @@
-import { Sprite } from "../sprite";
-import { Message } from "../message";
+import { Message } from '../message';
+import { Sprite } from '../sprite';
 export interface SelectOption {
     name: string;
     icon?: Sprite;
