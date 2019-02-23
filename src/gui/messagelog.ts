@@ -1,19 +1,10 @@
-import {App} from '../app';
 import {Color} from '../color';
 import {Colors} from '../colors';
 import {GUI} from '../gui';
+import {Message} from '../message';
 import {Rect} from '../rect';
+
 import {Panel} from './panel';
-
-class Message {
-  readonly text: string;
-  readonly color: Color;
-
-  constructor(text: string, color: Color) {
-    this.text = text;
-    this.color = color;
-  }
-}
 
 export class MessageLog extends Panel {
   private readonly messages: Message[];

@@ -31,7 +31,7 @@ export class Sprite {
     this.animDelay = 0;
   }
 
-  draw(app: App, x: number, y: number) {
+  draw(app: App, x: number, y: number, colorOverride?: Color) {
     let frame = this.animIndex;
     if (this.loop) {
       frame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
@@ -39,7 +39,8 @@ export class Sprite {
 
     const u = this.x + frame * this.width;
     const v = this.y;
-    app.drawImage(x, y, u, v, this.width, this.height, this.colorOverride);
+    const color = colorOverride || this.colorOverride;
+    app.drawImage(x, y, u, v, this.width, this.height, color);
 
     this.animDelay++;
     if (this.animDelay > this.ticksPerFrame) {

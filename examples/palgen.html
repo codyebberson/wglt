@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>WGLT - FontGen</title>
+    <style>
+        * {
+            font-family: '04b03';
+        }
+
+        canvas {
+            image-rendering: optimizeSpeed;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimize-contrast;
+            image-rendering: pixelated;
+            -ms-interpolation-mode: nearest-neighbor;
+            -webkit-font-smoothing: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c" width="256" height="256" style="width:512px; height:512px"></canvas>
+    <script>
+function fromHsv(h, s, v) {
+  const i = (h * 6) | 0;
+  const f = h * 6 - i;
+  const p = v * (1 - s);
+  const q = v * (1 - f * s);
+  const t = v * (1 - (1 - f) * s);
+  let r, g, b;
+  switch (i % 6) {
+    case 0:
+      r = v, g = t, b = p;
+      break;
+    case 1:
+      r = q, g = v, b = p;
+      break;
+    case 2:
+      r = p, g = v, b = t;
+      break;
+    case 3:
+      r = p, g = q, b = v;
+      break;
+    case 4:
+      r = t, g = p, b = v;
+      break;
+    case 5:
+      r = v, g = p, b = q;
+      break;
+    default:
+      r = 0;
+      g = 0;
+      b = 0;
+  }
+//   if (a === undefined) {
+//     a = 1.0;
+//   }
+  //return fromRgb((r * 255) | 0, (g * 255) | 0, (b * 255) | 0, (a * 255) | 0);
+  return 'rgb(' + ((r * 255) | 0) + ',' + ((g * 255) | 0) + ',' + ((b * 255) | 0) + ')';
+}
+
+
+        var ctx = document.getElementById('c').getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, 1024, 1024);
+
+        // ctx.fillStyle = fromHsv(45/360, 0.6, 1.0);
+        // ctx.fillRect(100, 100, 50, 50);
+
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+
+                if (y === 0) {
+                    const h = 0.0;
+                    const s = 0.0;
+                    const v = x / 8;
+                    ctx.fillStyle = fromHsv(h, s, v);
+                } else {
+                    const h = (x + 0.5) / 8;
+                    const s = 0.5 + 0.3 * y / 8;
+                    const v = 0.1 + 0.8 * y / 8;
+                    ctx.fillStyle = fromHsv(h, s, v);
+                }
+
+                const x0 = x / 8 * 256;
+                const y0 = y / 8 * 256;
+                const width = 256 / 8;
+                const height = 256 / 8;
+                ctx.fillRect(x0, y0, width, height);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

@@ -13,6 +13,6 @@ export declare class Sprite {
     private animIndex;
     private animDelay;
     constructor(x: number, y: number, width: number, height: number, frames?: number, loop?: boolean, ticksPerFrame?: number, colorOverride?: Color);
-    draw(app: App, x: number, y: number): void;
+    draw(app: App, x: number, y: number, colorOverride?: Color): void;
     static updateGlobalAnimations(): void;
 }
