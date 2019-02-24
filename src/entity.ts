@@ -78,24 +78,6 @@ export class Entity extends Vec2 implements SelectOption {
     this.move(Math.round(dx / distance), Math.round(dy / distance));
   }
 
-  tryMoveOrAttack(dx: number, dy: number) {
-    const destX = this.x + dx;
-    const destY = this.y + dy;
-
-    for (let i = 0; i < this.game.entities.length; i++) {
-      const other = this.game.entities[i];
-      if (this !== other && other.x === destX && other.y === destY) {
-        if (this.onBump) {
-          if (this.onBump(other)) {
-            return true;
-          }
-        }
-      }
-    }
-
-    return this.move(dx, dy);
-  }
-
   attack(target: Entity) {
     if (target === this) {
       return;

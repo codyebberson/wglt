@@ -32,6 +32,7 @@ export class Game extends AppState {
   onUpdate?: Function;
   tileMap?: TileMap;
   player?: Entity;
+  followPlayer: boolean;
 
   constructor(app: App, options: GameOptions) {
     super(app);
@@ -43,6 +44,7 @@ export class Game extends AppState {
     this.blocked = false;
     this.cursor = new Vec2(-1, -1);
     this.pathIndex = 0;
+    this.followPlayer = true;
   }
 
   update() {
@@ -133,7 +135,8 @@ export class Game extends AppState {
     if (this.app.mouse.down) {
       this.viewport.x -= this.app.mouse.dx;
       this.viewport.y -= this.app.mouse.dy;
-    } else if (this.player) {
+      this.followPlayer = false;
+    } else if (this.player && this.followPlayer) {
       const horizontalMargin = ((this.app.size.width - this.player.sprite.width) / 2) | 0;
       const verticalMargin = ((this.app.size.height - this.player.sprite.height) / 2) | 0;
       this.viewport.x = this.player.pixelX - horizontalMargin;
@@ -213,20 +216,23 @@ export class Game extends AppState {
     }
 
     if (this.app.isKeyDown(Keys.VK_SHIFT)) {
-      const scrollSpeed = 2;
-      const scrollDx = this.tileSize.width / scrollSpeed;
-      const scrollDy = this.tileSize.height / scrollSpeed;
+      this.followPlayer = false;
+
+      const scrollFrameCount = 4;
+      const scrollDx = 2 * this.tileSize.width / scrollFrameCount;
+      const scrollDy = 2 * this.tileSize.height / scrollFrameCount;
+
       if (this.app.isKeyPressed(Keys.VK_UP)) {
-        this.effects.push(new ScrollEffect(this.viewport, 0, -scrollDy, scrollSpeed));
+        this.effects.push(new ScrollEffect(this.viewport, 0, -scrollDy, scrollFrameCount));
       }
       if (this.app.isKeyPressed(Keys.VK_LEFT)) {
-        this.effects.push(new ScrollEffect(this.viewport, -scrollDx, 0, scrollSpeed));
+        this.effects.push(new ScrollEffect(this.viewport, -scrollDx, 0, scrollFrameCount));
       }
       if (this.app.isKeyPressed(Keys.VK_RIGHT)) {
-        this.effects.push(new ScrollEffect(this.viewport, scrollDx, 0, scrollSpeed));
+        this.effects.push(new ScrollEffect(this.viewport, scrollDx, 0, scrollFrameCount));
       }
       if (this.app.isKeyPressed(Keys.VK_DOWN)) {
-        this.effects.push(new ScrollEffect(this.viewport, 0, scrollDy, scrollSpeed));
+        this.effects.push(new ScrollEffect(this.viewport, 0, scrollDy, scrollFrameCount));
       }
       return;
     }
@@ -309,20 +315,46 @@ export class Game extends AppState {
     const wait = this.app.isKeyPressed(Keys.VK_NUMPAD5);
 
     if (up) {
-      this.player.tryMoveOrAttack(0, -1);
+      this.tryMoveOrAttack(0, -1);
     }
     if (left) {
-      this.player.tryMoveOrAttack(-1, 0);
+      this.tryMoveOrAttack(-1, 0);
     }
     if (right) {
-      this.player.tryMoveOrAttack(1, 0);
+      this.tryMoveOrAttack(1, 0);
     }
     if (down) {
-      this.player.tryMoveOrAttack(0, 1);
+      this.tryMoveOrAttack(0, 1);
     }
     if (wait) {
       this.player.actionPoints = 0;
     }
+  }
+
+  tryMoveOrAttack(dx: number, dy: number) {
+    const player = this.player;
+    if (!player) {
+      return;
+    }
+
+    // Start following the player again
+    this.followPlayer = true;
+
+    const destX = player.x + dx;
+    const destY = player.y + dy;
+
+    for (let i = 0; i < this.entities.length; i++) {
+      const other = this.entities[i];
+      if (player !== other && other.x === destX && other.y === destY) {
+        if (player.onBump) {
+          if (player.onBump(other)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return player.move(dx, dy);
   }
 
   private doAi(entity: Entity) {
