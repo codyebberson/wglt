@@ -6,9 +6,11 @@ import {Dialog} from './dialog';
 
 export class DialogRenderer {
   baseRect: Rect;
+  closeButtonRect?: Rect;
 
-  constructor(baseRect: Rect) {
+  constructor(baseRect: Rect, closeButtonRect?: Rect) {
     this.baseRect = baseRect;
+    this.closeButtonRect = closeButtonRect;
   }
 
   draw(app: App, dialog: Dialog) {
@@ -67,5 +69,15 @@ export class DialogRenderer {
 
     // Bottom-right corner
     app.drawImage(dx2, dy2, sx2, sy2, sw, sh, undefined, sw, sh);
+
+    if (this.closeButtonRect && dialog.closeButton) {
+      const w = this.closeButtonRect.width;
+      const h = this.closeButtonRect.height;
+      const dx = dialog.rect.x2 - w;
+      const dy = dialog.rect.y;
+      const sx = this.closeButtonRect.x;
+      const sy = this.closeButtonRect.y;
+      app.drawImage(dx, dy, sx, sy, w, h);
+    }
   }
 }

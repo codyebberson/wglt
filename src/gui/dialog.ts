@@ -1,17 +1,21 @@
-import {GUI} from '../gui';
 import {Rect} from '../rect';
 
 import {Panel} from './panel';
 
 export class Dialog extends Panel {
   readonly title: string;
+  closeButton: boolean;
 
-  constructor(gui: GUI, rect: Rect, title: string) {
-    super(gui, rect, true);
+  constructor(rect: Rect, title: string) {
+    super(rect, true);
     this.title = title;
+    this.closeButton = false;
   }
 
   drawContents() {
+    if (!this.gui) {
+      return;
+    }
     this.gui.renderer.draw(this.gui.app, this);
   }
 
@@ -20,10 +24,9 @@ export class Dialog extends Panel {
   }
 
   close() {
-    const panels = this.gui.panels;
-    const index = panels.indexOf(this);
-    if (index >= 0) {
-      panels.splice(index, 1);
+    if (!this.gui) {
+      return;
     }
+    this.gui.remove(this);
   }
 }

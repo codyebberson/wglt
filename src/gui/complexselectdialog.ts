@@ -17,14 +17,18 @@ export class ComplexSelectDialog extends Dialog {
   onSelect?: Function;
   onCancel?: Function;
 
-  constructor(gui: GUI, rect: Rect, title: string, options: SelectOption[]) {
-    super(gui, rect, title);
+  constructor(rect: Rect, title: string, options: SelectOption[]) {
+    super(rect, title);
     this.options = options;
     this.selectedIndex = 0;
     this.renderer = new DefaultSelectOptionRenderer();
   }
 
   drawContents() {
+    if (!this.gui) {
+      return;
+    }
+
     super.drawContents();
     const offset = this.rect;
     const point = new Vec2(offset.x + MARGIN, offset.y + MARGIN);
@@ -37,6 +41,10 @@ export class ComplexSelectDialog extends Dialog {
   }
 
   handleInput() {
+    if (!this.gui) {
+      return false;
+    }
+
     const app = this.gui.app;
 
     for (let i = 0; i < this.options.length; i++) {

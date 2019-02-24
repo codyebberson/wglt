@@ -3,20 +3,27 @@ import {App} from './app';
 import {DialogRenderer} from './gui/dialogrenderer';
 import {Panel} from './gui/panel';
 import {Rect} from './rect';
+import {XArray} from './xarray';
 
 export class GUI {
   readonly app: App;
-  readonly panels: Panel[];
+  readonly panels: XArray<Panel>;
   readonly renderer: DialogRenderer;
 
   constructor(app: App) {
     this.app = app;
-    this.panels = [];
+    this.panels = new XArray();
     this.renderer = new DialogRenderer(new Rect(0, 0, 1, 1));
   }
 
   add(panel: Panel) {
+    panel.gui = this;
     this.panels.push(panel);
+  }
+
+  remove(panel: Panel) {
+    this.panels.remove(panel);
+    panel.gui = null;
   }
 
   handleInput(): boolean {

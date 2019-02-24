@@ -2,12 +2,12 @@ import {GUI} from '../gui';
 import {Rect} from '../rect';
 
 export abstract class Panel {
-  readonly gui: GUI;
+  gui: GUI|null;
   readonly rect: Rect;
   readonly modal: boolean;
 
-  constructor(gui: GUI, rect: Rect, modal?: boolean) {
-    this.gui = gui;
+  constructor(rect: Rect, modal?: boolean) {
+    this.gui = null;
     this.rect = rect;
     this.modal = !!modal;
   }

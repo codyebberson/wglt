@@ -9,20 +9,28 @@ export class Button extends Panel {
   shortcutKey?: Key;
   onClick?: Function;
 
-  constructor(gui: GUI, srcRect: Rect, destRect: Rect, shortcutKey?: Key, onClick?: Function) {
-    super(gui, destRect);
+  constructor(srcRect: Rect, destRect: Rect, shortcutKey?: Key, onClick?: Function) {
+    super(destRect);
     this.srcRect = srcRect;
     this.shortcutKey = shortcutKey;
     this.onClick = onClick;
   }
 
   drawContents() {
+    if (!this.gui) {
+      return;
+    }
+
     const src = this.srcRect;
     const dst = this.rect;
     this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
   }
 
   handleInput() {
+    if (!this.gui) {
+      return false;
+    }
+
     const app = this.gui.app;
     const mouse = app.mouse;
 

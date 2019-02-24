@@ -10,8 +10,8 @@ export class MessageLog extends Panel {
   private readonly messages: Message[];
   readonly maxItems: number;
 
-  constructor(gui: GUI, rect: Rect, maxItems?: number) {
-    super(gui, rect);
+  constructor(rect: Rect, maxItems?: number) {
+    super(rect);
     this.messages = [];
     this.maxItems = maxItems || 5;
   }
@@ -25,6 +25,10 @@ export class MessageLog extends Panel {
   }
 
   drawContents() {
+    if (!this.gui) {
+      return;
+    }
+
     const x = this.rect.x;
     let y = this.rect.y;
 

@@ -371,6 +371,7 @@ const game = new wglt.Game(app, {
 
 game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
 game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
+game.gui.renderer.closeButtonRect = new wglt.Rect(208, 16, 16, 16);
 
 const rng = new wglt.RNG(1);
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
@@ -402,11 +403,11 @@ game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, -50, 100, 50));
+const messageLog = new wglt.MessageLog(new wglt.Rect(1, -50, 100, 50));
 messageLog.add('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 game.gui.add(messageLog);
 
-const playerStats = new wglt.Panel(game.gui, new wglt.Rect(1, 1, 100, 100));
+const playerStats = new wglt.Panel(new wglt.Rect(1, 1, 100, 100));
 playerStats.drawContents = function () {
     const frameY = 0;
     app.drawString(player.name, 1, frameY);
@@ -424,19 +425,19 @@ playerStats.drawContents = function () {
 game.gui.add(playerStats);
 
 const inventoryButton = new wglt.Button(
-    game.gui,
-    new wglt.Rect(176, 16, 16, 16),
+    new wglt.Rect(192, 16, 16, 16),
     new wglt.Rect(400 - 16, 224 - 16, 16, 16),
     wglt.Keys.VK_I,
     function () {
-        game.gui.add(new wglt.SelectDialog(
-            game.gui,
+        const inventoryDialog = new wglt.SelectDialog(
             new wglt.Rect(40, 40, 150, 100),
             'INVENTORY',
             player.inventory,
             (choice) => {
                 choice.use(player);
-            }));
+            });
+        inventoryDialog.closeButton = true;
+        game.gui.add(inventoryDialog);
     });
 game.gui.add(inventoryButton);
 
@@ -446,12 +447,10 @@ createMap();
 const mainMenu = new wglt.AppState(app);
 mainMenu.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 mainMenu.gui.add(new wglt.ImagePanel(
-    mainMenu.gui,
     new wglt.Rect(0, 768, 400, 224),
     new wglt.Rect(0, 0, 400, 224)
 ));
 mainMenu.gui.add(new wglt.SelectDialog(
-    mainMenu.gui,
     new wglt.Rect(150, 62, 100, 100),
     'INVENTORY',
     [
