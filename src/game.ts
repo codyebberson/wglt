@@ -130,33 +130,16 @@ export class Game extends AppState {
   }
 
   private updateViewport() {
-    if (this.player) {
-      const horizontalMargin = (this.app.size.width * 0.25) | 0;
-      const verticalMargin = (this.app.size.height * 0.25) | 0;
-
-      if (this.player.pixelX - this.viewport.x < horizontalMargin) {
-        this.viewport.x = this.player.pixelX - horizontalMargin;
-      }
-
-      if (this.viewport.x + this.viewport.width - (this.player.pixelX + this.tileSize.width) < horizontalMargin) {
-        this.viewport.x = this.player.pixelX + this.tileSize.width + horizontalMargin - this.viewport.width;
-      }
-
-      if (this.player.pixelY - this.viewport.y < verticalMargin) {
-        this.viewport.y = this.player.pixelY - verticalMargin;
-      }
-
-      if (this.viewport.y + this.viewport.height - (this.player.pixelY + this.tileSize.height) < verticalMargin) {
-        this.viewport.y = this.player.pixelY + this.tileSize.height + verticalMargin - this.viewport.height;
-      }
-
-      this.viewport.width = this.app.size.width;
-      this.viewport.height = this.app.size.height;
-    }
-
     if (this.app.mouse.down) {
       this.viewport.x -= this.app.mouse.dx;
       this.viewport.y -= this.app.mouse.dy;
+    } else if (this.player) {
+      const horizontalMargin = ((this.app.size.width - this.player.sprite.width) / 2) | 0;
+      const verticalMargin = ((this.app.size.height - this.player.sprite.height) / 2) | 0;
+      this.viewport.x = this.player.pixelX - horizontalMargin;
+      this.viewport.y = this.player.pixelY - verticalMargin;
+      this.viewport.width = this.app.size.width;
+      this.viewport.height = this.app.size.height;
     }
   }
 
