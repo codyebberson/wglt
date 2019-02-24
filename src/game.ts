@@ -393,6 +393,19 @@ export class Game extends AppState {
     }
   }
 
+  isBlocked(x: number, y: number) {
+    if (this.tileMap && this.tileMap.isBlocked(x, y)) {
+      return true;
+    }
+    for (let i = 0; i < this.entities.length; i++) {
+      const other = this.entities[i];
+      if (other.blocks && other.x === x && other.y === y) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   getEnemyAt(x: number, y: number) {
     for (let i = 0; i < this.entities.length; i++) {
       const other = this.entities[i];

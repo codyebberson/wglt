@@ -58,7 +58,7 @@ export class Entity extends Vec2 implements SelectOption {
     const destX = this.x + dx;
     const destY = this.y + dy;
 
-    if (this.game.tileMap && this.game.tileMap.isBlocked(destX, destY)) {
+    if (this.game.isBlocked(destX, destY)) {
       return false;
     }
 

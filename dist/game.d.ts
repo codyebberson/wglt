@@ -40,6 +40,7 @@ export declare class Game extends AppState {
     private handlePlayerInput;
     private doAi;
     private nextTurn;
+    isBlocked(x: number, y: number): boolean;
     getEnemyAt(x: number, y: number): Entity | undefined;
     recomputeFov(): void;
 }
