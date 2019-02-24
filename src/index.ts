@@ -15,6 +15,7 @@ export * from './effects/floatingtexteffect';
 export * from './effects/projectileeffect';
 export * from './effects/slideeffect';
 export * from './gui';
+export * from './gui/button';
 export * from './gui/complexselectdialog';
 export * from './gui/dialog';
 export * from './gui/dialogrenderer';

@@ -423,9 +423,12 @@ playerStats.drawContents = function () {
 };
 game.gui.add(playerStats);
 
-game.onUpdate = function () {
-    if (app.isKeyPressed(wglt.Keys.VK_I)) {
-        // Show inventory
+const inventoryButton = new wglt.Button(
+    game.gui,
+    new wglt.Rect(176, 16, 16, 16),
+    new wglt.Rect(400 - 16, 224 - 16, 16, 16),
+    wglt.Keys.VK_I,
+    function () {
         game.gui.add(new wglt.SelectDialog(
             game.gui,
             new wglt.Rect(40, 40, 150, 100),
@@ -434,8 +437,8 @@ game.onUpdate = function () {
             (choice) => {
                 choice.use(player);
             }));
-    }
-};
+    });
+game.gui.add(inventoryButton);
 
 // Generate the map
 createMap();
