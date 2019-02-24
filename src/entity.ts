@@ -97,6 +97,10 @@ export class Entity extends Vec2 implements SelectOption {
   }
 
   attack(target: Entity) {
+    if (target === this) {
+      return;
+    }
+
     const damage = 10;
 
     if (this.onAttack) {
