@@ -26,7 +26,7 @@ export class ButtonSlot extends Panel {
     this.drawChildren();
 
     if (this.shortcutKey) {
-      this.gui.app.drawString(String.fromCharCode(this.shortcutKey), dst.x + 17, dst.y + 3);
+      this.gui.app.drawString(String.fromCharCode(this.shortcutKey), dst.x2 - 7, dst.y + 3);
     }
   }
 

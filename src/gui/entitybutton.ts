@@ -7,7 +7,7 @@ export class EntityButton extends Button {
   readonly entity: Entity;
 
   constructor(destRect: Rect, entity: Entity) {
-    super(entity.sprite, destRect);
+    super(destRect, entity.sprite);
     this.entity = entity;
   }
 

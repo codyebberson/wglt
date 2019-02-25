@@ -438,8 +438,8 @@ for (let i = 0; i < 6; i++) {
 }
 
 const inventoryButton = new wglt.Button(
-    new wglt.Rect(192, 16, 16, 16),
     new wglt.Rect(400 - 24, 224 - 24, 24, 24),
+    new wglt.Sprite(192, 16, 16, 16),
     wglt.Keys.VK_I,
     function () {
         const inventoryDialog = new wglt.SelectDialog(
@@ -458,7 +458,6 @@ const testItem = new wglt.Entity(game, 0, 0, 'scroll of fireball', new wglt.Spri
 testItem.canPickup = true;
 testItem.onPickup = pickupCallback;
 testItem.onUse = castFireball;
-// game.entities.push(testItem);
 
 const testButton = new wglt.EntityButton(
     new wglt.Rect(400 - 48, 224 - 24, 24, 24),
