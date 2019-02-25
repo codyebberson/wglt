@@ -3,46 +3,77 @@ import {App} from './app';
 import {DialogRenderer} from './gui/dialogrenderer';
 import {Panel} from './gui/panel';
 import {Rect} from './rect';
-import {XArray} from './xarray';
+import {Vec2} from './vec2';
 
 export class GUI {
   readonly app: App;
-  readonly panels: XArray<Panel>;
   readonly renderer: DialogRenderer;
+  readonly rootPanel: Panel;
+  dragElement?: Panel;
+  dragOffset?: Vec2;
 
   constructor(app: App) {
     this.app = app;
-    this.panels = new XArray();
     this.renderer = new DialogRenderer(new Rect(0, 0, 1, 1));
+    this.rootPanel = new Panel(app.size);
+    this.rootPanel.gui = this;
   }
 
   add(panel: Panel) {
-    panel.gui = this;
-    this.panels.push(panel);
+    this.rootPanel.add(panel);
   }
 
   remove(panel: Panel) {
-    this.panels.remove(panel);
-    panel.gui = null;
+    this.rootPanel.remove(panel);
   }
 
   handleInput(): boolean {
-    for (let i = this.panels.length - 1; i >= 0; i--) {
-      const panel = this.panels[i];
-      if (panel.handleInput && panel.handleInput()) {
-        return true;
-      }
-      if (panel.modal) {
-        return true;
-      }
+    if (this.dragElement && this.dragOffset) {
+      this.updateDragging();
+      return true;
     }
 
-    return false;
+    return this.rootPanel.handleInput();
   }
 
   draw() {
-    for (let i = 0; i < this.panels.length; i++) {
-      this.panels[i].drawContents();
+    this.rootPanel.drawContents();
+
+    if (this.dragElement) {
+      // Draw drag element on top of everything else
+      this.dragElement.drawContents();
+    }
+  }
+
+  startDragging(panel: Panel) {
+    const mouse = this.app.mouse;
+    this.dragElement = panel;
+    this.dragOffset = new Vec2(mouse.start.x - panel.rect.x, mouse.start.y - panel.rect.y);
+  }
+
+  private updateDragging() {
+    const mouse = this.app.mouse;
+    const dragElement = this.dragElement as Panel;
+    const dragOffset = this.dragOffset as Vec2;
+    if (mouse.down) {
+      // Move the element to the mouse
+      dragElement.rect.x = mouse.x - dragOffset.x;
+      dragElement.rect.y = mouse.y - dragOffset.y;
+    } else {
+      // End the drag
+      const target = this.rootPanel.getPanelAt(mouse);
+      if (target && target !== this.rootPanel) {
+        // Found a valid drop target
+        dragElement.rect.x = target.rect.x;
+        dragElement.rect.y = target.rect.y;
+        dragElement.move(target);
+      } else {
+        // Otherwise move back to the original location
+        dragElement.rect.x = mouse.start.x - dragOffset.x;
+        dragElement.rect.y = mouse.start.y - dragOffset.y;
+      }
+      this.dragElement = undefined;
+      this.dragOffset = undefined;
     }
   }
 }

@@ -1,4 +1,3 @@
-import {GUI} from '../gui';
 import {Key} from '../keys';
 import {Rect} from '../rect';
 
@@ -23,7 +22,9 @@ export class Button extends Panel {
 
     const src = this.srcRect;
     const dst = this.rect;
-    this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
+    const offsetX = ((dst.width - src.width) / 2) | 0;
+    const offsetY = ((dst.height - src.height) / 2) | 0;
+    this.gui.app.drawImage(dst.x + offsetX, dst.y + offsetY, src.x, src.y, src.width, src.height);
   }
 
   handleInput() {
@@ -34,13 +35,22 @@ export class Button extends Panel {
     const app = this.gui.app;
     const mouse = app.mouse;
 
-    if (this.onClick &&
-        ((this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
-         (this.rect.contains(mouse) && mouse.isClicked()))) {
-      this.onClick();
+    if (this.rect.contains(mouse) && this.rect.contains(mouse.start) && mouse.isDragging()) {
+      this.gui.startDragging(this);
+      return true;
+    }
+
+    if ((this.shortcutKey && app.isKeyPressed(this.shortcutKey)) || (this.rect.contains(mouse) && mouse.isClicked())) {
+      this.click();
       return true;
     }
 
     return this.rect.contains(mouse);
+  }
+
+  click() {
+    if (this.onClick) {
+      this.onClick();
+    }
   }
 }

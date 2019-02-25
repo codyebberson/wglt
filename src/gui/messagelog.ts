@@ -1,6 +1,5 @@
 import {Color} from '../color';
 import {Colors} from '../colors';
-import {GUI} from '../gui';
 import {Message} from '../message';
 import {Rect} from '../rect';
 
@@ -16,7 +15,13 @@ export class MessageLog extends Panel {
     this.maxItems = maxItems || 5;
   }
 
-  add(text: string, color?: Color) {
+  add(text: string|Panel, color?: Color) {
+    if (text instanceof Panel) {
+      // TODO:  This is a weird artifact of history
+      // The original API was designed before Panels were hierarchical.
+      return;
+    }
+
     this.messages.push(new Message(text, color || Colors.WHITE));
 
     if (this.messages.length > this.maxItems) {

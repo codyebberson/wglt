@@ -355,6 +355,7 @@ function nextLevel() {
     messageLog.add('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
     messageLog.add('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
     game.entities = [player];
+    game.path = null;
     createMap();
 }
 
@@ -424,9 +425,19 @@ playerStats.drawContents = function () {
 };
 game.gui.add(playerStats);
 
+const buttonSlot1 = new wglt.ButtonSlot(
+    new wglt.Rect(0, 88, 24, 24),
+    new wglt.Rect(400 - 50, 224 - 30, 24, 24));
+game.gui.add(buttonSlot1);
+
+const buttonSlot2 = new wglt.ButtonSlot(
+    new wglt.Rect(0, 88, 24, 24),
+    new wglt.Rect(400 - 100, 224 - 30, 24, 24));
+game.gui.add(buttonSlot2);
+
 const inventoryButton = new wglt.Button(
     new wglt.Rect(192, 16, 16, 16),
-    new wglt.Rect(400 - 16, 224 - 16, 16, 16),
+    new wglt.Rect(400 - 24, 224 - 24, 24, 24),
     wglt.Keys.VK_I,
     function () {
         const inventoryDialog = new wglt.SelectDialog(
