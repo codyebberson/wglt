@@ -29,7 +29,6 @@ export declare class Entity extends Vec2 implements SelectOption {
     readonly pixelY: number;
     move(dx: number, dy: number): boolean;
     moveToward(targetX: number, targetY: number): void;
-    tryMoveOrAttack(dx: number, dy: number): boolean;
     attack(target: Entity): void;
     takeDamage(damage: number): void;
     pickup(item: Entity): void;

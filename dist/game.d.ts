@@ -24,6 +24,7 @@ export declare class Game extends AppState {
     onUpdate?: Function;
     tileMap?: TileMap;
     player?: Entity;
+    followPlayer: boolean;
     constructor(app: App, options: GameOptions);
     update(): void;
     private updateEffects;
@@ -38,6 +39,7 @@ export declare class Game extends AppState {
     private endTargeting;
     cancelTargeting(): void;
     private handlePlayerInput;
+    tryMoveOrAttack(dx: number, dy: number): boolean | undefined;
     private doAi;
     private nextTurn;
     isBlocked(x: number, y: number): boolean;

@@ -1,3 +1,4 @@
+import { Mouse } from './mouse';
 import { Vec2 } from './vec2';
 export declare class Rect extends Vec2 {
     width: number;
@@ -11,4 +12,5 @@ export declare class Rect extends Vec2 {
     readonly top: number;
     getCenter(): Vec2;
     intersects(other: Rect): boolean;
+    contains(point: Vec2 | Mouse): boolean;
 }

@@ -1,4 +1,3 @@
-import { GUI } from '../gui';
 import { Rect } from '../rect';
 import { Dialog } from './dialog';
 import { SelectOption } from './selectoption';
@@ -9,7 +8,7 @@ export declare class ComplexSelectDialog extends Dialog {
     renderer: SelectOptionRenderer;
     onSelect?: Function;
     onCancel?: Function;
-    constructor(gui: GUI, rect: Rect, title: string, options: SelectOption[]);
+    constructor(rect: Rect, title: string, options: SelectOption[]);
     drawContents(): void;
     handleInput(): boolean;
 }
