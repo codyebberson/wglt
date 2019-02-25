@@ -120,7 +120,7 @@ export class Mouse extends Input {
   }
 
   isClicked() {
-    return this.upCount === 1 && this.dragDistance < 8;
+    return this.upCount === 1 && this.dragDistance < 4;
   }
 
   isDragging() {

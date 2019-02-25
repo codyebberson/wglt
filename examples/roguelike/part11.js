@@ -373,6 +373,11 @@ const game = new wglt.Game(app, {
 game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
 game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 game.gui.renderer.closeButtonRect = new wglt.Rect(208, 16, 16, 16);
+game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
+game.gui.onDrop = function (dragElement, dropTarget) {
+    console.log('onDrop', dragElement, dropTarget);
+    return true;
+};
 
 const rng = new wglt.RNG(1);
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
@@ -404,7 +409,7 @@ game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(new wglt.Rect(1, -50, 100, 50));
+const messageLog = new wglt.MessageLog(new wglt.Rect(1, -78, 100, 50));
 messageLog.add('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 game.gui.add(messageLog);
 
@@ -425,15 +430,12 @@ playerStats.drawContents = function () {
 };
 game.gui.add(playerStats);
 
-const buttonSlot1 = new wglt.ButtonSlot(
-    new wglt.Rect(0, 88, 24, 24),
-    new wglt.Rect(400 - 50, 224 - 30, 24, 24));
-game.gui.add(buttonSlot1);
-
-const buttonSlot2 = new wglt.ButtonSlot(
-    new wglt.Rect(0, 88, 24, 24),
-    new wglt.Rect(400 - 100, 224 - 30, 24, 24));
-game.gui.add(buttonSlot2);
+for (let i = 0; i < 6; i++) {
+    const buttonSlot = new wglt.ButtonSlot(
+        new wglt.Rect(1 + i * 26, 224 - 26, 24, 24),
+        wglt.Keys.VK_1 + i);
+    game.gui.add(buttonSlot);
+}
 
 const inventoryButton = new wglt.Button(
     new wglt.Rect(192, 16, 16, 16),
@@ -451,6 +453,17 @@ const inventoryButton = new wglt.Button(
         game.gui.add(inventoryDialog);
     });
 game.gui.add(inventoryButton);
+
+const testItem = new wglt.Entity(game, 0, 0, 'scroll of fireball', new wglt.Sprite(144, 16, 16, 16, 1));
+testItem.canPickup = true;
+testItem.onPickup = pickupCallback;
+testItem.onUse = castFireball;
+// game.entities.push(testItem);
+
+const testButton = new wglt.EntityButton(
+    new wglt.Rect(400 - 48, 224 - 24, 24, 24),
+    testItem);
+game.gui.add(testButton);
 
 // Generate the map
 createMap();

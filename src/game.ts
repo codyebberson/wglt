@@ -132,9 +132,10 @@ export class Game extends AppState {
   }
 
   private updateViewport() {
-    if (this.app.mouse.down) {
-      this.viewport.x -= this.app.mouse.dx;
-      this.viewport.y -= this.app.mouse.dy;
+    const mouse = this.app.mouse;
+    if (mouse.isDragging()) {
+      this.viewport.x -= mouse.dx;
+      this.viewport.y -= mouse.dy;
       this.followPlayer = false;
     } else if (this.player && this.followPlayer) {
       const horizontalMargin = ((this.app.size.width - this.player.sprite.width) / 2) | 0;
@@ -210,9 +211,10 @@ export class Game extends AppState {
       return;
     }
 
-    if (this.app.mouse.dx !== 0 || this.app.mouse.dy !== 0) {
-      this.cursor.x = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
-      this.cursor.y = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
+    const mouse = this.app.mouse;
+    if (mouse.dx !== 0 || mouse.dy !== 0) {
+      this.cursor.x = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
+      this.cursor.y = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
     }
 
     if (this.app.isKeyDown(Keys.VK_SHIFT)) {
@@ -259,9 +261,9 @@ export class Game extends AppState {
       return;
     }
 
-    if (this.app.mouse.isClicked()) {
-      const tx = ((this.viewport.x + this.app.mouse.x) / this.tileSize.width) | 0;
-      const ty = ((this.viewport.y + this.app.mouse.y) / this.tileSize.height) | 0;
+    if (mouse.isClicked()) {
+      const tx = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
+      const ty = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
 
       this.targetEntity = this.getEnemyAt(tx, ty);
       if (this.targetEntity) {

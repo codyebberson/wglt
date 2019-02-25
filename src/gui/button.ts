@@ -45,7 +45,7 @@ export class Button extends Panel {
       return true;
     }
 
-    return this.rect.contains(mouse);
+    return mouse.down && this.rect.contains(mouse);
   }
 
   click() {

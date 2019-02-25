@@ -1,4 +1,3 @@
-import {GUI} from '../gui';
 import {Keys} from '../keys';
 import {Rect} from '../rect';
 import {Vec2} from '../vec2';

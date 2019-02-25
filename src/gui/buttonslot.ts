@@ -5,12 +5,10 @@ import {Button} from './button';
 import {Panel} from './panel';
 
 export class ButtonSlot extends Panel {
-  readonly srcRect: Rect;
   shortcutKey?: Key;
 
-  constructor(srcRect: Rect, destRect: Rect, shortcutKey?: Key) {
+  constructor(destRect: Rect, shortcutKey?: Key) {
     super(destRect);
-    this.srcRect = srcRect;
     this.shortcutKey = shortcutKey;
   }
 
@@ -19,11 +17,17 @@ export class ButtonSlot extends Panel {
       return;
     }
 
-    const src = this.srcRect;
     const dst = this.rect;
-    this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
+    const src = this.gui.renderer.buttonSlotRect;
+    if (src) {
+      this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
+    }
 
     this.drawChildren();
+
+    if (this.shortcutKey) {
+      this.gui.app.drawString(String.fromCharCode(this.shortcutKey), dst.x + 17, dst.y + 3);
+    }
   }
 
   handleInput() {
@@ -48,6 +52,6 @@ export class ButtonSlot extends Panel {
       }
     }
 
-    return this.rect.contains(mouse);
+    return mouse.down && this.rect.contains(mouse);
   }
 }

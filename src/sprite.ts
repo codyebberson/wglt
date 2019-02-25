@@ -1,14 +1,11 @@
 import {App} from './app';
 import {Color} from './color';
+import {Rect} from './rect';
 
 const DEFAULT_TICKS_PER_FRAME = 30;
 
-export class Sprite {
+export class Sprite extends Rect {
   private static globalAnimIndex = 0;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
   readonly frames: number;
   readonly loop: boolean;
   readonly ticksPerFrame: number;
@@ -19,10 +16,7 @@ export class Sprite {
   constructor(
       x: number, y: number, width: number, height: number, frames?: number, loop?: boolean, ticksPerFrame?: number,
       colorOverride?: Color) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+    super(x, y, width, height);
     this.frames = frames || 1;
     this.loop = !!loop;
     this.ticksPerFrame = ticksPerFrame || DEFAULT_TICKS_PER_FRAME;

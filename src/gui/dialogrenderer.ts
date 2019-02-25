@@ -7,6 +7,7 @@ import {Dialog} from './dialog';
 export class DialogRenderer {
   baseRect: Rect;
   closeButtonRect?: Rect;
+  buttonSlotRect?: Rect;
 
   constructor(baseRect: Rect, closeButtonRect?: Rect) {
     this.baseRect = baseRect;

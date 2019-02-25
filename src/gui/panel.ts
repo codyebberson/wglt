@@ -18,9 +18,20 @@ export class Panel {
     this.children = new XArray();
   }
 
+  setGui(gui: GUI) {
+    if (this.gui) {
+      // Already set
+      return;
+    }
+    this.gui = gui;
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].setGui(gui);
+    }
+  }
+
   add(panel: Panel) {
     panel.parent = this;
-    panel.gui = this.gui;
+    panel.setGui(this.gui as GUI);
     this.children.push(panel);
   }
 
