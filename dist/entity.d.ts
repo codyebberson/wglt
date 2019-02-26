@@ -6,8 +6,7 @@ import { Vec2 } from './vec2';
 import { XArray } from './xarray';
 export declare class Entity extends Vec2 implements SelectOption {
     readonly game: Game;
-    offsetX: number;
-    offsetY: number;
+    readonly offset: Vec2;
     name: string;
     sprite: Sprite;
     blocks: boolean;

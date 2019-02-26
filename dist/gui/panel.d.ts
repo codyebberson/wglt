@@ -6,10 +6,11 @@ import { XArray } from '../xarray';
 export declare class Panel {
     gui: GUI | null;
     readonly rect: Rect;
-    readonly modal: boolean;
     readonly children: XArray<Panel>;
+    modal: boolean;
+    visible: boolean;
     parent?: Panel;
-    constructor(rect: Rect, modal?: boolean);
+    constructor(rect: Rect);
     setGui(gui: GUI): void;
     add(panel: Panel): void;
     remove(panel: Panel): void;

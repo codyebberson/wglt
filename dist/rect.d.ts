@@ -10,6 +10,7 @@ export declare class Rect extends Vec2 {
     readonly y2: number;
     readonly left: number;
     readonly top: number;
+    clone(): Rect;
     getCenter(): Vec2;
     intersects(other: Rect): boolean;
     contains(point: Vec2 | Mouse): boolean;

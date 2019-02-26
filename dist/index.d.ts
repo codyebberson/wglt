@@ -20,6 +20,7 @@ export * from './gui/complexselectdialog';
 export * from './gui/dialog';
 export * from './gui/dialogrenderer';
 export * from './gui/entitybutton';
+export * from './gui/entitycontainerdialog';
 export * from './gui/imagepanel';
 export * from './gui/panel';
 export * from './gui/messagelog';
