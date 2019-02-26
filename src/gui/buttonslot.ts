@@ -27,7 +27,12 @@ export class ButtonSlot extends Panel {
       this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
     }
 
-    this.drawChildren();
+    const button = this.button;
+    if (button && !button.isDragging()) {
+      button.rect.x = this.rect.x;
+      button.rect.y = this.rect.y;
+      this.drawChildren();
+    }
 
     if (this.shortcutKey) {
       this.gui.app.drawString(String.fromCharCode(this.shortcutKey), dst.x2 - 7, dst.y + 3);

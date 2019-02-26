@@ -55,7 +55,7 @@ export class Panel {
         // Ignore hidden elements
         continue;
       }
-      if (this.gui && child === this.gui.dragElement) {
+      if (child.isDragging()) {
         // Ignore dragging element
         continue;
       }
@@ -101,5 +101,9 @@ export class Panel {
       }
     }
     return false;
+  }
+
+  isDragging() {
+    return this.gui && this.gui.dragElement === this;
   }
 }

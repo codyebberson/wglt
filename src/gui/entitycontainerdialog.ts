@@ -8,6 +8,7 @@ import {Dialog} from './dialog';
 import {EntityButton} from './entitybutton';
 
 const MARGIN = 4;
+const BUTTON_SPACING = 2;
 
 export class EntityContainerDialog extends Dialog {
   readonly capacity: number;
@@ -19,7 +20,7 @@ export class EntityContainerDialog extends Dialog {
     this.entities = entities;
 
     entities.addListener(
-        {onAdd: (array, item) => this.addItem(item), onRemove: (array, item) => this.removeItem(item)});
+        {onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item)});
 
     for (let i = 0; i < capacity; i++) {
       this.add(new ButtonSlot(new Rect(i * 24, 0, 24, 24)));
@@ -99,10 +100,10 @@ export class EntityContainerDialog extends Dialog {
       child.rect.width = buttonRect.width;
       child.rect.height = buttonRect.height;
 
-      x += buttonRect.width;
+      x += buttonRect.width + BUTTON_SPACING;
       if (x > containerRect.x2 - buttonRect.width - MARGIN) {
         x = containerRect.x + MARGIN;
-        y += buttonRect.height;
+        y += buttonRect.height + BUTTON_SPACING;
       }
     }
 

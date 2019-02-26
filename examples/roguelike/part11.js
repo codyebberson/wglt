@@ -438,7 +438,7 @@ for (let i = 0; i < 6; i++) {
 }
 
 const inventoryDialog = new wglt.EntityContainerDialog(
-    new wglt.Rect(40, 40, 104, 104),
+    new wglt.Rect(40, 40, 110, 110),
     'INVENTORY',
     16,
     player.inventory);
@@ -450,23 +450,6 @@ const inventoryButton = new wglt.Button(
     new wglt.Sprite(192, 16, 16, 16),
     wglt.Keys.VK_I,
     function () {
-        // const inventoryDialog = new wglt.SelectDialog(
-        //     new wglt.Rect(40, 40, 150, 100),
-        //     'INVENTORY',
-        //     player.inventory,
-        //     (choice) => {
-        //         choice.use(player);
-        //     });
-        // inventoryDialog.closeButton = true;
-        // game.gui.add(inventoryDialog);
-
-        // const inventoryDialog = new wglt.EntityContainerDialog(
-        //         new wglt.Rect(40, 40, 104, 104),
-        //         'INVENTORY',
-        //         16
-        // );
-        // // inventoryDialog.closeButton = true;
-        // game.gui.add(inventoryDialog);
         inventoryDialog.visible = !inventoryDialog.visible;
     });
 game.gui.add(inventoryButton);
