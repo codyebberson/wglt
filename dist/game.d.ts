@@ -1,8 +1,10 @@
 import { App } from './app';
 import { AppState } from './appstate';
+import { Color } from './color';
 import { Effect } from './effects/effect';
 import { Entity } from './entity';
 import { GameOptions } from './gameoptions';
+import { MessageLog } from './gui/messagelog';
 import { Rect } from './rect';
 import { Sprite } from './sprite';
 import { TileMap, TileMapCell } from './tilemap';
@@ -15,6 +17,7 @@ export declare class Game extends AppState {
     readonly cursor: Vec2;
     turnIndex: number;
     blocked: boolean;
+    messageLog?: MessageLog;
     targetCallback?: Function;
     targetSprite?: Sprite;
     targetTile?: TileMapCell;
@@ -26,6 +29,7 @@ export declare class Game extends AppState {
     player?: Entity;
     followPlayer: boolean;
     constructor(app: App, options: GameOptions);
+    log(text: string, color?: Color): void;
     update(): void;
     private updateEffects;
     private updateEntities;
