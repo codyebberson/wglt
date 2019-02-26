@@ -119,7 +119,7 @@ export class Entity extends Vec2 implements SelectOption {
     if (item.onPickup) {
       item.onPickup(this, item);
     }
-    this.inventory.push(item);
+    this.inventory.add(item);
     const index = this.game.entities.indexOf(item);
     if (index >= 0) {
       this.game.entities.splice(index, 1);

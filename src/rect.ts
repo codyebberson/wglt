@@ -35,6 +35,10 @@ export class Rect extends Vec2 {
     return this.y;
   }
 
+  clone() {
+    return new Rect(this.x, this.y, this.width, this.height);
+  }
+
   getCenter() {
     return new Vec2(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
   }

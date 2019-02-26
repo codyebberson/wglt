@@ -12,11 +12,11 @@ export class Panel {
   visible: boolean;
   parent?: Panel;
 
-  constructor(rect: Rect, modal?: boolean) {
+  constructor(rect: Rect) {
     this.gui = null;
     this.rect = rect;
     this.children = new XArray();
-    this.modal = !!modal;
+    this.modal = false;
     this.visible = true;
   }
 
@@ -27,14 +27,14 @@ export class Panel {
     }
     this.gui = gui;
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].setGui(gui);
+      this.children.get(i).setGui(gui);
     }
   }
 
   add(panel: Panel) {
     panel.parent = this;
     panel.setGui(this.gui as GUI);
-    this.children.push(panel);
+    this.children.add(panel);
   }
 
   remove(panel: Panel) {
@@ -50,7 +50,7 @@ export class Panel {
 
   getPanelAt(point: Mouse|Vec2): Panel|undefined {
     for (let i = this.children.length - 1; i >= 0; i--) {
-      const child = this.children[i];
+      const child = this.children.get(i);
       if (!child.visible) {
         // Ignore hidden elements
         continue;
@@ -76,7 +76,7 @@ export class Panel {
 
   drawChildren() {
     for (let i = 0; i < this.children.length; i++) {
-      const child = this.children[i];
+      const child = this.children.get(i);
       if (!child.visible) {
         // Ignore hidden elements
         continue;
@@ -91,7 +91,7 @@ export class Panel {
 
   handleChildrenInput() {
     for (let i = 0; i < this.children.length; i++) {
-      const child = this.children[i];
+      const child = this.children.get(i);
       if (!child.visible) {
         // Ignore hidden elements
         continue;

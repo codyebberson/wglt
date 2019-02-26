@@ -12,6 +12,10 @@ export class ButtonSlot extends Panel {
     this.shortcutKey = shortcutKey;
   }
 
+  get button() {
+    return this.children.length > 0 ? this.children.get(0) as Button : undefined;
+  }
+
   drawContents() {
     if (!this.gui) {
       return;
@@ -41,10 +45,8 @@ export class ButtonSlot extends Panel {
 
     const app = this.gui.app;
     const mouse = app.mouse;
-
-    const child = this.children.length > 0 ? this.children[0] : null;
-    if (child && child instanceof Button) {
-      const button = child as Button;
+    const button = this.button;
+    if (button) {
       if ((this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
           (this.rect.contains(mouse) && mouse.isClicked())) {
         button.click();

@@ -7,7 +7,7 @@ export class Dialog extends Panel {
   closeButton: boolean;
 
   constructor(rect: Rect, title: string) {
-    super(rect, true);
+    super(rect);
     this.title = title;
     this.closeButton = false;
   }

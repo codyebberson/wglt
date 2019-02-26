@@ -4,14 +4,29 @@ import {Rect} from '../rect';
 import {Button} from './button';
 
 export class EntityButton extends Button {
-  readonly entity: Entity;
+  readonly entities: Entity[];
 
   constructor(destRect: Rect, entity: Entity) {
     super(destRect, entity.sprite);
-    this.entity = entity;
+    this.entities = [entity];
   }
 
   click() {
-    this.entity.use();
+    if (this.entities.length > 0) {
+      this.entities[0].use();
+    }
+  }
+
+  drawContents() {
+    if (!this.gui) {
+      return;
+    }
+
+    super.drawContents();
+
+    if (this.entities.length > 1) {
+      const dst = this.rect;
+      this.gui.app.drawString(this.entities.length.toString(), dst.x2 - 7, dst.y2 - 10);
+    }
   }
 }

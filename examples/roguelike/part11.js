@@ -440,8 +440,8 @@ for (let i = 0; i < 6; i++) {
 const inventoryDialog = new wglt.EntityContainerDialog(
     new wglt.Rect(40, 40, 104, 104),
     'INVENTORY',
-    16
-);
+    16,
+    player.inventory);
 inventoryDialog.visible = false;
 game.gui.add(inventoryDialog);
 
