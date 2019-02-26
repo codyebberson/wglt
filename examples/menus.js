@@ -145,13 +145,11 @@ const mainMenu = new wglt.AppState(app);
 mainMenu.gui.renderer.baseRect = new wglt.Rect(0, 88, 24, 24);
 
 const prompt = new wglt.MessagePanel(
-    mainMenu.gui,
     new wglt.Rect(2, 4, 256, 10),
     new wglt.Message('Choose your character type', wglt.Colors.WHITE));
 mainMenu.gui.add(prompt);
 
 const selectDialog = new wglt.ComplexSelectDialog(
-    mainMenu.gui,
     new wglt.Rect(5, 15, 246, 204),
     'INVENTORY',
     []);
@@ -194,7 +192,6 @@ selectDialog.renderer = {
     },
 
     getHeight: function () {
-        // return 40;
         return this.lineHeight;
     }
 };
