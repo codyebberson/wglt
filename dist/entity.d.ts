@@ -2,9 +2,9 @@ import { AI } from './ai/ai';
 import { Game } from './game';
 import { SelectOption } from './gui/selectoption';
 import { Sprite } from './sprite';
+import { TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
 import { XArray } from './xarray';
-import { TileMapCell } from './tilemap';
 export declare class Entity extends Vec2 implements SelectOption {
     readonly game: Game;
     readonly offset: Vec2;
@@ -18,12 +18,6 @@ export declare class Entity extends Vec2 implements SelectOption {
     ai?: AI;
     canPickup: boolean;
     canAttack: boolean;
-    onBump?: Function;
-    onAttack?: Function;
-    onDamage?: Function;
-    onDeath?: Function;
-    onPickup?: Function;
-    onUse?: Function;
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
     readonly pixelX: number;
     readonly pixelY: number;
@@ -37,4 +31,9 @@ export declare class Entity extends Vec2 implements SelectOption {
     distance(x: number, y: number): number;
     draw(): void;
     sendToBack(): void;
+    onBump(bumper: Entity): void;
+    onAttack(attacker: Entity, damage: number): void;
+    onDeath(): void;
+    onPickup(user: Entity): void;
+    onUse(user: Entity): void;
 }
