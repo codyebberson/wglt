@@ -21,13 +21,13 @@ export class BumpEffect extends Effect {
     const t = DURATION - this.countdown;
 
     if (t >= 0 && t < 4) {
-      this.entity.offsetX += this.dx;
-      this.entity.offsetY += this.dy;
+      this.entity.offset.x += this.dx;
+      this.entity.offset.y += this.dy;
     }
 
     if (t >= 4 && t < 8) {
-      this.entity.offsetX -= this.dx;
-      this.entity.offsetY -= this.dy;
+      this.entity.offset.x -= this.dx;
+      this.entity.offset.y -= this.dy;
     }
 
     super.update();

@@ -11,8 +11,7 @@ import {XArray} from './xarray';
 
 export class Entity extends Vec2 implements SelectOption {
   readonly game: Game;
-  offsetX: number;
-  offsetY: number;
+  readonly offset: Vec2;
   name: string;
   sprite: Sprite;
   blocks: boolean;
@@ -33,8 +32,7 @@ export class Entity extends Vec2 implements SelectOption {
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(x, y);
     this.game = game;
-    this.offsetX = 0;
-    this.offsetY = 0;
+    this.offset = new Vec2(0, 0);
     this.name = name;
     this.sprite = sprite;
     this.blocks = blocks;
@@ -47,11 +45,11 @@ export class Entity extends Vec2 implements SelectOption {
   }
 
   get pixelX(): number {
-    return this.x * this.game.tileSize.width + this.offsetX;
+    return this.x * this.game.tileSize.width + this.offset.x;
   }
 
   get pixelY(): number {
-    return this.y * this.game.tileSize.height + this.offsetY;
+    return this.y * this.game.tileSize.height + this.offset.y;
   }
 
   move(dx: number, dy: number) {
@@ -121,7 +119,6 @@ export class Entity extends Vec2 implements SelectOption {
     if (item.onPickup) {
       item.onPickup(this, item);
     }
-    // item.container = this.player.inventory;
     this.inventory.push(item);
     const index = this.game.entities.indexOf(item);
     if (index >= 0) {

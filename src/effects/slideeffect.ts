@@ -18,14 +18,14 @@ export class SlideEffect extends Effect {
   update() {
     this.countdown--;
     if (this.countdown >= 0) {
-      this.entity.offsetX += this.dx;
-      this.entity.offsetY += this.dy;
+      this.entity.offset.x += this.dx;
+      this.entity.offset.y += this.dy;
     }
     if (this.countdown === 0) {
-      this.entity.x += this.entity.offsetX / this.entity.game.tileSize.width;
-      this.entity.y += this.entity.offsetY / this.entity.game.tileSize.height;
-      this.entity.offsetX = 0;
-      this.entity.offsetY = 0;
+      this.entity.x += this.entity.offset.x / this.entity.game.tileSize.width;
+      this.entity.y += this.entity.offset.y / this.entity.game.tileSize.height;
+      this.entity.offset.x = 0;
+      this.entity.offset.y = 0;
     }
   }
 }
