@@ -82,18 +82,13 @@ export class App {
     //  * Find the integer scaling factor that best fits the minimum vector
     const mobile = this.isMobile();
     const minMajorAxis = mobile ? 320.0 : 400.0;
-    const minMinorAxis = mobile ? 180.0 : 300.0;
+    const minMinorAxis = mobile ? 224.0 : 300.0;
 
     this.scaleFactor = 1.0;
     if (width > height) {
       this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMajorAxis), Math.round(height / minMinorAxis)));
     } else {
       this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMinorAxis), Math.round(height / minMajorAxis)));
-    }
-
-    if (mobile) {
-      // TODO: Tune the axis values so this is true
-      this.scaleFactor = 4.0;
     }
 
     this.size.width = Math.round(width / this.scaleFactor);
