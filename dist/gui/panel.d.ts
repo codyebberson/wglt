@@ -20,4 +20,5 @@ export declare class Panel {
     drawChildren(): void;
     handleInput(): boolean;
     handleChildrenInput(): boolean;
+    isDragging(): boolean | null;
 }
