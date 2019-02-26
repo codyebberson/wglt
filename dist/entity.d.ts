@@ -4,6 +4,7 @@ import { SelectOption } from './gui/selectoption';
 import { Sprite } from './sprite';
 import { Vec2 } from './vec2';
 import { XArray } from './xarray';
+import { TileMapCell } from './tilemap';
 export declare class Entity extends Vec2 implements SelectOption {
     readonly game: Game;
     readonly offset: Vec2;
@@ -32,7 +33,7 @@ export declare class Entity extends Vec2 implements SelectOption {
     takeDamage(damage: number): void;
     pickup(item: Entity): void;
     use(): boolean;
-    distanceTo(other: Entity): number;
+    distanceTo(other: Entity | TileMapCell): number;
     distance(x: number, y: number): number;
     draw(): void;
     sendToBack(): void;

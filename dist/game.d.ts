@@ -1,3 +1,4 @@
+import { Ability } from './ability';
 import { App } from './app';
 import { AppState } from './appstate';
 import { Color } from './color';
@@ -18,6 +19,7 @@ export declare class Game extends AppState {
     turnIndex: number;
     blocked: boolean;
     messageLog?: MessageLog;
+    targetAbility?: Ability;
     targetCallback?: Function;
     targetSprite?: Sprite;
     targetTile?: TileMapCell;
@@ -39,7 +41,7 @@ export declare class Game extends AppState {
     private drawEntities;
     private drawEffects;
     isTargeting(): boolean;
-    startTargeting(callback: Function): void;
+    startTargeting(ability: Ability, callback?: Function): void;
     private endTargeting;
     cancelTargeting(): void;
     private handlePlayerInput;
