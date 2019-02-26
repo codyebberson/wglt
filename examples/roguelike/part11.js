@@ -208,7 +208,8 @@ function placeObjects(room) {
     }
 }
 
-function pickupCallback(entity, item) {
+function pickupCallback(entity) {
+    const item = this;
     game.log(entity.name + ' picked up a ' + item.name, wglt.Colors.LIGHT_GREEN);
 }
 
@@ -335,7 +336,8 @@ function readScroll() {
     }
 }
 
-function attackCallback(attacker, target, damage) {
+function attackCallback(target, damage) {
+    const attacker = this;
     if (damage > 0) {
         game.log(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
     } else {
@@ -343,11 +345,12 @@ function attackCallback(attacker, target, damage) {
     }
 }
 
-function playerDeath(player) {
+function playerDeath() {
     game.log('You died!');
 }
 
-function monsterDeath(monster) {
+function monsterDeath() {
+    const monster = this;
     game.log(monster.name + ' is dead');
     monster.blocks = false;
     monster.ai = null;

@@ -375,10 +375,9 @@ export class Game extends AppState {
       const other = this.entities[i];
       if (player !== other && other.x === destX && other.y === destY) {
         if (player.onBump) {
-          if (player.onBump(other)) {
-            return true;
-          }
+          player.onBump(other);
         }
+        return true;
       }
     }
 

@@ -6,9 +6,9 @@ import {SlideEffect} from './effects/slideeffect';
 import {Game} from './game';
 import {SelectOption} from './gui/selectoption';
 import {Sprite} from './sprite';
+import {TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 import {XArray} from './xarray';
-import { TileMapCell } from './tilemap';
 
 export class Entity extends Vec2 implements SelectOption {
   readonly game: Game;
@@ -23,12 +23,6 @@ export class Entity extends Vec2 implements SelectOption {
   ai?: AI;
   canPickup: boolean;
   canAttack: boolean;
-  onBump?: Function;
-  onAttack?: Function;
-  onDamage?: Function;
-  onDeath?: Function;
-  onPickup?: Function;
-  onUse?: Function;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(x, y);
@@ -85,7 +79,7 @@ export class Entity extends Vec2 implements SelectOption {
     const damage = 10;
 
     if (this.onAttack) {
-      this.onAttack(this, target, damage);
+      this.onAttack(target, damage);
     }
 
     target.takeDamage(damage);
@@ -99,14 +93,10 @@ export class Entity extends Vec2 implements SelectOption {
 
     this.game.effects.push(new FloatingTextEffect(damage.toString(), this.pixelX + 8, this.pixelY - 4, Colors.RED));
 
-    if (this.onDamage) {
-      this.onDamage(this);
-    }
-
     if (this.health <= 0) {
       this.health = 0;
       if (this.onDeath) {
-        this.onDeath(this);
+        this.onDeath();
       }
 
       const index = this.game.entities.indexOf(this);
@@ -118,7 +108,7 @@ export class Entity extends Vec2 implements SelectOption {
 
   pickup(item: Entity) {
     if (item.onPickup) {
-      item.onPickup(this, item);
+      item.onPickup(this);
     }
     this.inventory.add(item);
     const index = this.game.entities.indexOf(item);
@@ -135,7 +125,7 @@ export class Entity extends Vec2 implements SelectOption {
     return true;
   }
 
-  distanceTo(other: Entity | TileMapCell) {
+  distanceTo(other: Entity|TileMapCell) {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }
 
@@ -148,4 +138,10 @@ export class Entity extends Vec2 implements SelectOption {
   }
 
   sendToBack() {}
+
+  onBump(bumper: Entity) {}
+  onAttack(attacker: Entity, damage: number) {}
+  onDeath() {}
+  onPickup(user: Entity) {}
+  onUse(user: Entity) {}
 }
