@@ -204,7 +204,7 @@ function placeObjects(room) {
 }
 
 function pickupCallback(entity, item) {
-    messageLog.add(entity.name + ' picked up a ' + item.name, wglt.Colors.LIGHT_GREEN);
+    game.log(entity.name + ' picked up a ' + item.name, wglt.Colors.LIGHT_GREEN);
 }
 
 function getClosestMonster(x, y, range) {
@@ -230,11 +230,11 @@ function getMonsterAt(x, y) {
 function castHeal(item, entity) {
     // Heal the player
     if (player.health === player.maxHealth) {
-        messageLog.add('You are already at full health.', wglt.Colors.DARK_RED);
+        game.log('You are already at full health.', wglt.Colors.DARK_RED);
         return;
     }
 
-    messageLog.add('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
+    game.log('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
     player.health += HEAL_AMOUNT;
     player.inventory.remove(item);
 }
@@ -243,24 +243,24 @@ function castLightning(item) {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
     if (!monster) {
-        messageLog.add('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
+        game.log('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
         return;
     }
 
     // Zap it!
-    messageLog.add('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
-    messageLog.add('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
+    game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
+    game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
     monster.takeDamage(LIGHTNING_DAMAGE);
     player.inventory.remove(item);
 }
 
 function castFireball(item) {
     // Ask the player for a target tile to throw a fireball at
-    messageLog.add('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    game.log('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
     game.startTargeting((x, y) => {
         const distance = player.distance(x, y);
         if (distance > FIREBALL_RANGE) {
-            messageLog.add('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
@@ -283,12 +283,12 @@ function castFireball(item) {
             16
         ));
 
-        messageLog.add('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
+        game.log('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
 
         for (let i = game.entities.length - 1; i >= 0; i--) {
             const entity = game.entities[i];
             if (entity.canAttack && entity.distance(x, y) <= FIREBALL_RADIUS) {
-                messageLog.add('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
+                game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
                 entity.takeDamage(FIREBALL_DAMAGE);
             }
         }
@@ -300,40 +300,40 @@ function castFireball(item) {
 
 function castConfuse(item) {
     // Ask the player for a target to confuse
-    messageLog.add('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
+    game.log('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
     game.startTargeting((x, y) => {
         if (player.distance(x, y) > CONFUSE_RANGE) {
-            messageLog.add('Target out of range.', wglt.Colors.LIGHT_GRAY);
+            game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
         const monster = getMonsterAt(x, y);
         if (!monster) {
-            messageLog.add('No monster there.', wglt.Colors.LIGHT_GRAY);
+            game.log('No monster there.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
         monster.ai = new wglt.ConfusedMonster(monster);
         // monster.ai.owner = monster;
-        messageLog.add('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
+        game.log('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
         player.inventory.remove(item);
     });
 }
 
 function attackCallback(attacker, target, damage) {
     if (damage > 0) {
-        messageLog.add(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
+        game.log(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
     } else {
-        messageLog.add(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
+        game.log(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
     }
 }
 
 function playerDeath(player) {
-    messageLog.add('You died!');
+    game.log('You died!');
 }
 
 function monsterDeath(monster) {
-    messageLog.add(monster.name + ' is dead');
+    game.log(monster.name + ' is dead');
     monster.blocks = false;
     monster.ai = null;
     monster.name = 'remains of ' + monster.name;
@@ -346,14 +346,14 @@ function monsterDeath(monster) {
         player.level++;
         player.xp = 0;
         player.maxXp *= 2;
-        messageLog.add('You reached level ' + player.level, 0xFF8000FF);
+        game.log('You reached level ' + player.level, 0xFF8000FF);
     }
 }
 
 function nextLevel() {
     // Advance to the next level
-    messageLog.add('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
-    messageLog.add('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
+    game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
+    game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
     game.entities = [player];
     game.path = null;
     createMap();
@@ -409,9 +409,9 @@ game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(new wglt.Rect(1, -78, 100, 50));
-messageLog.add('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
-game.gui.add(messageLog);
+game.messageLog = new wglt.MessageLog(new wglt.Rect(1, -78, 100, 50));
+game.gui.add(game.messageLog);
+game.log('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
 
 const playerStats = new wglt.Panel(new wglt.Rect(1, 1, 100, 100));
 playerStats.drawContents = function () {

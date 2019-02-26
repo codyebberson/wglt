@@ -1,9 +1,11 @@
 import {App} from './app';
 import {AppState} from './appstate';
+import {Color} from './color';
 import {Effect} from './effects/effect';
 import {ScrollEffect} from './effects/scrolleffect';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
+import {MessageLog} from './gui/messagelog';
 import {Keys} from './keys';
 import {computePath} from './path';
 import {Rect} from './rect';
@@ -23,6 +25,7 @@ export class Game extends AppState {
   readonly cursor: Vec2;
   turnIndex: number;
   blocked: boolean;
+  messageLog?: MessageLog;
   targetCallback?: Function;
   targetSprite?: Sprite;
   targetTile?: TileMapCell;
@@ -45,6 +48,12 @@ export class Game extends AppState {
     this.cursor = new Vec2(-1, -1);
     this.pathIndex = 0;
     this.followPlayer = true;
+  }
+
+  log(text: string, color?: Color) {
+    if (this.messageLog) {
+      this.messageLog.add(text, color);
+    }
   }
 
   update() {

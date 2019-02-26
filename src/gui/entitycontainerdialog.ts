@@ -19,8 +19,7 @@ export class EntityContainerDialog extends Dialog {
     this.capacity = capacity;
     this.entities = entities;
 
-    entities.addListener(
-        {onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item)});
+    entities.addListener({onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item)});
 
     for (let i = 0; i < capacity; i++) {
       this.add(new ButtonSlot(new Rect(i * 24, 0, 24, 24)));
