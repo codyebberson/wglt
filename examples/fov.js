@@ -60,8 +60,7 @@ const app = new wglt.App({
 });
 
 const game = new wglt.Game(app, {
-    tileWidth: 16,
-    tileHeight: 24
+    tileSize: new wglt.Rect(0, 0, 16, 24)
 });
 
 const sprite = new wglt.Sprite(0, 120, 16, 24, 2, true, undefined, 0xffcf5cff);

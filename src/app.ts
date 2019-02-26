@@ -91,6 +91,11 @@ export class App {
       this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMinorAxis), Math.round(height / minMajorAxis)));
     }
 
+    if (mobile) {
+      // TODO: Tune the axis values so this is true
+      this.scaleFactor = 4.0;
+    }
+
     this.size.width = Math.round(width / this.scaleFactor);
     this.size.height = Math.round(height / this.scaleFactor);
     this.center.x = (this.size.width / 2) | 0;
