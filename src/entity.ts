@@ -8,6 +8,7 @@ import {SelectOption} from './gui/selectoption';
 import {Sprite} from './sprite';
 import {Vec2} from './vec2';
 import {XArray} from './xarray';
+import { TileMapCell } from './tilemap';
 
 export class Entity extends Vec2 implements SelectOption {
   readonly game: Game;
@@ -134,7 +135,7 @@ export class Entity extends Vec2 implements SelectOption {
     return true;
   }
 
-  distanceTo(other: Entity) {
+  distanceTo(other: Entity | TileMapCell) {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }
 

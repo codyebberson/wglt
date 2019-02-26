@@ -169,6 +169,7 @@ function placeObjects(room) {
         let itemName = null;
         let itemSprite = null;
         let itemUse = null;
+        let itemAbility = null;
 
         if (dice < 50) {
             // Create a healing potion (50% chance)
@@ -180,25 +181,29 @@ function placeObjects(room) {
             // Create a lightning bolt scroll (20% chance)
             itemName = 'scroll of lightning bolt';
             itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
-            itemUse = castLightning;
+            itemUse = readScroll;
+            itemAbility = lightningAbility;
 
         } else if (dice < 50 + 20 + 15) {
             // Create a fireball scroll (15% chance)
             itemName = 'scroll of fireball';
             itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
-            itemUse = castFireball;
+            itemUse = readScroll;
+            itemAbility = fireballAbility;
 
         } else {
             // Create a confuse scroll (15% chance)
             itemName = 'scroll of confusion';
             itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
-            itemUse = castConfuse;
+            itemUse = readScroll;
+            itemAbility = confuseAbility;
         }
 
         const item = new wglt.Entity(game, x, y, itemName, itemSprite);
         item.canPickup = true;
         item.onPickup = pickupCallback;
         item.onUse = itemUse;
+        item.ability = itemAbility;
         game.entities.push(item);
     }
 }
@@ -239,46 +244,49 @@ function castHeal(item, entity) {
     player.inventory.remove(item);
 }
 
-function castLightning(item) {
-    // Find closest enemy (inside a maximum range) and damage it
-    const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
-    if (!monster) {
-        game.log('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
-        return;
+const lightningAbility = {
+    targetType: wglt.TargetType.SELF,
+    cast: function (caster) {
+        // Find closest enemy (inside a maximum range) and damage it
+        const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
+        if (!monster) {
+            game.log('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
+            return false;
+        }
+
+        // Zap it!
+        game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
+        game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
+        monster.takeDamage(LIGHTNING_DAMAGE);
+        caster.actionPoints--;
+        return true;
     }
+};
 
-    // Zap it!
-    game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
-    game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
-    monster.takeDamage(LIGHTNING_DAMAGE);
-    player.inventory.remove(item);
-}
-
-function castFireball(item) {
-    // Ask the player for a target tile to throw a fireball at
-    game.log('Left-click to cast fireball, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
-    game.startTargeting((x, y) => {
-        const distance = player.distance(x, y);
+const fireballAbility = {
+    targetType: wglt.TargetType.TILE,
+    cast: function (caster, target) {
+        const distance = caster.distanceTo(target);
         if (distance > FIREBALL_RANGE) {
             game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
-            return;
+            return false;
         }
 
         const speed = 8;
         const count = distance * (game.tileSize.width / speed);
-        const dx = (x * game.tileSize.width - player.pixelX) / count;
-        const dy = (y * game.tileSize.height - player.pixelY) / count;
+        const dx = (target.x * game.tileSize.width - caster.pixelX) / count;
+        const dy = (target.y * game.tileSize.height - caster.pixelY) / count;
 
         game.effects.push(new wglt.ProjectileEffect(
             new wglt.Sprite(128, 32, 16, 16, 3, false),
-            new wglt.Vec2(player.pixelX, player.pixelY),
+            new wglt.Vec2(caster.pixelX, caster.pixelY),
             new wglt.Vec2(dx, dy),
             count
         ));
 
         game.effects.push(new wglt.ProjectileEffect(
             new wglt.Sprite(176, 32, 16, 16, 4, false, 4),
-            new wglt.Vec2(x * game.tileSize.width, y * game.tileSize.height),
+            new wglt.Vec2(target.x * game.tileSize.width, target.y * game.tileSize.height),
             new wglt.Vec2(0, 0),
             16
         ));
@@ -287,37 +295,44 @@ function castFireball(item) {
 
         for (let i = game.entities.length - 1; i >= 0; i--) {
             const entity = game.entities[i];
-            if (entity.canAttack && entity.distance(x, y) <= FIREBALL_RADIUS) {
+            if (entity.canAttack && entity.distanceTo(target) <= FIREBALL_RADIUS) {
                 game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
                 entity.takeDamage(FIREBALL_DAMAGE);
             }
         }
 
-        player.actionPoints = 0;
-        player.inventory.remove(item);
-    });
-}
+        caster.actionPoints--;
+        return true;
+    }
+};
 
-function castConfuse(item) {
-    // Ask the player for a target to confuse
-    game.log('Left-click to cast confuse, or right-click to cancel.', wglt.Colors.LIGHT_CYAN);
-    game.startTargeting((x, y) => {
-        if (player.distance(x, y) > CONFUSE_RANGE) {
+const confuseAbility = {
+    targetType: wglt.TargetType.ENTITY,
+    cast: function (caster, target) {
+        if (caster.distanceTo(target) > CONFUSE_RANGE) {
             game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
             return;
         }
 
-        const monster = getMonsterAt(x, y);
-        if (!monster) {
-            game.log('No monster there.', wglt.Colors.LIGHT_GRAY);
-            return;
-        }
+        target.ai = new wglt.ConfusedMonster(target);
+        game.log('The eyes of the ' + target.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
+        caster.actionPoints--;
+        return true;
+    }
+};
 
-        monster.ai = new wglt.ConfusedMonster(monster);
-        // monster.ai.owner = monster;
-        game.log('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
-        player.inventory.remove(item);
-    });
+function readScroll() {
+    const item = this;
+    const ability = this.ability;
+    if (ability.targetType === wglt.TargetType.SELF) {
+        if (ability.cast(player)) {
+            player.inventory.remove(item);
+        }
+    } else {
+        game.startTargeting(ability, function () {
+            player.inventory.remove(item);
+        });
+    }
 }
 
 function attackCallback(attacker, target, damage) {
@@ -457,7 +472,11 @@ game.gui.add(inventoryButton);
 const testItem = new wglt.Entity(game, 0, 0, 'scroll of fireball', new wglt.Sprite(144, 16, 16, 16, 1));
 testItem.canPickup = true;
 testItem.onPickup = pickupCallback;
-testItem.onUse = castFireball;
+testItem.targetType = wglt.TargetType.TILE;
+testItem.minRange = 1;
+testItem.maxRange = 10;
+testItem.ability = confuseAbility;
+testItem.onUse = readScroll;
 
 const testButton = new wglt.EntityButton(
     new wglt.Rect(400 - 48, 224 - 24, 24, 24),

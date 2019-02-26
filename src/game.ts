@@ -1,3 +1,4 @@
+import {Ability, TargetType} from './ability';
 import {App} from './app';
 import {AppState} from './appstate';
 import {Color} from './color';
@@ -26,6 +27,7 @@ export class Game extends AppState {
   turnIndex: number;
   blocked: boolean;
   messageLog?: MessageLog;
+  targetAbility?: Ability;
   targetCallback?: Function;
   targetSprite?: Sprite;
   targetTile?: TileMapCell;
@@ -193,10 +195,11 @@ export class Game extends AppState {
   }
 
   isTargeting() {
-    return !!this.targetCallback;
+    return !!this.targetAbility;
   }
 
-  startTargeting(callback: Function) {
+  startTargeting(ability: Ability, callback?: Function) {
+    this.targetAbility = ability;
     this.targetCallback = callback;
     if (this.player) {
       this.cursor.x = this.player.x;
@@ -205,13 +208,27 @@ export class Game extends AppState {
   }
 
   private endTargeting() {
-    if (this.targetCallback) {
-      this.targetCallback(this.cursor.x, this.cursor.y);
+    if (this.player && this.targetAbility) {
+      const targetType = this.targetAbility.targetType;
+      let target = null;
+      if (targetType === TargetType.ENTITY) {
+        target = this.getEnemyAt(this.cursor.x, this.cursor.y);
+      } else if (targetType === TargetType.TILE && this.tileMap) {
+        target = this.tileMap.getCell(this.cursor.x, this.cursor.y);
+      }
+      if (target) {
+        if (this.targetAbility.cast(this.player, target)) {
+          if (this.targetCallback) {
+            this.targetCallback();
+          }
+        }
+      }
     }
     this.cancelTargeting();
   }
 
   cancelTargeting() {
+    this.targetAbility = undefined;
     this.targetCallback = undefined;
   }
 
