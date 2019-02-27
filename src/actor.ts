@@ -14,20 +14,15 @@ export class Actor extends Entity {
   health: number;
   maxHealth: number;
   actionPoints: number;
-  inventory: XArray<Entity>;
+  inventory: XArray<Item>;
   ai?: AI;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(game, x, y, name, sprite, blocks);
-    // this.game = game;
-    // this.offset = new Vec2(0, 0);
-    // this.name = name;
-    // this.sprite = sprite;
-    // this.blocks = blocks;
     this.health = 100;
     this.maxHealth = 100;
     this.actionPoints = 1;
-    this.inventory = new XArray<Entity>();
+    this.inventory = new XArray<Item>();
     this.canPickup = false;
     this.canAttack = false;
   }
@@ -105,6 +100,6 @@ export class Actor extends Entity {
   }
 
 
-  onAttack(attacker: Entity, damage: number) {}
+  onAttack(attacker: Actor, damage: number) {}
   onDeath() {}
 }

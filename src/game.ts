@@ -243,7 +243,7 @@ export class Game extends AppState {
     }
 
     const mouse = this.app.mouse;
-    if (mouse.dx !== 0 || mouse.dy !== 0) {
+    if (mouse.down || mouse.dx !== 0 || mouse.dy !== 0) {
       this.cursor.x = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
       this.cursor.y = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
     }

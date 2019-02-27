@@ -47,17 +47,20 @@ export class Mouse extends Input {
     if (e.touches.length > 0) {
       const touch = e.touches[0];
       this.updatePosition(touch.clientX, touch.clientY);
-      if (!this.down) {
-        this.down = true;
-        this.prev.x = this.x;
-        this.prev.y = this.y;
-        this.start.x = this.x;
-        this.start.y = this.y;
-        this.dx = 0;
-        this.dy = 0;
-        this.dragDistance = 0;
-      }
-    } else {
+    }
+
+    if (e.type === 'touchstart') {
+      this.down = true;
+      this.prev.x = this.x;
+      this.prev.y = this.y;
+      this.start.x = this.x;
+      this.start.y = this.y;
+      this.dx = 0;
+      this.dy = 0;
+      this.dragDistance = 0;
+    }
+
+    if (e.type === 'touchend') {
       this.down = false;
     }
   }

@@ -1,9 +1,10 @@
+import {Actor} from './actor';
 import {Entity} from './entity';
 
 export class Item extends Entity {
-  onPickup(user: Entity) {}
+  onPickup(user: Actor) {}
 
-  onUse(user: Entity): boolean {
+  onUse(user: Actor): boolean {
     return false;
   }
 }
