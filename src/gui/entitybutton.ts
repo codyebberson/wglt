@@ -13,7 +13,11 @@ export class EntityButton extends Button {
 
   click() {
     if (this.entities.length > 0) {
-      this.entities[0].use();
+      const item = this.entities[0];
+      const player = item.game.player;
+      if (player) {
+        player.use(item);
+      }
     }
   }
 

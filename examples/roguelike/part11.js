@@ -233,16 +233,18 @@ function getMonsterAt(x, y) {
     return getClosestMonster(x, y, 0);
 }
 
-function castHeal(item, entity) {
+function castHeal(caster) {
+    const item = this;
+
     // Heal the player
-    if (player.health === player.maxHealth) {
+    if (caster.health === caster.maxHealth) {
         game.log('You are already at full health.', wglt.Colors.DARK_RED);
         return;
     }
 
     game.log('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
-    player.health += HEAL_AMOUNT;
-    player.inventory.remove(item);
+    caster.health += HEAL_AMOUNT;
+    caster.inventory.remove(item);
 }
 
 const lightningAbility = {

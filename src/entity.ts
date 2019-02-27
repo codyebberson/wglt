@@ -117,12 +117,8 @@ export class Entity extends Vec2 implements SelectOption {
     }
   }
 
-  use() {
-    if (!this.onUse) {
-      return false;
-    }
-    this.onUse(this);
-    return true;
+  use(item: Entity) {
+    return item.onUse && item.onUse(this);
   }
 
   distanceTo(other: Entity|TileMapCell) {
@@ -143,5 +139,7 @@ export class Entity extends Vec2 implements SelectOption {
   onAttack(attacker: Entity, damage: number) {}
   onDeath() {}
   onPickup(user: Entity) {}
-  onUse(user: Entity) {}
+  onUse(user: Entity): boolean {
+    return false;
+  }
 }
