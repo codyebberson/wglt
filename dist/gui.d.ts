@@ -8,7 +8,6 @@ export declare class GUI {
     readonly rootPanel: Panel;
     dragElement?: Panel;
     dragOffset?: Vec2;
-    onDrop?: Function;
     constructor(app: App);
     add(panel: Panel): void;
     remove(panel: Panel): void;
@@ -16,5 +15,4 @@ export declare class GUI {
     draw(): void;
     startDragging(panel: Panel): void;
     private updateDragging;
-    private tryDrop;
 }

@@ -8,6 +8,7 @@ export declare enum TargetType {
 }
 export interface Ability {
     readonly sprite: Sprite;
+    readonly name: string;
     readonly targetType: TargetType;
     readonly minRange: number;
     readonly maxRange: number;

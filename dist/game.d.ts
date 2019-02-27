@@ -1,4 +1,5 @@
 import { Ability } from './ability';
+import { Actor } from './actor';
 import { App } from './app';
 import { AppState } from './appstate';
 import { Color } from './color';
@@ -23,12 +24,12 @@ export declare class Game extends AppState {
     targetCallback?: Function;
     targetSprite?: Sprite;
     targetTile?: TileMapCell;
-    targetEntity?: Entity;
+    targetEntity?: Actor;
     path?: TileMapCell[];
     pathIndex: number;
     onUpdate?: Function;
     tileMap?: TileMap;
-    player?: Entity;
+    player?: Actor;
     followPlayer: boolean;
     constructor(app: App, options: GameOptions);
     log(text: string, color?: Color): void;
@@ -49,6 +50,6 @@ export declare class Game extends AppState {
     private doAi;
     private nextTurn;
     isBlocked(x: number, y: number): boolean;
-    getEnemyAt(x: number, y: number): Entity | undefined;
+    getEnemyAt(x: number, y: number): Actor | undefined;
     recomputeFov(): void;
 }

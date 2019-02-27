@@ -1,7 +1,7 @@
-import { Entity } from '../entity';
+import { Actor } from '../actor';
 export declare abstract class AI {
-    readonly entity: Entity;
+    readonly actor: Actor;
     activatedCount: number;
-    constructor(entity: Entity);
+    constructor(actor: Actor);
     abstract doAi(): void;
 }

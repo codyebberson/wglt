@@ -21,4 +21,5 @@ export declare class Panel {
     handleInput(): boolean;
     handleChildrenInput(): boolean;
     isDragging(): boolean | null;
+    onDrop(panel: Panel): boolean;
 }
