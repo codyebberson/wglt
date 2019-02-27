@@ -1,3 +1,4 @@
+import {Actor} from '../actor';
 import {Entity} from '../entity';
 import {RNG} from '../rng';
 
@@ -8,21 +9,21 @@ export class ConfusedMonster extends AI {
   numTurns: number;
   oldAi?: AI;
 
-  constructor(entity: Entity) {
-    super(entity);
+  constructor(actor: Actor) {
+    super(actor);
     this.rng = new RNG();
     this.numTurns = 10;
-    this.oldAi = entity.ai;
+    this.oldAi = actor.ai;
   }
 
   doAi() {
     if (this.numTurns > 0) {
       // Still confused...
       // Move in a random direction, and decrease the number of turns confused
-      this.entity.move(this.rng.nextRange(-1, 2), this.rng.nextRange(-1, 2));
+      this.actor.move(this.rng.nextRange(-1, 2), this.rng.nextRange(-1, 2));
       this.numTurns--;
     } else {
-      this.entity.ai = this.oldAi;
+      this.actor.ai = this.oldAi;
     }
   }
 }

@@ -143,10 +143,10 @@ function placeObjects(room) {
         // 80% chance of getting an orc
         if (rng.nextRange(0, 100) < 80) {
             // Create an orc
-            monster = new wglt.Entity(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
+            monster = new wglt.Actor(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
         } else {
             // Create a troll
-            monster = new wglt.Entity(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
+            monster = new wglt.Actor(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
         }
 
         monster.health = 20;
@@ -394,14 +394,10 @@ game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
 game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 game.gui.renderer.closeButtonRect = new wglt.Rect(208, 16, 16, 16);
 game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
-game.gui.onDrop = function (dragElement, dropTarget) {
-    console.log('onDrop', dragElement, dropTarget);
-    return true;
-};
 
 const rng = new wglt.RNG(1);
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
-const player = new wglt.Entity(game, 30, 20, 'Player', sprite, true);
+const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
 player.canAttack = true;
 player.onAttack = attackCallback;
 player.onDeath = playerDeath;
@@ -451,13 +447,13 @@ playerStats.drawContents = function () {
 game.gui.add(playerStats);
 
 for (let i = 0; i < 6; i++) {
-    const buttonSlot = new wglt.ButtonSlot(
+    const buttonSlot = new wglt.ShortcutButtonSlot(
         new wglt.Rect(1 + i * 26, 224 - 26, 24, 24),
         wglt.Keys.VK_1 + i);
     game.gui.add(buttonSlot);
 }
 
-const inventoryDialog = new wglt.EntityContainerDialog(
+const inventoryDialog = new wglt.ItemContainerDialog(
     new wglt.Rect(40, 40, 110, 110),
     'INVENTORY',
     16,
@@ -473,20 +469,6 @@ const inventoryButton = new wglt.Button(
         inventoryDialog.visible = !inventoryDialog.visible;
     });
 game.gui.add(inventoryButton);
-
-const testItem = new wglt.Entity(game, 0, 0, 'scroll of fireball', new wglt.Sprite(144, 16, 16, 16, 1));
-testItem.canPickup = true;
-testItem.onPickup = pickupCallback;
-testItem.targetType = wglt.TargetType.TILE;
-testItem.minRange = 1;
-testItem.maxRange = 10;
-testItem.ability = confuseAbility;
-testItem.onUse = readScroll;
-
-const testButton = new wglt.EntityButton(
-    new wglt.Rect(400 - 48, 224 - 24, 24, 24),
-    testItem);
-game.gui.add(testButton);
 
 // Generate the map
 createMap();

@@ -1,53 +1,54 @@
 import {Entity} from '../entity';
+import {Item} from '../item';
 import {Keys} from '../keys';
 import {Rect} from '../rect';
 import {XArray} from '../xarray';
 
 import {ButtonSlot} from './buttonslot';
 import {Dialog} from './dialog';
-import {EntityButton} from './entitybutton';
+import {ItemButton} from './itembutton';
+import {ItemContainerButtonSlot} from './itemcontainerbuttonslot';
 
 const MARGIN = 4;
 const BUTTON_SPACING = 2;
 
-export class EntityContainerDialog extends Dialog {
+export class ItemContainerDialog extends Dialog {
   readonly capacity: number;
-  readonly entities: XArray<Entity>;
+  readonly items: XArray<Item>;
 
-  constructor(rect: Rect, title: string, capacity: number, entities: XArray<Entity>) {
+  constructor(rect: Rect, title: string, capacity: number, items: XArray<Item>) {
     super(rect, title);
     this.capacity = capacity;
-    this.entities = entities;
+    this.items = items;
 
-    entities.addListener({onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item)});
+    items.addListener({onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item)});
 
     for (let i = 0; i < capacity; i++) {
-      this.add(new ButtonSlot(new Rect(i * 24, 0, 24, 24)));
+      this.add(new ItemContainerButtonSlot(new Rect(i * 24, 0, 24, 24), items));
     }
   }
 
-  private addItem(item: Entity) {
+  private addItem(item: Item) {
     const existingButton = this.getExistingButton(item);
     if (existingButton) {
-      existingButton.entities.push(item);
+      existingButton.stackItems.add(item);
       return;
     }
 
     const freeSlot = this.getNextFreeSlot();
     if (freeSlot) {
-      freeSlot.add(new EntityButton(freeSlot.rect.clone(), item));
+      freeSlot.add(new ItemButton(freeSlot.rect.clone(), this.items, item));
     }
   }
 
-  private removeItem(item: Entity) {
+  private removeItem(item: Item) {
     for (let i = 0; i < this.children.length; i++) {
       const buttonSlot = this.children.get(i) as ButtonSlot;
       const button = buttonSlot.button;
-      if (button && button instanceof EntityButton) {
-        const index = button.entities.indexOf(item);
-        if (index >= 0) {
-          button.entities.splice(index, 1);
-          if (button.entities.length === 0) {
+      if (button && button instanceof ItemButton) {
+        if (button.stackItems.contains(item)) {
+          button.stackItems.remove(item);
+          if (button.stackItems.length === 0) {
             buttonSlot.remove(button);
           }
         }
@@ -59,8 +60,8 @@ export class EntityContainerDialog extends Dialog {
     for (let i = 0; i < this.children.length; i++) {
       const buttonSlot = this.children.get(i) as ButtonSlot;
       const button = buttonSlot.button;
-      if (button && button instanceof EntityButton) {
-        const existing = button.entities[0];
+      if (button && button instanceof ItemButton) {
+        const existing = button.stackItems.get(0);
         if (existing.name === item.name) {
           return button;
         }

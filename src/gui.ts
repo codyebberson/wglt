@@ -11,7 +11,6 @@ export class GUI {
   readonly rootPanel: Panel;
   dragElement?: Panel;
   dragOffset?: Vec2;
-  onDrop?: Function;
 
   constructor(app: App) {
     this.app = app;
@@ -63,7 +62,7 @@ export class GUI {
     } else {
       // End the drag
       const target = this.rootPanel.getPanelAt(mouse);
-      if (target && this.tryDrop(dragElement, target)) {
+      if (target && target.onDrop(dragElement)) {
         // Found a valid drop target
         dragElement.rect.x = target.rect.x;
         dragElement.rect.y = target.rect.y;
@@ -76,19 +75,5 @@ export class GUI {
       this.dragElement = undefined;
       this.dragOffset = undefined;
     }
-  }
-
-  private tryDrop(dragElement: Panel, dropTarget: Panel) {
-    if (dropTarget === this.rootPanel) {
-      // Cannot drop on root panel
-      return false;
-    }
-
-    if (this.onDrop) {
-      return this.onDrop(dragElement, dropTarget);
-    }
-
-    // Block drag and drop by default
-    return false;
   }
 }

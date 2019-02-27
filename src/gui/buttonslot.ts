@@ -7,8 +7,8 @@ import {Panel} from './panel';
 export class ButtonSlot extends Panel {
   shortcutKey?: Key;
 
-  constructor(destRect: Rect, shortcutKey?: Key) {
-    super(destRect);
+  constructor(rect: Rect, shortcutKey?: Key) {
+    super(rect);
     this.shortcutKey = shortcutKey;
   }
 

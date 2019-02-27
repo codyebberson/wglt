@@ -1,11 +1,11 @@
-import {Entity} from '../entity';
+import {Actor} from '../actor';
 
 export abstract class AI {
-  readonly entity: Entity;
+  readonly actor: Actor;
   activatedCount: number;
 
-  constructor(entity: Entity) {
-    this.entity = entity;
+  constructor(actor: Actor) {
+    this.actor = actor;
     this.activatedCount = -1;
   }
 

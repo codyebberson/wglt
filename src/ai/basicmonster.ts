@@ -2,7 +2,7 @@ import {AI} from './ai';
 
 export class BasicMonster extends AI {
   doAi() {
-    const monster = this.entity;
+    const monster = this.actor;
     const player = monster.game.player;
     if (!player) {
       return;

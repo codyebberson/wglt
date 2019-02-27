@@ -106,4 +106,8 @@ export class Panel {
   isDragging() {
     return this.gui && this.gui.dragElement === this;
   }
+
+  onDrop(panel: Panel) {
+    return false;
+  }
 }

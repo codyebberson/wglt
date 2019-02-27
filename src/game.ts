@@ -1,4 +1,5 @@
 import {Ability, TargetType} from './ability';
+import {Actor} from './actor';
 import {App} from './app';
 import {AppState} from './appstate';
 import {Color} from './color';
@@ -31,12 +32,12 @@ export class Game extends AppState {
   targetCallback?: Function;
   targetSprite?: Sprite;
   targetTile?: TileMapCell;
-  targetEntity?: Entity;
+  targetEntity?: Actor;
   path?: TileMapCell[];
   pathIndex: number;
   onUpdate?: Function;
   tileMap?: TileMap;
-  player?: Entity;
+  player?: Actor;
   followPlayer: boolean;
 
   constructor(app: App, options: GameOptions) {
@@ -120,17 +121,21 @@ export class Game extends AppState {
       }
 
       const currEntity = this.entities[this.turnIndex];
-      if (currEntity.actionPoints > 0) {
-        if (currEntity === this.player) {
-          this.handlePlayerInput();
-          break;
-        } else {
-          this.doAi(currEntity);
+      if (currEntity instanceof Actor) {
+        if (currEntity.actionPoints > 0) {
+          if (currEntity === this.player) {
+            this.handlePlayerInput();
+            break;
+          } else {
+            this.doAi(currEntity);
+          }
         }
-      }
-      if (!this.blocked && currEntity.actionPoints <= 0) {
-        // Turn is over
-        currEntity.actionPoints = 0;
+        if (!this.blocked && currEntity.actionPoints <= 0) {
+          // Turn is over
+          currEntity.actionPoints = 0;
+          this.nextTurn();
+        }
+      } else {
         this.nextTurn();
       }
       if (this.blocked) {
@@ -384,7 +389,7 @@ export class Game extends AppState {
     return player.move(dx, dy);
   }
 
-  private doAi(entity: Entity) {
+  private doAi(entity: Actor) {
     if (entity.ai) {
       if (!this.tileMap || (this.tileMap.isVisible(entity.x, entity.y) && entity.ai.activatedCount > 0)) {
         entity.ai.doAi();
@@ -405,7 +410,7 @@ export class Game extends AppState {
         // Determine which entities are activated
         for (let i = 0; i < this.entities.length; i++) {
           const entity = this.entities[i];
-          if (entity.ai) {
+          if (entity instanceof Actor && entity.ai) {
             if (this.tileMap.isVisible(entity.x, entity.y)) {
               entity.ai.activatedCount++;
             } else {
@@ -430,7 +435,10 @@ export class Game extends AppState {
       // Reached the end of the entities list.  Start at beginning.
       this.turnIndex = 0;
       for (let i = 0; i < this.entities.length; i++) {
-        this.entities[i].actionPoints = 1;
+        const entity = this.entities[i];
+        if (entity instanceof Actor) {
+          entity.actionPoints = 1;
+        }
       }
     }
   }
@@ -451,11 +459,14 @@ export class Game extends AppState {
   getEnemyAt(x: number, y: number) {
     for (let i = 0; i < this.entities.length; i++) {
       const other = this.entities[i];
+      if (!(other instanceof Actor)) {
+        continue;
+      }
       if (!other.canAttack || other.health <= 0) {
         // Dead, ignore
         continue;
       }
-      if (other.x === x && other.y === y) {
+      if (other instanceof Actor && other.x === x && other.y === y) {
         return other;
       }
     }
