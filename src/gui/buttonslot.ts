@@ -31,11 +31,13 @@ export class ButtonSlot extends Panel {
     if (button && !button.isDragging()) {
       button.rect.x = this.rect.x;
       button.rect.y = this.rect.y;
+      button.rect.width = this.rect.width;
+      button.rect.height = this.rect.height;
       this.drawChildren();
     }
 
     if (this.shortcutKey) {
-      this.gui.app.drawString(String.fromCharCode(this.shortcutKey), dst.x2 - 7, dst.y + 3);
+      this.gui.app.drawRightString(String.fromCharCode(this.shortcutKey), dst.x2 - 3, dst.y + 3);
     }
   }
 

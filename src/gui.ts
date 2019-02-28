@@ -1,6 +1,7 @@
 
 import {App} from './app';
 import {DialogRenderer} from './gui/dialogrenderer';
+import {ItemShortcutButton} from './gui/itemshortcutbutton';
 import {Panel} from './gui/panel';
 import {Rect} from './rect';
 import {Vec2} from './vec2';
@@ -67,6 +68,11 @@ export class GUI {
         dragElement.rect.x = target.rect.x;
         dragElement.rect.y = target.rect.y;
         dragElement.move(target);
+      } else if (dragElement instanceof ItemShortcutButton && target === this.rootPanel) {
+        // Destroy the shortcut
+        if (dragElement.parent) {
+          dragElement.parent.remove(dragElement);
+        }
       } else {
         // Otherwise move back to the original location
         dragElement.rect.x = mouse.start.x - dragOffset.x;

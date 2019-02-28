@@ -1,4 +1,3 @@
-import {Button} from './button';
 import {ButtonSlot} from './buttonslot';
 import {ItemButton} from './itembutton';
 import {ItemShortcutButton} from './itemshortcutbutton';
@@ -17,17 +16,16 @@ export class ShortcutButtonSlot extends ButtonSlot {
       const containerItems = itemButton.containerItems;
       const shortcutItem = itemButton.stackItems.get(0);
       this.add(new ItemShortcutButton(this.rect.clone(), containerItems, shortcutItem));
+      // Even though the operation was successful,
+      // return false because we don't want to move the original button
+      return false;
     }
 
-    // if (!(panel instanceof Button)) {
-    //   // Not a button
-    //   return false;
-    // }
+    if (panel instanceof ItemShortcutButton) {
+      // Move button
+      return true;
+    }
 
-    // this.add(new ItemShortcutButton(this.rect.clone(), panel as Button));
-
-    // Even though the operation was successful,
-    // return false because we don't want to move the original button
     return false;
   }
 }

@@ -174,6 +174,17 @@ export class App {
     this.renderSet.drawCenteredString(str, x, y, color);
   }
 
+  /**
+   * Draws a right-aligned string.
+   * @param {string} str The text string to draw.
+   * @param {number} x The x-coordinate of the top-right corner.
+   * @param {number} y The y-coordinate of the top-right corner.
+   * @param {number=} color Optional color.
+   */
+  drawRightString(str: string, x: number, y: number, color?: Color) {
+    this.renderSet.drawRightString(str, x, y, color);
+  }
+
   isKeyDown(keyCode: number) {
     const key = this.keyboard.getKey(keyCode);
     return key && key.down;

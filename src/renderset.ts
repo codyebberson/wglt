@@ -112,6 +112,18 @@ export class RenderSet {
   }
 
   /**
+   * Draws a right-aligned string.
+   * @param {string} str The text string to draw.
+   * @param {number} x The x-coordinate of the top-right corner.
+   * @param {number} y The y-coordinate of the top-right corner.
+   * @param {number=} color Optional color.
+   */
+  drawRightString(str: string, x: number, y: number, color?: Color) {
+    const x2 = x - this.font.getStringWidth(str);
+    this.drawString(str, x2, y, color);
+  }
+
+  /**
    * Draws a string.
    * @param {string} str The text string to draw.
    * @param {number} x0 The x-coordinate of the top-left corner.

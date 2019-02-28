@@ -36,7 +36,7 @@ export class Button extends Panel {
     const app = this.gui.app;
     const mouse = app.mouse;
 
-    if (this.rect.contains(mouse) && this.rect.contains(mouse.start) && mouse.isDragging()) {
+    if (this.rect.contains(mouse.start) && mouse.isDragging()) {
       this.gui.startDragging(this);
       return true;
     }
