@@ -1,3 +1,4 @@
+import { Actor } from './actor';
 import { Entity } from './entity';
 import { Sprite } from './sprite';
 import { TileMapCell } from './tilemap';
@@ -12,5 +13,5 @@ export interface Ability {
     readonly targetType: TargetType;
     readonly minRange: number;
     readonly maxRange: number;
-    cast(caster: Entity, target?: Entity | TileMapCell): boolean;
+    cast(caster: Actor, target?: Entity | TileMapCell): boolean;
 }

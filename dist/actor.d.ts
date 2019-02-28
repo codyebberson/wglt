@@ -8,7 +8,7 @@ export declare class Actor extends Entity {
     health: number;
     maxHealth: number;
     actionPoints: number;
-    inventory: XArray<Entity>;
+    inventory: XArray<Item>;
     ai?: AI;
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
     move(dx: number, dy: number): boolean;
@@ -17,6 +17,6 @@ export declare class Actor extends Entity {
     takeDamage(damage: number): void;
     pickup(item: Item): void;
     use(item: Item): boolean;
-    onAttack(attacker: Entity, damage: number): void;
+    onAttack(attacker: Actor, damage: number): void;
     onDeath(): void;
 }
