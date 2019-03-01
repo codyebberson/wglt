@@ -60,6 +60,14 @@ export declare class App {
      * @param {Color=} color Optional color.
      */
     drawCenteredString(str: string, x: number, y: number, color?: Color): void;
+    /**
+     * Draws a right-aligned string.
+     * @param {string} str The text string to draw.
+     * @param {number} x The x-coordinate of the top-right corner.
+     * @param {number} y The y-coordinate of the top-right corner.
+     * @param {number=} color Optional color.
+     */
+    drawRightString(str: string, x: number, y: number, color?: Color): void;
     isKeyDown(keyCode: number): boolean | null;
     isKeyPressed(keyCode: number): boolean;
 }

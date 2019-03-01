@@ -9,8 +9,6 @@ export declare class Entity extends Vec2 implements SelectOption {
     name: string;
     sprite: Sprite;
     blocks: boolean;
-    canPickup: boolean;
-    canAttack: boolean;
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
     readonly pixelX: number;
     readonly pixelY: number;
