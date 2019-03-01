@@ -98,6 +98,10 @@ export class Game extends AppState {
     // Remove completed effects
     for (let i = this.effects.length - 1; i >= 0; i--) {
       if (this.effects[i].isDone()) {
+        const effect = this.effects[i];
+        if (effect.onDone) {
+          effect.onDone();
+        }
         this.effects.splice(i, 1);
       }
     }

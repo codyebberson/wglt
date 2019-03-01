@@ -70,7 +70,8 @@ export class Actor extends Entity {
 
   takeHeal(heal: number) {
     this.hp = Math.min(this.hp + heal, this.maxHp);
-    this.game.effects.push(new FloatingTextEffect(heal.toString(), this.pixelX + 8, this.pixelY - 4, Colors.LIGHT_GREEN));
+    this.game.effects.push(
+        new FloatingTextEffect(heal.toString(), this.pixelX + 8, this.pixelY - 4, Colors.LIGHT_GREEN));
   }
 
   takeDamage(damage: number) {

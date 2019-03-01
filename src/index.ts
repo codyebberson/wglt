@@ -9,6 +9,8 @@ export * from './color';
 export * from './colors';
 export * from './effects/bumpeffect';
 export * from './effects/effect';
+export * from './effects/fadeineffect';
+export * from './effects/fadeouteffect';
 export * from './effects/floatingtexteffect';
 export * from './effects/projectileeffect';
 export * from './effects/slideeffect';

@@ -12,6 +12,7 @@ export class Colors {
   static readonly RED = fromRgb(0xff, 0x00, 0x00);
   static readonly LIGHT_RED = fromRgb(0xff, 0x55, 0x55);
   static readonly DARK_RED = fromRgb(0xaa, 0x00, 0x00);
+  static readonly GREEN = fromRgb(0x00, 0xff, 0x00);
   static readonly LIGHT_GREEN = fromRgb(0x55, 0xff, 0x55);
   static readonly DARK_GREEN = fromRgb(0x00, 0xaa, 0x00);
   static readonly LIGHT_CYAN = fromRgb(0x55, 0xff, 0xff);

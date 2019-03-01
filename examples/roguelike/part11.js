@@ -370,11 +370,19 @@ function monsterDeath() {
 
 function nextLevel() {
     // Advance to the next level
-    game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
-    game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
-    game.entities = [player];
-    game.path = null;
-    createMap();
+    const fadeOut = new wglt.FadeOutEffect(30);
+    const fadeIn = new wglt.FadeInEffect(30);
+
+    fadeOut.onDone = () => {
+        game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
+        game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
+        game.entities = [player];
+        game.path = null;
+        createMap();
+    };
+
+    game.effects.push(fadeOut);
+    game.effects.push(fadeIn);
 }
 
 const app = new wglt.App({

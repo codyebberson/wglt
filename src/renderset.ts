@@ -52,7 +52,7 @@ const spriteFragmentShader = 'precision highp float;' +
     'void main() {' +
     'gl_FragColor = texture2D(u_image, v_texCoord);' +
     'if (gl_FragColor.a < 0.1) discard;' +
-    'if (v_color.a > 0.5) gl_FragColor = v_color;' +
+    'if (v_color.a != 0.0) gl_FragColor = v_color;' +
     '}';
 
 export class RenderSet {
