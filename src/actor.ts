@@ -25,8 +25,6 @@ export class Actor extends Entity {
     this.ap = 1;
     this.maxAp = 1;
     this.inventory = new XArray<Item>();
-    this.canPickup = false;
-    this.canAttack = false;
   }
 
   move(dx: number, dy: number) {
@@ -105,7 +103,6 @@ export class Actor extends Entity {
   use(item: Item) {
     return item.onUse(this);
   }
-
 
   onAttack(attacker: Actor, damage: number) {}
   onDeath() {}

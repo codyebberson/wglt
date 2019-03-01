@@ -462,7 +462,7 @@ export class Game extends AppState {
       if (!(other instanceof Actor)) {
         continue;
       }
-      if (!other.canAttack || other.hp <= 0) {
+      if (other.hp <= 0) {
         // Dead, ignore
         continue;
       }

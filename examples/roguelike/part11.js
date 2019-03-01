@@ -150,7 +150,6 @@ function placeObjects(room) {
         }
 
         monster.hp = 20;
-        monster.canAttack = true;
         monster.ai = new wglt.BasicMonster(monster);
         monster.onAttack = attackCallback;
         monster.onDeath = monsterDeath;
@@ -199,8 +198,7 @@ function placeObjects(room) {
             itemAbility = confuseAbility;
         }
 
-        const item = new wglt.Entity(game, x, y, itemName, itemSprite);
-        item.canPickup = true;
+        const item = new wglt.Item(game, x, y, itemName, itemSprite);
         item.onPickup = pickupCallback;
         item.onUse = itemUse;
         item.ability = itemAbility;
@@ -218,7 +216,7 @@ function getClosestMonster(x, y, range) {
     let result = null;
     for (let i = 0; i < game.entities.length; i++) {
         const entity = game.entities[i];
-        if (entity !== player && entity.canAttack) {
+        if (entity instanceof wglt.Actor && entity !== player) {
             const dist = entity.distance(x, y);
             if (dist < minDist) {
                 minDist = dist;
@@ -298,7 +296,7 @@ const fireballAbility = {
 
         for (let i = game.entities.length - 1; i >= 0; i--) {
             const entity = game.entities[i];
-            if (entity.canAttack && entity.distanceTo(target) <= FIREBALL_RADIUS) {
+            if (entity instanceof wglt.Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
                 game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
                 entity.takeDamage(FIREBALL_DAMAGE);
             }
@@ -398,19 +396,18 @@ game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
 const rng = new wglt.RNG(1);
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
 const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
-player.canAttack = true;
 player.onAttack = attackCallback;
 player.onDeath = playerDeath;
 player.level = 1;
 player.xp = 0;
 player.maxXp = 10;
 player.onBump = function (other) {
-    if (other.canPickup) {
+    if (other instanceof wglt.Item) {
         player.moveToward(other.x, other.y);
         player.pickup(other);
         return true;
     }
-    if (other.canAttack) {
+    if (other instanceof wglt.Actor) {
         player.attack(other);
         return true;
     }
