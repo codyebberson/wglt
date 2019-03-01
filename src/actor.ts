@@ -1,4 +1,4 @@
-
+import {Ability, TargetType} from './ability';
 import {AI} from './ai/ai';
 import {Colors} from './colors';
 import {BumpEffect} from './effects/bumpeffect';
@@ -8,6 +8,7 @@ import {Entity} from './entity';
 import {Game} from './game';
 import {Item} from './item';
 import {Sprite} from './sprite';
+import {Talent} from './talent';
 import {XArray} from './xarray';
 
 export class Actor extends Entity {
@@ -16,6 +17,7 @@ export class Actor extends Entity {
   ap: number;
   maxAp: number;
   inventory: XArray<Item>;
+  talents: XArray<Talent>;
   ai?: AI;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
@@ -25,6 +27,7 @@ export class Actor extends Entity {
     this.ap = 1;
     this.maxAp = 1;
     this.inventory = new XArray<Item>();
+    this.talents = new XArray<Talent>();
   }
 
   move(dx: number, dy: number) {
@@ -103,6 +106,18 @@ export class Actor extends Entity {
 
   use(item: Item) {
     return item.onUse(this);
+  }
+
+  cast(ability: Ability, callback?: Function) {
+    if (ability.targetType === TargetType.SELF) {
+      if (ability.cast(this)) {
+        if (callback) {
+          callback();
+        }
+      }
+    } else {
+      this.game.startTargeting(ability, callback);
+    }
   }
 
   onAttack(attacker: Actor, damage: number) {}

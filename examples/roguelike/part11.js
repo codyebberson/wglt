@@ -265,6 +265,8 @@ const lightningAbility = {
 };
 
 const fireballAbility = {
+    name: 'Fireball',
+    sprite: new wglt.Sprite(128, 32, 16, 16, 3),
     targetType: wglt.TargetType.TILE,
     cast: function (caster, target) {
         const distance = caster.distanceTo(target);
@@ -325,15 +327,9 @@ const confuseAbility = {
 function readScroll() {
     const item = this;
     const ability = this.ability;
-    if (ability.targetType === wglt.TargetType.SELF) {
-        if (ability.cast(player)) {
-            player.inventory.remove(item);
-        }
-    } else {
-        game.startTargeting(ability, function () {
-            player.inventory.remove(item);
-        });
-    }
+    player.cast(ability, function() {
+        player.inventory.remove(item);
+    });
 }
 
 function attackCallback(target, damage) {
@@ -474,6 +470,26 @@ const inventoryButton = new wglt.Button(
         inventoryDialog.visible = !inventoryDialog.visible;
     });
 game.gui.add(inventoryButton);
+
+const talentsDialog = new wglt.TalentsDialog(
+    new wglt.Rect(40, 40, 110, 110),
+    'TALENTS',
+    16,
+    player.talents);
+talentsDialog.visible = false;
+game.gui.add(talentsDialog);
+
+const talentsButton = new wglt.Button(
+    new wglt.Rect(400 - 48, 224 - 24, 24, 24),
+    new wglt.Sprite(192, 16, 16, 16),
+    wglt.Keys.VK_N,
+    function () {
+        talentsDialog.visible = !talentsDialog.visible;
+    });
+game.gui.add(talentsButton);
+
+const fireballTalent = new wglt.Talent(player, fireballAbility);
+player.talents.add(fireballTalent);
 
 // Generate the map
 createMap();

@@ -15,6 +15,7 @@ export interface Ability {
   readonly targetType: TargetType;
   readonly minRange: number;
   readonly maxRange: number;
+  readonly cooldown: number;
 
   cast(caster: Actor, target?: Entity|TileMapCell): boolean;
 }
