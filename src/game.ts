@@ -122,7 +122,7 @@ export class Game extends AppState {
 
       const currEntity = this.entities[this.turnIndex];
       if (currEntity instanceof Actor) {
-        if (currEntity.actionPoints > 0) {
+        if (currEntity.ap > 0) {
           if (currEntity === this.player) {
             this.handlePlayerInput();
             break;
@@ -130,9 +130,9 @@ export class Game extends AppState {
             this.doAi(currEntity);
           }
         }
-        if (!this.blocked && currEntity.actionPoints <= 0) {
+        if (!this.blocked && currEntity.ap <= 0) {
           // Turn is over
-          currEntity.actionPoints = 0;
+          currEntity.ap = 0;
           this.nextTurn();
         }
       } else {
@@ -360,7 +360,7 @@ export class Game extends AppState {
       this.tryMoveOrAttack(0, 1);
     }
     if (wait) {
-      this.player.actionPoints = 0;
+      this.player.ap = 0;
     }
   }
 
@@ -396,7 +396,7 @@ export class Game extends AppState {
       }
     }
 
-    entity.actionPoints = 0;
+    entity.ap = 0;
   }
 
   private nextTurn() {
@@ -437,7 +437,7 @@ export class Game extends AppState {
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
         if (entity instanceof Actor) {
-          entity.actionPoints = 1;
+          entity.ap = entity.maxAp;
         }
       }
     }
@@ -462,7 +462,7 @@ export class Game extends AppState {
       if (!(other instanceof Actor)) {
         continue;
       }
-      if (!other.canAttack || other.health <= 0) {
+      if (!other.canAttack || other.hp <= 0) {
         // Dead, ignore
         continue;
       }

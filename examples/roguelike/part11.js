@@ -149,7 +149,7 @@ function placeObjects(room) {
             monster = new wglt.Actor(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
         }
 
-        monster.health = 20;
+        monster.hp = 20;
         monster.canAttack = true;
         monster.ai = new wglt.BasicMonster(monster);
         monster.onAttack = attackCallback;
@@ -237,13 +237,13 @@ function castHeal(caster) {
     const item = this;
 
     // Heal the player
-    if (caster.health === caster.maxHealth) {
-        game.log('You are already at full health.', wglt.Colors.DARK_RED);
+    if (caster.hp === caster.maxHp) {
+        game.log('You are already at full health.', wglt.Colors.RED);
         return;
     }
 
     game.log('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
-    caster.health += HEAL_AMOUNT;
+    caster.takeHeal(HEAL_AMOUNT);
     caster.inventory.remove(item);
 }
 
@@ -261,7 +261,7 @@ const lightningAbility = {
         game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
         game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
         monster.takeDamage(LIGHTNING_DAMAGE);
-        caster.actionPoints--;
+        caster.ap--;
         return true;
     }
 };
@@ -304,7 +304,7 @@ const fireballAbility = {
             }
         }
 
-        caster.actionPoints--;
+        caster.ap--;
         return true;
     }
 };
@@ -319,7 +319,7 @@ const confuseAbility = {
 
         target.ai = new wglt.ConfusedMonster(target);
         game.log('The eyes of the ' + target.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
-        caster.actionPoints--;
+        caster.ap--;
         return true;
     }
 };
@@ -434,10 +434,10 @@ playerStats.drawContents = function () {
     const frameY = 0;
     app.drawString(player.name, 1, frameY);
 
-    const hpPercent = player.health / player.maxHealth;
+    const hpPercent = player.hp / player.maxHp;
     app.drawImage(0, frameY + 7, 32, 64, 32, 12);
     app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
-    app.drawString(player.health + '/' + player.maxHealth, 3, frameY + 10);
+    app.drawString(player.hp + '/' + player.maxHp, 3, frameY + 10);
 
     const xpPercent = player.xp / player.maxXp;
     app.drawImage(32, frameY + 7, 32, 64, 32, 12);

@@ -11,17 +11,19 @@ import {Sprite} from './sprite';
 import {XArray} from './xarray';
 
 export class Actor extends Entity {
-  health: number;
-  maxHealth: number;
-  actionPoints: number;
+  hp: number;
+  maxHp: number;
+  ap: number;
+  maxAp: number;
   inventory: XArray<Item>;
   ai?: AI;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(game, x, y, name, sprite, blocks);
-    this.health = 100;
-    this.maxHealth = 100;
-    this.actionPoints = 1;
+    this.hp = 100;
+    this.maxHp = 100;
+    this.ap = 1;
+    this.maxAp = 1;
     this.inventory = new XArray<Item>();
     this.canPickup = false;
     this.canAttack = false;
@@ -40,7 +42,7 @@ export class Actor extends Entity {
     const ySpeed = this.game.tileSize.height / count;
     this.game.effects.push(new SlideEffect(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
-    this.actionPoints--;
+    this.ap--;
     return true;
   }
 
@@ -63,18 +65,23 @@ export class Actor extends Entity {
     }
 
     target.takeDamage(damage);
-    this.actionPoints--;
+    this.ap--;
     this.game.effects.push(new BumpEffect(this, target));
     this.game.blocked = true;
   }
 
+  takeHeal(heal: number) {
+    this.hp = Math.min(this.hp + heal, this.maxHp);
+    this.game.effects.push(new FloatingTextEffect(heal.toString(), this.pixelX + 8, this.pixelY - 4, Colors.LIGHT_GREEN));
+  }
+
   takeDamage(damage: number) {
-    this.health -= damage;
+    this.hp -= damage;
 
     this.game.effects.push(new FloatingTextEffect(damage.toString(), this.pixelX + 8, this.pixelY - 4, Colors.RED));
 
-    if (this.health <= 0) {
-      this.health = 0;
+    if (this.hp <= 0) {
+      this.hp = 0;
       if (this.onDeath) {
         this.onDeath();
       }

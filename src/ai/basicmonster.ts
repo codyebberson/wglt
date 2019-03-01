@@ -12,7 +12,7 @@ export class BasicMonster extends AI {
       // Move towards player if far away
       monster.moveToward(player.x, player.y);
 
-    } else if (player.health > 0) {
+    } else if (player.hp > 0) {
       // Close enough, attack! (if the player is still alive.)
       monster.attack(player);
     }
