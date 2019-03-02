@@ -443,7 +443,7 @@ export class Game extends AppState {
     }
   }
 
-  private stopAutoWalk() {
+  stopAutoWalk() {
     this.path = undefined;
     this.targetTile = undefined;
   }

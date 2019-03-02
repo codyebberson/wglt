@@ -1,7 +1,6 @@
 import {initShaderProgram} from './glutils';
 import {Vec2} from './vec2';
 
-const TILE_SIZE = 16;
 const TEXTURE_SIZE = 1024;
 
 // Shader
@@ -45,6 +44,7 @@ const tilemapFS = 'precision highp float;' +
 export class TileMapCell extends Vec2 {
   tile: number;
   blocked: boolean;
+  blockedSight: boolean;
   visible: boolean;
   seen: boolean;
   g: number;
@@ -55,6 +55,7 @@ export class TileMapCell extends Vec2 {
     super(x, y);
     this.tile = tile;
     this.blocked = true;
+    this.blockedSight = true;
     this.visible = false;
     this.seen = false;
     this.g = 0;
@@ -200,9 +201,14 @@ export class TileMap {
     }
   }
 
-  setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean) {
+  setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean, blockedSight?: boolean) {
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+      return;
+    }
+
     this.grid[y][x].tile = tile;
     this.grid[y][x].blocked = !!blocked;
+    this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : !!blocked;
 
     const layer = this.layers[layerIndex];
     const ti = 4 * (y * layer.width + x);
@@ -367,13 +373,13 @@ export class TileMap {
         endSlope = centreSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
-          if (!(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blocked) &&
-              !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blocked)) {
+          if (!(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
+              !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blocked) {
+                if (!this.grid[y][x].blockedSight) {
                   if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
                     visible = false;
                     break;
@@ -394,7 +400,7 @@ export class TileMap {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          if (this.grid[y][x].blocked) {
+          if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
@@ -442,13 +448,13 @@ export class TileMap {
         endSlope = centreSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
-          if (!(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blocked) &&
-              !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blocked)) {
+          if (!(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
+              !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blocked) {
+                if (!this.grid[y][x].blockedSight) {
                   if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
                     visible = false;
                     break;
@@ -469,7 +475,7 @@ export class TileMap {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          if (this.grid[y][x].blocked) {
+          if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
