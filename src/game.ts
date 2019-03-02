@@ -8,13 +8,10 @@ import {Effect} from './effects/effect';
 import {ScrollEffect} from './effects/scrolleffect';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
-import {Dialog} from './gui/dialog';
 import {MessageLog} from './gui/messagelog';
-import {MessagePanel} from './gui/messagepanel';
 import {Panel} from './gui/panel';
 import {TooltipDialog} from './gui/tooltipdialog';
 import {Keys} from './keys';
-import {Message} from './message';
 import {computePath} from './path';
 import {Rect} from './rect';
 import {Sprite} from './sprite';
@@ -47,6 +44,7 @@ export class Game extends AppState {
   player?: Actor;
   cooldownSprite?: Sprite;
   tooltipElement?: Panel;
+  blackoutRect?: Rect;
   followPlayer: boolean;
   viewDistance: number;
 

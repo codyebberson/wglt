@@ -420,6 +420,7 @@ const game = new wglt.Game(app, {
 
 game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
 game.cooldownSprite = new wglt.Sprite(0, 160, 16, 16, 24);
+game.blackoutRect = new wglt.Rect(0, 32, 16, 16);
 game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 game.gui.renderer.closeButtonRect = new wglt.Rect(208, 16, 16, 16);
 game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
