@@ -41,6 +41,7 @@ export class Game extends AppState {
   player?: Actor;
   cooldownSprite?: Sprite;
   followPlayer: boolean;
+  viewDistance: number;
 
   constructor(app: App, options: GameOptions) {
     super(app);
@@ -53,6 +54,7 @@ export class Game extends AppState {
     this.cursor = new Vec2(-1, -1);
     this.pathIndex = 0;
     this.followPlayer = true;
+    this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
   }
 
   log(text: string, color?: Color) {
@@ -480,15 +482,16 @@ export class Game extends AppState {
 
   recomputeFov() {
     if (this.player && this.tileMap) {
-      this.tileMap.computeFov(this.player.x, this.player.y, DEFAULT_VIEW_DISTANCE);
+      this.tileMap.computeFov(this.player.x, this.player.y, this.viewDistance);
 
       // Determine which entities are activated
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
         if (entity instanceof Actor && entity.ai) {
           if (this.tileMap.isVisible(entity.x, entity.y)) {
-            if (entity.ai.activatedCount < 0) {
+            if (!entity.ai.seen) {
               // Spotted a new entity, stop auto walking
+              entity.ai.seen = true;
               this.player.addFloatingText('!', Colors.WHITE);
               this.stopAutoWalk();
             }
