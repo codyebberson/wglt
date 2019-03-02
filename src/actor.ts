@@ -1,5 +1,6 @@
 import {Ability, TargetType} from './ability';
 import {AI} from './ai/ai';
+import {Color} from './color';
 import {Colors} from './colors';
 import {BumpEffect} from './effects/bumpeffect';
 import {FloatingTextEffect} from './effects/floatingtexteffect';
@@ -34,6 +35,8 @@ export class Actor extends Entity {
     const destX = this.x + dx;
     const destY = this.y + dy;
 
+    // TODO: Enforce diagonal vs cardinal movement?
+
     if (this.game.isBlocked(destX, destY)) {
       return false;
     }
@@ -50,8 +53,35 @@ export class Actor extends Entity {
   moveToward(targetX: number, targetY: number) {
     const dx = targetX - this.x;
     const dy = targetY - this.y;
-    const distance = Math.hypot(dx, dy);
-    this.move(Math.round(dx / distance), Math.round(dy / distance));
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0 && this.move(-1, 0)) {
+        return true;
+      }
+      if (dx > 0 && this.move(1, 0)) {
+        return true;
+      }
+      if (dy < 0 && this.move(0, -1)) {
+        return true;
+      }
+      if (dy > 0 && this.move(0, 1)) {
+        return true;
+      }
+    } else {
+      if (dy < 0 && this.move(0, -1)) {
+        return true;
+      }
+      if (dy > 0 && this.move(0, 1)) {
+        return true;
+      }
+      if (dx < 0 && this.move(-1, 0)) {
+        return true;
+      }
+      if (dx > 0 && this.move(1, 0)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   attack(target: Actor) {
@@ -59,12 +89,10 @@ export class Actor extends Entity {
       return;
     }
 
+    // TODO: Enforce distance check?
+
     const damage = 10;
-
-    if (this.onAttack) {
-      this.onAttack(target, damage);
-    }
-
+    this.onAttack(target, damage);
     target.takeDamage(damage);
     this.ap--;
     this.game.effects.push(new BumpEffect(this, target));
@@ -73,14 +101,12 @@ export class Actor extends Entity {
 
   takeHeal(heal: number) {
     this.hp = Math.min(this.hp + heal, this.maxHp);
-    this.game.effects.push(
-        new FloatingTextEffect(heal.toString(), this.pixelX + 8, this.pixelY - 4, Colors.LIGHT_GREEN));
+    this.addFloatingText(heal.toString(), Colors.LIGHT_GREEN);
   }
 
   takeDamage(damage: number) {
     this.hp -= damage;
-
-    this.game.effects.push(new FloatingTextEffect(damage.toString(), this.pixelX + 8, this.pixelY - 4, Colors.RED));
+    this.addFloatingText(damage.toString(), Colors.RED);
 
     if (this.hp <= 0) {
       this.hp = 0;
@@ -120,6 +146,12 @@ export class Actor extends Entity {
     }
   }
 
-  onAttack(attacker: Actor, damage: number) {}
+  addFloatingText(str: string, color: Color) {
+    const x = this.pixelX + (this.sprite.width / 2) | 0;
+    const y = this.pixelY - 4;
+    this.game.effects.push(new FloatingTextEffect(str, x, y, color));
+  }
+
+  onAttack(target: Actor, damage: number) {}
   onDeath() {}
 }

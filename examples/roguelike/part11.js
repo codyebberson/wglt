@@ -243,6 +243,7 @@ function castHeal(caster) {
     game.log('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
     caster.takeHeal(HEAL_AMOUNT);
     caster.inventory.remove(item);
+    caster.ap--;
 }
 
 const lightningAbility = {
@@ -377,7 +378,7 @@ function nextLevel() {
         game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
         game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
         game.entities = [player];
-        game.path = null;
+        game.stopAutoWalk();
         createMap();
     };
 

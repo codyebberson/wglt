@@ -8,7 +8,7 @@ export class BasicMonster extends AI {
       return;
     }
 
-    if (monster.distanceTo(player) >= 2) {
+    if (monster.distanceTo(player) > 1.0) {
       // Move towards player if far away
       monster.moveToward(player.x, player.y);
 

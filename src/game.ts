@@ -3,6 +3,7 @@ import {Actor} from './actor';
 import {App} from './app';
 import {AppState} from './appstate';
 import {Color} from './color';
+import {Colors} from './colors';
 import {Effect} from './effects/effect';
 import {ScrollEffect} from './effects/scrolleffect';
 import {Entity} from './entity';
@@ -411,18 +412,6 @@ export class Game extends AppState {
       // Update FOV
       if (this.player && this.tileMap) {
         this.recomputeFov();
-
-        // Determine which entities are activated
-        for (let i = 0; i < this.entities.length; i++) {
-          const entity = this.entities[i];
-          if (entity instanceof Actor && entity.ai) {
-            if (this.tileMap.isVisible(entity.x, entity.y)) {
-              entity.ai.activatedCount++;
-            } else {
-              entity.ai.activatedCount = -1;
-            }
-          }
-        }
       }
 
       // Sort entities by distance from player
@@ -452,6 +441,11 @@ export class Game extends AppState {
         }
       }
     }
+  }
+
+  private stopAutoWalk() {
+    this.path = undefined;
+    this.targetTile = undefined;
   }
 
   isBlocked(x: number, y: number) {
@@ -487,6 +481,23 @@ export class Game extends AppState {
   recomputeFov() {
     if (this.player && this.tileMap) {
       this.tileMap.computeFov(this.player.x, this.player.y, DEFAULT_VIEW_DISTANCE);
+
+      // Determine which entities are activated
+      for (let i = 0; i < this.entities.length; i++) {
+        const entity = this.entities[i];
+        if (entity instanceof Actor && entity.ai) {
+          if (this.tileMap.isVisible(entity.x, entity.y)) {
+            if (entity.ai.activatedCount < 0) {
+              // Spotted a new entity, stop auto walking
+              this.player.addFloatingText('!', Colors.WHITE);
+              this.stopAutoWalk();
+            }
+            entity.ai.activatedCount++;
+          } else {
+            entity.ai.activatedCount = -1;
+          }
+        }
+      }
     }
   }
 }
