@@ -5,7 +5,7 @@ import { Dialog } from './dialog';
 export declare class ItemContainerDialog extends Dialog {
     readonly capacity: number;
     readonly items: XArray<Item>;
-    constructor(rect: Rect, title: string, capacity: number, items: XArray<Item>);
+    constructor(rect: Rect, capacity: number, items: XArray<Item>);
     private addItem;
     private removeItem;
     private getExistingButton;

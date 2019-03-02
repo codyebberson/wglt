@@ -8,7 +8,7 @@ export declare class ComplexSelectDialog extends Dialog {
     renderer: SelectOptionRenderer;
     onSelect?: Function;
     onCancel?: Function;
-    constructor(rect: Rect, title: string, options: SelectOption[]);
+    constructor(rect: Rect, options: SelectOption[]);
     drawContents(): void;
     handleInput(): boolean;
 }

@@ -10,6 +10,7 @@ export declare class Mouse extends Input {
     dx: number;
     dy: number;
     dragDistance: number;
+    longPress: boolean;
     constructor(app: App);
     private handleTouchEvent;
     private handleEvent;
@@ -17,4 +18,5 @@ export declare class Mouse extends Input {
     update(): void;
     isClicked(): boolean;
     isDragging(): boolean;
+    isLongPress(): boolean;
 }

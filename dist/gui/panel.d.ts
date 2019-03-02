@@ -3,6 +3,7 @@ import { Mouse } from '../mouse';
 import { Rect } from '../rect';
 import { Vec2 } from '../vec2';
 import { XArray } from '../xarray';
+import { TooltipDialog } from './tooltipdialog';
 export declare class Panel {
     gui: GUI | null;
     readonly rect: Rect;
@@ -22,4 +23,5 @@ export declare class Panel {
     handleChildrenInput(): boolean;
     isDragging(): boolean | null;
     onDrop(panel: Panel): boolean;
+    updateTooltip(tooltip: TooltipDialog): void;
 }

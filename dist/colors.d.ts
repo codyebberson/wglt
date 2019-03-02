@@ -14,6 +14,7 @@ export declare class Colors {
     static readonly DARK_GREEN: number;
     static readonly LIGHT_CYAN: number;
     static readonly DARK_CYAN: number;
+    static readonly BLUE: number;
     static readonly LIGHT_BLUE: number;
     static readonly DARK_BLUE: number;
     static readonly LIGHT_MAGENTA: number;

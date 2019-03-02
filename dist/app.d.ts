@@ -12,6 +12,7 @@ export declare class App {
     readonly gl: WebGLRenderingContext;
     readonly size: Rect;
     readonly font: Font;
+    readonly mobile: boolean;
     fillWindow: boolean;
     scaleFactor: number;
     readonly center: Vec2;
@@ -27,8 +28,9 @@ export declare class App {
     handleResizeEvent(): void;
     /**
      * Returns if the browser is on a mobile device.
+     * Run once at startup.
      */
-    isMobile(): RegExpMatchArray | null;
+    private isMobile;
     renderLoop(): void;
     private resetGl;
     /**

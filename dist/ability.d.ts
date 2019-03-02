@@ -1,5 +1,6 @@
 import { Actor } from './actor';
 import { Entity } from './entity';
+import { Message } from './message';
 import { Sprite } from './sprite';
 import { TileMapCell } from './tilemap';
 export declare enum TargetType {
@@ -14,5 +15,6 @@ export interface Ability {
     readonly minRange: number;
     readonly maxRange: number;
     readonly cooldown: number;
+    readonly tooltipMessages: Message[];
     cast(caster: Actor, target?: Entity | TileMapCell): boolean;
 }
