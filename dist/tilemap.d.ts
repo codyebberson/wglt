@@ -2,6 +2,7 @@ import { Vec2 } from './vec2';
 export declare class TileMapCell extends Vec2 {
     tile: number;
     blocked: boolean;
+    blockedSight: boolean;
     visible: boolean;
     seen: boolean;
     g: number;
@@ -57,7 +58,7 @@ export declare class TileMap {
     private minY;
     private maxY;
     constructor(gl: WebGLRenderingContext, width: number, height: number, layerCount: number);
-    setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean): void;
+    setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean, blockedSight?: boolean): void;
     getCell(tx: number, ty: number): TileMapCell | null;
     getTile(tx: number, ty: number): number;
     isBlocked(tx: number, ty: number): boolean;
