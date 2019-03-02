@@ -1,5 +1,6 @@
 import { Ability } from './ability';
 import { AI } from './ai/ai';
+import { Color } from './color';
 import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';
@@ -16,13 +17,14 @@ export declare class Actor extends Entity {
     ai?: AI;
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
     move(dx: number, dy: number): boolean;
-    moveToward(targetX: number, targetY: number): void;
+    moveToward(targetX: number, targetY: number): boolean;
     attack(target: Actor): void;
     takeHeal(heal: number): void;
     takeDamage(damage: number): void;
     pickup(item: Item): void;
     use(item: Item): boolean;
     cast(ability: Ability, callback?: Function): void;
-    onAttack(attacker: Actor, damage: number): void;
+    addFloatingText(str: string, color: Color): void;
+    onAttack(target: Actor, damage: number): void;
     onDeath(): void;
 }

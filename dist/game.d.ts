@@ -30,6 +30,7 @@ export declare class Game extends AppState {
     onUpdate?: Function;
     tileMap?: TileMap;
     player?: Actor;
+    cooldownSprite?: Sprite;
     followPlayer: boolean;
     constructor(app: App, options: GameOptions);
     log(text: string, color?: Color): void;
@@ -49,6 +50,7 @@ export declare class Game extends AppState {
     tryMoveOrAttack(dx: number, dy: number): boolean | undefined;
     private doAi;
     private nextTurn;
+    private stopAutoWalk;
     isBlocked(x: number, y: number): boolean;
     getEnemyAt(x: number, y: number): Actor | undefined;
     recomputeFov(): void;
