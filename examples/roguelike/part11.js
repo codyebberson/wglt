@@ -169,12 +169,18 @@ function placeObjects(room) {
         let itemSprite = null;
         let itemUse = null;
         let itemAbility = null;
+        let itemTooltips = null;
 
         if (dice < 50) {
             // Create a healing potion (50% chance)
             itemName = 'healing potion';
             itemSprite = new wglt.Sprite(128, 16, 16, 16, 1);
             itemUse = castHeal;
+            itemTooltips = [
+                new wglt.Message('Ancient Healing Potion', wglt.Colors.BLUE),
+                new wglt.Message('Item Level 5', wglt.Colors.YELLOW),
+                new wglt.Message('Use: Restore 10 health', wglt.Colors.GREEN),
+            ];
 
         } else if (dice < 50 + 20) {
             // Create a lightning bolt scroll (20% chance)
@@ -202,6 +208,7 @@ function placeObjects(room) {
         item.onPickup = pickupCallback;
         item.onUse = itemUse;
         item.ability = itemAbility;
+        item.tooltipMessages = itemTooltips;
         game.entities.push(item);
     }
 }
@@ -251,6 +258,13 @@ const lightningAbility = {
     sprite: new wglt.Sprite(128, 32, 16, 16, 3),
     targetType: wglt.TargetType.SELF,
     cooldown: 10,
+    tooltipMessages: [
+        new wglt.Message('Lightning', wglt.Colors.WHITE),
+        new wglt.Message('2% of base mana', wglt.Colors.WHITE),
+        new wglt.Message('2 turn cast', wglt.Colors.WHITE),
+        new wglt.Message('Hurls a bolt of lightning at the target', wglt.Colors.YELLOW),
+        new wglt.Message('dealing 20 damage.', wglt.Colors.YELLOW),
+    ],
     cast: function (caster) {
         // Find closest enemy (inside a maximum range) and damage it
         const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
@@ -273,6 +287,13 @@ const fireballAbility = {
     sprite: new wglt.Sprite(128, 32, 16, 16, 3),
     targetType: wglt.TargetType.TILE,
     cooldown: 20,
+    tooltipMessages: [
+        new wglt.Message('Fireball', wglt.Colors.WHITE),
+        new wglt.Message('2% of base mana', wglt.Colors.WHITE),
+        new wglt.Message('2 turn cast', wglt.Colors.WHITE),
+        new wglt.Message('Throws a fiery ball causing 10 damage', wglt.Colors.YELLOW),
+        new wglt.Message('to all enemies within 3 tiles.', wglt.Colors.YELLOW),
+    ],
     cast: function (caster, target) {
         const distance = caster.distanceTo(target);
         if (distance > FIREBALL_RANGE) {
@@ -332,7 +353,7 @@ const confuseAbility = {
 function readScroll() {
     const item = this;
     const ability = this.ability;
-    player.cast(ability, function() {
+    player.cast(ability, function () {
         player.inventory.remove(item);
     });
 }
@@ -462,7 +483,6 @@ for (let i = 0; i < 6; i++) {
 
 const inventoryDialog = new wglt.ItemContainerDialog(
     new wglt.Rect(40, 40, 110, 110),
-    'INVENTORY',
     16,
     player.inventory);
 inventoryDialog.visible = false;
@@ -475,11 +495,16 @@ const inventoryButton = new wglt.Button(
     function () {
         inventoryDialog.visible = !inventoryDialog.visible;
     });
+inventoryButton.tooltipMessages = [
+    new wglt.Message('Traveler\'s Backpack', wglt.Colors.GREEN),
+    new wglt.Message('Item Level 55', wglt.Colors.YELLOW),
+    new wglt.Message('16 Slot Bag', wglt.Colors.WHITE),
+    new wglt.Message('Sell Price: 87 coins', wglt.Colors.WHITE)
+];
 game.gui.add(inventoryButton);
 
 const talentsDialog = new wglt.TalentsDialog(
     new wglt.Rect(40, 40, 110, 110),
-    'TALENTS',
     16,
     player.talents);
 talentsDialog.visible = false;
@@ -492,6 +517,11 @@ const talentsButton = new wglt.Button(
     function () {
         talentsDialog.visible = !talentsDialog.visible;
     });
+talentsButton.tooltipMessages = [
+    new wglt.Message('Talents', wglt.Colors.WHITE),
+    new wglt.Message('A list of all of your', wglt.Colors.YELLOW),
+    new wglt.Message('character\'s talents.', wglt.Colors.YELLOW)
+];
 game.gui.add(talentsButton);
 
 player.talents.add(new wglt.Talent(player, fireballAbility));
@@ -508,7 +538,6 @@ mainMenu.gui.add(new wglt.ImagePanel(
 ));
 mainMenu.gui.add(new wglt.SelectDialog(
     new wglt.Rect(150, 62, 100, 100),
-    'INVENTORY',
     [
         { id: 'new', name: 'NEW GAME' },
         { id: 'continue', name: 'CONTINUE' }

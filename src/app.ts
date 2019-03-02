@@ -18,6 +18,7 @@ export class App {
   readonly gl: WebGLRenderingContext;
   readonly size: Rect;
   readonly font: Font;
+  readonly mobile: boolean;
   fillWindow: boolean;
   scaleFactor: number;
   readonly center: Vec2;
@@ -54,6 +55,8 @@ export class App {
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
     canvas.focus();
+
+    this.mobile = this.isMobile();
 
     this.renderSet = new RenderSet(gl, options.imageUrl, this.font);
     this.keyboard = new Keyboard(canvas);
@@ -106,9 +109,10 @@ export class App {
 
   /**
    * Returns if the browser is on a mobile device.
+   * Run once at startup.
    */
-  isMobile() {
-    return navigator.userAgent.match(/Android|iPhone|iPod|IEMobile|WPDesktop|Opera Mini/i);
+  private isMobile() {
+    return !!navigator.userAgent.match(/Android|iPhone|iPod|IEMobile|WPDesktop|Opera Mini/i);
   }
 
   renderLoop() {

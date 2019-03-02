@@ -14,8 +14,8 @@ export class TalentsDialog extends Dialog {
   readonly capacity: number;
   readonly talents: XArray<Talent>;
 
-  constructor(rect: Rect, title: string, capacity: number, talents: XArray<Talent>) {
-    super(rect, title);
+  constructor(rect: Rect, capacity: number, talents: XArray<Talent>) {
+    super(rect);
     this.capacity = capacity;
     this.talents = talents;
 

@@ -12,6 +12,7 @@ export class ItemShortcutButton extends Button {
     super(rect, shortcutItem.sprite);
     this.containerItems = containerItems;
     this.shortcutItem = shortcutItem;
+    this.tooltipMessages = shortcutItem.tooltipMessages;
   }
 
   click() {

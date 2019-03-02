@@ -1,13 +1,16 @@
 import {Key} from '../keys';
+import {Message} from '../message';
 import {Rect} from '../rect';
 import {Sprite} from '../sprite';
 
 import {Panel} from './panel';
+import {TooltipDialog} from './tooltipdialog';
 
 export class Button extends Panel {
   readonly sprite: Sprite;
   shortcutKey?: Key;
   onClick?: Function;
+  tooltipMessages?: Message[];
 
   constructor(destRect: Rect, sprite: Sprite, shortcutKey?: Key, onClick?: Function) {
     super(destRect);
@@ -52,6 +55,15 @@ export class Button extends Panel {
   click() {
     if (this.onClick) {
       this.onClick();
+    }
+  }
+
+  updateTooltip(tooltip: TooltipDialog) {
+    if (this.tooltipMessages) {
+      tooltip.messages = this.tooltipMessages;
+      tooltip.visible = true;
+    } else {
+      tooltip.visible = false;
     }
   }
 }

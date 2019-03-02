@@ -17,6 +17,7 @@ export class Colors {
   static readonly DARK_GREEN = fromRgb(0x00, 0xaa, 0x00);
   static readonly LIGHT_CYAN = fromRgb(0x55, 0xff, 0xff);
   static readonly DARK_CYAN = fromRgb(0x00, 0xaa, 0xaa);
+  static readonly BLUE = fromRgb(0x00, 0x00, 0xff);
   static readonly LIGHT_BLUE = fromRgb(0x55, 0x55, 0xff);
   static readonly DARK_BLUE = fromRgb(0x00, 0x00, 0xaa);
   static readonly LIGHT_MAGENTA = fromRgb(0xff, 0x55, 0xff);

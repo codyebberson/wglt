@@ -16,8 +16,8 @@ export class ComplexSelectDialog extends Dialog {
   onSelect?: Function;
   onCancel?: Function;
 
-  constructor(rect: Rect, title: string, options: SelectOption[]) {
-    super(rect, title);
+  constructor(rect: Rect, options: SelectOption[]) {
+    super(rect);
     this.options = options;
     this.selectedIndex = 0;
     this.renderer = new DefaultSelectOptionRenderer();

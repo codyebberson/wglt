@@ -10,8 +10,8 @@ export class SelectDialog extends Dialog {
   options: SelectOption[];
   callback: Function;
 
-  constructor(rect: Rect, title: string, options: SelectOption[], callback: Function) {
-    super(rect, title);
+  constructor(rect: Rect, options: SelectOption[], callback: Function) {
+    super(rect);
     this.options = options;
     this.callback = callback;
   }

@@ -8,8 +8,13 @@ import {Effect} from './effects/effect';
 import {ScrollEffect} from './effects/scrolleffect';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
+import {Dialog} from './gui/dialog';
 import {MessageLog} from './gui/messagelog';
+import {MessagePanel} from './gui/messagepanel';
+import {Panel} from './gui/panel';
+import {TooltipDialog} from './gui/tooltipdialog';
 import {Keys} from './keys';
+import {Message} from './message';
 import {computePath} from './path';
 import {Rect} from './rect';
 import {Sprite} from './sprite';
@@ -26,6 +31,7 @@ export class Game extends AppState {
   readonly effects: Effect[];
   readonly entities: Entity[];
   readonly cursor: Vec2;
+  readonly tooltip: TooltipDialog;
   turnIndex: number;
   blocked: boolean;
   messageLog?: MessageLog;
@@ -40,6 +46,7 @@ export class Game extends AppState {
   tileMap?: TileMap;
   player?: Actor;
   cooldownSprite?: Sprite;
+  tooltipElement?: Panel;
   followPlayer: boolean;
   viewDistance: number;
 
@@ -52,6 +59,7 @@ export class Game extends AppState {
     this.turnIndex = 0;
     this.blocked = false;
     this.cursor = new Vec2(-1, -1);
+    this.tooltip = new TooltipDialog();
     this.pathIndex = 0;
     this.followPlayer = true;
     this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
@@ -65,6 +73,7 @@ export class Game extends AppState {
 
   update() {
     Sprite.updateGlobalAnimations();
+    this.updateTooltip();
 
     if (!this.gui.handleInput()) {
       this.updateEffects();
@@ -82,6 +91,51 @@ export class Game extends AppState {
     this.drawEntities();
     this.drawEffects();
     this.gui.draw();
+  }
+
+  private updateTooltip() {
+    if (this.gui.dragElement) {
+      // No tooltips while drag/drop
+      this.tooltip.visible = false;
+      return;
+    }
+
+    const mouse = this.app.mouse;
+
+    const longPress = mouse.isLongPress();
+    if (longPress) {
+      window.navigator.vibrate(100);
+    }
+
+    if (!this.tooltip.visible) {
+      this.tooltipElement = undefined;
+    }
+
+    if ((!mouse.down && (mouse.dx !== 0 || mouse.dy !== 0)) || longPress) {
+      const hoverPanel = this.gui.getPanelAt(mouse);
+      if (this.tooltipElement !== hoverPanel) {
+        // Hover element has changed
+        this.tooltipElement = hoverPanel;
+        if (hoverPanel) {
+          hoverPanel.updateTooltip(this.tooltip);
+        }
+      }
+
+      if (this.tooltip.visible) {
+        if (!this.tooltip.gui) {
+          // If this is the first time we're showing the tooltip,
+          // make sure it is in the GUI system.
+          this.gui.add(this.tooltip);
+        }
+
+        // Update the tooltip to be on the mouse
+        // This is similar to WoW style tooltips.
+        this.tooltip.showAt(mouse.x, mouse.y);
+
+        // On mobile devices, the tooltip is modal
+        this.tooltip.modal = this.app.mobile;
+      }
+    }
   }
 
   private updateEffects() {

@@ -3,6 +3,8 @@ import {App} from './app';
 import {DialogRenderer} from './gui/dialogrenderer';
 import {ItemShortcutButton} from './gui/itemshortcutbutton';
 import {Panel} from './gui/panel';
+import {TalentButton} from './gui/talentbutton';
+import {Mouse} from './mouse';
 import {Rect} from './rect';
 import {Vec2} from './vec2';
 
@@ -26,6 +28,10 @@ export class GUI {
 
   remove(panel: Panel) {
     this.rootPanel.remove(panel);
+  }
+
+  getPanelAt(point: Vec2|Mouse) {
+    return this.rootPanel.getPanelAt(point);
   }
 
   handleInput(): boolean {
@@ -69,6 +75,11 @@ export class GUI {
         dragElement.rect.y = target.rect.y;
         dragElement.move(target);
       } else if (dragElement instanceof ItemShortcutButton && target === this.rootPanel) {
+        // Destroy the shortcut
+        if (dragElement.parent) {
+          dragElement.parent.remove(dragElement);
+        }
+      } else if (dragElement instanceof TalentButton && dragElement.shortcut && target === this.rootPanel) {
         // Destroy the shortcut
         if (dragElement.parent) {
           dragElement.parent.remove(dragElement);

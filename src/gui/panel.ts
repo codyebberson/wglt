@@ -3,6 +3,7 @@ import {Mouse} from '../mouse';
 import {Rect} from '../rect';
 import {Vec2} from '../vec2';
 import {XArray} from '../xarray';
+import {TooltipDialog} from './tooltipdialog';
 
 export class Panel {
   gui: GUI|null;
@@ -90,7 +91,8 @@ export class Panel {
   }
 
   handleChildrenInput() {
-    for (let i = 0; i < this.children.length; i++) {
+    // for (let i = 0; i < this.children.length; i++) {
+    for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children.get(i);
       if (!child.visible) {
         // Ignore hidden elements
@@ -109,5 +111,9 @@ export class Panel {
 
   onDrop(panel: Panel) {
     return false;
+  }
+
+  updateTooltip(tooltip: TooltipDialog) {
+    tooltip.visible = false;
   }
 }

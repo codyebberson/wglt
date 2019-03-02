@@ -16,8 +16,8 @@ export class ItemContainerDialog extends Dialog {
   readonly capacity: number;
   readonly items: XArray<Item>;
 
-  constructor(rect: Rect, title: string, capacity: number, items: XArray<Item>) {
-    super(rect, title);
+  constructor(rect: Rect, capacity: number, items: XArray<Item>) {
+    super(rect);
     this.capacity = capacity;
     this.items = items;
 

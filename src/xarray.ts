@@ -12,6 +12,10 @@ export class XArray<T> {
     return this.elements.length;
   }
 
+  clear() {
+    this.elements.splice(0, this.elements.length);
+  }
+
   get(index: number) {
     return this.elements[index];
   }

@@ -13,6 +13,7 @@ export class ItemButton extends Button {
     this.containerItems = containerItems;
     this.stackItems = new XArray<Item>();
     this.stackItems.add(initialItem);
+    this.tooltipMessages = initialItem.tooltipMessages;
   }
 
   click() {

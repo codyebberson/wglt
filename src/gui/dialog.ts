@@ -3,12 +3,10 @@ import {Rect} from '../rect';
 import {Panel} from './panel';
 
 export class Dialog extends Panel {
-  readonly title: string;
   closeButton: boolean;
 
-  constructor(rect: Rect, title: string) {
+  constructor(rect: Rect) {
     super(rect);
-    this.title = title;
     this.closeButton = false;
   }
 

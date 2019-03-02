@@ -4,6 +4,9 @@ import {Input} from './input';
 import {Rect} from './rect';
 import {Vec2} from './vec2';
 
+const MIN_DRAG_DISTANCE = 4;
+const LONG_PRESS_TICKS = 30;
+
 export class Mouse extends Input {
   private readonly app: App;
   readonly prev: Vec2;
@@ -13,6 +16,7 @@ export class Mouse extends Input {
   dx: number;
   dy: number;
   dragDistance: number;
+  longPress: boolean;
 
   constructor(app: App) {
     super();
@@ -24,6 +28,7 @@ export class Mouse extends Input {
     this.dx = 0;
     this.dy = 0;
     this.dragDistance = 0;
+    this.longPress = false;
 
     const el = app.canvas;
 
@@ -62,6 +67,7 @@ export class Mouse extends Input {
 
     if (e.type === 'touchend') {
       this.down = false;
+      this.longPress = this.downCount >= LONG_PRESS_TICKS;
     }
   }
 
@@ -81,6 +87,7 @@ export class Mouse extends Input {
 
     if (e.type === 'mouseup') {
       this.down = false;
+      this.longPress = this.downCount >= LONG_PRESS_TICKS;
     }
   }
 
@@ -123,10 +130,14 @@ export class Mouse extends Input {
   }
 
   isClicked() {
-    return this.upCount === 1 && this.dragDistance < 4;
+    return this.upCount === 1 && this.dragDistance < MIN_DRAG_DISTANCE && !this.longPress;
   }
 
   isDragging() {
-    return this.down && this.dragDistance > 4;
+    return this.down && this.dragDistance > MIN_DRAG_DISTANCE;
+  }
+
+  isLongPress() {
+    return this.downCount === LONG_PRESS_TICKS;
   }
 }

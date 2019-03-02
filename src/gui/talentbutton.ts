@@ -12,6 +12,7 @@ export class TalentButton extends Button {
     super(rect, talent.ability.sprite);
     this.talent = talent;
     this.shortcut = !!shortcut;
+    this.tooltipMessages = talent.ability.tooltipMessages;
   }
 
   click() {
