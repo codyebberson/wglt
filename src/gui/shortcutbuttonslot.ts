@@ -3,7 +3,6 @@ import {ItemButton} from './itembutton';
 import {ItemShortcutButton} from './itemshortcutbutton';
 import {Panel} from './panel';
 import {TalentButton} from './talentbutton';
-import {TalentShortcutButton} from './talentshortcutbutton';
 
 export class ShortcutButtonSlot extends ButtonSlot {
   onDrop(panel: Panel) {
@@ -24,13 +23,13 @@ export class ShortcutButtonSlot extends ButtonSlot {
     }
 
     if (panel instanceof TalentButton) {
-      this.add(new TalentShortcutButton(this.rect.clone(), panel.talent));
+      this.add(new TalentButton(this.rect.clone(), panel.talent, true));
       // Even though the operation was successful,
       // return false because we don't want to move the original button
       return false;
     }
 
-    if (panel instanceof ItemShortcutButton || panel instanceof TalentShortcutButton) {
+    if (panel instanceof ItemShortcutButton || (panel instanceof TalentButton && panel.shortcut)) {
       // Move button
       return true;
     }

@@ -38,6 +38,7 @@ export class Game extends AppState {
   onUpdate?: Function;
   tileMap?: TileMap;
   player?: Actor;
+  cooldownSprite?: Sprite;
   followPlayer: boolean;
 
   constructor(app: App, options: GameOptions) {
@@ -442,6 +443,12 @@ export class Game extends AppState {
         const entity = this.entities[i];
         if (entity instanceof Actor) {
           entity.ap = entity.maxAp;
+          for (let j = 0; j < entity.talents.length; j++) {
+            const talent = entity.talents.get(j);
+            if (talent.cooldown > 0) {
+              talent.cooldown--;
+            }
+          }
         }
       }
     }

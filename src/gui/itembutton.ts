@@ -34,7 +34,7 @@ export class ItemButton extends Button {
 
     if (this.stackItems.length > 1) {
       const dst = this.rect;
-      this.gui.app.drawString(this.stackItems.length.toString(), dst.x2 - 7, dst.y2 - 10);
+      this.gui.app.drawRightString(this.stackItems.length.toString(), dst.x2 - 3, dst.y2 - 10);
     }
   }
 }

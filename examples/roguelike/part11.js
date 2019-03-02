@@ -246,7 +246,10 @@ function castHeal(caster) {
 }
 
 const lightningAbility = {
+    name: 'Lightning',
+    sprite: new wglt.Sprite(128, 32, 16, 16, 3),
     targetType: wglt.TargetType.SELF,
+    cooldown: 10,
     cast: function (caster) {
         // Find closest enemy (inside a maximum range) and damage it
         const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
@@ -268,6 +271,7 @@ const fireballAbility = {
     name: 'Fireball',
     sprite: new wglt.Sprite(128, 32, 16, 16, 3),
     targetType: wglt.TargetType.TILE,
+    cooldown: 20,
     cast: function (caster, target) {
         const distance = caster.distanceTo(target);
         if (distance > FIREBALL_RANGE) {
@@ -393,6 +397,7 @@ const game = new wglt.Game(app, {
 });
 
 game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
+game.cooldownSprite = new wglt.Sprite(0, 160, 16, 16, 24);
 game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 game.gui.renderer.closeButtonRect = new wglt.Rect(208, 16, 16, 16);
 game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
@@ -488,8 +493,8 @@ const talentsButton = new wglt.Button(
     });
 game.gui.add(talentsButton);
 
-const fireballTalent = new wglt.Talent(player, fireballAbility);
-player.talents.add(fireballTalent);
+player.talents.add(new wglt.Talent(player, fireballAbility));
+player.talents.add(new wglt.Talent(player, lightningAbility));
 
 // Generate the map
 createMap();
