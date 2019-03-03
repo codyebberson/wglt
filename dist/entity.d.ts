@@ -12,6 +12,8 @@ export declare class Entity extends Vec2 implements SelectOption {
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
     readonly pixelX: number;
     readonly pixelY: number;
+    readonly centerPixelX: number;
+    readonly centerPixelY: number;
     distanceTo(other: Entity | TileMapCell): number;
     distance(x: number, y: number): number;
     draw(): void;

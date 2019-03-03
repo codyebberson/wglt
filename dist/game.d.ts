@@ -17,6 +17,7 @@ import { Vec2 } from './vec2';
 export declare class Game extends AppState {
     readonly tileSize: Rect;
     readonly viewport: Rect;
+    readonly viewportFocus: Vec2;
     readonly effects: Effect[];
     readonly entities: Entity[];
     readonly cursor: Vec2;
@@ -38,7 +39,6 @@ export declare class Game extends AppState {
     cooldownSprite?: Sprite;
     tooltipElement?: Panel;
     blackoutRect?: Rect;
-    followPlayer: boolean;
     viewDistance: number;
     constructor(app: App, options: GameOptions);
     log(text: string, color?: Color): void;
@@ -46,6 +46,7 @@ export declare class Game extends AppState {
     private updateTooltip;
     private updateEffects;
     private updateEntities;
+    resetViewport(): void;
     private updateViewport;
     private drawTileMap;
     private drawTargeting;

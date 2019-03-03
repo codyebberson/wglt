@@ -209,10 +209,9 @@ export class TileMap {
 
     if (layerIndex === 0) {
       this.grid[y][x].tile = tile;
+      this.grid[y][x].blocked = !!blocked;
+      this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : !!blocked;
     }
-
-    this.grid[y][x].blocked = !!blocked;
-    this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : !!blocked;
 
     const layer = this.layers[layerIndex];
     const ti = 4 * (y * layer.width + x);

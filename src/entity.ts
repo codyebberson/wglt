@@ -28,6 +28,14 @@ export class Entity extends Vec2 implements SelectOption {
     return this.y * this.game.tileSize.height + this.offset.y;
   }
 
+  get centerPixelX(): number {
+    return this.pixelX + (this.sprite.width / 2) | 0;
+  }
+
+  get centerPixelY(): number {
+    return this.pixelY + (this.sprite.height / 2) | 0;
+  }
+
   distanceTo(other: Entity|TileMapCell) {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }

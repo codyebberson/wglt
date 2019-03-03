@@ -33,6 +33,7 @@ const WAIT_KEYS = [Keys.VK_SPACE, Keys.VK_NUMPAD5];
 export class Game extends AppState {
   readonly tileSize: Rect;
   readonly viewport: Rect;
+  readonly viewportFocus: Vec2;
   readonly effects: Effect[];
   readonly entities: Entity[];
   readonly cursor: Vec2;
@@ -54,13 +55,13 @@ export class Game extends AppState {
   cooldownSprite?: Sprite;
   tooltipElement?: Panel;
   blackoutRect?: Rect;
-  followPlayer: boolean;
   viewDistance: number;
 
   constructor(app: App, options: GameOptions) {
     super(app);
     this.tileSize = options.tileSize || new Rect(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
+    this.viewportFocus = new Vec2(0, 0);
     this.effects = [];
     this.entities = [];
     this.turnIndex = 0;
@@ -69,7 +70,6 @@ export class Game extends AppState {
     this.tooltip = new TooltipDialog();
     this.rng = new RNG();
     this.pathIndex = 0;
-    this.followPlayer = true;
     this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
   }
 
@@ -217,19 +217,32 @@ export class Game extends AppState {
     }
   }
 
+  resetViewport() {
+    if (!this.player) {
+      return;
+    }
+    this.viewportFocus.x = this.player.centerPixelX;
+    this.viewportFocus.y = this.player.centerPixelY;
+    this.viewport.x = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
+    this.viewport.y = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
+  }
+
   private updateViewport() {
+    this.viewport.width = this.app.size.width;
+    this.viewport.height = this.app.size.height;
+
     const mouse = this.app.mouse;
     if (mouse.isDragging()) {
       this.viewport.x -= mouse.dx;
       this.viewport.y -= mouse.dy;
-      this.followPlayer = false;
-    } else if (this.player && this.followPlayer) {
-      const horizontalMargin = ((this.app.size.width - this.player.sprite.width) / 2) | 0;
-      const verticalMargin = ((this.app.size.height - this.player.sprite.height) / 2) | 0;
-      this.viewport.x = this.player.pixelX - horizontalMargin;
-      this.viewport.y = this.player.pixelY - verticalMargin;
-      this.viewport.width = this.app.size.width;
-      this.viewport.height = this.app.size.height;
+      this.viewportFocus.x = this.viewport.x + ((this.viewport.width / 2) | 0);
+      this.viewportFocus.y = this.viewport.y + ((this.viewport.height / 2) | 0);
+    } else {
+      // Drift viewport toward focus
+      const focusLeftX = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
+      const focusTopY = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
+      this.viewport.x = (0.1 * focusLeftX + 0.9 * this.viewport.x) | 0;
+      this.viewport.y = (0.1 * focusTopY + 0.9 * this.viewport.y) | 0;
     }
   }
 
@@ -319,23 +332,17 @@ export class Game extends AppState {
     }
 
     if (this.app.isKeyDown(Keys.VK_SHIFT)) {
-      this.followPlayer = false;
-
-      const scrollFrameCount = 4;
-      const scrollDx = 2 * this.tileSize.width / scrollFrameCount;
-      const scrollDy = 2 * this.tileSize.height / scrollFrameCount;
-
       if (this.isKeyPressed(UP_KEYS)) {
-        this.effects.push(new ScrollEffect(this.viewport, 0, -scrollDy, scrollFrameCount));
+        this.viewportFocus.y -= 2 * this.tileSize.height;
       }
       if (this.isKeyPressed(LEFT_KEYS)) {
-        this.effects.push(new ScrollEffect(this.viewport, -scrollDx, 0, scrollFrameCount));
+        this.viewportFocus.x -= 2 * this.tileSize.width;
       }
       if (this.isKeyPressed(RIGHT_KEYS)) {
-        this.effects.push(new ScrollEffect(this.viewport, scrollDx, 0, scrollFrameCount));
+        this.viewportFocus.x += 2 * this.tileSize.width;
       }
       if (this.isKeyPressed(DOWN_KEYS)) {
-        this.effects.push(new ScrollEffect(this.viewport, 0, scrollDy, scrollFrameCount));
+        this.viewportFocus.y += 2 * this.tileSize.height;
       }
       return;
     }
@@ -441,8 +448,29 @@ export class Game extends AppState {
       return;
     }
 
-    // Start following the player again
-    this.followPlayer = true;
+    // TODO: Figure out the right place for this viewport update logic
+    // Find the bounds of all visible actors
+    let minX = player.pixelX;
+    let minY = player.pixelY;
+    let maxX = minX + player.sprite.width;
+    let maxY = minY + player.sprite.height;
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
+        minX = Math.min(minX, entity.pixelX);
+        minY = Math.min(minY, entity.pixelY);
+        maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
+        maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
+      }
+    }
+
+    // Find the center of the bounds of all visible actors
+    const entityCenterX = (minX + maxX) / 2.0;
+    const entityCenterY = (minY + maxY) / 2.0;
+
+    // Drift focus toward player
+    this.viewportFocus.x = (0.5 * entityCenterX + 0.5 * this.viewportFocus.x) | 0;
+    this.viewportFocus.y = (0.5 * entityCenterY + 0.5 * this.viewportFocus.y) | 0;
 
     const destX = player.x + dx;
     const destY = player.y + dy;
@@ -560,6 +588,9 @@ export class Game extends AppState {
               entity.seen = true;
               this.player.addFloatingText('!', Colors.WHITE);
               this.stopAutoWalk();
+
+              this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;
+              this.viewportFocus.y = ((this.player.centerPixelY + entity.centerPixelY) / 2) | 0;
             }
             entity.activatedCount++;
           } else {

@@ -128,6 +128,7 @@ function createMap() {
     game.entities.push(stairs);
 
     // Initial FOV
+    game.resetViewport();
     game.recomputeFov();
 }
 
