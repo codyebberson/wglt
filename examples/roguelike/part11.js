@@ -490,7 +490,12 @@ for (let i = 0; i < 6; i++) {
 }
 
 const inventoryDialog = new wglt.ItemContainerDialog(
-    new wglt.Rect(40, 40, 110, 110),
+    new wglt.Rect(10, 25, 110, 110),
+    [
+        new wglt.Message('Traveler\'s Backpack', wglt.Colors.GREEN),
+        new wglt.Message('Click an item to use', wglt.Colors.LIGHT_GRAY),
+        new wglt.Message('Drag for shortcut', wglt.Colors.LIGHT_GRAY)
+    ],
     16,
     player.inventory);
 inventoryDialog.visible = false;
@@ -502,6 +507,7 @@ const inventoryButton = new wglt.Button(
     wglt.Keys.VK_I,
     function () {
         inventoryDialog.visible = !inventoryDialog.visible;
+        talentsDialog.visible = false;
     });
 inventoryButton.tooltipMessages = [
     new wglt.Message('Traveler\'s Backpack', wglt.Colors.GREEN),
@@ -512,7 +518,12 @@ inventoryButton.tooltipMessages = [
 game.gui.add(inventoryButton);
 
 const talentsDialog = new wglt.TalentsDialog(
-    new wglt.Rect(40, 40, 110, 110),
+    new wglt.Rect(10, 25, 110, 110),
+    [
+        new wglt.Message('Talents', wglt.Colors.GREEN),
+        new wglt.Message('Click an ability to use', wglt.Colors.LIGHT_GRAY),
+        new wglt.Message('Drag for shortcut', wglt.Colors.LIGHT_GRAY)
+    ],
     16,
     player.talents);
 talentsDialog.visible = false;
@@ -524,6 +535,7 @@ const talentsButton = new wglt.Button(
     wglt.Keys.VK_N,
     function () {
         talentsDialog.visible = !talentsDialog.visible;
+        inventoryDialog.visible = false;
     });
 talentsButton.tooltipMessages = [
     new wglt.Message('Talents', wglt.Colors.WHITE),

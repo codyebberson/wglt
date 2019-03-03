@@ -1,6 +1,7 @@
 import {Entity} from '../entity';
 import {Item} from '../item';
 import {Keys} from '../keys';
+import {Message} from '../message';
 import {Rect} from '../rect';
 import {XArray} from '../xarray';
 
@@ -13,11 +14,13 @@ const MARGIN = 4;
 const BUTTON_SPACING = 2;
 
 export class ItemContainerDialog extends Dialog {
+  readonly messages: Message[];
   readonly capacity: number;
   readonly items: XArray<Item>;
 
-  constructor(rect: Rect, capacity: number, items: XArray<Item>) {
+  constructor(rect: Rect, messages: Message[], capacity: number, items: XArray<Item>) {
     super(rect);
+    this.messages = messages;
     this.capacity = capacity;
     this.items = items;
 
@@ -94,6 +97,12 @@ export class ItemContainerDialog extends Dialog {
     let x = containerRect.x + MARGIN;
     let y = containerRect.y + MARGIN;
 
+    for (let i = 0; i < this.messages.length; i++) {
+      const msg = this.messages[i];
+      this.gui.app.drawString(msg.text, x, y, msg.color);
+      y += 10;
+    }
+
     for (let i = 0; i < this.capacity; i++) {
       const child = this.children.get(i);
       child.rect.x = x;
@@ -108,6 +117,7 @@ export class ItemContainerDialog extends Dialog {
       }
     }
 
+    this.rect.height = (y + MARGIN) - containerRect.y;
     this.drawChildren();
   }
 
