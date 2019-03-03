@@ -48,6 +48,14 @@ export class TooltipDialog extends Dialog {
       this.rect.y = y - this.rect.height - 2;
     }
 
+    if (this.rect.x < 0) {
+      this.rect.x = 0;
+    }
+
+    if (this.rect.y < 0) {
+      this.rect.y = 0;
+    }
+
     this.visible = true;
   }
 
