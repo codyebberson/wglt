@@ -38,7 +38,8 @@ const tilemapFS = 'precision highp float;' +
     '   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;' +
     '   vec2 spriteCoord = mod(pixelCoord, tileSize);' +
     '   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) / ' + TEXTURE_SIZE + '.0);' +
-    '   gl_FragColor.a = tile.a;' +
+    '   if (gl_FragColor.a == 0.0) discard;' +
+    '   gl_FragColor.a *= tile.a;' +
     '}';
 
 export class TileMapCell extends Vec2 {
@@ -206,7 +207,10 @@ export class TileMap {
       return;
     }
 
-    this.grid[y][x].tile = tile;
+    if (layerIndex === 0) {
+      this.grid[y][x].tile = tile;
+    }
+
     this.grid[y][x].blocked = !!blocked;
     this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : !!blocked;
 

@@ -6,6 +6,7 @@ const MAP_HEIGHT = 40;
 const TILE_SIZE = 16;
 const TILE_WALL = 1 + 2 * 64 + 0;
 const TILE_FLOOR = 1 + 2 * 64 + 1;
+const TILE_SHADOW = 1 + 10 * 64 + 10;
 
 // Parameters for dungeon generator
 const ROOM_MAX_SIZE = 10;
@@ -92,6 +93,7 @@ function createMap() {
                 // This is the first room, where the player starts at
                 player.x = center.x;
                 player.y = center.y;
+                map.setTile(1, player.x, player.y, TILE_SHADOW);
 
             } else {
                 // All rooms after the first:
@@ -449,7 +451,7 @@ player.onBump = function (other) {
     }
 };
 
-const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);
+const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 3);
 game.tileMap = map;
 game.player = player;
 game.entities.push(player);
