@@ -11,7 +11,7 @@ import {GameOptions} from './gameoptions';
 import {MessageLog} from './gui/messagelog';
 import {Panel} from './gui/panel';
 import {TooltipDialog} from './gui/tooltipdialog';
-import {Keys} from './keys';
+import {Key, Keys} from './keys';
 import {computePath} from './path';
 import {Rect} from './rect';
 import {RNG} from './rng';
@@ -22,6 +22,13 @@ import {Vec2} from './vec2';
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 const DEFAULT_VIEW_DISTANCE = 13;
+
+// Arrow keys, numpad, vi, WASD, or ZQSD
+const UP_KEYS = [Keys.VK_UP, Keys.VK_NUMPAD8, Keys.VK_K, Keys.VK_W, Keys.VK_Z];
+const LEFT_KEYS = [Keys.VK_LEFT, Keys.VK_NUMPAD4, Keys.VK_H, Keys.VK_A, Keys.VK_Q];
+const DOWN_KEYS = [Keys.VK_DOWN, Keys.VK_NUMPAD2, Keys.VK_J, Keys.VK_S];
+const RIGHT_KEYS = [Keys.VK_RIGHT, Keys.VK_NUMPAD6, Keys.VK_L, Keys.VK_D];
+const WAIT_KEYS = [Keys.VK_SPACE, Keys.VK_NUMPAD5];
 
 export class Game extends AppState {
   readonly tileSize: Rect;
@@ -318,16 +325,16 @@ export class Game extends AppState {
       const scrollDx = 2 * this.tileSize.width / scrollFrameCount;
       const scrollDy = 2 * this.tileSize.height / scrollFrameCount;
 
-      if (this.app.isKeyPressed(Keys.VK_UP)) {
+      if (this.isKeyPressed(UP_KEYS)) {
         this.effects.push(new ScrollEffect(this.viewport, 0, -scrollDy, scrollFrameCount));
       }
-      if (this.app.isKeyPressed(Keys.VK_LEFT)) {
+      if (this.isKeyPressed(LEFT_KEYS)) {
         this.effects.push(new ScrollEffect(this.viewport, -scrollDx, 0, scrollFrameCount));
       }
-      if (this.app.isKeyPressed(Keys.VK_RIGHT)) {
+      if (this.isKeyPressed(RIGHT_KEYS)) {
         this.effects.push(new ScrollEffect(this.viewport, scrollDx, 0, scrollFrameCount));
       }
-      if (this.app.isKeyPressed(Keys.VK_DOWN)) {
+      if (this.isKeyPressed(DOWN_KEYS)) {
         this.effects.push(new ScrollEffect(this.viewport, 0, scrollDy, scrollFrameCount));
       }
       return;
@@ -340,16 +347,16 @@ export class Game extends AppState {
       if (this.app.isKeyPressed(Keys.VK_ESCAPE)) {
         this.cancelTargeting();
       }
-      if (this.app.isKeyPressed(Keys.VK_UP)) {
+      if (this.isKeyPressed(UP_KEYS)) {
         this.cursor.y--;
       }
-      if (this.app.isKeyPressed(Keys.VK_LEFT)) {
+      if (this.isKeyPressed(LEFT_KEYS)) {
         this.cursor.x--;
       }
-      if (this.app.isKeyPressed(Keys.VK_RIGHT)) {
+      if (this.isKeyPressed(RIGHT_KEYS)) {
         this.cursor.x++;
       }
-      if (this.app.isKeyPressed(Keys.VK_DOWN)) {
+      if (this.isKeyPressed(DOWN_KEYS)) {
         this.cursor.y++;
       }
       return;
@@ -396,19 +403,11 @@ export class Game extends AppState {
       }
     }
 
-    const down = this.app.isKeyPressed(Keys.VK_NUMPAD2) || this.app.isKeyPressed(Keys.VK_DOWN) ||
-        (nextStep && nextStep.y > this.player.y);
-
-    const left = this.app.isKeyPressed(Keys.VK_NUMPAD4) || this.app.isKeyPressed(Keys.VK_LEFT) ||
-        (nextStep && nextStep.x < this.player.x);
-
-    const right = this.app.isKeyPressed(Keys.VK_NUMPAD6) || this.app.isKeyPressed(Keys.VK_RIGHT) ||
-        (nextStep && nextStep.x > this.player.x);
-
-    const up = this.app.isKeyPressed(Keys.VK_NUMPAD8) || this.app.isKeyPressed(Keys.VK_UP) ||
-        (nextStep && nextStep.y < this.player.y);
-
-    const wait = this.app.isKeyPressed(Keys.VK_NUMPAD5);
+    const down = this.isKeyPressed(DOWN_KEYS) || (nextStep && nextStep.y > this.player.y);
+    const left = this.isKeyPressed(LEFT_KEYS) || (nextStep && nextStep.x < this.player.x);
+    const right = this.isKeyPressed(RIGHT_KEYS) || (nextStep && nextStep.x > this.player.x);
+    const up = this.isKeyPressed(UP_KEYS) || (nextStep && nextStep.y < this.player.y);
+    const wait = this.isKeyPressed(WAIT_KEYS);
 
     if (up) {
       this.tryMoveOrAttack(0, -1);
@@ -425,6 +424,15 @@ export class Game extends AppState {
     if (wait) {
       this.player.ap = 0;
     }
+  }
+
+  private isKeyPressed(keys: Key[]) {
+    for (let i = 0; i < keys.length; i++) {
+      if (this.app.isKeyPressed(keys[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   tryMoveOrAttack(dx: number, dy: number) {
