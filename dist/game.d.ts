@@ -30,7 +30,6 @@ export declare class Game extends AppState {
     targetCallback?: Function;
     targetSprite?: Sprite;
     targetTile?: TileMapCell;
-    targetEntity?: Actor;
     path?: TileMapCell[];
     pathIndex: number;
     onUpdate?: Function;
@@ -64,6 +63,7 @@ export declare class Game extends AppState {
     private nextTurn;
     stopAutoWalk(): void;
     isBlocked(x: number, y: number): boolean;
-    getEnemyAt(x: number, y: number): Actor | undefined;
+    getEntityAt(x: number, y: number): Entity | undefined;
+    getActorAt(x: number, y: number): Actor | undefined;
     recomputeFov(): void;
 }

@@ -20,7 +20,7 @@ export declare class Actor extends Entity {
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
     move(dx: number, dy: number): boolean;
     moveToward(targetX: number, targetY: number): boolean;
-    attack(target: Actor): void;
+    attack(target: Actor, damage: number): void;
     takeHeal(heal: number): void;
     takeDamage(damage: number): void;
     pickup(item: Item): void;
