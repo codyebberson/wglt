@@ -138,6 +138,6 @@ export class Mouse extends Input {
   }
 
   isLongPress() {
-    return this.downCount === LONG_PRESS_TICKS;
+    return this.downCount === LONG_PRESS_TICKS && !this.isDragging();
   }
 }

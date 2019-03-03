@@ -108,16 +108,12 @@ export class Game extends AppState {
       return;
     }
 
-    const mouse = this.app.mouse;
-
-    const longPress = mouse.isLongPress();
-    if (longPress) {
-      window.navigator.vibrate(100);
-    }
-
     if (!this.tooltip.visible) {
       this.tooltipElement = undefined;
     }
+
+    const mouse = this.app.mouse;
+    const longPress = mouse.isLongPress();
 
     if ((!mouse.down && (mouse.dx !== 0 || mouse.dy !== 0)) || longPress) {
       const hoverPanel = this.gui.getPanelAt(mouse);
@@ -126,6 +122,9 @@ export class Game extends AppState {
         this.tooltipElement = hoverPanel;
         if (hoverPanel) {
           hoverPanel.updateTooltip(this.tooltip);
+          if (longPress) {
+            window.navigator.vibrate(100);
+          }
         }
       }
 
