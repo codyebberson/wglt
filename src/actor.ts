@@ -88,14 +88,13 @@ export class Actor extends Entity {
     return false;
   }
 
-  attack(target: Actor) {
+  attack(target: Actor, damage: number) {
     if (target === this) {
       return;
     }
 
     // TODO: Enforce distance check?
 
-    const damage = 10;
     this.onAttack(target, damage);
     target.takeDamage(damage);
     this.ap--;

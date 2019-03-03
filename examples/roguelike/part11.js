@@ -153,7 +153,7 @@ function placeObjects(room) {
         }
 
         monster.hp = 20;
-        monster.ai = new wglt.BasicMonster(monster);
+        monster.ai = new wglt.BasicMonster(monster, calculateDamage);
         monster.onAttack = attackCallback;
         monster.onDeath = monsterDeath;
         game.entities.push(monster);
@@ -239,6 +239,10 @@ function getClosestMonster(x, y, range) {
 
 function getMonsterAt(x, y) {
     return getClosestMonster(x, y, 0);
+}
+
+function calculateDamage(attacker, target) {
+    return 10;
 }
 
 function castHeal(caster) {
@@ -443,7 +447,7 @@ player.onBump = function (other) {
         return true;
     }
     if (other instanceof wglt.Actor) {
-        player.attack(other);
+        player.attack(other, 10);
         return true;
     }
     if (other.name === 'stairs') {

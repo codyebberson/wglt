@@ -45,7 +45,6 @@ export class Game extends AppState {
   targetCallback?: Function;
   targetSprite?: Sprite;
   targetTile?: TileMapCell;
-  targetEntity?: Actor;
   path?: TileMapCell[];
   pathIndex: number;
   onUpdate?: Function;
@@ -315,7 +314,7 @@ export class Game extends AppState {
       const targetType = this.targetAbility.targetType;
       let target = null;
       if (targetType === TargetType.ENTITY) {
-        target = this.getEnemyAt(this.cursor.x, this.cursor.y);
+        target = this.getActorAt(this.cursor.x, this.cursor.y);
       } else if (targetType === TargetType.TILE && this.tileMap) {
         target = this.tileMap.getCell(this.cursor.x, this.cursor.y);
       }
@@ -387,17 +386,6 @@ export class Game extends AppState {
     if (mouse.isClicked()) {
       const tx = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
       const ty = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
-
-      this.targetEntity = this.getEnemyAt(tx, ty);
-      if (this.targetEntity) {
-        this.targetTile = undefined;
-        this.path = undefined;
-        if (this.player.distance(this.targetEntity.x, this.targetEntity.y) <= 1.0) {
-          this.player.attack(this.targetEntity);
-        }
-        return;
-      }
-
       if (this.tileMap) {
         const target = this.tileMap.getCell(tx, ty);
         if (target && target !== this.targetTile) {
@@ -415,13 +403,8 @@ export class Game extends AppState {
         this.pathIndex++;
         nextStep = this.pathIndex < this.path.length ? this.path[this.pathIndex] : null;
       }
-      if (nextStep && this.getEnemyAt(nextStep.x, nextStep.y)) {
-        // Entity in the way.  Cancel the path.
-        nextStep = null;
-      }
       if (!nextStep) {
-        this.targetTile = undefined;
-        this.path = undefined;
+        this.stopAutoWalk();
       }
     }
 
@@ -475,6 +458,7 @@ export class Game extends AppState {
         if (player.onBump) {
           player.onBump(other);
         }
+        this.stopAutoWalk();
         return true;
       }
     }
@@ -586,16 +570,19 @@ export class Game extends AppState {
     return false;
   }
 
-  getEnemyAt(x: number, y: number) {
+  getEntityAt(x: number, y: number) {
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (entity.x === x && entity.y === y) {
+        return entity;
+      }
+    }
+    return undefined;
+  }
+
+  getActorAt(x: number, y: number) {
     for (let i = 0; i < this.entities.length; i++) {
       const other = this.entities[i];
-      if (!(other instanceof Actor)) {
-        continue;
-      }
-      if (other.hp <= 0) {
-        // Dead, ignore
-        continue;
-      }
       if (other instanceof Actor && other.x === x && other.y === y) {
         return other;
       }
