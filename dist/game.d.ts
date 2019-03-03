@@ -10,6 +10,7 @@ import { MessageLog } from './gui/messagelog';
 import { Panel } from './gui/panel';
 import { TooltipDialog } from './gui/tooltipdialog';
 import { Rect } from './rect';
+import { RNG } from './rng';
 import { Sprite } from './sprite';
 import { TileMap, TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
@@ -20,6 +21,7 @@ export declare class Game extends AppState {
     readonly entities: Entity[];
     readonly cursor: Vec2;
     readonly tooltip: TooltipDialog;
+    readonly rng: RNG;
     turnIndex: number;
     blocked: boolean;
     messageLog?: MessageLog;
@@ -54,6 +56,7 @@ export declare class Game extends AppState {
     private endTargeting;
     cancelTargeting(): void;
     private handlePlayerInput;
+    private isKeyPressed;
     tryMoveOrAttack(dx: number, dy: number): boolean | undefined;
     private doAi;
     private nextTurn;

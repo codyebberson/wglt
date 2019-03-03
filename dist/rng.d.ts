@@ -15,6 +15,7 @@ export declare class RNG {
      * @param seed The integer seed.
      */
     constructor(seed?: number);
+    setSeed(seed: number): void;
     private nextInt;
     /**
      * Returns a floating point number between 0.0 and 1.0.
