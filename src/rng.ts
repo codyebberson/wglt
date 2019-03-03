@@ -24,6 +24,10 @@ export class RNG {
     this.state = seed || 1;
   }
 
+  setSeed(seed: number) {
+    this.state = seed;
+  }
+
   private nextInt() {
     this.state = (this.a * this.state + this.c) % this.m;
     return this.state;

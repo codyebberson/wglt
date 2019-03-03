@@ -19,6 +19,8 @@ export class Actor extends Entity {
   maxAp: number;
   inventory: XArray<Item>;
   talents: XArray<Talent>;
+  activatedCount: number;
+  seen: boolean;
   ai?: AI;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
@@ -29,6 +31,8 @@ export class Actor extends Entity {
     this.maxAp = 1;
     this.inventory = new XArray<Item>();
     this.talents = new XArray<Talent>();
+    this.activatedCount = -1;
+    this.seen = false;
   }
 
   move(dx: number, dy: number) {

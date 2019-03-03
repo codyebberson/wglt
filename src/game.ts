@@ -14,6 +14,7 @@ import {TooltipDialog} from './gui/tooltipdialog';
 import {Keys} from './keys';
 import {computePath} from './path';
 import {Rect} from './rect';
+import {RNG} from './rng';
 import {Sprite} from './sprite';
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
@@ -29,6 +30,7 @@ export class Game extends AppState {
   readonly entities: Entity[];
   readonly cursor: Vec2;
   readonly tooltip: TooltipDialog;
+  readonly rng: RNG;
   turnIndex: number;
   blocked: boolean;
   messageLog?: MessageLog;
@@ -58,6 +60,7 @@ export class Game extends AppState {
     this.blocked = false;
     this.cursor = new Vec2(-1, -1);
     this.tooltip = new TooltipDialog();
+    this.rng = new RNG();
     this.pathIndex = 0;
     this.followPlayer = true;
     this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
@@ -451,7 +454,7 @@ export class Game extends AppState {
 
   private doAi(entity: Actor) {
     if (entity.ai) {
-      if (!this.tileMap || (this.tileMap.isVisible(entity.x, entity.y) && entity.ai.activatedCount > 0)) {
+      if (!this.tileMap || (this.tileMap.isVisible(entity.x, entity.y) && entity.activatedCount > 0)) {
         entity.ai.doAi();
       }
     }
@@ -539,17 +542,20 @@ export class Game extends AppState {
       // Determine which entities are activated
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
-        if (entity instanceof Actor && entity.ai) {
+        if (entity === this.player) {
+          continue;
+        }
+        if (entity instanceof Actor) {
           if (this.tileMap.isVisible(entity.x, entity.y)) {
-            if (!entity.ai.seen) {
+            if (!entity.seen) {
               // Spotted a new entity, stop auto walking
-              entity.ai.seen = true;
+              entity.seen = true;
               this.player.addFloatingText('!', Colors.WHITE);
               this.stopAutoWalk();
             }
-            entity.ai.activatedCount++;
+            entity.activatedCount++;
           } else {
-            entity.ai.activatedCount = -1;
+            entity.activatedCount = -1;
           }
         }
       }
