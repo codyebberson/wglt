@@ -59,6 +59,7 @@ export declare class Game extends AppState {
     private handlePlayerInput;
     private isKeyPressed;
     tryMoveOrAttack(dx: number, dy: number): boolean | undefined;
+    private recalculateViewportFocus;
     private doAi;
     private nextTurn;
     stopAutoWalk(): void;

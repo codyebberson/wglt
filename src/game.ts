@@ -5,7 +5,6 @@ import {AppState} from './appstate';
 import {Color} from './color';
 import {Colors} from './colors';
 import {Effect} from './effects/effect';
-import {ScrollEffect} from './effects/scrolleffect';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
 import {MessageLog} from './gui/messagelog';
@@ -239,9 +238,26 @@ export class Game extends AppState {
     } else {
       // Drift viewport toward focus
       const focusLeftX = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
+      if (focusLeftX !== this.viewport.x) {
+        let dx = 0.1 * focusLeftX - 0.1 * this.viewport.x;
+        if (dx < 0) {
+          dx = Math.floor(dx);
+        } else {
+          dx = Math.ceil(dx);
+        }
+        this.viewport.x += dx;
+      }
+
       const focusTopY = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
-      this.viewport.x = (0.1 * focusLeftX + 0.9 * this.viewport.x) | 0;
-      this.viewport.y = (0.1 * focusTopY + 0.9 * this.viewport.y) | 0;
+      if (focusTopY !== this.viewport.y) {
+        let dy = 0.1 * focusTopY - 0.1 * this.viewport.y;
+        if (dy < 0) {
+          dy = Math.floor(dy);
+        } else {
+          dy = Math.ceil(dy);
+        }
+        this.viewport.y += dy;
+      }
     }
   }
 
@@ -448,28 +464,7 @@ export class Game extends AppState {
     }
 
     // TODO: Figure out the right place for this viewport update logic
-    // Find the bounds of all visible actors
-    let minX = player.pixelX;
-    let minY = player.pixelY;
-    let maxX = minX + player.sprite.width;
-    let maxY = minY + player.sprite.height;
-    for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
-      if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
-        minX = Math.min(minX, entity.pixelX);
-        minY = Math.min(minY, entity.pixelY);
-        maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
-        maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
-      }
-    }
-
-    // Find the center of the bounds of all visible actors
-    const entityCenterX = (minX + maxX) / 2.0;
-    const entityCenterY = (minY + maxY) / 2.0;
-
-    // Drift focus toward player
-    this.viewportFocus.x = (0.5 * entityCenterX + 0.5 * this.viewportFocus.x) | 0;
-    this.viewportFocus.y = (0.5 * entityCenterY + 0.5 * this.viewportFocus.y) | 0;
+    this.recalculateViewportFocus();
 
     const destX = player.x + dx;
     const destY = player.y + dy;
@@ -485,6 +480,44 @@ export class Game extends AppState {
     }
 
     return player.move(dx, dy);
+  }
+
+  private recalculateViewportFocus() {
+    const player = this.player;
+    if (!player) {
+      return;
+    }
+
+    // Find the bounds of all visible actors
+    let minX = player.pixelX;
+    let minY = player.pixelY;
+    let maxX = minX + player.sprite.width;
+    let maxY = minY + player.sprite.height;
+
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
+        minX = Math.min(minX, entity.pixelX);
+        minY = Math.min(minY, entity.pixelY);
+        maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
+        maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
+      }
+    }
+
+    // If there is a walking path, include that in the bounding rect
+    if (this.path) {
+      for (let i = this.pathIndex; i < this.path.length; i++) {
+        const pathTile = this.path[i];
+        minX = Math.min(minX, pathTile.x * this.tileSize.width);
+        minY = Math.min(minY, pathTile.y * this.tileSize.height);
+        maxX = Math.max(maxX, (pathTile.x + 1) * this.tileSize.width);
+        maxY = Math.max(maxY, (pathTile.y + 1) * this.tileSize.height);
+      }
+    }
+
+    // Find the center of the bounds of all visible actors
+    this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
+    this.viewportFocus.y = Math.round((minY + maxY) / 2.0);
   }
 
   private doAi(entity: Actor) {

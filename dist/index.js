@@ -1,2 +1,4535 @@
-!function(t,e){"object"==typeof exports&&"object"==typeof module?module.exports=e():"function"==typeof define&&define.amd?define("wglt",[],e):"object"==typeof exports?exports.wglt=e():t.wglt=e()}(window,function(){return function(t){var e={};function i(s){if(e[s])return e[s].exports;var r=e[s]={i:s,l:!1,exports:{}};return t[s].call(r.exports,r,r.exports,i),r.l=!0,r.exports}return i.m=t,i.c=e,i.d=function(t,e,s){i.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:s})},i.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},i.t=function(t,e){if(1&e&&(t=i(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var s=Object.create(null);if(i.r(s),Object.defineProperty(s,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var r in t)i.d(s,r,function(e){return t[e]}.bind(null,r));return s},i.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return i.d(e,"a",e),e},i.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},i.p="",i(i.s=32)}([function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.Vec2=class{constructor(t,e){this.x=t,this.y=e}add(t){this.x+=t.x,this.y+=t.y}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(0);class r extends s.Vec2{constructor(t,e,i,s){super(t,e),this.width=i,this.height=s}get x1(){return this.x}get y1(){return this.y}get x2(){return this.x+this.width}get y2(){return this.y+this.height}get left(){return this.x}get top(){return this.y}clone(){return new r(this.x,this.y,this.width,this.height)}getCenter(){return new s.Vec2(this.x+this.width/2|0,this.y+this.height/2|0)}intersects(t){return this.x<=t.x2&&this.x2>=t.x&&this.y<=t.y2&&this.y2>=t.y}contains(t){return t.x>=this.x&&t.x<=this.x2&&t.y>=this.y&&t.y<=this.y2}}e.Rect=r},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(14);e.Panel=class{constructor(t){this.gui=null,this.rect=t,this.children=new s.XArray,this.modal=!1,this.visible=!0}setGui(t){if(!this.gui){this.gui=t;for(let e=0;e<this.children.length;e++)this.children.get(e).setGui(t)}}add(t){t.parent=this,t.setGui(this.gui),this.children.add(t)}remove(t){this.children.remove(t)}move(t){this.parent&&this.parent.remove(this),t.add(this)}getPanelAt(t){for(let e=this.children.length-1;e>=0;e--){const i=this.children.get(e);if(!i.visible)continue;if(i.isDragging())continue;const s=i.getPanelAt(t);if(s)return s}if(this.rect.contains(t))return this}drawContents(){this.drawChildren()}drawChildren(){for(let t=0;t<this.children.length;t++){const e=this.children.get(t);e.visible&&e.drawContents()}}handleInput(){return this.handleChildrenInput()}handleChildrenInput(){for(let t=this.children.length-1;t>=0;t--){const e=this.children.get(t);if(e.visible&&(e.handleInput()||e.modal))return!0}return!1}isDragging(){return this.gui&&this.gui.dragElement===this}onDrop(t){return!1}updateTooltip(t){t.visible=!1}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(7);class r{}r.BLACK=s.fromRgb(0,0,0),r.WHITE=s.fromRgb(255,255,255),r.GRAY=s.fromRgb(128,128,128),r.LIGHT_GRAY=s.fromRgb(170,170,170),r.DARK_GRAY=s.fromRgb(85,85,85),r.YELLOW=s.fromRgb(255,255,85),r.BROWN=s.fromRgb(170,85,0),r.RED=s.fromRgb(255,0,0),r.LIGHT_RED=s.fromRgb(255,85,85),r.DARK_RED=s.fromRgb(170,0,0),r.GREEN=s.fromRgb(0,255,0),r.LIGHT_GREEN=s.fromRgb(85,255,85),r.DARK_GREEN=s.fromRgb(0,170,0),r.LIGHT_CYAN=s.fromRgb(85,255,255),r.DARK_CYAN=s.fromRgb(0,170,170),r.BLUE=s.fromRgb(0,0,255),r.LIGHT_BLUE=s.fromRgb(85,85,255),r.DARK_BLUE=s.fromRgb(0,0,170),r.LIGHT_MAGENTA=s.fromRgb(255,85,255),r.DARK_MAGENTA=s.fromRgb(170,0,170),r.ORANGE=s.fromRgb(255,136,0),e.Colors=r},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.Effect=class{constructor(t,e){this.countdown=t,this.blocking=e}isDone(){return this.countdown<=0}update(){this.countdown--}draw(t){}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(2);e.Dialog=class extends s.Panel{constructor(t){super(t),this.closeButton=!1}drawContents(){this.gui&&this.gui.renderer.draw(this.gui.app,this)}handleInput(){return!1}close(){this.gui&&this.gui.remove(this)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});class s{}s.VK_CANCEL=3,s.VK_HELP=6,s.VK_BACK_SPACE=8,s.VK_TAB=9,s.VK_CLEAR=12,s.VK_ENTER=13,s.VK_SHIFT=16,s.VK_CONTROL=17,s.VK_ALT=18,s.VK_PAUSE=19,s.VK_CAPS_LOCK=20,s.VK_ESCAPE=27,s.VK_SPACE=32,s.VK_PAGE_UP=33,s.VK_PAGE_DOWN=34,s.VK_END=35,s.VK_HOME=36,s.VK_LEFT=37,s.VK_UP=38,s.VK_RIGHT=39,s.VK_DOWN=40,s.VK_PRINTSCREEN=44,s.VK_INSERT=45,s.VK_DELETE=46,s.VK_0=48,s.VK_1=49,s.VK_2=50,s.VK_3=51,s.VK_4=52,s.VK_5=53,s.VK_6=54,s.VK_7=55,s.VK_8=56,s.VK_9=57,s.VK_COLON=58,s.VK_SEMICOLON=59,s.VK_LESS_THAN=60,s.VK_EQUALS=61,s.VK_GREATER_THAN=62,s.VK_QUESTION_MARK=63,s.VK_AT=64,s.VK_A=65,s.VK_B=66,s.VK_C=67,s.VK_D=68,s.VK_E=69,s.VK_F=70,s.VK_G=71,s.VK_H=72,s.VK_I=73,s.VK_J=74,s.VK_K=75,s.VK_L=76,s.VK_M=77,s.VK_N=78,s.VK_O=79,s.VK_P=80,s.VK_Q=81,s.VK_R=82,s.VK_S=83,s.VK_T=84,s.VK_U=85,s.VK_V=86,s.VK_W=87,s.VK_X=88,s.VK_Y=89,s.VK_Z=90,s.VK_CONTEXT_MENU=93,s.VK_NUMPAD0=96,s.VK_NUMPAD1=97,s.VK_NUMPAD2=98,s.VK_NUMPAD3=99,s.VK_NUMPAD4=100,s.VK_NUMPAD5=101,s.VK_NUMPAD6=102,s.VK_NUMPAD7=103,s.VK_NUMPAD8=104,s.VK_NUMPAD9=105,s.VK_MULTIPLY=106,s.VK_ADD=107,s.VK_SEPARATOR=108,s.VK_SUBTRACT=109,s.VK_DECIMAL=110,s.VK_DIVIDE=111,s.VK_F1=112,s.VK_F2=113,s.VK_F3=114,s.VK_F4=115,s.VK_F5=116,s.VK_F6=117,s.VK_F7=118,s.VK_F8=119,s.VK_F9=120,s.VK_F10=121,s.VK_F11=122,s.VK_F12=123,s.VK_F13=124,s.VK_F14=125,s.VK_F15=126,s.VK_F16=127,s.VK_F17=128,s.VK_F18=129,s.VK_F19=130,s.VK_F20=131,s.VK_F21=132,s.VK_F22=133,s.VK_F23=134,s.VK_F24=135,s.VK_NUM_LOCK=144,s.VK_SCROLL_LOCK=145,s.VK_CIRCUMFLEX=160,s.VK_EXCLAMATION=161,s.VK_DOUBLE_QUOTE=162,s.VK_HASH=163,s.VK_DOLLAR=164,s.VK_PERCENT=165,s.VK_AMPERSAND=166,s.VK_UNDERSCORE=167,s.VK_OPEN_PAREN=168,s.VK_CLOSE_PAREN=169,s.VK_ASTERISK=170,s.VK_PLUS=171,s.VK_PIPE=172,s.VK_HYPHEN_MINUS=173,s.VK_OPEN_CURLY_BRACKET=174,s.VK_CLOSE_CURLY_BRACKET=175,s.VK_TILDE=176,s.VK_COMMA=188,s.VK_PERIOD=190,s.VK_SLASH=191,s.VK_BACK_QUOTE=192,s.VK_OPEN_BRACKET=219,s.VK_BACK_SLASH=220,s.VK_CLOSE_BRACKET=221,s.VK_QUOTE=222,s.VK_META=224,s.VK_ALTGR=225,s.VK_WIN=91,s.VK_KANA=21,s.VK_HANGUL=21,s.VK_EISU=22,s.VK_JUNJA=23,s.VK_FINAL=24,s.VK_HANJA=25,s.VK_KANJI=25,s.VK_CONVERT=28,s.VK_NONCONVERT=29,s.VK_ACCEPT=30,s.VK_MODECHANGE=31,s.VK_SELECT=41,s.VK_PRINT=42,s.VK_EXECUTE=43,s.VK_SLEEP=95,e.Keys=s},function(t,e,i){"use strict";function s(t,e,i,s){return void 0===s&&(s=255),(t<<24)+(e<<16)+(i<<8)+s}Object.defineProperty(e,"__esModule",{value:!0}),e.fromRgb=s,e.fromHsv=function(t,e,i,r){const n=6*t|0,o=6*t-n,h=i*(1-e),a=i*(1-o*e),c=i*(1-(1-o)*e);let l,d,u;switch(n%6){case 0:l=i,d=c,u=h;break;case 1:l=a,d=i,u=h;break;case 2:l=h,d=i,u=c;break;case 3:l=h,d=a,u=i;break;case 4:l=c,d=h,u=i;break;case 5:l=i,d=h,u=a;break;default:l=0,d=0,u=0}return void 0===r&&(r=1),s(255*l|0,255*d|0,255*u|0,255*r|0)}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(2);e.Button=class extends s.Panel{constructor(t,e,i,s){super(t),this.sprite=e,this.shortcutKey=i,this.onClick=s}drawContents(){if(!this.gui)return;const t=this.sprite,e=this.rect,i=(e.width-t.width)/2|0,s=(e.height-t.height)/2|0;t.draw(this.gui.app,e.x+i,e.y+s)}handleInput(){if(!this.gui)return!1;const t=this.gui.app,e=t.mouse;return this.rect.contains(e.start)&&e.isDragging()?(this.gui.startDragging(this),!0):this.shortcutKey&&t.isKeyPressed(this.shortcutKey)||this.rect.contains(e)&&e.isClicked()?(this.click(),!0):e.down&&this.rect.contains(e)}click(){this.onClick&&this.onClick()}updateTooltip(t){this.tooltipMessages?(t.messages=this.tooltipMessages,t.visible=!0):t.visible=!1}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(3),r=i(8);e.TalentButton=class extends r.Button{constructor(t,e,i){super(t,e.ability.sprite),this.talent=e,this.shortcut=!!i,this.tooltipMessages=e.ability.tooltipMessages}click(){this.talent.use()}drawContents(){if(super.drawContents(),this.talent.cooldown>0){const t=this.talent.actor.game,e=t.cooldownSprite;if(e){const i=1-this.talent.cooldown/this.talent.ability.cooldown,r=Math.round(i*e.frames),n=e.x+r*e.width,o=e.y,h=this.rect.x+(this.rect.width-e.width)/2|0,a=this.rect.y+(this.rect.height-e.height)/2|0;t.app.drawImage(h,a,n,o,e.width,e.height);const c=this.rect.x+this.rect.width/2|0,l=this.rect.y+this.rect.height/2|0;t.app.drawCenteredString(this.talent.cooldown.toString(),c+1,l-2,s.Colors.BLACK),t.app.drawCenteredString(this.talent.cooldown.toString(),c,l-3,s.Colors.WHITE)}}}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(2);e.ButtonSlot=class extends s.Panel{constructor(t,e){super(t),this.shortcutKey=e}get button(){return this.children.length>0?this.children.get(0):void 0}drawContents(){if(!this.gui)return;const t=this.rect,e=this.gui.renderer.buttonSlotRect;e&&this.gui.app.drawImage(t.x,t.y,e.x,e.y,t.width,t.height);const i=this.button;i&&!i.isDragging()&&(i.rect.x=this.rect.x,i.rect.y=this.rect.y,i.rect.width=this.rect.width,i.rect.height=this.rect.height,this.drawChildren()),this.shortcutKey&&this.gui.app.drawRightString(String.fromCharCode(this.shortcutKey),t.x2-3,t.y+3)}handleInput(){if(!this.gui)return!1;if(this.handleChildrenInput())return!0;const t=this.gui.app,e=t.mouse,i=this.button;return i&&(this.shortcutKey&&t.isKeyPressed(this.shortcutKey)||this.rect.contains(e)&&e.isClicked())?(i.click(),!0):e.down&&this.rect.contains(e)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(14),r=i(8);e.ItemButton=class extends r.Button{constructor(t,e,i){super(t,i.sprite),this.containerItems=e,this.stackItems=new s.XArray,this.stackItems.add(i),this.tooltipMessages=i.tooltipMessages}click(){if(this.stackItems.length>0){const t=this.stackItems.get(0),e=t.game.player;e&&e.use(t)}}drawContents(){if(this.gui&&(super.drawContents(),this.stackItems.length>1)){const t=this.rect;this.gui.app.drawRightString(this.stackItems.length.toString(),t.x2-3,t.y2-10)}}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),function(t){t[t.SELF=0]="SELF",t[t.ENTITY=1]="ENTITY",t[t.TILE=2]="TILE"}(e.TargetType||(e.TargetType={}))},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(0);e.Entity=class extends s.Vec2{constructor(t,e,i,r,n,o){super(e,i),this.game=t,this.offset=new s.Vec2(0,0),this.name=r,this.sprite=n,this.blocks=o}get pixelX(){return this.x*this.game.tileSize.width+this.offset.x}get pixelY(){return this.y*this.game.tileSize.height+this.offset.y}get centerPixelX(){return this.pixelX+this.sprite.width/2|0}get centerPixelY(){return this.pixelY+this.sprite.height/2|0}distanceTo(t){return Math.hypot(t.x-this.x,t.y-this.y)}distance(t,e){return Math.hypot(t-this.x,e-this.y)}draw(){this.sprite.draw(this.game.app,this.pixelX-this.game.viewport.x,this.pixelY-this.game.viewport.y)}sendToBack(){}onBump(t){}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.XArray=class{constructor(){this.elements=[]}get length(){return this.elements.length}clear(){this.elements.splice(0,this.elements.length)}get(t){return this.elements[t]}add(t){if(this.elements.push(t),this.listeners)for(let e=0;e<this.listeners.length;e++)this.listeners[e].onAdd(this,t)}remove(t){const e=this.elements.indexOf(t);if(e>=0&&(this.elements.splice(e,1),this.listeners))for(let e=0;e<this.listeners.length;e++)this.listeners[e].onRemove(this,t)}contains(t){return this.elements.indexOf(t)>=0}addListener(t){this.listeners||(this.listeners=[]),this.listeners.push(t)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.AI=class{constructor(t){this.actor=t}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.Input=class{constructor(){this.down=!1,this.downCount=0,this.upCount=0}update(){this.down?(this.downCount++,this.upCount=0):(this.downCount=0,this.upCount++)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(8);e.ItemShortcutButton=class extends s.Button{constructor(t,e,i){super(t,i.sprite),this.containerItems=e,this.shortcutItem=i,this.tooltipMessages=i.tooltipMessages}click(){const t=this.getItem();if(t){const e=t.game.player;e&&e.use(t)}}drawContents(){if(this.gui&&(super.drawContents(),!this.isDragging())){const t=this.rect,e=this.countItems();this.gui.app.drawRightString(e.toString(),t.x2-3,t.y2-10)}}getItem(){for(let t=0;t<this.containerItems.length;t++){const e=this.containerItems.get(t);if(e.name===this.shortcutItem.name)return e}}countItems(){let t=0;for(let e=0;e<this.containerItems.length;e++)this.containerItems.get(e).name===this.shortcutItem.name&&t++;return t}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(12),r=i(3),n=i(19),o=i(20),h=i(21),a=i(13),c=i(14);e.Actor=class extends a.Entity{constructor(t,e,i,s,r,n){super(t,e,i,s,r,n),this.hp=100,this.maxHp=100,this.ap=1,this.maxAp=1,this.inventory=new c.XArray,this.talents=new c.XArray,this.activatedCount=-1,this.seen=!1}move(t,e){const i=this.x+t,s=this.y+e;if(this.game.isBlocked(i,s))return!1;const r=this.game.tileSize.width/4,n=this.game.tileSize.height/4;return this.game.effects.push(new h.SlideEffect(this,t*r,e*n,4)),this.game.blocked=!0,this.ap--,!0}moveToward(t,e){const i=t-this.x,s=e-this.y;if(Math.abs(i)>Math.abs(s)){if(i<0&&this.move(-1,0))return!0;if(i>0&&this.move(1,0))return!0;if(s<0&&this.move(0,-1))return!0;if(s>0&&this.move(0,1))return!0}else{if(s<0&&this.move(0,-1))return!0;if(s>0&&this.move(0,1))return!0;if(i<0&&this.move(-1,0))return!0;if(i>0&&this.move(1,0))return!0}return!1}attack(t){t!==this&&(this.onAttack(t,10),t.takeDamage(10),this.ap--,this.game.effects.push(new n.BumpEffect(this,t)),this.game.blocked=!0)}takeHeal(t){this.hp=Math.min(this.hp+t,this.maxHp),this.addFloatingText(t.toString(),r.Colors.LIGHT_GREEN)}takeDamage(t){if(this.hp-=t,this.addFloatingText(t.toString(),r.Colors.RED),this.hp<=0){this.hp=0,this.onDeath&&this.onDeath();const t=this.game.entities.indexOf(this);t>=0&&this.game.entities.splice(t,1)}}pickup(t){t.onPickup(this),this.inventory.add(t);const e=this.game.entities.indexOf(t);e>=0&&this.game.entities.splice(e,1)}use(t){return t.onUse(this)}cast(t,e){t.targetType===s.TargetType.SELF?t.cast(this)&&e&&e():this.game.startTargeting(t,e)}addFloatingText(t,e){this.game.effects.push(new o.FloatingTextEffect(this,t,e))}onAttack(t,e){}onDeath(){}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(4),r=12;e.BumpEffect=class extends s.Effect{constructor(t,e){super(r,!0),this.entity=t,this.dx=e.x-t.x,this.dy=e.y-t.y}update(){const t=r-this.countdown;t>=0&&t<4&&(this.entity.offset.x+=this.dx,this.entity.offset.y+=this.dy),t>=4&&t<8&&(this.entity.offset.x-=this.dx,this.entity.offset.y-=this.dy),super.update()}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(3),r=i(4);e.FloatingTextEffect=class extends r.Effect{constructor(t,e,i){super(40,!1),this.actor=t,this.str=e,this.color=i||s.Colors.WHITE}draw(t){const e=40-this.countdown,i=this.actor.pixelX+(this.actor.sprite.width/2|0)-t.viewport.x,s=this.actor.pixelY-3-t.viewport.y-Math.min(4,Math.floor(e/2));t.app.drawCenteredString(this.str,i,s,this.color)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(4);e.SlideEffect=class extends s.Effect{constructor(t,e,i,s){super(s,!0),this.entity=t,this.dx=e,this.dy=i}update(){this.countdown--,this.countdown>=0&&(this.entity.offset.x+=this.dx,this.entity.offset.y+=this.dy),0===this.countdown&&(this.entity.x+=this.entity.offset.x/this.entity.game.tileSize.width,this.entity.y+=this.entity.offset.y/this.entity.game.tileSize.height,this.entity.offset.x=0,this.entity.offset.y=0)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(16),r=256;e.Keyboard=class{constructor(t){this.keys=new Array(r);for(let t=0;t<r;t++)this.keys[t]=new s.Input;t.addEventListener("keydown",t=>this.setKey(t,!0)),t.addEventListener("keyup",t=>this.setKey(t,!1))}setKey(t,e){t.stopPropagation(),t.preventDefault();const i=t.keyCode;i>=0&&i<r&&(this.keys[i].down=e)}update(){for(let t=0;t<r;t++)this.keys[t].down?this.keys[t].downCount++:this.keys[t].downCount=0}getKey(t){return t>=0&&t<r?this.keys[t]:null}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(16),r=i(1),n=i(0),o=4,h=30;e.Mouse=class extends s.Input{constructor(t){super(),this.app=t,this.prev=new n.Vec2(0,0),this.start=new n.Vec2(0,0),this.x=0,this.y=0,this.dx=0,this.dy=0,this.dragDistance=0,this.longPress=!1;const e=t.canvas,i=this.handleEvent.bind(this);e.addEventListener("mousedown",i),e.addEventListener("mouseup",i),e.addEventListener("mousemove",i),e.addEventListener("contextmenu",i);const s=this.handleTouchEvent.bind(this);e.addEventListener("touchstart",s),e.addEventListener("touchend",s),e.addEventListener("touchcancel",s),e.addEventListener("touchmove",s)}handleTouchEvent(t){if(t.stopPropagation(),t.preventDefault(),t.touches.length>0){const e=t.touches[0];this.updatePosition(e.clientX,e.clientY)}"touchstart"===t.type&&(this.down=!0,this.prev.x=this.x,this.prev.y=this.y,this.start.x=this.x,this.start.y=this.y,this.dx=0,this.dy=0,this.dragDistance=0),"touchend"===t.type&&(this.down=!1,this.longPress=this.downCount>=h)}handleEvent(t){t.stopPropagation(),t.preventDefault(),this.updatePosition(t.clientX,t.clientY),"mousedown"===t.type&&(this.down=!0,this.start.x=this.x,this.start.y=this.y,this.dragDistance=0,this.app.canvas.focus()),"mouseup"===t.type&&(this.down=!1,this.longPress=this.downCount>=h)}updatePosition(t,e){let i=this.app.canvas.getBoundingClientRect();const s=this.app.size.width/this.app.size.height,n=i.width/i.height;if(n-s>.01){const t=s*i.height,e=i.width-t;i=new r.Rect(Math.floor(e/2),0,t,i.height)}if(n-s<-.01){const t=i.width/s,e=i.height-t;i=new r.Rect(0,Math.floor(e/2),i.width,t)}this.x=this.app.size.width*(t-i.left)/i.width|0,this.y=this.app.size.height*(e-i.top)/i.height|0}update(){super.update(),this.dx=this.x-this.prev.x,this.dy=this.y-this.prev.y,this.prev.x=this.x,this.prev.y=this.y,this.down&&(this.dragDistance+=Math.abs(this.dx)+Math.abs(this.dy))}isClicked(){return 1===this.upCount&&this.dragDistance<o&&!this.longPress}isDragging(){return this.down&&this.dragDistance>o}isLongPress(){return this.downCount===h}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});function s(t,e,i){const s=t.createShader(e);return t.shaderSource(s,i),t.compileShader(s),s}e.ExtendedTexture=class extends WebGLTexture{constructor(){super(),this.loaded=!1,this.width=0,this.height=0}},e.initShaderProgram=function(t,e,i){const r=s(t,t.VERTEX_SHADER,e),n=s(t,t.FRAGMENT_SHADER,i),o=t.createProgram();return t.attachShader(o,r),t.attachShader(o,n),t.linkProgram(o),o},e.loadShader=s,e.createTexture=function(t,e){const i=t.createTexture();t.bindTexture(t.TEXTURE_2D,i);const s=t.RGBA,r=t.RGBA,n=t.UNSIGNED_BYTE,o=new Uint8Array([0,0,0,255]);t.texImage2D(t.TEXTURE_2D,0,s,1,1,0,r,n,o);const h=new Image;return h.onload=(()=>{t.bindTexture(t.TEXTURE_2D,i),t.texImage2D(t.TEXTURE_2D,0,s,r,n,h),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_S,t.CLAMP_TO_EDGE),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_T,t.CLAMP_TO_EDGE),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MAG_FILTER,t.NEAREST),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MIN_FILTER,t.NEAREST),t.generateMipmap(t.TEXTURE_2D),i.loaded=!0,i.width=h.width,i.height=h.height}),h.src=e,i}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(26);e.AppState=class{constructor(t){this.app=t,this.gui=new s.GUI(t)}update(){this.gui.handleInput(),this.gui.draw()}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(27),r=i(17),n=i(2),o=i(9),h=i(1),a=i(0);e.GUI=class{constructor(t){this.app=t,this.renderer=new s.DialogRenderer(new h.Rect(0,0,1,1)),this.rootPanel=new n.Panel(t.size),this.rootPanel.gui=this}add(t){this.rootPanel.add(t)}remove(t){this.rootPanel.remove(t)}getPanelAt(t){return this.rootPanel.getPanelAt(t)}handleInput(){return this.dragElement&&this.dragOffset?(this.updateDragging(),!0):this.rootPanel.handleInput()}draw(){this.rootPanel.drawContents(),this.dragElement&&this.dragElement.drawContents()}startDragging(t){const e=this.app.mouse;this.dragElement=t,this.dragOffset=new a.Vec2(e.start.x-t.rect.x,e.start.y-t.rect.y)}updateDragging(){const t=this.app.mouse,e=this.dragElement,i=this.dragOffset;if(t.down)e.rect.x=t.x-i.x,e.rect.y=t.y-i.y;else{const s=this.rootPanel.getPanelAt(t);s&&s.onDrop(e)?(e.rect.x=s.rect.x,e.rect.y=s.rect.y,e.move(s)):e instanceof r.ItemShortcutButton&&s===this.rootPanel?e.parent&&e.parent.remove(e):e instanceof o.TalentButton&&e.shortcut&&s===this.rootPanel?e.parent&&e.parent.remove(e):(e.rect.x=t.start.x-i.x,e.rect.y=t.start.y-i.y),this.dragElement=void 0,this.dragOffset=void 0}}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.DialogRenderer=class{constructor(t,e){this.baseRect=t,this.closeButtonRect=e}draw(t,e){const i=this.baseRect.x,s=this.baseRect.y,r=this.baseRect.width/3|0,n=this.baseRect.height/3|0,o=i+r,h=s+n,a=i+2*r,c=s+2*r,l=e.rect.x,d=e.rect.y,u=e.rect.width-2*r,p=e.rect.height-2*n,g=l+r,f=d+n,y=g+u,x=f+p;if(t.drawImage(l,d,i,s,r,n,void 0,r,n),t.drawImage(g,d,o,s,r,n,void 0,u,n),t.drawImage(y,d,a,s,r,n,void 0,r,n),t.drawImage(l,f,i,h,r,n,void 0,r,p),t.drawImage(g,f,o,h,r,n,void 0,u,p),t.drawImage(y,f,a,h,r,n,void 0,r,p),t.drawImage(l,x,i,c,r,n,void 0,r,n),t.drawImage(g,x,o,c,r,n,void 0,u,n),t.drawImage(y,x,a,c,r,n,void 0,r,n),this.closeButtonRect&&e.closeButton){const i=this.closeButtonRect.width,s=this.closeButtonRect.height,r=e.rect.x2-i,n=e.rect.y,o=this.closeButtonRect.x,h=this.closeButtonRect.y;t.drawImage(r,n,o,h,i,s)}}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=[0,-1,1,0],r=[-1,0,0,1],n=[1,1,1,1];function o(t){let e=null,i=-1,s=1/0;for(let r=0;r<t.length;r++){const n=t[r];n.g!==1/0&&n.g+n.h<s&&(e=n,i=r,s=n.g+n.h)}return t.splice(i,1),e}function h(t){const e=[];let i=t;for(;i;)e.push(i),i=i.prev;return e.reverse(),e}e.computePath=function(t,e,i,a){!function(t,e){for(let i=0;i<t.height;i++)for(let s=0;s<t.width;s++){const r=t.grid[i][s];r.g=1/0,r.h=Math.min(Math.abs(s-e.x),Math.abs(i-e.y)),r.prev=null}}(t,i);const c=t.grid[e.y][e.x];c.g=0;const l=[c];for(;l.length>0;){const e=o(l);if(e.x===i.x&&e.y===i.y)return h(e);for(let i=0;i<s.length;i++){const o=e.x+s[i],h=e.y+r[i];if(o>=0&&o<t.width&&h>=0&&h<t.height){const s=t.grid[h][o],r=e.g+n[i];r<s.g&&r<=a&&!t.grid[h][o].blocked&&(s.g=r,s.prev=e,l.push(s))}}}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.RNG=class{constructor(t){this.m=2147483648,this.a=1103515245,this.c=12345,this.state=t||1}setSeed(t){this.state=t}nextInt(){return this.state=(this.a*this.state+this.c)%this.m,this.state}nextFloat(){return this.nextInt()/(this.m-1)}nextRange(t,e){const i=e-t;return t+(this.nextInt()/this.m*i|0)}chooseIndex(t){const e=t.reduce((t,e)=>t+e),i=this.nextRange(1,e+1);let s=0;for(let e=0;e<t.length;e++)if(i<=(s+=t[e]))return e;return t.length-1}chooseKey(t){const e=[],i=[];for(const s in t)t.hasOwnProperty(s)&&(e.push(s),i.push(t[s]));return e[this.chooseIndex(i)]}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(1),r=30;class n extends s.Rect{constructor(t,e,i,s,n,o,h,a){super(t,e,i,s),this.frames=n||1,this.loop=!!o,this.ticksPerFrame=h||r,this.colorOverride=a,this.animIndex=0,this.animDelay=0}draw(t,e,i,s){let r=this.animIndex;this.loop&&(r=(n.globalAnimIndex/this.ticksPerFrame|0)%this.frames);const o=this.x+r*this.width,h=this.y,a=s||this.colorOverride;t.drawImage(e,i,o,h,this.width,this.height,a),this.animDelay++,this.animDelay>this.ticksPerFrame&&(this.animDelay=0,this.animIndex++,this.animIndex>=this.frames&&(this.loop?this.animIndex=0:this.animIndex=this.frames-1))}static updateGlobalAnimations(){n.globalAnimIndex++}}n.globalAnimIndex=0,e.Sprite=n},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.Message=class{constructor(t,e){this.text=t,this.color=e}}},function(t,e,i){"use strict";function s(t){for(var i in t)e.hasOwnProperty(i)||(e[i]=t[i])}Object.defineProperty(e,"__esModule",{value:!0}),s(i(12)),s(i(18)),s(i(15)),s(i(33)),s(i(34)),s(i(35)),s(i(25)),s(i(7)),s(i(3)),s(i(19)),s(i(4)),s(i(38)),s(i(39)),s(i(20)),s(i(40)),s(i(21)),s(i(13)),s(i(41)),s(i(26)),s(i(8)),s(i(10)),s(i(43)),s(i(5)),s(i(27)),s(i(11)),s(i(45)),s(i(17)),s(i(47)),s(i(2)),s(i(48)),s(i(49)),s(i(50)),s(i(51)),s(i(9)),s(i(52)),s(i(16)),s(i(53)),s(i(22)),s(i(6)),s(i(31)),s(i(23)),s(i(28)),s(i(0)),s(i(1)),s(i(29)),s(i(30)),s(i(54)),s(i(55))},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(15);e.BasicMonster=class extends s.AI{doAi(){const t=this.actor,e=t.game.player;e&&(t.distanceTo(e)>1?t.moveToward(e.x,e.y):e.hp>0&&t.attack(e))}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(15);e.ConfusedMonster=class extends s.AI{constructor(t){super(t),this.numTurns=10,this.oldAi=t.ai}doAi(){if(this.numTurns>0){const t=this.actor.game.rng;this.actor.move(t.nextRange(-1,2),t.nextRange(-1,2)),this.numTurns--}else this.actor.ai=this.oldAi}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(36),r=i(22),n=i(23),o=i(1),h=i(37),a=i(0),c=400,l=224,d=!1,u=2;e.App=class{constructor(t){const e=t.canvas;if(!e)throw new Error("Null or missing canvas element");const i=e.getContext("webgl",{alpha:!1,antialias:!1});if(!i)throw new Error("Could not get WebGL context");this.canvas=e,this.gl=i,this.size=t.size||new o.Rect(0,0,c,l),this.font=t.font||s.FONT_04B03,this.fillWindow=t.fillWindow||d,this.scaleFactor=t.scaleFactor||u,this.center=new a.Vec2(this.size.width/2|0,this.size.height/2|0),i.disable(i.DEPTH_TEST),i.enable(i.BLEND),i.blendFunc(i.SRC_ALPHA,i.ONE_MINUS_SRC_ALPHA),e.width=this.size.width,e.height=this.size.height,e.style.outline="none",e.tabIndex=0,e.focus(),this.mobile=this.isMobile(),this.renderSet=new h.RenderSet(i,t.imageUrl,this.font),this.keyboard=new r.Keyboard(e),this.mouse=new n.Mouse(this),this.fillWindow&&(window.addEventListener("resize",this.handleResizeEvent.bind(this),!1),this.handleResizeEvent()),this.renderLoop()}handleResizeEvent(){const t=window.innerWidth,e=window.innerHeight,i=this.isMobile(),s=i?320:400,r=i?224:300;this.scaleFactor=1,this.scaleFactor=t>e?Math.max(1,Math.min(Math.round(t/s),Math.round(e/r))):Math.max(1,Math.min(Math.round(t/r),Math.round(e/s))),this.size.width=Math.round(t/this.scaleFactor),this.size.height=Math.round(e/this.scaleFactor),this.center.x=this.size.width/2|0,this.center.y=this.size.height/2|0,this.canvas.width=this.size.width,this.canvas.height=this.size.height,this.canvas.style.left="0",this.canvas.style.top="0",this.canvas.style.width=t+"px",this.canvas.style.height=e+"px"}isMobile(){return!!navigator.userAgent.match(/Android|iPhone|iPod|IEMobile|WPDesktop|Opera Mini/i)}renderLoop(){this.keyboard.update(),this.mouse.update(),this.resetGl(),this.state&&this.state.update(),this.renderSet.flush(this.size.width,this.size.height),requestAnimationFrame(this.renderLoop.bind(this))}resetGl(){const t=this.gl;t.viewport(0,0,this.size.width,this.size.height),t.clearColor(0,0,0,1),t.clear(t.COLOR_BUFFER_BIT|t.DEPTH_BUFFER_BIT),this.renderSet.positionArrayIndex=0,this.renderSet.texcoordArrayIndex=0,this.renderSet.colorArrayIndex=0}drawImage(t,e,i,s,r,n,o,h,a){this.renderSet.drawImage(t,e,i,s,r,n,o,h,a)}drawString(t,e,i,s){this.renderSet.drawString(t,e,i,s)}drawCenteredString(t,e,i,s){this.renderSet.drawCenteredString(t,e,i,s)}drawRightString(t,e,i,s){this.renderSet.drawRightString(t,e,i,s)}isKeyDown(t){const e=this.keyboard.getKey(t);return e&&e.down}isKeyPressed(t){const e=this.keyboard.getKey(t),i=e?e.downCount:0;return 1===i||i>30}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=32,r=126;class n{isInRange(t){return t>=s&&t<=r}getStringWidth(t){let e=0;for(let i=0;i<t.length;i++)e+=this.getWidth(t.charCodeAt(i));return e}}e.Font=n;e.MonospacedFont=class extends n{constructor(t){super(),this.glyphSize=t}getOffset(t){return(t-s)*this.glyphSize.width}getWidth(){return this.glyphSize.width}getHeight(){return this.glyphSize.height}};class o extends n{constructor(t,e){super(),this.height=t,this.widths=e,this.offsets=[0];let i=0;for(let t=0;t<this.widths.length;t++)i+=this.widths[t],this.offsets.push(i)}getOffset(t){return this.offsets[t-s]}getWidth(t){return this.widths[t-s]}getHeight(){return this.height}}e.ProportionalFont=o,e.FONT_04B03=new o(8,[4,2,4,6,5,6,6,2,3,3,4,4,3,4,2,6,5,3,5,5,5,5,5,5,5,5,2,2,4,4,4,5,6,5,5,4,5,4,4,5,5,4,5,5,4,6,5,5,5,5,5,5,4,5,5,6,5,5,4,3,6,3,4,5,3,5,5,4,5,5,4,5,5,2,3,5,2,6,5,5,5,5,4,5,4,5,5,6,4,5,5,4,2,4,5,0])},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(24),r=65536,n="uniform vec2 u_viewportSize;attribute vec2 a_position;attribute vec2 a_texCoord;attribute vec4 a_color;varying vec2 v_texCoord;varying vec4 v_color;void main() {vec2 zeroToOne = a_position / u_viewportSize;vec2 zeroToTwo = zeroToOne * 2.0;vec2 clipSpace = zeroToTwo - 1.0;gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);v_texCoord = a_texCoord;v_color = a_color;}",o="precision highp float;uniform sampler2D u_image;varying vec2 v_texCoord;varying vec4 v_color;void main() {gl_FragColor = texture2D(u_image, v_texCoord);if (gl_FragColor.a < 0.1) discard;if (v_color.a != 0.0) gl_FragColor = v_color;}";e.RenderSet=class{constructor(t,e,i){this.gl=t,this.font=i;const h=s.initShaderProgram(t,n,o);this.program=h,this.viewportSizeLocation=t.getUniformLocation(h,"u_viewportSize"),this.positionLocation=t.getAttribLocation(h,"a_position"),this.texcoordLocation=t.getAttribLocation(h,"a_texCoord"),this.colorLocation=t.getAttribLocation(h,"a_color"),this.positionBuffer=t.createBuffer(),this.texcoordBuffer=t.createBuffer(),this.colorBuffer=t.createBuffer(),this.spriteTexture=s.createTexture(t,e),this.positionArray=new Float32Array(r),this.positionArrayIndex=0,this.texcoordArray=new Float32Array(r),this.texcoordArrayIndex=0,this.colorUint8Array=new Uint8Array(r),this.colorDataView=new DataView(this.colorUint8Array.buffer),this.colorArrayIndex=0}drawCenteredString(t,e,i,s){const r=e-this.font.getStringWidth(t)/2|0;this.drawString(t,r,i,s)}drawRightString(t,e,i,s){const r=e-this.font.getStringWidth(t);this.drawString(t,r,i,s)}drawString(t,e,i,s){const r=t.split("\n"),n=this.font.getHeight();let o=i;for(let t=0;t<r.length;t++){let i=e;for(let e=0;e<r[t].length;e++){const h=r[t].charCodeAt(e);if(this.font.isInRange(h)){const t=this.font.getOffset(h),e=this.font.getWidth(h);this.drawImage(i,o,t,0,e,n,s),i+=e}}o+=n}}drawChar(t,e,i,s){if(this.font.isInRange(t)){const r=this.font.getOffset(t),n=this.font.getWidth(t),o=this.font.getHeight();this.drawImage(e,i,r,0,n,o,s)}}drawImage(t,e,i,s,r,n,o,h,a){const c=this.spriteTexture;if(!c.loaded)return;const l=void 0!==h?h:r,d=void 0!==a?a:n,u=t+Math.abs(l),p=e+d,g=i/c.width,f=s/c.height,y=(i+r)/c.width,x=(s+n)/c.height,m=o||0;this.positionArray[this.positionArrayIndex++]=t,this.positionArray[this.positionArrayIndex++]=e,this.positionArray[this.positionArrayIndex++]=u,this.positionArray[this.positionArrayIndex++]=e,this.positionArray[this.positionArrayIndex++]=t,this.positionArray[this.positionArrayIndex++]=p,this.texcoordArray[this.texcoordArrayIndex++]=g,this.texcoordArray[this.texcoordArrayIndex++]=f,this.texcoordArray[this.texcoordArrayIndex++]=y,this.texcoordArray[this.texcoordArrayIndex++]=f,this.texcoordArray[this.texcoordArrayIndex++]=g,this.texcoordArray[this.texcoordArrayIndex++]=x,this.positionArray[this.positionArrayIndex++]=t,this.positionArray[this.positionArrayIndex++]=p,this.positionArray[this.positionArrayIndex++]=u,this.positionArray[this.positionArrayIndex++]=e,this.positionArray[this.positionArrayIndex++]=u,this.positionArray[this.positionArrayIndex++]=p,this.texcoordArray[this.texcoordArrayIndex++]=g,this.texcoordArray[this.texcoordArrayIndex++]=x,this.texcoordArray[this.texcoordArrayIndex++]=y,this.texcoordArray[this.texcoordArrayIndex++]=f,this.texcoordArray[this.texcoordArrayIndex++]=y,this.texcoordArray[this.texcoordArrayIndex++]=x;for(let t=0;t<6;t++)this.colorDataView.setUint32(this.colorArrayIndex,m,!1),this.colorArrayIndex+=4}flush(t,e){if(!this.spriteTexture.loaded||0===this.positionArrayIndex)return;const i=this.gl;i.useProgram(this.program),i.uniform2f(this.viewportSizeLocation,t,e),i.activeTexture(i.TEXTURE0),i.bindTexture(i.TEXTURE_2D,this.spriteTexture);{i.enableVertexAttribArray(this.positionLocation),i.bindBuffer(i.ARRAY_BUFFER,this.positionBuffer),i.bufferData(i.ARRAY_BUFFER,this.positionArray,i.DYNAMIC_DRAW);const t=2,e=i.FLOAT,s=!1,r=0,n=0;i.vertexAttribPointer(this.positionLocation,t,e,s,r,n)}{i.enableVertexAttribArray(this.texcoordLocation),i.bindBuffer(i.ARRAY_BUFFER,this.texcoordBuffer),i.bufferData(i.ARRAY_BUFFER,this.texcoordArray,i.DYNAMIC_DRAW);const t=2,e=i.FLOAT,s=!1,r=0,n=0;i.vertexAttribPointer(this.texcoordLocation,t,e,s,r,n)}{i.enableVertexAttribArray(this.colorLocation),i.bindBuffer(i.ARRAY_BUFFER,this.colorBuffer),i.bufferData(i.ARRAY_BUFFER,this.colorUint8Array,i.DYNAMIC_DRAW);const t=4,e=i.UNSIGNED_BYTE,s=!0,r=0,n=0;i.vertexAttribPointer(this.colorLocation,t,e,s,r,n)}const s=i.TRIANGLES,r=this.positionArrayIndex/2;i.drawArrays(s,0,r)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(7),r=i(4);e.FadeInEffect=class extends r.Effect{constructor(t){super(t,!0),this.duration=t}draw(t){const e=t.blackoutRect;if(!e)return;const i=this.countdown/this.duration,r=Math.max(1,Math.min(255,255*i|0)),n=s.fromRgb(0,0,0,r);t.app.drawImage(0,0,e.x,e.y,e.width,e.height,n,t.app.size.width,t.app.size.height)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(7),r=i(4);e.FadeOutEffect=class extends r.Effect{constructor(t){super(t,!0),this.duration=t}draw(t){const e=t.blackoutRect;if(!e)return;const i=1-this.countdown/this.duration,r=Math.max(1,Math.min(255,255*i|0)),n=s.fromRgb(0,0,0,r);t.app.drawImage(0,0,e.x,e.y,e.width,e.height,n,t.app.size.width,t.app.size.height)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(4);e.ProjectileEffect=class extends s.Effect{constructor(t,e,i,s){super(s,!0),this.sprite=t,this.position=e,this.velocity=i,this.duration=s}update(){super.update(),this.position.add(this.velocity)}draw(t){const e=this.position.x-t.viewport.x,i=this.position.y-t.viewport.y;this.sprite.draw(t.app,e,i)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(12),r=i(18),n=i(25),o=i(3),h=i(42),a=i(6),c=i(28),l=i(1),d=i(29),u=i(30),p=i(0),g=16,f=16,y=13,x=[a.Keys.VK_UP,a.Keys.VK_NUMPAD8,a.Keys.VK_K,a.Keys.VK_W,a.Keys.VK_Z],m=[a.Keys.VK_LEFT,a.Keys.VK_NUMPAD4,a.Keys.VK_H,a.Keys.VK_A,a.Keys.VK_Q],_=[a.Keys.VK_DOWN,a.Keys.VK_NUMPAD2,a.Keys.VK_J,a.Keys.VK_S],w=[a.Keys.VK_RIGHT,a.Keys.VK_NUMPAD6,a.Keys.VK_L,a.Keys.VK_D],v=[a.Keys.VK_SPACE,a.Keys.VK_NUMPAD5];e.Game=class extends n.AppState{constructor(t,e){super(t),this.tileSize=e.tileSize||new l.Rect(0,0,g,f),this.viewport=new l.Rect(0,0,t.size.width,t.size.height),this.viewportFocus=new p.Vec2(0,0),this.effects=[],this.entities=[],this.turnIndex=0,this.blocked=!1,this.cursor=new p.Vec2(-1,-1),this.tooltip=new h.TooltipDialog,this.rng=new d.RNG,this.pathIndex=0,this.viewDistance=e.viewDistance||y}log(t,e){this.messageLog&&this.messageLog.add(t,e)}update(){u.Sprite.updateGlobalAnimations(),this.updateTooltip(),this.gui.handleInput()||(this.updateEffects(),this.updateEntities(),this.onUpdate&&this.onUpdate(),this.updateViewport()),this.drawTileMap(),this.drawTargeting(),this.drawEntities(),this.drawEffects(),this.gui.draw()}updateTooltip(){if(this.gui.dragElement)return void(this.tooltip.visible=!1);const t=this.app.mouse,e=t.isLongPress();if(e&&window.navigator.vibrate(100),this.tooltip.visible||(this.tooltipElement=void 0),!t.down&&(0!==t.dx||0!==t.dy)||e){const e=this.gui.getPanelAt(t);this.tooltipElement!==e&&(this.tooltipElement=e,e&&e.updateTooltip(this.tooltip)),this.tooltip.visible&&(this.tooltip.gui||this.gui.add(this.tooltip),this.tooltip.showAt(t.x,t.y),this.tooltip.modal=this.app.mobile)}}updateEffects(){this.blocked=!1;for(let t=0;t<this.effects.length;t++){const e=this.effects[t];e.blocking&&this.blocked||(e.update(),e.blocking&&(this.blocked=!0))}for(let t=this.effects.length-1;t>=0;t--)if(this.effects[t].isDone()){const e=this.effects[t];e.onDone&&e.onDone(),this.effects.splice(t,1)}}updateEntities(){let t=0;for(;!(this.turnIndex<0||this.turnIndex>=this.entities.length||t>2*this.entities.length);){const e=this.entities[this.turnIndex];if(e instanceof r.Actor){if(e.ap>0){if(e===this.player){this.handlePlayerInput();break}this.doAi(e)}!this.blocked&&e.ap<=0&&(e.ap=0,this.nextTurn())}else this.nextTurn();if(this.blocked)break;t++}}resetViewport(){this.player&&(this.viewportFocus.x=this.player.centerPixelX,this.viewportFocus.y=this.player.centerPixelY,this.viewport.x=this.viewportFocus.x-(this.app.size.width/2|0),this.viewport.y=this.viewportFocus.y-(this.app.size.height/2|0))}updateViewport(){this.viewport.width=this.app.size.width,this.viewport.height=this.app.size.height;const t=this.app.mouse;if(t.isDragging())this.viewport.x-=t.dx,this.viewport.y-=t.dy,this.viewportFocus.x=this.viewport.x+(this.viewport.width/2|0),this.viewportFocus.y=this.viewport.y+(this.viewport.height/2|0);else{const t=this.viewportFocus.x-(this.app.size.width/2|0),e=this.viewportFocus.y-(this.app.size.height/2|0);this.viewport.x=.1*t+.9*this.viewport.x|0,this.viewport.y=.1*e+.9*this.viewport.y|0}}drawTileMap(){this.app.renderSet.spriteTexture.loaded&&this.tileMap&&this.tileMap.draw(this.viewport.x,this.viewport.y,this.viewport.width,this.viewport.height)}drawTargeting(){if(this.isTargeting()&&this.targetSprite){const t=this.cursor.x*this.tileSize.width-this.viewport.x,e=this.cursor.y*this.tileSize.height-this.viewport.y;this.targetSprite.draw(this.app,t,e)}}drawEntities(){for(let t=0;t<this.entities.length;t++){const e=this.entities[t];this.tileMap&&!this.tileMap.isVisible(e.x,e.y)||e.draw()}}drawEffects(){let t=0;for(let e=0;e<this.effects.length;e++){const i=this.effects[e];0!==t&&i.blocking||i.draw(this),i.blocking&&t++}}isTargeting(){return!!this.targetAbility}startTargeting(t,e){this.targetAbility=t,this.targetCallback=e,this.player&&(this.cursor.x=this.player.x,this.cursor.y=this.player.y)}endTargeting(){if(this.player&&this.targetAbility){const t=this.targetAbility.targetType;let e=null;t===s.TargetType.ENTITY?e=this.getEnemyAt(this.cursor.x,this.cursor.y):t===s.TargetType.TILE&&this.tileMap&&(e=this.tileMap.getCell(this.cursor.x,this.cursor.y)),e&&this.targetAbility.cast(this.player,e)&&this.targetCallback&&this.targetCallback()}this.cancelTargeting()}cancelTargeting(){this.targetAbility=void 0,this.targetCallback=void 0}handlePlayerInput(){if(!this.player||this.blocked)return;const t=this.app.mouse;if((t.down||0!==t.dx||0!==t.dy)&&(this.cursor.x=(this.viewport.x+t.x)/this.tileSize.width|0,this.cursor.y=(this.viewport.y+t.y)/this.tileSize.height|0),this.app.isKeyDown(a.Keys.VK_SHIFT))return this.isKeyPressed(x)&&(this.viewportFocus.y-=2*this.tileSize.height),this.isKeyPressed(m)&&(this.viewportFocus.x-=2*this.tileSize.width),this.isKeyPressed(w)&&(this.viewportFocus.x+=2*this.tileSize.width),void(this.isKeyPressed(_)&&(this.viewportFocus.y+=2*this.tileSize.height));if(this.isTargeting())return(this.app.isKeyPressed(a.Keys.VK_ENTER)||this.app.mouse.isClicked())&&this.endTargeting(),this.app.isKeyPressed(a.Keys.VK_ESCAPE)&&this.cancelTargeting(),this.isKeyPressed(x)&&this.cursor.y--,this.isKeyPressed(m)&&this.cursor.x--,this.isKeyPressed(w)&&this.cursor.x++,void(this.isKeyPressed(_)&&this.cursor.y++);if(t.isClicked()){const e=(this.viewport.x+t.x)/this.tileSize.width|0,i=(this.viewport.y+t.y)/this.tileSize.height|0;if(this.targetEntity=this.getEnemyAt(e,i),this.targetEntity)return this.targetTile=void 0,this.path=void 0,void(this.player.distance(this.targetEntity.x,this.targetEntity.y)<=1&&this.player.attack(this.targetEntity));if(this.tileMap){const t=this.tileMap.getCell(e,i);t&&t!==this.targetTile&&(this.targetTile=t,this.path=c.computePath(this.tileMap,this.player,this.targetTile,100),this.pathIndex=0)}}let e=null;if(this.path){for(e=this.path[this.pathIndex];e&&e.x===this.player.x&&e.y===this.player.y;)this.pathIndex++,e=this.pathIndex<this.path.length?this.path[this.pathIndex]:null;e&&this.getEnemyAt(e.x,e.y)&&(e=null),e||(this.targetTile=void 0,this.path=void 0)}const i=this.isKeyPressed(_)||e&&e.y>this.player.y,s=this.isKeyPressed(m)||e&&e.x<this.player.x,r=this.isKeyPressed(w)||e&&e.x>this.player.x,n=this.isKeyPressed(x)||e&&e.y<this.player.y,o=this.isKeyPressed(v);n&&this.tryMoveOrAttack(0,-1),s&&this.tryMoveOrAttack(-1,0),r&&this.tryMoveOrAttack(1,0),i&&this.tryMoveOrAttack(0,1),o&&(this.player.ap=0)}isKeyPressed(t){for(let e=0;e<t.length;e++)if(this.app.isKeyPressed(t[e]))return!0;return!1}tryMoveOrAttack(t,e){const i=this.player;if(!i)return;let s=i.pixelX,n=i.pixelY,o=s+i.sprite.width,h=n+i.sprite.height;for(let t=0;t<this.entities.length;t++){const e=this.entities[t];e instanceof r.Actor&&this.tileMap&&this.tileMap.isVisible(e.x,e.y)&&(s=Math.min(s,e.pixelX),n=Math.min(n,e.pixelY),o=Math.max(o,e.pixelX+e.sprite.width),h=Math.max(h,e.pixelY+e.sprite.height))}const a=(s+o)/2,c=(n+h)/2;this.viewportFocus.x=.5*a+.5*this.viewportFocus.x|0,this.viewportFocus.y=.5*c+.5*this.viewportFocus.y|0;const l=i.x+t,d=i.y+e;for(let t=0;t<this.entities.length;t++){const e=this.entities[t];if(i!==e&&e.x===l&&e.y===d)return i.onBump&&i.onBump(e),!0}return i.move(t,e)}doAi(t){t.ai&&(!this.tileMap||this.tileMap.isVisible(t.x,t.y)&&t.activatedCount>0)&&t.ai.doAi(),t.ap=0}nextTurn(){if(this.player&&this.entities[this.turnIndex]===this.player&&(this.player&&this.tileMap&&this.recomputeFov(),this.entities.sort((t,e)=>this.player?Math.hypot(t.x-this.player.x,t.y-this.player.y)-Math.hypot(e.x-this.player.x,e.y-this.player.y):0)),this.turnIndex++,this.turnIndex>=this.entities.length){this.turnIndex=0;for(let t=0;t<this.entities.length;t++){const e=this.entities[t];if(e instanceof r.Actor){e.ap=e.maxAp;for(let t=0;t<e.talents.length;t++){const i=e.talents.get(t);i.cooldown>0&&i.cooldown--}}}}}stopAutoWalk(){this.path=void 0,this.targetTile=void 0}isBlocked(t,e){if(this.tileMap&&this.tileMap.isBlocked(t,e))return!0;for(let i=0;i<this.entities.length;i++){const s=this.entities[i];if(s.blocks&&s.x===t&&s.y===e)return!0}return!1}getEnemyAt(t,e){for(let i=0;i<this.entities.length;i++){const s=this.entities[i];if(s instanceof r.Actor&&!(s.hp<=0)&&s instanceof r.Actor&&s.x===t&&s.y===e)return s}}recomputeFov(){if(this.player&&this.tileMap){this.tileMap.computeFov(this.player.x,this.player.y,this.viewDistance);for(let t=0;t<this.entities.length;t++){const e=this.entities[t];e!==this.player&&e instanceof r.Actor&&(this.tileMap.isVisible(e.x,e.y)?(e.seen||(e.seen=!0,this.player.addFloatingText("!",o.Colors.WHITE),this.stopAutoWalk(),this.viewportFocus.x=(this.player.centerPixelX+e.centerPixelX)/2|0,this.viewportFocus.y=(this.player.centerPixelY+e.centerPixelY)/2|0),e.activatedCount++):e.activatedCount=-1)}}}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(1),r=i(5),n=100,o=5,h=2;e.TooltipDialog=class extends r.Dialog{constructor(){super(new s.Rect(0,0,n,10)),this.messages=[],this.visible=!1}showAt(t,e){if(!this.gui)return;const i=this.gui.app,s=i.font,r=s.getHeight()+h;this.rect.width=2*o,this.rect.height=2*o+this.messages.length*r;for(let t=0;t<this.messages.length;t++){const e=this.messages[t],i=2*o+s.getStringWidth(e.text);this.rect.width=Math.max(this.rect.width,i)}t+this.rect.width>=i.size.width?this.rect.x=t-this.rect.width-2:this.rect.x=t+2,e-this.rect.height<0?this.rect.y=e+2:this.rect.y=e-this.rect.height-2,this.visible=!0}drawContents(){if(!this.gui)return;super.drawContents();const t=this.gui.app.font.getHeight()+h,e=this.rect.x+o;let i=this.rect.y+o;for(let s=0;s<this.messages.length;s++){const r=this.messages[s];this.gui.app.drawString(r.text,e,i,r.color),i+=t}}handleInput(){return!!this.gui&&(this.gui.app.mouse.isClicked()&&(this.visible=!1),!1)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(6),r=i(0),n=i(44),o=i(5),h=4;e.ComplexSelectDialog=class extends o.Dialog{constructor(t,e){super(t),this.options=e,this.selectedIndex=0,this.renderer=new n.DefaultSelectOptionRenderer}drawContents(){if(!this.gui)return;super.drawContents();const t=this.rect,e=new r.Vec2(t.x+h,t.y+h);for(let t=0;t<this.options.length;t++){const i=this.options[t],s=t===this.selectedIndex;this.renderer.drawOption(this.gui,e,i,s),e.y+=this.renderer.getHeight(i,s)}}handleInput(){if(!this.gui)return!1;const t=this.gui.app;for(let e=0;e<this.options.length;e++)t.isKeyPressed(s.Keys.VK_A+e)&&(this.selectedIndex=e,this.onSelect&&this.onSelect(this.options[e]));t.isKeyPressed(s.Keys.VK_ENTER)&&this.onSelect&&this.onSelect(this.options[this.selectedIndex]),t.isKeyPressed(s.Keys.VK_ESCAPE)&&this.onCancel&&this.onCancel(),t.isKeyPressed(s.Keys.VK_UP)&&this.selectedIndex--,t.isKeyPressed(s.Keys.VK_DOWN)&&this.selectedIndex++,this.selectedIndex<0&&(this.selectedIndex+=this.options.length),this.selectedIndex>=this.options.length&&(this.selectedIndex-=this.options.length);const e=t.mouse,i=this.rect;let r=i.y+h;if(1===e.upCount&&e.x>=i.x1&&e.x<i.x2)for(let t=0;t<this.options.length;t++){const i=this.options[t],s=t===this.selectedIndex,n=this.renderer.getHeight(i,s),o=r,h=r+n;e.y>=o&&e.y<h&&(s?this.onSelect&&this.onSelect(i):this.selectedIndex=t),r+=n}return!0}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(3);e.DefaultSelectOptionRenderer=class{getHeight(t,e){return 10}drawOption(t,e,i,r){const n=r?s.Colors.YELLOW:s.Colors.WHITE;t.app.drawString(i.name,e.x,e.y,n)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(6),r=i(1),n=i(5),o=i(11),h=i(46),a=4,c=2;e.ItemContainerDialog=class extends n.Dialog{constructor(t,e,i){super(t),this.capacity=e,this.items=i,i.addListener({onAdd:(t,e)=>this.addItem(e),onRemove:(t,e)=>this.removeItem(e)});for(let t=0;t<e;t++)this.add(new h.ItemContainerButtonSlot(new r.Rect(0,0,24,24),i))}addItem(t){const e=this.getExistingButton(t);if(e)return void e.stackItems.add(t);const i=this.getNextFreeSlot();i&&i.add(new o.ItemButton(i.rect.clone(),this.items,t))}removeItem(t){for(let e=0;e<this.children.length;e++){const i=this.children.get(e),s=i.button;s&&s instanceof o.ItemButton&&s.stackItems.contains(t)&&(s.stackItems.remove(t),0===s.stackItems.length&&i.remove(s))}}getExistingButton(t){for(let e=0;e<this.children.length;e++){const i=this.children.get(e).button;if(i&&i instanceof o.ItemButton&&i.stackItems.get(0).name===t.name)return i}}getNextFreeSlot(){for(let t=0;t<this.children.length;t++){const e=this.children.get(t);if(!e.button)return e}}drawContents(){if(super.drawContents(),!this.gui||!this.gui.renderer.buttonSlotRect)return;const t=this.rect,e=this.gui.renderer.buttonSlotRect;let i=t.x+a,s=t.y+a;for(let r=0;r<this.capacity;r++){const n=this.children.get(r);n.rect.x=i,n.rect.y=s,n.rect.width=e.width,n.rect.height=e.height,(i+=e.width+c)>t.x2-e.width-a&&(i=t.x+a,s+=e.height+c)}this.drawChildren()}handleInput(){return!(!this.gui||!this.handleChildrenInput()&&(!this.gui.app.isKeyPressed(s.Keys.VK_ESCAPE)||(this.visible=!1,0)))}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(10),r=i(11);e.ItemContainerButtonSlot=class extends s.ButtonSlot{constructor(t,e){super(t),this.items=e}onDrop(t){return t instanceof r.ItemButton}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(2);e.ImagePanel=class extends s.Panel{constructor(t,e){super(e),this.srcRect=t}drawContents(){if(!this.gui)return;const t=this.srcRect,e=this.rect;this.gui.app.drawImage(e.x,e.y,t.x,t.y,e.width,e.height)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(3),r=i(31),n=i(2);e.MessageLog=class extends n.Panel{constructor(t,e){super(t),this.messages=[],this.maxItems=e||5}add(t,e){t instanceof n.Panel||(this.messages.push(new r.Message(t,e||s.Colors.WHITE)),this.messages.length>this.maxItems&&this.messages.splice(0,this.messages.length-this.maxItems))}drawContents(){if(!this.gui)return;const t=this.rect.x;let e=this.rect.y;e<0&&(e=this.gui.app.size.height+e+this.rect.height-10*this.messages.length);for(let i=0;i<this.messages.length;i++){const s=this.messages[i];this.gui.app.drawString(s.text,t,e,s.color),e+=10}}handleInput(){return!1}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(2);e.MessagePanel=class extends s.Panel{constructor(t,e){super(t),this.message=e}drawContents(){if(!this.gui)return;const t=this.message,e=this.rect;this.gui.app.drawString(t.text,e.x,e.y,t.color)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(6),r=i(5),n=4,o=10;e.SelectDialog=class extends r.Dialog{constructor(t,e,i){super(t),this.options=e,this.callback=i}drawContents(){if(!this.gui)return;super.drawContents();const t=this.rect;for(let e=0;e<this.options.length;e++){const i=String.fromCharCode(65+e)+" - "+this.options[e].name;this.gui.app.drawString(i,t.x+n,t.y+n+e*o)}}handleInput(){if(!this.gui)return!1;for(let t=0;t<this.options.length;t++)if(this.gui.app.isKeyPressed(s.Keys.VK_A+t))return this.callback(this.options[t]),this.close(),!0;if(this.gui.app.isKeyPressed(s.Keys.VK_ESCAPE))return this.close(),!0;const t=this.gui.app.mouse,e=this.rect;if(t.isClicked()&&t.x>=e.x1&&t.x<e.x2){if(this.closeButton&&t.x>=e.x2-16&&t.y<e.y+16)return this.close(),!0;for(let i=0;i<this.options.length;i++){const s=e.y+n+i*o,r=s+o;t.y>=s&&t.y<r&&(this.callback(this.options[i]),this.close())}}return!0}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(10),r=i(11),n=i(17),o=i(9);e.ShortcutButtonSlot=class extends s.ButtonSlot{onDrop(t){if(this.children.length>0)return!1;if(t instanceof r.ItemButton){const e=t,i=e.containerItems,s=e.stackItems.get(0);return this.add(new n.ItemShortcutButton(this.rect.clone(),i,s)),!1}return t instanceof o.TalentButton?!!t.shortcut||(this.add(new o.TalentButton(this.rect.clone(),t.talent,!0)),!1):!!(t instanceof n.ItemShortcutButton||t instanceof o.TalentButton&&t.shortcut)}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(6),r=i(1),n=i(10),o=i(5),h=i(9),a=4,c=2;e.TalentsDialog=class extends o.Dialog{constructor(t,e,i){super(t),this.capacity=e,this.talents=i,i.addListener({onAdd:(t,e)=>this.addItem(e),onRemove:(t,e)=>this.removeItem(e)});for(let t=0;t<e;t++)this.add(new n.ButtonSlot(new r.Rect(0,0,24,24)))}addItem(t){const e=this.getNextFreeSlot();e&&e.add(new h.TalentButton(e.rect.clone(),t))}removeItem(t){for(let e=0;e<this.children.length;e++){const i=this.children.get(e),s=i.button;s&&s instanceof h.TalentButton&&s.talent===t&&i.remove(s)}}getNextFreeSlot(){for(let t=0;t<this.children.length;t++){const e=this.children.get(t);if(!e.button)return e}}drawContents(){if(super.drawContents(),!this.gui||!this.gui.renderer.buttonSlotRect)return;const t=this.rect,e=this.gui.renderer.buttonSlotRect;let i=t.x+a,s=t.y+a;for(let r=0;r<this.capacity;r++){const n=this.children.get(r);n.rect.x=i,n.rect.y=s,n.rect.width=e.width,n.rect.height=e.height,(i+=e.width+c)>t.x2-e.width-a&&(i=t.x+a,s+=e.height+c)}this.drawChildren()}handleInput(){return!(!this.gui||!this.handleChildrenInput()&&(!this.gui.app.isKeyPressed(s.Keys.VK_ESCAPE)||(this.visible=!1,0)))}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(13);e.Item=class extends s.Entity{onPickup(t){}onUse(t){return!1}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});e.Talent=class{constructor(t,e,i){this.actor=t,this.ability=e,this.rank=i||1,this.cooldown=0}use(){return!(this.cooldown>0||(this.actor.cast(this.ability,()=>{this.cooldown=this.ability.cooldown}),0))}}},function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});const s=i(24),r=i(0),n="precision highp float;attribute vec2 position;attribute vec2 texture;varying vec2 pixelCoord;varying vec2 texCoord;uniform vec2 viewOffset;uniform vec2 viewportSize;uniform vec2 tileSize;uniform vec2 mapSize;void main(void) {   pixelCoord = (texture * viewportSize) + viewOffset;   texCoord = pixelCoord / mapSize / tileSize;   gl_Position = vec4(position, 0.0, 1.0);}",o="precision highp float;varying vec2 pixelCoord;varying vec2 texCoord;uniform vec2 tileSize;uniform sampler2D tiles;uniform sampler2D sprites;void main(void) {   vec4 tile = texture2D(tiles, texCoord);   if(tile.x == 1.0 && tile.y == 1.0) { discard; }   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;   vec2 spriteCoord = mod(pixelCoord, tileSize);   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) / 1024.0);   if (gl_FragColor.a == 0.0) discard;   gl_FragColor.a *= tile.a;}";class h extends r.Vec2{constructor(t,e,i){super(t,e),this.tile=i,this.blocked=!0,this.blockedSight=!0,this.visible=!1,this.seen=!1,this.g=0,this.h=0,this.prev=null}}e.TileMapCell=h;class a{constructor(t,e){this.width=t,this.height=e,this.imageData=new Uint8Array(4*t*e),this.dimensions=new Float32Array([t,e]),this.texture=null,this.clear()}clear(){for(let t=0;t<this.imageData.length;t++)this.imageData[t]=255}setAlpha(t,e,i){this.imageData[4*(e*this.width+t)+3]=i}initGl(t){this.texture=t.createTexture(),t.bindTexture(t.TEXTURE_2D,this.texture),t.texImage2D(t.TEXTURE_2D,0,t.RGBA,this.width,this.height,0,t.RGBA,t.UNSIGNED_BYTE,this.imageData),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MAG_FILTER,t.NEAREST),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MIN_FILTER,t.NEAREST),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_S,t.CLAMP_TO_EDGE),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_T,t.CLAMP_TO_EDGE)}updateGl(t){t.texSubImage2D(t.TEXTURE_2D,0,0,0,this.width,this.height,t.RGBA,t.UNSIGNED_BYTE,this.imageData)}}e.TileMapLayer=a;e.TileMap=class{constructor(t,e,i,r){this.gl=t,this.width=e,this.height=i,this.grid=new Array(i),this.layers=new Array(r),this.tileWidth=16,this.tileHeight=16,this.originX=0,this.originY=0,this.minX=0,this.maxX=e-1,this.minY=0,this.maxY=i-1;for(let t=0;t<i;t++){this.grid[t]=new Array(e);for(let i=0;i<e;i++)this.grid[t][i]=new h(i,t,0)}for(let t=0;t<r;t++)this.layers[t]=new a(e,i);this.quadVertBuffer=t.createBuffer(),t.bindBuffer(t.ARRAY_BUFFER,this.quadVertBuffer),t.bufferData(t.ARRAY_BUFFER,new Float32Array([-1,-1,0,1,1,-1,1,1,1,1,1,0,-1,-1,0,1,1,1,1,0,-1,1,0,0]),t.STATIC_DRAW),this.tilemapShader=s.initShaderProgram(t,n,o),this.positionAttribute=t.getAttribLocation(this.tilemapShader,"position"),this.textureAttribute=t.getAttribLocation(this.tilemapShader,"texture"),this.viewportSizeUniform=t.getUniformLocation(this.tilemapShader,"viewportSize"),this.viewOffsetUniform=t.getUniformLocation(this.tilemapShader,"viewOffset"),this.mapSizeUniform=t.getUniformLocation(this.tilemapShader,"mapSize"),this.tileSizeUniform=t.getUniformLocation(this.tilemapShader,"tileSize"),this.tileSamplerUniform=t.getUniformLocation(this.tilemapShader,"tiles"),this.spriteSamplerUniform=t.getUniformLocation(this.tilemapShader,"sprites");for(let e=0;e<this.layers.length;e++)this.layers[e].initGl(t)}setTile(t,e,i,s,r,n){if(e<0||e>=this.width||i<0||i>=this.height)return;0===t&&(this.grid[i][e].tile=s,this.grid[i][e].blocked=!!r,this.grid[i][e].blockedSight=void 0!==n?n:!!r);const o=this.layers[t],h=4*(i*o.width+e),a=0===s?255:(s-1)%64|0,c=0===s?255:(s-1)/64|0;o.imageData[h+0]=a,o.imageData[h+1]=c}getCell(t,e){return t<0||t>=this.width||e<0||e>=this.height?null:this.grid[e][t]}getTile(t,e){const i=this.getCell(t,e);return i?i.tile:0}isBlocked(t,e){const i=this.getCell(t,e);return!i||i.blocked}isVisible(t,e){return!(t<this.minX||t>this.maxX||e<this.minY||e>this.maxY)&&this.grid[e][t].visible}isSeen(t,e){const i=this.getCell(t,e);return i&&i.seen}setSeen(t,e,i){const s=this.getCell(t,e);s&&(s.seen=i)}draw(t,e,i,s){const r=this.gl;r.enable(r.BLEND),r.blendFunc(r.SRC_ALPHA,r.ONE_MINUS_SRC_ALPHA),r.useProgram(this.tilemapShader),r.bindBuffer(r.ARRAY_BUFFER,this.quadVertBuffer),r.enableVertexAttribArray(this.positionAttribute),r.enableVertexAttribArray(this.textureAttribute),r.vertexAttribPointer(this.positionAttribute,2,r.FLOAT,!1,16,0),r.vertexAttribPointer(this.textureAttribute,2,r.FLOAT,!1,16,8),r.uniform2f(this.viewOffsetUniform,t,e),r.uniform2f(this.viewportSizeUniform,i,s),r.uniform2f(this.tileSizeUniform,this.tileWidth,this.tileHeight),r.activeTexture(r.TEXTURE0),r.uniform1i(this.spriteSamplerUniform,0),r.activeTexture(r.TEXTURE1),r.uniform1i(this.tileSamplerUniform,1);const n=t/this.tileWidth|0,o=e/this.tileHeight|0,h=(t+i)/this.tileWidth|0,a=(e+s)/this.tileHeight|0;for(let t=0;t<this.layers.length;t++){const e=this.layers[t];for(let t=o;t<=a;t++)for(let i=n;i<=h;i++){const s=this.isVisible(i,t)?255:this.isSeen(i,t)?144:0;e.setAlpha(i,t,s)}r.uniform2fv(this.mapSizeUniform,e.dimensions),r.bindTexture(r.TEXTURE_2D,e.texture),e.updateGl(r),r.drawArrays(r.TRIANGLES,0,6)}}resetFov(){for(let t=0;t<this.height;t++)for(let e=0;e<this.width;e++)this.grid[t][e].seen=!1,this.grid[t][e].visible=!1}computeFov(t,e,i){this.originX=t,this.originY=e,this.minX=Math.max(0,t-i),this.minY=Math.max(0,e-i),this.maxX=Math.min(this.width-1,t+i),this.maxY=Math.min(this.height-1,e+i);for(let t=this.minY;t<=this.maxY;t++)for(let e=this.minX;e<=this.maxX;e++)this.grid[t][e].seen=this.grid[t][e].seen||this.grid[t][e].visible,this.grid[t][e].visible=!1;this.grid[e][t].visible=!0,this.computeOctantY(1,1),this.computeOctantX(1,1),this.computeOctantY(1,-1),this.computeOctantX(1,-1),this.computeOctantY(-1,1),this.computeOctantX(-1,1),this.computeOctantY(-1,-1),this.computeOctantX(-1,-1)}computeOctantY(t,e){const i=[],s=[];let r,n,o,h,a,c,l,d,u,p,g=1,f=0,y=0,x=0;for(n=this.originY+e;n>=this.minY&&n<=this.maxY;n+=e,y=f,++g)for(o=.5/g,p=-1,h=Math.floor(x*g+.5),r=this.originX+h*t;h<=g&&r>=this.minX&&r<=this.maxX;r+=t,++h,p=u){if(a=!0,c=!1,d=p,u=(l=h/g)+o,y>0)if(this.grid[n-e][r].visible&&!this.grid[n-e][r].blockedSight||this.grid[n-e][r-t].visible&&!this.grid[n-e][r-t].blockedSight){for(let t=0;t<y&&a;++t)if(d<=s[t]&&u>=i[t])if(this.grid[n][r].blockedSight){if(d>=i[t]&&u<=s[t]){a=!1;break}i[t]=Math.min(i[t],d),s[t]=Math.max(s[t],u),c=!0}else if(l>i[t]&&l<s[t]){a=!1;break}}else a=!1;a&&(this.grid[n][r].visible=!0,this.grid[n][r].blockedSight&&(x>=d?x=u:c||(i[f]=d,s[f++]=u)))}}computeOctantX(t,e){const i=[],s=[];let r,n,o,h,a,c,l,d,u,p,g=1,f=0,y=0,x=0;for(r=this.originX+t;r>=this.minX&&r<=this.maxX;r+=t,y=f,++g)for(o=.5/g,p=-1,h=Math.floor(x*g+.5),n=this.originY+h*e;h<=g&&n>=this.minY&&n<=this.maxY;n+=e,++h,p=u){if(a=!0,c=!1,d=p,u=(l=h/g)+o,y>0)if(this.grid[n][r-t].visible&&!this.grid[n][r-t].blockedSight||this.grid[n-e][r-t].visible&&!this.grid[n-e][r-t].blockedSight){for(let t=0;t<y&&a;++t)if(d<=s[t]&&u>=i[t])if(this.grid[n][r].blockedSight){if(d>=i[t]&&u<=s[t]){a=!1;break}i[t]=Math.min(i[t],d),s[t]=Math.max(s[t],u),c=!0}else if(l>i[t]&&l<s[t]){a=!1;break}}else a=!1;a&&(this.grid[n][r].visible=!0,this.grid[n][r].blockedSight&&(x>=d?x=u:c||(i[f]=d,s[f++]=u)))}}}}])});
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("wglt", [], factory);
+	else if(typeof exports === 'object')
+		exports["wglt"] = factory();
+	else
+		root["wglt"] = factory();
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.ts");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/ability.ts":
+/*!************************!*\
+  !*** ./src/ability.ts ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var TargetType;
+(function (TargetType) {
+    TargetType[TargetType["SELF"] = 0] = "SELF";
+    TargetType[TargetType["ENTITY"] = 1] = "ENTITY";
+    TargetType[TargetType["TILE"] = 2] = "TILE";
+})(TargetType = exports.TargetType || (exports.TargetType = {}));
+
+
+/***/ }),
+
+/***/ "./src/actor.ts":
+/*!**********************!*\
+  !*** ./src/actor.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const ability_1 = __webpack_require__(/*! ./ability */ "./src/ability.ts");
+const colors_1 = __webpack_require__(/*! ./colors */ "./src/colors.ts");
+const bumpeffect_1 = __webpack_require__(/*! ./effects/bumpeffect */ "./src/effects/bumpeffect.ts");
+const floatingtexteffect_1 = __webpack_require__(/*! ./effects/floatingtexteffect */ "./src/effects/floatingtexteffect.ts");
+const slideeffect_1 = __webpack_require__(/*! ./effects/slideeffect */ "./src/effects/slideeffect.ts");
+const entity_1 = __webpack_require__(/*! ./entity */ "./src/entity.ts");
+const xarray_1 = __webpack_require__(/*! ./xarray */ "./src/xarray.ts");
+class Actor extends entity_1.Entity {
+    constructor(game, x, y, name, sprite, blocks) {
+        super(game, x, y, name, sprite, blocks);
+        this.hp = 100;
+        this.maxHp = 100;
+        this.ap = 1;
+        this.maxAp = 1;
+        this.inventory = new xarray_1.XArray();
+        this.talents = new xarray_1.XArray();
+        this.activatedCount = -1;
+        this.seen = false;
+    }
+    move(dx, dy) {
+        const destX = this.x + dx;
+        const destY = this.y + dy;
+        // TODO: Enforce diagonal vs cardinal movement?
+        if (this.game.isBlocked(destX, destY)) {
+            return false;
+        }
+        const count = 4;
+        const xSpeed = this.game.tileSize.width / count;
+        const ySpeed = this.game.tileSize.height / count;
+        this.game.effects.push(new slideeffect_1.SlideEffect(this, dx * xSpeed, dy * ySpeed, count));
+        this.game.blocked = true;
+        this.ap--;
+        return true;
+    }
+    moveToward(targetX, targetY) {
+        const dx = targetX - this.x;
+        const dy = targetY - this.y;
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0 && this.move(-1, 0)) {
+                return true;
+            }
+            if (dx > 0 && this.move(1, 0)) {
+                return true;
+            }
+            if (dy < 0 && this.move(0, -1)) {
+                return true;
+            }
+            if (dy > 0 && this.move(0, 1)) {
+                return true;
+            }
+        }
+        else {
+            if (dy < 0 && this.move(0, -1)) {
+                return true;
+            }
+            if (dy > 0 && this.move(0, 1)) {
+                return true;
+            }
+            if (dx < 0 && this.move(-1, 0)) {
+                return true;
+            }
+            if (dx > 0 && this.move(1, 0)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    attack(target) {
+        if (target === this) {
+            return;
+        }
+        // TODO: Enforce distance check?
+        const damage = 10;
+        this.onAttack(target, damage);
+        target.takeDamage(damage);
+        this.ap--;
+        this.game.effects.push(new bumpeffect_1.BumpEffect(this, target));
+        this.game.blocked = true;
+    }
+    takeHeal(heal) {
+        this.hp = Math.min(this.hp + heal, this.maxHp);
+        this.addFloatingText(heal.toString(), colors_1.Colors.LIGHT_GREEN);
+    }
+    takeDamage(damage) {
+        this.hp -= damage;
+        this.addFloatingText(damage.toString(), colors_1.Colors.RED);
+        if (this.hp <= 0) {
+            this.hp = 0;
+            if (this.onDeath) {
+                this.onDeath();
+            }
+            const index = this.game.entities.indexOf(this);
+            if (index >= 0) {
+                this.game.entities.splice(index, 1);
+            }
+        }
+    }
+    pickup(item) {
+        item.onPickup(this);
+        this.inventory.add(item);
+        const index = this.game.entities.indexOf(item);
+        if (index >= 0) {
+            this.game.entities.splice(index, 1);
+        }
+    }
+    use(item) {
+        return item.onUse(this);
+    }
+    cast(ability, callback) {
+        if (ability.targetType === ability_1.TargetType.SELF) {
+            if (ability.cast(this)) {
+                if (callback) {
+                    callback();
+                }
+            }
+        }
+        else {
+            this.game.startTargeting(ability, callback);
+        }
+    }
+    addFloatingText(str, color) {
+        this.game.effects.push(new floatingtexteffect_1.FloatingTextEffect(this, str, color));
+    }
+    onAttack(target, damage) { }
+    onDeath() { }
+}
+exports.Actor = Actor;
+
+
+/***/ }),
+
+/***/ "./src/ai/ai.ts":
+/*!**********************!*\
+  !*** ./src/ai/ai.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class AI {
+    constructor(actor) {
+        this.actor = actor;
+    }
+}
+exports.AI = AI;
+
+
+/***/ }),
+
+/***/ "./src/ai/basicmonster.ts":
+/*!********************************!*\
+  !*** ./src/ai/basicmonster.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const ai_1 = __webpack_require__(/*! ./ai */ "./src/ai/ai.ts");
+class BasicMonster extends ai_1.AI {
+    doAi() {
+        const monster = this.actor;
+        const player = monster.game.player;
+        if (!player) {
+            return;
+        }
+        if (monster.distanceTo(player) > 1.0) {
+            // Move towards player if far away
+            monster.moveToward(player.x, player.y);
+        }
+        else if (player.hp > 0) {
+            // Close enough, attack! (if the player is still alive.)
+            monster.attack(player);
+        }
+    }
+}
+exports.BasicMonster = BasicMonster;
+
+
+/***/ }),
+
+/***/ "./src/ai/confusedmonster.ts":
+/*!***********************************!*\
+  !*** ./src/ai/confusedmonster.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const ai_1 = __webpack_require__(/*! ./ai */ "./src/ai/ai.ts");
+class ConfusedMonster extends ai_1.AI {
+    constructor(actor) {
+        super(actor);
+        this.numTurns = 10;
+        this.oldAi = actor.ai;
+    }
+    doAi() {
+        if (this.numTurns > 0) {
+            // Still confused...
+            // Move in a random direction, and decrease the number of turns confused
+            const rng = this.actor.game.rng;
+            this.actor.move(rng.nextRange(-1, 2), rng.nextRange(-1, 2));
+            this.numTurns--;
+        }
+        else {
+            this.actor.ai = this.oldAi;
+        }
+    }
+}
+exports.ConfusedMonster = ConfusedMonster;
+
+
+/***/ }),
+
+/***/ "./src/app.ts":
+/*!********************!*\
+  !*** ./src/app.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const font_1 = __webpack_require__(/*! ./font */ "./src/font.ts");
+const keyboard_1 = __webpack_require__(/*! ./keyboard */ "./src/keyboard.ts");
+const mouse_1 = __webpack_require__(/*! ./mouse */ "./src/mouse.ts");
+const rect_1 = __webpack_require__(/*! ./rect */ "./src/rect.ts");
+const renderset_1 = __webpack_require__(/*! ./renderset */ "./src/renderset.ts");
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+const DEFAULT_WIDTH = 400;
+const DEFAULT_HEIGHT = 224;
+const DEFAULT_FILL_WINDOW = false;
+const DEFAULT_SCALE_FACTOR = 2.0;
+class App {
+    constructor(options) {
+        const canvas = options.canvas;
+        if (!canvas) {
+            throw new Error('Null or missing canvas element');
+        }
+        const gl = canvas.getContext('webgl', { alpha: false, antialias: false });
+        if (!gl) {
+            throw new Error('Could not get WebGL context');
+        }
+        this.canvas = canvas;
+        this.gl = gl;
+        this.size = options.size || new rect_1.Rect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.font = options.font || font_1.FONT_04B03;
+        this.fillWindow = options.fillWindow || DEFAULT_FILL_WINDOW;
+        this.scaleFactor = options.scaleFactor || DEFAULT_SCALE_FACTOR;
+        this.center = new vec2_1.Vec2((this.size.width / 2) | 0, (this.size.height / 2) | 0);
+        gl.disable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        canvas.width = this.size.width;
+        canvas.height = this.size.height;
+        canvas.style.outline = 'none';
+        canvas.tabIndex = 0;
+        canvas.focus();
+        this.mobile = this.isMobile();
+        this.renderSet = new renderset_1.RenderSet(gl, options.imageUrl, this.font);
+        this.keyboard = new keyboard_1.Keyboard(canvas);
+        this.mouse = new mouse_1.Mouse(this);
+        if (this.fillWindow) {
+            window.addEventListener('resize', this.handleResizeEvent.bind(this), false);
+            this.handleResizeEvent();
+        }
+        this.renderLoop();
+    }
+    /**
+     * Handles window resize events.
+     * Updates canvas size.
+     */
+    handleResizeEvent() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        // The logic here is:
+        //  * Think of a rough "minimum viewport"
+        //  * The viewport is a rectangle that can be portrait or landscape
+        //  * The viewport can be a little bigger on desktop, a little smaller on mobile
+        //  * Find the integer scaling factor that best fits the minimum vector
+        const mobile = this.isMobile();
+        const minMajorAxis = mobile ? 320.0 : 400.0;
+        const minMinorAxis = mobile ? 224.0 : 300.0;
+        this.scaleFactor = 1.0;
+        if (width > height) {
+            this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMajorAxis), Math.round(height / minMinorAxis)));
+        }
+        else {
+            this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMinorAxis), Math.round(height / minMajorAxis)));
+        }
+        this.size.width = Math.round(width / this.scaleFactor);
+        this.size.height = Math.round(height / this.scaleFactor);
+        this.center.x = (this.size.width / 2) | 0;
+        this.center.y = (this.size.height / 2) | 0;
+        this.canvas.width = this.size.width;
+        this.canvas.height = this.size.height;
+        this.canvas.style.left = '0';
+        this.canvas.style.top = '0';
+        this.canvas.style.width = width + 'px';
+        this.canvas.style.height = height + 'px';
+    }
+    /**
+     * Returns if the browser is on a mobile device.
+     * Run once at startup.
+     */
+    isMobile() {
+        return !!navigator.userAgent.match(/Android|iPhone|iPod|IEMobile|WPDesktop|Opera Mini/i);
+    }
+    renderLoop() {
+        this.keyboard.update();
+        this.mouse.update();
+        this.resetGl();
+        if (this.state) {
+            this.state.update();
+        }
+        this.renderSet.flush(this.size.width, this.size.height);
+        requestAnimationFrame(this.renderLoop.bind(this));
+    }
+    resetGl() {
+        const gl = this.gl;
+        gl.viewport(0, 0, this.size.width, this.size.height);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        // Reset sprite index buffers
+        this.renderSet.positionArrayIndex = 0;
+        this.renderSet.texcoordArrayIndex = 0;
+        this.renderSet.colorArrayIndex = 0;
+    }
+    /**
+     * Draws a sprite.
+     * @param {number} x The x-coordinate of the top-left corner on the screen.
+     * @param {number} y The y-coordinate of the top-left corner on the screen.
+     * @param {number} u The x-coordinate of the top-left corner on the sprite sheet.
+     * @param {number} v The y-coordinate of the top-left corner on the sprite sheet.
+     * @param {number} w The width of the sprite.
+     * @param {number} h The height of the sprite.
+     * @param {Color=} color Optional color.
+     * @param {number=} dw Optional destination width.
+     * @param {number=} dh Optional destination height.
+     */
+    drawImage(x, y, u, v, w, h, color, dw, dh) {
+        this.renderSet.drawImage(x, y, u, v, w, h, color, dw, dh);
+    }
+    /**
+     * Draws a string.
+     * @param {string} str The text string to draw.
+     * @param {number} x The x-coordinate of the top-left corner.
+     * @param {number} y The y-coordinate of the top-left corner.
+     * @param {Color=} color Optional color.
+     */
+    drawString(str, x, y, color) {
+        this.renderSet.drawString(str, x, y, color);
+    }
+    /**
+     * Draws a string horizontally centered.
+     * @param {string} str The text string to draw.
+     * @param {number} x The x-coordinate of the center.
+     * @param {number} y The y-coordinate of the top-left corner.
+     * @param {Color=} color Optional color.
+     */
+    drawCenteredString(str, x, y, color) {
+        this.renderSet.drawCenteredString(str, x, y, color);
+    }
+    /**
+     * Draws a right-aligned string.
+     * @param {string} str The text string to draw.
+     * @param {number} x The x-coordinate of the top-right corner.
+     * @param {number} y The y-coordinate of the top-right corner.
+     * @param {number=} color Optional color.
+     */
+    drawRightString(str, x, y, color) {
+        this.renderSet.drawRightString(str, x, y, color);
+    }
+    isKeyDown(keyCode) {
+        const key = this.keyboard.getKey(keyCode);
+        return key && key.down;
+    }
+    isKeyPressed(keyCode) {
+        const key = this.keyboard.getKey(keyCode);
+        const count = key ? key.downCount : 0;
+        return count === 1 || (count > 30);
+    }
+}
+exports.App = App;
+
+
+/***/ }),
+
+/***/ "./src/appstate.ts":
+/*!*************************!*\
+  !*** ./src/appstate.ts ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const gui_1 = __webpack_require__(/*! ./gui */ "./src/gui.ts");
+class AppState {
+    constructor(app) {
+        this.app = app;
+        this.gui = new gui_1.GUI(app);
+    }
+    update() {
+        this.gui.handleInput();
+        this.gui.draw();
+    }
+}
+exports.AppState = AppState;
+
+
+/***/ }),
+
+/***/ "./src/color.ts":
+/*!**********************!*\
+  !*** ./src/color.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Creates a big-endian 32-bit RGBA color from red, green, and blue components.
+ * @param r Red (0-255).
+ * @param g Green (0-255).
+ * @param b Blue (0-255).
+ * @param a Optional alpha (0-255).
+ * @return A 32-bit unsigned integer color.
+ */
+function fromRgb(r, g, b, a) {
+    if (a === undefined) {
+        a = 255;
+    }
+    return ((r << 24) + (g << 16) + (b << 8) + a);
+}
+exports.fromRgb = fromRgb;
+/**
+ * Converts a color from HSV format to RGBA format.
+ *
+ * Based on: https://stackoverflow.com/a/17243070/2051724
+ *
+ * @param h Hue (0.0 - 1.0).
+ * @param s Saturation (0.0 - 1.0).
+ * @param v Value (0.0 - 1.0).
+ * @param a Optional alpha (0.0 - 1.0).
+ * @return A 32-bit unsigned integer color.
+ */
+function fromHsv(h, s, v, a) {
+    const i = (h * 6) | 0;
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+    let r, g, b;
+    switch (i % 6) {
+        case 0:
+            r = v, g = t, b = p;
+            break;
+        case 1:
+            r = q, g = v, b = p;
+            break;
+        case 2:
+            r = p, g = v, b = t;
+            break;
+        case 3:
+            r = p, g = q, b = v;
+            break;
+        case 4:
+            r = t, g = p, b = v;
+            break;
+        case 5:
+            r = v, g = p, b = q;
+            break;
+        default:
+            r = 0;
+            g = 0;
+            b = 0;
+    }
+    if (a === undefined) {
+        a = 1.0;
+    }
+    return fromRgb((r * 255) | 0, (g * 255) | 0, (b * 255) | 0, (a * 255) | 0);
+}
+exports.fromHsv = fromHsv;
+
+
+/***/ }),
+
+/***/ "./src/colors.ts":
+/*!***********************!*\
+  !*** ./src/colors.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const color_1 = __webpack_require__(/*! ./color */ "./src/color.ts");
+class Colors {
+}
+Colors.BLACK = color_1.fromRgb(0, 0, 0);
+Colors.WHITE = color_1.fromRgb(0xff, 0xff, 0xff);
+Colors.GRAY = color_1.fromRgb(0x80, 0x80, 0x80);
+Colors.LIGHT_GRAY = color_1.fromRgb(0xaa, 0xaa, 0xaa);
+Colors.DARK_GRAY = color_1.fromRgb(0x55, 0x55, 0x55);
+Colors.YELLOW = color_1.fromRgb(0xff, 0xff, 0x55);
+Colors.BROWN = color_1.fromRgb(0xaa, 0x55, 0x00);
+Colors.RED = color_1.fromRgb(0xff, 0x00, 0x00);
+Colors.LIGHT_RED = color_1.fromRgb(0xff, 0x55, 0x55);
+Colors.DARK_RED = color_1.fromRgb(0xaa, 0x00, 0x00);
+Colors.GREEN = color_1.fromRgb(0x00, 0xff, 0x00);
+Colors.LIGHT_GREEN = color_1.fromRgb(0x55, 0xff, 0x55);
+Colors.DARK_GREEN = color_1.fromRgb(0x00, 0xaa, 0x00);
+Colors.LIGHT_CYAN = color_1.fromRgb(0x55, 0xff, 0xff);
+Colors.DARK_CYAN = color_1.fromRgb(0x00, 0xaa, 0xaa);
+Colors.BLUE = color_1.fromRgb(0x00, 0x00, 0xff);
+Colors.LIGHT_BLUE = color_1.fromRgb(0x55, 0x55, 0xff);
+Colors.DARK_BLUE = color_1.fromRgb(0x00, 0x00, 0xaa);
+Colors.LIGHT_MAGENTA = color_1.fromRgb(0xff, 0x55, 0xff);
+Colors.DARK_MAGENTA = color_1.fromRgb(0xaa, 0x00, 0xaa);
+Colors.ORANGE = color_1.fromRgb(0xff, 0x88, 0x00);
+exports.Colors = Colors;
+
+
+/***/ }),
+
+/***/ "./src/effects/bumpeffect.ts":
+/*!***********************************!*\
+  !*** ./src/effects/bumpeffect.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+const DURATION = 12;
+class BumpEffect extends effect_1.Effect {
+    constructor(entity, target) {
+        super(DURATION, true);
+        this.entity = entity;
+        this.dx = target.x - entity.x;
+        this.dy = target.y - entity.y;
+    }
+    update() {
+        const t = DURATION - this.countdown;
+        if (t >= 0 && t < 4) {
+            this.entity.offset.x += this.dx;
+            this.entity.offset.y += this.dy;
+        }
+        if (t >= 4 && t < 8) {
+            this.entity.offset.x -= this.dx;
+            this.entity.offset.y -= this.dy;
+        }
+        super.update();
+    }
+}
+exports.BumpEffect = BumpEffect;
+
+
+/***/ }),
+
+/***/ "./src/effects/effect.ts":
+/*!*******************************!*\
+  !*** ./src/effects/effect.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Effect {
+    constructor(countdown, blocking) {
+        this.countdown = countdown;
+        this.blocking = blocking;
+    }
+    isDone() {
+        return this.countdown <= 0;
+    }
+    update() {
+        this.countdown--;
+    }
+    draw(game) { }
+}
+exports.Effect = Effect;
+
+
+/***/ }),
+
+/***/ "./src/effects/fadeineffect.ts":
+/*!*************************************!*\
+  !*** ./src/effects/fadeineffect.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const color_1 = __webpack_require__(/*! ../color */ "./src/color.ts");
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+class FadeInEffect extends effect_1.Effect {
+    constructor(duration) {
+        super(duration, true);
+        this.duration = duration;
+    }
+    draw(game) {
+        const src = game.blackoutRect;
+        if (!src) {
+            return;
+        }
+        const x = this.countdown / this.duration;
+        const alpha = Math.max(1, Math.min(255, (255.0 * x) | 0));
+        const color = color_1.fromRgb(0, 0, 0, alpha);
+        game.app.drawImage(0, 0, src.x, src.y, src.width, src.height, color, game.app.size.width, game.app.size.height);
+    }
+}
+exports.FadeInEffect = FadeInEffect;
+
+
+/***/ }),
+
+/***/ "./src/effects/fadeouteffect.ts":
+/*!**************************************!*\
+  !*** ./src/effects/fadeouteffect.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const color_1 = __webpack_require__(/*! ../color */ "./src/color.ts");
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+class FadeOutEffect extends effect_1.Effect {
+    constructor(duration) {
+        super(duration, true);
+        this.duration = duration;
+    }
+    draw(game) {
+        const src = game.blackoutRect;
+        if (!src) {
+            return;
+        }
+        const x = 1.0 - this.countdown / this.duration;
+        const alpha = Math.max(1, Math.min(255, (255.0 * x) | 0));
+        const color = color_1.fromRgb(0, 0, 0, alpha);
+        game.app.drawImage(0, 0, src.x, src.y, src.width, src.height, color, game.app.size.width, game.app.size.height);
+    }
+}
+exports.FadeOutEffect = FadeOutEffect;
+
+
+/***/ }),
+
+/***/ "./src/effects/floatingtexteffect.ts":
+/*!*******************************************!*\
+  !*** ./src/effects/floatingtexteffect.ts ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const colors_1 = __webpack_require__(/*! ../colors */ "./src/colors.ts");
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+class FloatingTextEffect extends effect_1.Effect {
+    constructor(actor, str, color) {
+        super(40, false);
+        this.actor = actor;
+        this.str = str;
+        this.color = color || colors_1.Colors.WHITE;
+    }
+    draw(game) {
+        const frame = 40 - this.countdown;
+        const x = this.actor.pixelX + ((this.actor.sprite.width / 2) | 0) - game.viewport.x;
+        const y = this.actor.pixelY - 3 - game.viewport.y;
+        const y2 = y - Math.min(4, Math.floor(frame / 2));
+        game.app.drawCenteredString(this.str, x, y2, this.color);
+    }
+}
+exports.FloatingTextEffect = FloatingTextEffect;
+
+
+/***/ }),
+
+/***/ "./src/effects/projectileeffect.ts":
+/*!*****************************************!*\
+  !*** ./src/effects/projectileeffect.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+class ProjectileEffect extends effect_1.Effect {
+    constructor(sprite, position, velocity, duration) {
+        super(duration, true);
+        this.sprite = sprite;
+        this.position = position;
+        this.velocity = velocity;
+        this.duration = duration;
+    }
+    update() {
+        super.update();
+        this.position.add(this.velocity);
+    }
+    draw(game) {
+        const x = this.position.x - game.viewport.x;
+        const y = this.position.y - game.viewport.y;
+        this.sprite.draw(game.app, x, y);
+    }
+}
+exports.ProjectileEffect = ProjectileEffect;
+
+
+/***/ }),
+
+/***/ "./src/effects/slideeffect.ts":
+/*!************************************!*\
+  !*** ./src/effects/slideeffect.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const effect_1 = __webpack_require__(/*! ./effect */ "./src/effects/effect.ts");
+class SlideEffect extends effect_1.Effect {
+    constructor(entity, dx, dy, count) {
+        super(count, true);
+        this.entity = entity;
+        this.dx = dx;
+        this.dy = dy;
+    }
+    update() {
+        this.countdown--;
+        if (this.countdown >= 0) {
+            this.entity.offset.x += this.dx;
+            this.entity.offset.y += this.dy;
+        }
+        if (this.countdown === 0) {
+            this.entity.x += this.entity.offset.x / this.entity.game.tileSize.width;
+            this.entity.y += this.entity.offset.y / this.entity.game.tileSize.height;
+            this.entity.offset.x = 0;
+            this.entity.offset.y = 0;
+        }
+    }
+}
+exports.SlideEffect = SlideEffect;
+
+
+/***/ }),
+
+/***/ "./src/entity.ts":
+/*!***********************!*\
+  !*** ./src/entity.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+class Entity extends vec2_1.Vec2 {
+    constructor(game, x, y, name, sprite, blocks) {
+        super(x, y);
+        this.game = game;
+        this.offset = new vec2_1.Vec2(0, 0);
+        this.name = name;
+        this.sprite = sprite;
+        this.blocks = blocks;
+    }
+    get pixelX() {
+        return this.x * this.game.tileSize.width + this.offset.x;
+    }
+    get pixelY() {
+        return this.y * this.game.tileSize.height + this.offset.y;
+    }
+    get centerPixelX() {
+        return this.pixelX + (this.sprite.width / 2) | 0;
+    }
+    get centerPixelY() {
+        return this.pixelY + (this.sprite.height / 2) | 0;
+    }
+    distanceTo(other) {
+        return Math.hypot(other.x - this.x, other.y - this.y);
+    }
+    distance(x, y) {
+        return Math.hypot(x - this.x, y - this.y);
+    }
+    draw() {
+        this.sprite.draw(this.game.app, this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
+    }
+    sendToBack() { }
+    onBump(bumper) { }
+}
+exports.Entity = Entity;
+
+
+/***/ }),
+
+/***/ "./src/font.ts":
+/*!*********************!*\
+  !*** ./src/font.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const START_CHAR_CODE = 32;
+const END_CHAR_CODE = 126;
+class Font {
+    /**
+     * Returns whether the character is in the printable range.
+     * @param charCode The integer character ASCII code.
+     */
+    isInRange(charCode) {
+        return charCode >= START_CHAR_CODE && charCode <= END_CHAR_CODE;
+    }
+    /**
+     * Returns the width of a string with the currently configured font.
+     * @param str The text string.
+     */
+    getStringWidth(str) {
+        let sum = 0;
+        for (let i = 0; i < str.length; i++) {
+            sum += this.getWidth(str.charCodeAt(i));
+        }
+        return sum;
+    }
+}
+exports.Font = Font;
+class MonospacedFont extends Font {
+    constructor(glyphSize) {
+        super();
+        this.glyphSize = glyphSize;
+    }
+    getOffset(charCode) {
+        return (charCode - START_CHAR_CODE) * this.glyphSize.width;
+    }
+    getWidth() {
+        return this.glyphSize.width;
+    }
+    getHeight() {
+        return this.glyphSize.height;
+    }
+}
+exports.MonospacedFont = MonospacedFont;
+class ProportionalFont extends Font {
+    constructor(height, widths) {
+        super();
+        this.height = height;
+        this.widths = widths;
+        this.offsets = [0];
+        let offset = 0;
+        for (let i = 0; i < this.widths.length; i++) {
+            offset += this.widths[i];
+            this.offsets.push(offset);
+        }
+    }
+    getOffset(charCode) {
+        return this.offsets[charCode - START_CHAR_CODE];
+    }
+    getWidth(charCode) {
+        return this.widths[charCode - START_CHAR_CODE];
+    }
+    getHeight() {
+        return this.height;
+    }
+}
+exports.ProportionalFont = ProportionalFont;
+exports.FONT_04B03 = new ProportionalFont(8, [
+    4, 2, 4, 6, 5, 6, 6, 2, 3, 3, 4, 4, 3, 4, 2, 6, 5, 3, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 4, 4, 4, 5,
+    6, 5, 5, 4, 5, 4, 4, 5, 5, 4, 5, 5, 4, 6, 5, 5, 5, 5, 5, 5, 4, 5, 5, 6, 5, 5, 4, 3, 6, 3, 4, 5,
+    3, 5, 5, 4, 5, 5, 4, 5, 5, 2, 3, 5, 2, 6, 5, 5, 5, 5, 4, 5, 4, 5, 5, 6, 4, 5, 5, 4, 2, 4, 5, 0
+]);
+
+
+/***/ }),
+
+/***/ "./src/game.ts":
+/*!*********************!*\
+  !*** ./src/game.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const ability_1 = __webpack_require__(/*! ./ability */ "./src/ability.ts");
+const actor_1 = __webpack_require__(/*! ./actor */ "./src/actor.ts");
+const appstate_1 = __webpack_require__(/*! ./appstate */ "./src/appstate.ts");
+const colors_1 = __webpack_require__(/*! ./colors */ "./src/colors.ts");
+const tooltipdialog_1 = __webpack_require__(/*! ./gui/tooltipdialog */ "./src/gui/tooltipdialog.ts");
+const keys_1 = __webpack_require__(/*! ./keys */ "./src/keys.ts");
+const path_1 = __webpack_require__(/*! ./path */ "./src/path.ts");
+const rect_1 = __webpack_require__(/*! ./rect */ "./src/rect.ts");
+const rng_1 = __webpack_require__(/*! ./rng */ "./src/rng.ts");
+const sprite_1 = __webpack_require__(/*! ./sprite */ "./src/sprite.ts");
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+const DEFAULT_TILE_WIDTH = 16;
+const DEFAULT_TILE_HEIGHT = 16;
+const DEFAULT_VIEW_DISTANCE = 13;
+// Arrow keys, numpad, vi, WASD, or ZQSD
+const UP_KEYS = [keys_1.Keys.VK_UP, keys_1.Keys.VK_NUMPAD8, keys_1.Keys.VK_K, keys_1.Keys.VK_W, keys_1.Keys.VK_Z];
+const LEFT_KEYS = [keys_1.Keys.VK_LEFT, keys_1.Keys.VK_NUMPAD4, keys_1.Keys.VK_H, keys_1.Keys.VK_A, keys_1.Keys.VK_Q];
+const DOWN_KEYS = [keys_1.Keys.VK_DOWN, keys_1.Keys.VK_NUMPAD2, keys_1.Keys.VK_J, keys_1.Keys.VK_S];
+const RIGHT_KEYS = [keys_1.Keys.VK_RIGHT, keys_1.Keys.VK_NUMPAD6, keys_1.Keys.VK_L, keys_1.Keys.VK_D];
+const WAIT_KEYS = [keys_1.Keys.VK_SPACE, keys_1.Keys.VK_NUMPAD5];
+class Game extends appstate_1.AppState {
+    constructor(app, options) {
+        super(app);
+        this.tileSize = options.tileSize || new rect_1.Rect(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
+        this.viewport = new rect_1.Rect(0, 0, app.size.width, app.size.height);
+        this.viewportFocus = new vec2_1.Vec2(0, 0);
+        this.effects = [];
+        this.entities = [];
+        this.turnIndex = 0;
+        this.blocked = false;
+        this.cursor = new vec2_1.Vec2(-1, -1);
+        this.tooltip = new tooltipdialog_1.TooltipDialog();
+        this.rng = new rng_1.RNG();
+        this.pathIndex = 0;
+        this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    }
+    log(text, color) {
+        if (this.messageLog) {
+            this.messageLog.add(text, color);
+        }
+    }
+    update() {
+        sprite_1.Sprite.updateGlobalAnimations();
+        this.updateTooltip();
+        if (!this.gui.handleInput()) {
+            this.updateEffects();
+            this.updateEntities();
+            if (this.onUpdate) {
+                this.onUpdate();
+            }
+            this.updateViewport();
+        }
+        this.drawTileMap();
+        this.drawTargeting();
+        this.drawEntities();
+        this.drawEffects();
+        this.gui.draw();
+    }
+    updateTooltip() {
+        if (this.gui.dragElement) {
+            // No tooltips while drag/drop
+            this.tooltip.visible = false;
+            return;
+        }
+        if (!this.tooltip.visible) {
+            this.tooltipElement = undefined;
+        }
+        const mouse = this.app.mouse;
+        const longPress = mouse.isLongPress();
+        if ((!mouse.down && (mouse.dx !== 0 || mouse.dy !== 0)) || longPress) {
+            const hoverPanel = this.gui.getPanelAt(mouse);
+            if (this.tooltipElement !== hoverPanel) {
+                // Hover element has changed
+                this.tooltipElement = hoverPanel;
+                if (hoverPanel) {
+                    hoverPanel.updateTooltip(this.tooltip);
+                    if (longPress) {
+                        window.navigator.vibrate(100);
+                    }
+                }
+            }
+            if (this.tooltip.visible) {
+                if (!this.tooltip.gui) {
+                    // If this is the first time we're showing the tooltip,
+                    // make sure it is in the GUI system.
+                    this.gui.add(this.tooltip);
+                }
+                // Update the tooltip to be on the mouse
+                // This is similar to WoW style tooltips.
+                this.tooltip.showAt(mouse.x, mouse.y);
+                // On mobile devices, the tooltip is modal
+                this.tooltip.modal = this.app.mobile;
+            }
+        }
+    }
+    updateEffects() {
+        // Reset blocked
+        this.blocked = false;
+        // Update effects
+        for (let i = 0; i < this.effects.length; i++) {
+            const effect = this.effects[i];
+            if (!effect.blocking || !this.blocked) {
+                effect.update();
+                if (effect.blocking) {
+                    this.blocked = true;
+                }
+            }
+        }
+        // Remove completed effects
+        for (let i = this.effects.length - 1; i >= 0; i--) {
+            if (this.effects[i].isDone()) {
+                const effect = this.effects[i];
+                if (effect.onDone) {
+                    effect.onDone();
+                }
+                this.effects.splice(i, 1);
+            }
+        }
+    }
+    updateEntities() {
+        // If not blocked on any animations,
+        // then try to do enemy AI
+        // const startTurnIndex = this.turnIndex;
+        let turnCount = 0;
+        while (true) {
+            if (this.turnIndex < 0 || this.turnIndex >= this.entities.length) {
+                // Turn index out of range
+                break;
+            }
+            if (turnCount > this.entities.length * 2) {
+                // Looped back to original entity
+                // In that case, quit to next frame to avoid infinite loops
+                break;
+            }
+            const currEntity = this.entities[this.turnIndex];
+            if (currEntity instanceof actor_1.Actor) {
+                if (currEntity.ap > 0) {
+                    if (currEntity === this.player) {
+                        this.handlePlayerInput();
+                        break;
+                    }
+                    else {
+                        this.doAi(currEntity);
+                    }
+                }
+                if (!this.blocked && currEntity.ap <= 0) {
+                    // Turn is over
+                    currEntity.ap = 0;
+                    this.nextTurn();
+                }
+            }
+            else {
+                this.nextTurn();
+            }
+            if (this.blocked) {
+                // Waiting for animations
+                break;
+            }
+            turnCount++;
+        }
+    }
+    resetViewport() {
+        if (!this.player) {
+            return;
+        }
+        this.viewportFocus.x = this.player.centerPixelX;
+        this.viewportFocus.y = this.player.centerPixelY;
+        this.viewport.x = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
+        this.viewport.y = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
+    }
+    updateViewport() {
+        this.viewport.width = this.app.size.width;
+        this.viewport.height = this.app.size.height;
+        const mouse = this.app.mouse;
+        if (mouse.isDragging()) {
+            this.viewport.x -= mouse.dx;
+            this.viewport.y -= mouse.dy;
+            this.viewportFocus.x = this.viewport.x + ((this.viewport.width / 2) | 0);
+            this.viewportFocus.y = this.viewport.y + ((this.viewport.height / 2) | 0);
+        }
+        else {
+            // Drift viewport toward focus
+            const focusLeftX = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
+            if (focusLeftX !== this.viewport.x) {
+                let dx = 0.1 * focusLeftX - 0.1 * this.viewport.x;
+                if (dx < 0) {
+                    dx = Math.floor(dx);
+                }
+                else {
+                    dx = Math.ceil(dx);
+                }
+                this.viewport.x += dx;
+            }
+            const focusTopY = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
+            if (focusTopY !== this.viewport.y) {
+                let dy = 0.1 * focusTopY - 0.1 * this.viewport.y;
+                if (dy < 0) {
+                    dy = Math.floor(dy);
+                }
+                else {
+                    dy = Math.ceil(dy);
+                }
+                this.viewport.y += dy;
+            }
+        }
+    }
+    drawTileMap() {
+        if (this.app.renderSet.spriteTexture.loaded && this.tileMap) {
+            this.tileMap.draw(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
+        }
+    }
+    drawTargeting() {
+        if (this.isTargeting() && this.targetSprite) {
+            const x = this.cursor.x * this.tileSize.width - this.viewport.x;
+            const y = this.cursor.y * this.tileSize.height - this.viewport.y;
+            this.targetSprite.draw(this.app, x, y);
+        }
+    }
+    drawEntities() {
+        for (let i = 0; i < this.entities.length; i++) {
+            const entity = this.entities[i];
+            if (!this.tileMap || this.tileMap.isVisible(entity.x, entity.y)) {
+                entity.draw();
+            }
+        }
+    }
+    drawEffects() {
+        let blockingCount = 0;
+        for (let i = 0; i < this.effects.length; i++) {
+            const effect = this.effects[i];
+            if (blockingCount === 0 || !effect.blocking) {
+                effect.draw(this);
+            }
+            if (effect.blocking) {
+                blockingCount++;
+            }
+        }
+    }
+    isTargeting() {
+        return !!this.targetAbility;
+    }
+    startTargeting(ability, callback) {
+        this.targetAbility = ability;
+        this.targetCallback = callback;
+        if (this.player) {
+            this.cursor.x = this.player.x;
+            this.cursor.y = this.player.y;
+        }
+    }
+    endTargeting() {
+        if (this.player && this.targetAbility) {
+            const targetType = this.targetAbility.targetType;
+            let target = null;
+            if (targetType === ability_1.TargetType.ENTITY) {
+                target = this.getEnemyAt(this.cursor.x, this.cursor.y);
+            }
+            else if (targetType === ability_1.TargetType.TILE && this.tileMap) {
+                target = this.tileMap.getCell(this.cursor.x, this.cursor.y);
+            }
+            if (target) {
+                if (this.targetAbility.cast(this.player, target)) {
+                    if (this.targetCallback) {
+                        this.targetCallback();
+                    }
+                }
+            }
+        }
+        this.cancelTargeting();
+    }
+    cancelTargeting() {
+        this.targetAbility = undefined;
+        this.targetCallback = undefined;
+    }
+    handlePlayerInput() {
+        if (!this.player || this.blocked) {
+            return;
+        }
+        const mouse = this.app.mouse;
+        if (mouse.down || mouse.dx !== 0 || mouse.dy !== 0) {
+            this.cursor.x = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
+            this.cursor.y = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
+        }
+        if (this.app.isKeyDown(keys_1.Keys.VK_SHIFT)) {
+            if (this.isKeyPressed(UP_KEYS)) {
+                this.viewportFocus.y -= 2 * this.tileSize.height;
+            }
+            if (this.isKeyPressed(LEFT_KEYS)) {
+                this.viewportFocus.x -= 2 * this.tileSize.width;
+            }
+            if (this.isKeyPressed(RIGHT_KEYS)) {
+                this.viewportFocus.x += 2 * this.tileSize.width;
+            }
+            if (this.isKeyPressed(DOWN_KEYS)) {
+                this.viewportFocus.y += 2 * this.tileSize.height;
+            }
+            return;
+        }
+        if (this.isTargeting()) {
+            if (this.app.isKeyPressed(keys_1.Keys.VK_ENTER) || this.app.mouse.isClicked()) {
+                this.endTargeting();
+            }
+            if (this.app.isKeyPressed(keys_1.Keys.VK_ESCAPE)) {
+                this.cancelTargeting();
+            }
+            if (this.isKeyPressed(UP_KEYS)) {
+                this.cursor.y--;
+            }
+            if (this.isKeyPressed(LEFT_KEYS)) {
+                this.cursor.x--;
+            }
+            if (this.isKeyPressed(RIGHT_KEYS)) {
+                this.cursor.x++;
+            }
+            if (this.isKeyPressed(DOWN_KEYS)) {
+                this.cursor.y++;
+            }
+            return;
+        }
+        if (mouse.isClicked()) {
+            const tx = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
+            const ty = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
+            this.targetEntity = this.getEnemyAt(tx, ty);
+            if (this.targetEntity) {
+                this.targetTile = undefined;
+                this.path = undefined;
+                if (this.player.distance(this.targetEntity.x, this.targetEntity.y) <= 1.0) {
+                    this.player.attack(this.targetEntity);
+                }
+                return;
+            }
+            if (this.tileMap) {
+                const target = this.tileMap.getCell(tx, ty);
+                if (target && target !== this.targetTile) {
+                    this.targetTile = target;
+                    this.path = path_1.computePath(this.tileMap, this.player, this.targetTile, 100);
+                    this.pathIndex = 0;
+                }
+            }
+        }
+        let nextStep = null;
+        if (this.path) {
+            nextStep = this.path[this.pathIndex];
+            while (nextStep && nextStep.x === this.player.x && nextStep.y === this.player.y) {
+                this.pathIndex++;
+                nextStep = this.pathIndex < this.path.length ? this.path[this.pathIndex] : null;
+            }
+            if (nextStep && this.getEnemyAt(nextStep.x, nextStep.y)) {
+                // Entity in the way.  Cancel the path.
+                nextStep = null;
+            }
+            if (!nextStep) {
+                this.targetTile = undefined;
+                this.path = undefined;
+            }
+        }
+        const down = this.isKeyPressed(DOWN_KEYS) || (nextStep && nextStep.y > this.player.y);
+        const left = this.isKeyPressed(LEFT_KEYS) || (nextStep && nextStep.x < this.player.x);
+        const right = this.isKeyPressed(RIGHT_KEYS) || (nextStep && nextStep.x > this.player.x);
+        const up = this.isKeyPressed(UP_KEYS) || (nextStep && nextStep.y < this.player.y);
+        const wait = this.isKeyPressed(WAIT_KEYS);
+        if (up) {
+            this.tryMoveOrAttack(0, -1);
+        }
+        if (left) {
+            this.tryMoveOrAttack(-1, 0);
+        }
+        if (right) {
+            this.tryMoveOrAttack(1, 0);
+        }
+        if (down) {
+            this.tryMoveOrAttack(0, 1);
+        }
+        if (wait) {
+            this.player.ap = 0;
+        }
+    }
+    isKeyPressed(keys) {
+        for (let i = 0; i < keys.length; i++) {
+            if (this.app.isKeyPressed(keys[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+    tryMoveOrAttack(dx, dy) {
+        const player = this.player;
+        if (!player) {
+            return;
+        }
+        // TODO: Figure out the right place for this viewport update logic
+        this.recalculateViewportFocus();
+        const destX = player.x + dx;
+        const destY = player.y + dy;
+        for (let i = 0; i < this.entities.length; i++) {
+            const other = this.entities[i];
+            if (player !== other && other.x === destX && other.y === destY) {
+                if (player.onBump) {
+                    player.onBump(other);
+                }
+                return true;
+            }
+        }
+        return player.move(dx, dy);
+    }
+    recalculateViewportFocus() {
+        const player = this.player;
+        if (!player) {
+            return;
+        }
+        // Find the bounds of all visible actors
+        let minX = player.pixelX;
+        let minY = player.pixelY;
+        let maxX = minX + player.sprite.width;
+        let maxY = minY + player.sprite.height;
+        for (let i = 0; i < this.entities.length; i++) {
+            const entity = this.entities[i];
+            if (entity instanceof actor_1.Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
+                minX = Math.min(minX, entity.pixelX);
+                minY = Math.min(minY, entity.pixelY);
+                maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
+                maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
+            }
+        }
+        // If there is a walking path, include that in the bounding rect
+        if (this.path) {
+            for (let i = this.pathIndex; i < this.path.length; i++) {
+                const pathTile = this.path[i];
+                minX = Math.min(minX, pathTile.x * this.tileSize.width);
+                minY = Math.min(minY, pathTile.y * this.tileSize.height);
+                maxX = Math.max(maxX, (pathTile.x + 1) * this.tileSize.width);
+                maxY = Math.max(maxY, (pathTile.y + 1) * this.tileSize.height);
+            }
+        }
+        // Find the center of the bounds of all visible actors
+        this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
+        this.viewportFocus.y = Math.round((minY + maxY) / 2.0);
+    }
+    doAi(entity) {
+        if (entity.ai) {
+            if (!this.tileMap || (this.tileMap.isVisible(entity.x, entity.y) && entity.activatedCount > 0)) {
+                entity.ai.doAi();
+            }
+        }
+        entity.ap = 0;
+    }
+    nextTurn() {
+        if (this.player && this.entities[this.turnIndex] === this.player) {
+            // Player just finished turn
+            // Update FOV
+            if (this.player && this.tileMap) {
+                this.recomputeFov();
+            }
+            // Sort entities by distance from player
+            this.entities.sort((a, b) => {
+                if (!this.player) {
+                    return 0;
+                }
+                const ad = Math.hypot(a.x - this.player.x, a.y - this.player.y);
+                const bd = Math.hypot(b.x - this.player.x, b.y - this.player.y);
+                return ad - bd;
+            });
+        }
+        this.turnIndex++;
+        if (this.turnIndex >= this.entities.length) {
+            // Reached the end of the entities list.  Start at beginning.
+            this.turnIndex = 0;
+            for (let i = 0; i < this.entities.length; i++) {
+                const entity = this.entities[i];
+                if (entity instanceof actor_1.Actor) {
+                    entity.ap = entity.maxAp;
+                    for (let j = 0; j < entity.talents.length; j++) {
+                        const talent = entity.talents.get(j);
+                        if (talent.cooldown > 0) {
+                            talent.cooldown--;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    stopAutoWalk() {
+        this.path = undefined;
+        this.targetTile = undefined;
+    }
+    isBlocked(x, y) {
+        if (this.tileMap && this.tileMap.isBlocked(x, y)) {
+            return true;
+        }
+        for (let i = 0; i < this.entities.length; i++) {
+            const other = this.entities[i];
+            if (other.blocks && other.x === x && other.y === y) {
+                return true;
+            }
+        }
+        return false;
+    }
+    getEnemyAt(x, y) {
+        for (let i = 0; i < this.entities.length; i++) {
+            const other = this.entities[i];
+            if (!(other instanceof actor_1.Actor)) {
+                continue;
+            }
+            if (other.hp <= 0) {
+                // Dead, ignore
+                continue;
+            }
+            if (other instanceof actor_1.Actor && other.x === x && other.y === y) {
+                return other;
+            }
+        }
+        return undefined;
+    }
+    recomputeFov() {
+        if (this.player && this.tileMap) {
+            this.tileMap.computeFov(this.player.x, this.player.y, this.viewDistance);
+            // Determine which entities are activated
+            for (let i = 0; i < this.entities.length; i++) {
+                const entity = this.entities[i];
+                if (entity === this.player) {
+                    continue;
+                }
+                if (entity instanceof actor_1.Actor) {
+                    if (this.tileMap.isVisible(entity.x, entity.y)) {
+                        if (!entity.seen) {
+                            // Spotted a new entity, stop auto walking
+                            entity.seen = true;
+                            this.player.addFloatingText('!', colors_1.Colors.WHITE);
+                            this.stopAutoWalk();
+                            this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;
+                            this.viewportFocus.y = ((this.player.centerPixelY + entity.centerPixelY) / 2) | 0;
+                            console.log('surprise!  see a new entity');
+                            console.log('player', this.player);
+                            console.log('entity', entity);
+                            console.log('viewportFocus', this.viewportFocus);
+                        }
+                        entity.activatedCount++;
+                    }
+                    else {
+                        entity.activatedCount = -1;
+                    }
+                }
+            }
+        }
+    }
+}
+exports.Game = Game;
+
+
+/***/ }),
+
+/***/ "./src/glutils.ts":
+/*!************************!*\
+  !*** ./src/glutils.ts ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class ExtendedTexture extends WebGLTexture {
+    constructor() {
+        super();
+        this.loaded = false;
+        this.width = 0;
+        this.height = 0;
+    }
+}
+exports.ExtendedTexture = ExtendedTexture;
+/**
+ * Initialize a shader program, so WebGL knows how to draw our data
+ */
+function initShaderProgram(gl, vsSource, fsSource) {
+    const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+    const shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+    return shaderProgram;
+}
+exports.initShaderProgram = initShaderProgram;
+/**
+ * Creates a shader of the given type, uploads the source and
+ * compiles it.
+ */
+function loadShader(gl, type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+}
+exports.loadShader = loadShader;
+/**
+ * Initialize a texture and load an image.
+ * When the image finished loading copy it into the texture.
+ */
+function createTexture(gl, url) {
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    // Because images have to be download over the internet
+    // they might take a moment until they are ready.
+    // Until then put a single pixel in the texture so we can
+    // use it immediately. When the image has finished downloading
+    // we'll update the texture with the contents of the image.
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const border = 0;
+    const srcFormat = gl.RGBA;
+    const srcType = gl.UNSIGNED_BYTE;
+    const pixel = new Uint8Array([0, 0, 0, 255]);
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel);
+    const image = new Image();
+    image.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        texture.loaded = true;
+        texture.width = image.width;
+        texture.height = image.height;
+    };
+    image.src = url;
+    return texture;
+}
+exports.createTexture = createTexture;
+
+
+/***/ }),
+
+/***/ "./src/gui.ts":
+/*!********************!*\
+  !*** ./src/gui.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const dialogrenderer_1 = __webpack_require__(/*! ./gui/dialogrenderer */ "./src/gui/dialogrenderer.ts");
+const itemshortcutbutton_1 = __webpack_require__(/*! ./gui/itemshortcutbutton */ "./src/gui/itemshortcutbutton.ts");
+const panel_1 = __webpack_require__(/*! ./gui/panel */ "./src/gui/panel.ts");
+const talentbutton_1 = __webpack_require__(/*! ./gui/talentbutton */ "./src/gui/talentbutton.ts");
+const rect_1 = __webpack_require__(/*! ./rect */ "./src/rect.ts");
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+class GUI {
+    constructor(app) {
+        this.app = app;
+        this.renderer = new dialogrenderer_1.DialogRenderer(new rect_1.Rect(0, 0, 1, 1));
+        this.rootPanel = new panel_1.Panel(app.size);
+        this.rootPanel.gui = this;
+    }
+    add(panel) {
+        this.rootPanel.add(panel);
+    }
+    remove(panel) {
+        this.rootPanel.remove(panel);
+    }
+    getPanelAt(point) {
+        return this.rootPanel.getPanelAt(point);
+    }
+    handleInput() {
+        if (this.dragElement && this.dragOffset) {
+            this.updateDragging();
+            return true;
+        }
+        return this.rootPanel.handleInput();
+    }
+    draw() {
+        this.rootPanel.drawContents();
+        if (this.dragElement) {
+            // Draw drag element on top of everything else
+            this.dragElement.drawContents();
+        }
+    }
+    startDragging(panel) {
+        const mouse = this.app.mouse;
+        this.dragElement = panel;
+        this.dragOffset = new vec2_1.Vec2(mouse.start.x - panel.rect.x, mouse.start.y - panel.rect.y);
+    }
+    updateDragging() {
+        const mouse = this.app.mouse;
+        const dragElement = this.dragElement;
+        const dragOffset = this.dragOffset;
+        if (mouse.down) {
+            // Move the element to the mouse
+            dragElement.rect.x = mouse.x - dragOffset.x;
+            dragElement.rect.y = mouse.y - dragOffset.y;
+        }
+        else {
+            // End the drag
+            const target = this.rootPanel.getPanelAt(mouse);
+            if (target && target.onDrop(dragElement)) {
+                // Found a valid drop target
+                dragElement.rect.x = target.rect.x;
+                dragElement.rect.y = target.rect.y;
+                dragElement.move(target);
+            }
+            else if (dragElement instanceof itemshortcutbutton_1.ItemShortcutButton && target === this.rootPanel) {
+                // Destroy the shortcut
+                if (dragElement.parent) {
+                    dragElement.parent.remove(dragElement);
+                }
+            }
+            else if (dragElement instanceof talentbutton_1.TalentButton && dragElement.shortcut && target === this.rootPanel) {
+                // Destroy the shortcut
+                if (dragElement.parent) {
+                    dragElement.parent.remove(dragElement);
+                }
+            }
+            else {
+                // Otherwise move back to the original location
+                dragElement.rect.x = mouse.start.x - dragOffset.x;
+                dragElement.rect.y = mouse.start.y - dragOffset.y;
+            }
+            this.dragElement = undefined;
+            this.dragOffset = undefined;
+        }
+    }
+}
+exports.GUI = GUI;
+
+
+/***/ }),
+
+/***/ "./src/gui/button.ts":
+/*!***************************!*\
+  !*** ./src/gui/button.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const panel_1 = __webpack_require__(/*! ./panel */ "./src/gui/panel.ts");
+class Button extends panel_1.Panel {
+    constructor(destRect, sprite, shortcutKey, onClick) {
+        super(destRect);
+        this.sprite = sprite;
+        this.shortcutKey = shortcutKey;
+        this.onClick = onClick;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        const src = this.sprite;
+        const dst = this.rect;
+        const offsetX = ((dst.width - src.width) / 2) | 0;
+        const offsetY = ((dst.height - src.height) / 2) | 0;
+        src.draw(this.gui.app, dst.x + offsetX, dst.y + offsetY);
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        const app = this.gui.app;
+        const mouse = app.mouse;
+        if (this.rect.contains(mouse.start) && mouse.isDragging()) {
+            this.gui.startDragging(this);
+            return true;
+        }
+        if ((this.shortcutKey && app.isKeyPressed(this.shortcutKey)) || (this.rect.contains(mouse) && mouse.isClicked())) {
+            this.click();
+            return true;
+        }
+        return mouse.down && this.rect.contains(mouse);
+    }
+    click() {
+        if (this.onClick) {
+            this.onClick();
+        }
+    }
+    updateTooltip(tooltip) {
+        if (this.tooltipMessages) {
+            tooltip.messages = this.tooltipMessages;
+            tooltip.visible = true;
+        }
+        else {
+            tooltip.visible = false;
+        }
+    }
+}
+exports.Button = Button;
+
+
+/***/ }),
+
+/***/ "./src/gui/buttonslot.ts":
+/*!*******************************!*\
+  !*** ./src/gui/buttonslot.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const panel_1 = __webpack_require__(/*! ./panel */ "./src/gui/panel.ts");
+class ButtonSlot extends panel_1.Panel {
+    constructor(rect, shortcutKey) {
+        super(rect);
+        this.shortcutKey = shortcutKey;
+    }
+    get button() {
+        return this.children.length > 0 ? this.children.get(0) : undefined;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        const dst = this.rect;
+        const src = this.gui.renderer.buttonSlotRect;
+        if (src) {
+            this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
+        }
+        const button = this.button;
+        if (button && !button.isDragging()) {
+            button.rect.x = this.rect.x;
+            button.rect.y = this.rect.y;
+            button.rect.width = this.rect.width;
+            button.rect.height = this.rect.height;
+            this.drawChildren();
+        }
+        if (this.shortcutKey) {
+            this.gui.app.drawRightString(String.fromCharCode(this.shortcutKey), dst.x2 - 3, dst.y + 3);
+        }
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        if (this.handleChildrenInput()) {
+            return true;
+        }
+        const app = this.gui.app;
+        const mouse = app.mouse;
+        const button = this.button;
+        if (button) {
+            if ((this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
+                (this.rect.contains(mouse) && mouse.isClicked())) {
+                button.click();
+                return true;
+            }
+        }
+        return mouse.down && this.rect.contains(mouse);
+    }
+}
+exports.ButtonSlot = ButtonSlot;
+
+
+/***/ }),
+
+/***/ "./src/gui/complexselectdialog.ts":
+/*!****************************************!*\
+  !*** ./src/gui/complexselectdialog.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const keys_1 = __webpack_require__(/*! ../keys */ "./src/keys.ts");
+const vec2_1 = __webpack_require__(/*! ../vec2 */ "./src/vec2.ts");
+const defaultselectoptionrenderer_1 = __webpack_require__(/*! ./defaultselectoptionrenderer */ "./src/gui/defaultselectoptionrenderer.ts");
+const dialog_1 = __webpack_require__(/*! ./dialog */ "./src/gui/dialog.ts");
+const MARGIN = 4;
+class ComplexSelectDialog extends dialog_1.Dialog {
+    constructor(rect, options) {
+        super(rect);
+        this.options = options;
+        this.selectedIndex = 0;
+        this.renderer = new defaultselectoptionrenderer_1.DefaultSelectOptionRenderer();
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        super.drawContents();
+        const offset = this.rect;
+        const point = new vec2_1.Vec2(offset.x + MARGIN, offset.y + MARGIN);
+        for (let i = 0; i < this.options.length; i++) {
+            const option = this.options[i];
+            const selected = i === this.selectedIndex;
+            this.renderer.drawOption(this.gui, point, option, selected);
+            point.y += this.renderer.getHeight(option, selected);
+        }
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        const app = this.gui.app;
+        for (let i = 0; i < this.options.length; i++) {
+            if (app.isKeyPressed(keys_1.Keys.VK_A + i)) {
+                this.selectedIndex = i;
+                if (this.onSelect) {
+                    this.onSelect(this.options[i]);
+                }
+            }
+        }
+        if (app.isKeyPressed(keys_1.Keys.VK_ENTER)) {
+            if (this.onSelect) {
+                this.onSelect(this.options[this.selectedIndex]);
+            }
+        }
+        if (app.isKeyPressed(keys_1.Keys.VK_ESCAPE)) {
+            if (this.onCancel) {
+                this.onCancel();
+            }
+        }
+        if (app.isKeyPressed(keys_1.Keys.VK_UP)) {
+            this.selectedIndex--;
+        }
+        if (app.isKeyPressed(keys_1.Keys.VK_DOWN)) {
+            this.selectedIndex++;
+        }
+        if (this.selectedIndex < 0) {
+            this.selectedIndex += this.options.length;
+        }
+        if (this.selectedIndex >= this.options.length) {
+            this.selectedIndex -= this.options.length;
+        }
+        const mouse = app.mouse;
+        const offset = this.rect;
+        let y = offset.y + MARGIN;
+        if (mouse.upCount === 1 && mouse.x >= offset.x1 && mouse.x < offset.x2) {
+            for (let i = 0; i < this.options.length; i++) {
+                const option = this.options[i];
+                const selected = i === this.selectedIndex;
+                const lineHeight = this.renderer.getHeight(option, selected);
+                const startY = y;
+                const endY = y + lineHeight;
+                if (mouse.y >= startY && mouse.y < endY) {
+                    if (selected) {
+                        if (this.onSelect) {
+                            this.onSelect(option);
+                        }
+                    }
+                    else {
+                        this.selectedIndex = i;
+                    }
+                }
+                y += lineHeight;
+            }
+        }
+        return true;
+    }
+}
+exports.ComplexSelectDialog = ComplexSelectDialog;
+
+
+/***/ }),
+
+/***/ "./src/gui/defaultselectoptionrenderer.ts":
+/*!************************************************!*\
+  !*** ./src/gui/defaultselectoptionrenderer.ts ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const colors_1 = __webpack_require__(/*! ../colors */ "./src/colors.ts");
+class DefaultSelectOptionRenderer {
+    getHeight(option, selected) {
+        return 10;
+    }
+    drawOption(gui, point, option, selected) {
+        const color = selected ? colors_1.Colors.YELLOW : colors_1.Colors.WHITE;
+        gui.app.drawString(option.name, point.x, point.y, color);
+    }
+}
+exports.DefaultSelectOptionRenderer = DefaultSelectOptionRenderer;
+
+
+/***/ }),
+
+/***/ "./src/gui/dialog.ts":
+/*!***************************!*\
+  !*** ./src/gui/dialog.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const panel_1 = __webpack_require__(/*! ./panel */ "./src/gui/panel.ts");
+class Dialog extends panel_1.Panel {
+    constructor(rect) {
+        super(rect);
+        this.closeButton = false;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        this.gui.renderer.draw(this.gui.app, this);
+    }
+    handleInput() {
+        return false;
+    }
+    close() {
+        if (!this.gui) {
+            return;
+        }
+        this.gui.remove(this);
+    }
+}
+exports.Dialog = Dialog;
+
+
+/***/ }),
+
+/***/ "./src/gui/dialogrenderer.ts":
+/*!***********************************!*\
+  !*** ./src/gui/dialogrenderer.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class DialogRenderer {
+    constructor(baseRect, closeButtonRect) {
+        this.baseRect = baseRect;
+        this.closeButtonRect = closeButtonRect;
+    }
+    draw(app, dialog) {
+        // Draws the dialog chrome using a 3x3 grid
+        // 0   1   2   3
+        //   x   x   x
+        // 1
+        //   x   x   x
+        // 2
+        //   x   x   x
+        // 3
+        // Source image is the baseRect
+        const sx0 = this.baseRect.x;
+        const sy0 = this.baseRect.y;
+        const sw = (this.baseRect.width / 3) | 0;
+        const sh = (this.baseRect.height / 3) | 0;
+        const sx1 = sx0 + sw;
+        const sy1 = sy0 + sh;
+        const sx2 = sx0 + 2 * sw;
+        const sy2 = sy0 + 2 * sw;
+        // Destination rect is the dialog
+        const dx0 = dialog.rect.x;
+        const dy0 = dialog.rect.y;
+        const dw = dialog.rect.width - 2 * sw;
+        const dh = dialog.rect.height - 2 * sh;
+        const dx1 = dx0 + sw;
+        const dy1 = dy0 + sh;
+        const dx2 = dx1 + dw;
+        const dy2 = dy1 + dh;
+        // Top-left corner
+        app.drawImage(dx0, dy0, sx0, sy0, sw, sh, undefined, sw, sh);
+        // Top edge
+        app.drawImage(dx1, dy0, sx1, sy0, sw, sh, undefined, dw, sh);
+        // Top-right corner
+        app.drawImage(dx2, dy0, sx2, sy0, sw, sh, undefined, sw, sh);
+        // Left edge
+        app.drawImage(dx0, dy1, sx0, sy1, sw, sh, undefined, sw, dh);
+        // Center
+        app.drawImage(dx1, dy1, sx1, sy1, sw, sh, undefined, dw, dh);
+        // Right edge
+        app.drawImage(dx2, dy1, sx2, sy1, sw, sh, undefined, sw, dh);
+        // Bottom-left corner
+        app.drawImage(dx0, dy2, sx0, sy2, sw, sh, undefined, sw, sh);
+        // Bottom edge
+        app.drawImage(dx1, dy2, sx1, sy2, sw, sh, undefined, dw, sh);
+        // Bottom-right corner
+        app.drawImage(dx2, dy2, sx2, sy2, sw, sh, undefined, sw, sh);
+        if (this.closeButtonRect && dialog.closeButton) {
+            const w = this.closeButtonRect.width;
+            const h = this.closeButtonRect.height;
+            const dx = dialog.rect.x2 - w;
+            const dy = dialog.rect.y;
+            const sx = this.closeButtonRect.x;
+            const sy = this.closeButtonRect.y;
+            app.drawImage(dx, dy, sx, sy, w, h);
+        }
+    }
+}
+exports.DialogRenderer = DialogRenderer;
+
+
+/***/ }),
+
+/***/ "./src/gui/imagepanel.ts":
+/*!*******************************!*\
+  !*** ./src/gui/imagepanel.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const panel_1 = __webpack_require__(/*! ./panel */ "./src/gui/panel.ts");
+class ImagePanel extends panel_1.Panel {
+    constructor(srcRect, destRect) {
+        super(destRect);
+        this.srcRect = srcRect;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        const src = this.srcRect;
+        const dst = this.rect;
+        this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
+    }
+}
+exports.ImagePanel = ImagePanel;
+
+
+/***/ }),
+
+/***/ "./src/gui/itembutton.ts":
+/*!*******************************!*\
+  !*** ./src/gui/itembutton.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const xarray_1 = __webpack_require__(/*! ../xarray */ "./src/xarray.ts");
+const button_1 = __webpack_require__(/*! ./button */ "./src/gui/button.ts");
+class ItemButton extends button_1.Button {
+    constructor(rect, containerItems, initialItem) {
+        super(rect, initialItem.sprite);
+        this.containerItems = containerItems;
+        this.stackItems = new xarray_1.XArray();
+        this.stackItems.add(initialItem);
+        this.tooltipMessages = initialItem.tooltipMessages;
+    }
+    click() {
+        if (this.stackItems.length > 0) {
+            const item = this.stackItems.get(0);
+            const player = item.game.player;
+            if (player) {
+                player.use(item);
+            }
+        }
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        super.drawContents();
+        if (this.stackItems.length > 1) {
+            const dst = this.rect;
+            this.gui.app.drawRightString(this.stackItems.length.toString(), dst.x2 - 3, dst.y2 - 10);
+        }
+    }
+}
+exports.ItemButton = ItemButton;
+
+
+/***/ }),
+
+/***/ "./src/gui/itemcontainerbuttonslot.ts":
+/*!********************************************!*\
+  !*** ./src/gui/itemcontainerbuttonslot.ts ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const buttonslot_1 = __webpack_require__(/*! ./buttonslot */ "./src/gui/buttonslot.ts");
+const itembutton_1 = __webpack_require__(/*! ./itembutton */ "./src/gui/itembutton.ts");
+class ItemContainerButtonSlot extends buttonslot_1.ButtonSlot {
+    constructor(rect, items) {
+        super(rect);
+        this.items = items;
+    }
+    onDrop(panel) {
+        return panel instanceof itembutton_1.ItemButton;
+    }
+}
+exports.ItemContainerButtonSlot = ItemContainerButtonSlot;
+
+
+/***/ }),
+
+/***/ "./src/gui/itemcontainerdialog.ts":
+/*!****************************************!*\
+  !*** ./src/gui/itemcontainerdialog.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const keys_1 = __webpack_require__(/*! ../keys */ "./src/keys.ts");
+const rect_1 = __webpack_require__(/*! ../rect */ "./src/rect.ts");
+const dialog_1 = __webpack_require__(/*! ./dialog */ "./src/gui/dialog.ts");
+const itembutton_1 = __webpack_require__(/*! ./itembutton */ "./src/gui/itembutton.ts");
+const itemcontainerbuttonslot_1 = __webpack_require__(/*! ./itemcontainerbuttonslot */ "./src/gui/itemcontainerbuttonslot.ts");
+const MARGIN = 4;
+const BUTTON_SPACING = 2;
+class ItemContainerDialog extends dialog_1.Dialog {
+    constructor(rect, capacity, items) {
+        super(rect);
+        this.capacity = capacity;
+        this.items = items;
+        items.addListener({ onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item) });
+        for (let i = 0; i < capacity; i++) {
+            // Slots are repositioned at render time
+            this.add(new itemcontainerbuttonslot_1.ItemContainerButtonSlot(new rect_1.Rect(0, 0, 24, 24), items));
+        }
+    }
+    addItem(item) {
+        const existingButton = this.getExistingButton(item);
+        if (existingButton) {
+            existingButton.stackItems.add(item);
+            return;
+        }
+        const freeSlot = this.getNextFreeSlot();
+        if (freeSlot) {
+            freeSlot.add(new itembutton_1.ItemButton(freeSlot.rect.clone(), this.items, item));
+        }
+    }
+    removeItem(item) {
+        for (let i = 0; i < this.children.length; i++) {
+            const buttonSlot = this.children.get(i);
+            const button = buttonSlot.button;
+            if (button && button instanceof itembutton_1.ItemButton) {
+                if (button.stackItems.contains(item)) {
+                    button.stackItems.remove(item);
+                    if (button.stackItems.length === 0) {
+                        buttonSlot.remove(button);
+                    }
+                }
+            }
+        }
+    }
+    getExistingButton(item) {
+        for (let i = 0; i < this.children.length; i++) {
+            const buttonSlot = this.children.get(i);
+            const button = buttonSlot.button;
+            if (button && button instanceof itembutton_1.ItemButton) {
+                const existing = button.stackItems.get(0);
+                if (existing.name === item.name) {
+                    return button;
+                }
+            }
+        }
+        return undefined;
+    }
+    getNextFreeSlot() {
+        for (let i = 0; i < this.children.length; i++) {
+            const buttonSlot = this.children.get(i);
+            if (!buttonSlot.button) {
+                return buttonSlot;
+            }
+        }
+        return undefined;
+    }
+    drawContents() {
+        super.drawContents();
+        if (!this.gui || !this.gui.renderer.buttonSlotRect) {
+            return;
+        }
+        // Update positions of button slots
+        const containerRect = this.rect;
+        const buttonRect = this.gui.renderer.buttonSlotRect;
+        let x = containerRect.x + MARGIN;
+        let y = containerRect.y + MARGIN;
+        for (let i = 0; i < this.capacity; i++) {
+            const child = this.children.get(i);
+            child.rect.x = x;
+            child.rect.y = y;
+            child.rect.width = buttonRect.width;
+            child.rect.height = buttonRect.height;
+            x += buttonRect.width + BUTTON_SPACING;
+            if (x > containerRect.x2 - buttonRect.width - MARGIN) {
+                x = containerRect.x + MARGIN;
+                y += buttonRect.height + BUTTON_SPACING;
+            }
+        }
+        this.drawChildren();
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        if (this.handleChildrenInput()) {
+            return true;
+        }
+        if (this.gui.app.isKeyPressed(keys_1.Keys.VK_ESCAPE)) {
+            this.visible = false;
+            return true;
+        }
+        return false;
+    }
+}
+exports.ItemContainerDialog = ItemContainerDialog;
+
+
+/***/ }),
+
+/***/ "./src/gui/itemshortcutbutton.ts":
+/*!***************************************!*\
+  !*** ./src/gui/itemshortcutbutton.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const button_1 = __webpack_require__(/*! ./button */ "./src/gui/button.ts");
+class ItemShortcutButton extends button_1.Button {
+    constructor(rect, containerItems, shortcutItem) {
+        super(rect, shortcutItem.sprite);
+        this.containerItems = containerItems;
+        this.shortcutItem = shortcutItem;
+        this.tooltipMessages = shortcutItem.tooltipMessages;
+    }
+    click() {
+        const item = this.getItem();
+        if (item) {
+            const player = item.game.player;
+            if (player) {
+                player.use(item);
+            }
+        }
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        super.drawContents();
+        if (!this.isDragging()) {
+            const dst = this.rect;
+            const count = this.countItems();
+            this.gui.app.drawRightString(count.toString(), dst.x2 - 3, dst.y2 - 10);
+        }
+    }
+    getItem() {
+        for (let i = 0; i < this.containerItems.length; i++) {
+            const item = this.containerItems.get(i);
+            if (item.name === this.shortcutItem.name) {
+                return item;
+            }
+        }
+        return undefined;
+    }
+    countItems() {
+        let count = 0;
+        for (let i = 0; i < this.containerItems.length; i++) {
+            if (this.containerItems.get(i).name === this.shortcutItem.name) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
+exports.ItemShortcutButton = ItemShortcutButton;
+
+
+/***/ }),
+
+/***/ "./src/gui/messagelog.ts":
+/*!*******************************!*\
+  !*** ./src/gui/messagelog.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const colors_1 = __webpack_require__(/*! ../colors */ "./src/colors.ts");
+const message_1 = __webpack_require__(/*! ../message */ "./src/message.ts");
+const panel_1 = __webpack_require__(/*! ./panel */ "./src/gui/panel.ts");
+class MessageLog extends panel_1.Panel {
+    constructor(rect, maxItems) {
+        super(rect);
+        this.messages = [];
+        this.maxItems = maxItems || 5;
+    }
+    add(text, color) {
+        if (text instanceof panel_1.Panel) {
+            // TODO:  This is a weird artifact of history
+            // The original API was designed before Panels were hierarchical.
+            return;
+        }
+        this.messages.push(new message_1.Message(text, color || colors_1.Colors.WHITE));
+        if (this.messages.length > this.maxItems) {
+            this.messages.splice(0, this.messages.length - this.maxItems);
+        }
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        const x = this.rect.x;
+        let y = this.rect.y;
+        if (y < 0) {
+            // Negative y value indicates attached to bottom of screen
+            const bottom = this.gui.app.size.height + y + this.rect.height;
+            y = bottom - this.messages.length * 10;
+        }
+        for (let i = 0; i < this.messages.length; i++) {
+            const msg = this.messages[i];
+            this.gui.app.drawString(msg.text, x, y, msg.color);
+            y += 10;
+        }
+    }
+    handleInput() {
+        return false;
+    }
+}
+exports.MessageLog = MessageLog;
+
+
+/***/ }),
+
+/***/ "./src/gui/messagepanel.ts":
+/*!*********************************!*\
+  !*** ./src/gui/messagepanel.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const panel_1 = __webpack_require__(/*! ./panel */ "./src/gui/panel.ts");
+class MessagePanel extends panel_1.Panel {
+    constructor(rect, message) {
+        super(rect);
+        this.message = message;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        const msg = this.message;
+        const dst = this.rect;
+        this.gui.app.drawString(msg.text, dst.x, dst.y, msg.color);
+    }
+}
+exports.MessagePanel = MessagePanel;
+
+
+/***/ }),
+
+/***/ "./src/gui/panel.ts":
+/*!**************************!*\
+  !*** ./src/gui/panel.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const xarray_1 = __webpack_require__(/*! ../xarray */ "./src/xarray.ts");
+class Panel {
+    constructor(rect) {
+        this.gui = null;
+        this.rect = rect;
+        this.children = new xarray_1.XArray();
+        this.modal = false;
+        this.visible = true;
+    }
+    setGui(gui) {
+        if (this.gui) {
+            // Already set
+            return;
+        }
+        this.gui = gui;
+        for (let i = 0; i < this.children.length; i++) {
+            this.children.get(i).setGui(gui);
+        }
+    }
+    add(panel) {
+        panel.parent = this;
+        panel.setGui(this.gui);
+        this.children.add(panel);
+    }
+    remove(panel) {
+        this.children.remove(panel);
+    }
+    move(newParent) {
+        if (this.parent) {
+            this.parent.remove(this);
+        }
+        newParent.add(this);
+    }
+    getPanelAt(point) {
+        for (let i = this.children.length - 1; i >= 0; i--) {
+            const child = this.children.get(i);
+            if (!child.visible) {
+                // Ignore hidden elements
+                continue;
+            }
+            if (child.isDragging()) {
+                // Ignore dragging element
+                continue;
+            }
+            const childResult = child.getPanelAt(point);
+            if (childResult) {
+                return childResult;
+            }
+        }
+        if (this.rect.contains(point)) {
+            return this;
+        }
+        return undefined;
+    }
+    drawContents() {
+        this.drawChildren();
+    }
+    drawChildren() {
+        for (let i = 0; i < this.children.length; i++) {
+            const child = this.children.get(i);
+            if (!child.visible) {
+                // Ignore hidden elements
+                continue;
+            }
+            child.drawContents();
+        }
+    }
+    handleInput() {
+        return this.handleChildrenInput();
+    }
+    handleChildrenInput() {
+        // for (let i = 0; i < this.children.length; i++) {
+        for (let i = this.children.length - 1; i >= 0; i--) {
+            const child = this.children.get(i);
+            if (!child.visible) {
+                // Ignore hidden elements
+                continue;
+            }
+            if (child.handleInput() || child.modal) {
+                return true;
+            }
+        }
+        return false;
+    }
+    isDragging() {
+        return this.gui && this.gui.dragElement === this;
+    }
+    onDrop(panel) {
+        return false;
+    }
+    updateTooltip(tooltip) {
+        tooltip.visible = false;
+    }
+}
+exports.Panel = Panel;
+
+
+/***/ }),
+
+/***/ "./src/gui/selectdialog.ts":
+/*!*********************************!*\
+  !*** ./src/gui/selectdialog.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const keys_1 = __webpack_require__(/*! ../keys */ "./src/keys.ts");
+const dialog_1 = __webpack_require__(/*! ./dialog */ "./src/gui/dialog.ts");
+const MARGIN = 4;
+const LINE_HEIGHT = 10;
+class SelectDialog extends dialog_1.Dialog {
+    constructor(rect, options, callback) {
+        super(rect);
+        this.options = options;
+        this.callback = callback;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        super.drawContents();
+        const offset = this.rect;
+        for (let i = 0; i < this.options.length; i++) {
+            const str = String.fromCharCode(65 + i) + ' - ' + this.options[i].name;
+            this.gui.app.drawString(str, offset.x + MARGIN, offset.y + MARGIN + i * LINE_HEIGHT);
+        }
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        for (let i = 0; i < this.options.length; i++) {
+            if (this.gui.app.isKeyPressed(keys_1.Keys.VK_A + i)) {
+                this.callback(this.options[i]);
+                this.close();
+                return true;
+            }
+        }
+        if (this.gui.app.isKeyPressed(keys_1.Keys.VK_ESCAPE)) {
+            this.close();
+            return true;
+        }
+        const mouse = this.gui.app.mouse;
+        const offset = this.rect;
+        if (mouse.isClicked() && mouse.x >= offset.x1 && mouse.x < offset.x2) {
+            if (this.closeButton && mouse.x >= offset.x2 - 16 && mouse.y < offset.y + 16) {
+                this.close();
+                return true;
+            }
+            for (let i = 0; i < this.options.length; i++) {
+                const startY = offset.y + MARGIN + i * LINE_HEIGHT;
+                const endY = startY + LINE_HEIGHT;
+                if (mouse.y >= startY && mouse.y < endY) {
+                    this.callback(this.options[i]);
+                    this.close();
+                }
+            }
+        }
+        return true;
+    }
+}
+exports.SelectDialog = SelectDialog;
+
+
+/***/ }),
+
+/***/ "./src/gui/shortcutbuttonslot.ts":
+/*!***************************************!*\
+  !*** ./src/gui/shortcutbuttonslot.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const buttonslot_1 = __webpack_require__(/*! ./buttonslot */ "./src/gui/buttonslot.ts");
+const itembutton_1 = __webpack_require__(/*! ./itembutton */ "./src/gui/itembutton.ts");
+const itemshortcutbutton_1 = __webpack_require__(/*! ./itemshortcutbutton */ "./src/gui/itemshortcutbutton.ts");
+const talentbutton_1 = __webpack_require__(/*! ./talentbutton */ "./src/gui/talentbutton.ts");
+class ShortcutButtonSlot extends buttonslot_1.ButtonSlot {
+    onDrop(panel) {
+        if (this.children.length > 0) {
+            // Already has a button
+            // TODO: Add ability to replace an existing shortcut
+            return false;
+        }
+        if (panel instanceof itembutton_1.ItemButton) {
+            const itemButton = panel;
+            const containerItems = itemButton.containerItems;
+            const shortcutItem = itemButton.stackItems.get(0);
+            this.add(new itemshortcutbutton_1.ItemShortcutButton(this.rect.clone(), containerItems, shortcutItem));
+            // Even though the operation was successful,
+            // return false because we don't want to move the original button
+            return false;
+        }
+        if (panel instanceof talentbutton_1.TalentButton) {
+            if (panel.shortcut) {
+                // Move the existing shortcut
+                return true;
+            }
+            else {
+                // Create a shortcut to the talent
+                this.add(new talentbutton_1.TalentButton(this.rect.clone(), panel.talent, true));
+                return false;
+            }
+        }
+        if (panel instanceof itemshortcutbutton_1.ItemShortcutButton || (panel instanceof talentbutton_1.TalentButton && panel.shortcut)) {
+            // Move button
+            return true;
+        }
+        return false;
+    }
+}
+exports.ShortcutButtonSlot = ShortcutButtonSlot;
+
+
+/***/ }),
+
+/***/ "./src/gui/talentbutton.ts":
+/*!*********************************!*\
+  !*** ./src/gui/talentbutton.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const colors_1 = __webpack_require__(/*! ../colors */ "./src/colors.ts");
+const button_1 = __webpack_require__(/*! ./button */ "./src/gui/button.ts");
+class TalentButton extends button_1.Button {
+    constructor(rect, talent, shortcut) {
+        super(rect, talent.ability.sprite);
+        this.talent = talent;
+        this.shortcut = !!shortcut;
+        this.tooltipMessages = talent.ability.tooltipMessages;
+    }
+    click() {
+        this.talent.use();
+    }
+    drawContents() {
+        super.drawContents();
+        if (this.talent.cooldown > 0) {
+            const game = this.talent.actor.game;
+            const cooldownSprite = game.cooldownSprite;
+            if (cooldownSprite) {
+                const percent = 1.0 - this.talent.cooldown / this.talent.ability.cooldown;
+                const frame = Math.round(percent * cooldownSprite.frames);
+                const u = cooldownSprite.x + frame * cooldownSprite.width;
+                const v = cooldownSprite.y;
+                const x = this.rect.x + ((this.rect.width - cooldownSprite.width) / 2) | 0;
+                const y = this.rect.y + ((this.rect.height - cooldownSprite.height) / 2) | 0;
+                game.app.drawImage(x, y, u, v, cooldownSprite.width, cooldownSprite.height);
+                const cx = this.rect.x + (this.rect.width / 2) | 0;
+                const cy = this.rect.y + (this.rect.height / 2) | 0;
+                game.app.drawCenteredString(this.talent.cooldown.toString(), cx + 1, cy - 2, colors_1.Colors.BLACK);
+                game.app.drawCenteredString(this.talent.cooldown.toString(), cx, cy - 3, colors_1.Colors.WHITE);
+            }
+        }
+    }
+}
+exports.TalentButton = TalentButton;
+
+
+/***/ }),
+
+/***/ "./src/gui/talentsdialog.ts":
+/*!**********************************!*\
+  !*** ./src/gui/talentsdialog.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const keys_1 = __webpack_require__(/*! ../keys */ "./src/keys.ts");
+const rect_1 = __webpack_require__(/*! ../rect */ "./src/rect.ts");
+const buttonslot_1 = __webpack_require__(/*! ./buttonslot */ "./src/gui/buttonslot.ts");
+const dialog_1 = __webpack_require__(/*! ./dialog */ "./src/gui/dialog.ts");
+const talentbutton_1 = __webpack_require__(/*! ./talentbutton */ "./src/gui/talentbutton.ts");
+const MARGIN = 4;
+const BUTTON_SPACING = 2;
+class TalentsDialog extends dialog_1.Dialog {
+    constructor(rect, capacity, talents) {
+        super(rect);
+        this.capacity = capacity;
+        this.talents = talents;
+        talents.addListener({ onAdd: (_, talent) => this.addItem(talent), onRemove: (_, talent) => this.removeItem(talent) });
+        for (let i = 0; i < capacity; i++) {
+            // Slots are repositioned at render time
+            this.add(new buttonslot_1.ButtonSlot(new rect_1.Rect(0, 0, 24, 24)));
+        }
+    }
+    addItem(talent) {
+        const freeSlot = this.getNextFreeSlot();
+        if (freeSlot) {
+            freeSlot.add(new talentbutton_1.TalentButton(freeSlot.rect.clone(), talent));
+        }
+    }
+    removeItem(talent) {
+        for (let i = 0; i < this.children.length; i++) {
+            const buttonSlot = this.children.get(i);
+            const button = buttonSlot.button;
+            if (button && button instanceof talentbutton_1.TalentButton) {
+                if (button.talent === talent) {
+                    buttonSlot.remove(button);
+                }
+            }
+        }
+    }
+    getNextFreeSlot() {
+        for (let i = 0; i < this.children.length; i++) {
+            const buttonSlot = this.children.get(i);
+            if (!buttonSlot.button) {
+                return buttonSlot;
+            }
+        }
+        return undefined;
+    }
+    drawContents() {
+        super.drawContents();
+        if (!this.gui || !this.gui.renderer.buttonSlotRect) {
+            return;
+        }
+        // Update positions of button slots
+        const containerRect = this.rect;
+        const buttonRect = this.gui.renderer.buttonSlotRect;
+        let x = containerRect.x + MARGIN;
+        let y = containerRect.y + MARGIN;
+        for (let i = 0; i < this.capacity; i++) {
+            const child = this.children.get(i);
+            child.rect.x = x;
+            child.rect.y = y;
+            child.rect.width = buttonRect.width;
+            child.rect.height = buttonRect.height;
+            x += buttonRect.width + BUTTON_SPACING;
+            if (x > containerRect.x2 - buttonRect.width - MARGIN) {
+                x = containerRect.x + MARGIN;
+                y += buttonRect.height + BUTTON_SPACING;
+            }
+        }
+        this.drawChildren();
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        if (this.handleChildrenInput()) {
+            return true;
+        }
+        if (this.gui.app.isKeyPressed(keys_1.Keys.VK_ESCAPE)) {
+            this.visible = false;
+            return true;
+        }
+        return false;
+    }
+}
+exports.TalentsDialog = TalentsDialog;
+
+
+/***/ }),
+
+/***/ "./src/gui/tooltipdialog.ts":
+/*!**********************************!*\
+  !*** ./src/gui/tooltipdialog.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const rect_1 = __webpack_require__(/*! ../rect */ "./src/rect.ts");
+const dialog_1 = __webpack_require__(/*! ./dialog */ "./src/gui/dialog.ts");
+const WIDTH = 100;
+const MARGIN = 5;
+const LINE_PADDING = 2;
+class TooltipDialog extends dialog_1.Dialog {
+    constructor() {
+        super(new rect_1.Rect(0, 0, WIDTH, 10));
+        this.messages = [];
+        this.visible = false;
+        // this.modal = true;
+    }
+    showAt(x, y) {
+        if (!this.gui) {
+            return;
+        }
+        // Resize
+        const app = this.gui.app;
+        const font = app.font;
+        const lineHeight = font.getHeight() + LINE_PADDING;
+        this.rect.width = 2 * MARGIN;
+        this.rect.height = 2 * MARGIN + this.messages.length * lineHeight;
+        for (let i = 0; i < this.messages.length; i++) {
+            const msg = this.messages[i];
+            const width = 2 * MARGIN + font.getStringWidth(msg.text);
+            this.rect.width = Math.max(this.rect.width, width);
+        }
+        if (x + this.rect.width >= app.size.width) {
+            this.rect.x = x - this.rect.width - 2;
+        }
+        else {
+            this.rect.x = x + 2;
+        }
+        if (y - this.rect.height < 0) {
+            this.rect.y = y + 2;
+        }
+        else {
+            this.rect.y = y - this.rect.height - 2;
+        }
+        if (this.rect.x < 0) {
+            this.rect.x = 0;
+        }
+        if (this.rect.y < 0) {
+            this.rect.y = 0;
+        }
+        this.visible = true;
+    }
+    drawContents() {
+        if (!this.gui) {
+            return;
+        }
+        // Draw the dialog border
+        super.drawContents();
+        const lineHeight = this.gui.app.font.getHeight() + LINE_PADDING;
+        const x = this.rect.x + MARGIN;
+        let y = this.rect.y + MARGIN;
+        for (let i = 0; i < this.messages.length; i++) {
+            const msg = this.messages[i];
+            this.gui.app.drawString(msg.text, x, y, msg.color);
+            y += lineHeight;
+        }
+    }
+    handleInput() {
+        if (!this.gui) {
+            return false;
+        }
+        if (this.gui.app.mouse.isClicked()) {
+            this.visible = false;
+        }
+        return false;
+    }
+}
+exports.TooltipDialog = TooltipDialog;
+
+
+/***/ }),
+
+/***/ "./src/index.ts":
+/*!**********************!*\
+  !*** ./src/index.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./ability */ "./src/ability.ts"));
+__export(__webpack_require__(/*! ./actor */ "./src/actor.ts"));
+__export(__webpack_require__(/*! ./ai/ai */ "./src/ai/ai.ts"));
+__export(__webpack_require__(/*! ./ai/basicmonster */ "./src/ai/basicmonster.ts"));
+__export(__webpack_require__(/*! ./ai/confusedmonster */ "./src/ai/confusedmonster.ts"));
+__export(__webpack_require__(/*! ./app */ "./src/app.ts"));
+__export(__webpack_require__(/*! ./appstate */ "./src/appstate.ts"));
+__export(__webpack_require__(/*! ./color */ "./src/color.ts"));
+__export(__webpack_require__(/*! ./colors */ "./src/colors.ts"));
+__export(__webpack_require__(/*! ./effects/bumpeffect */ "./src/effects/bumpeffect.ts"));
+__export(__webpack_require__(/*! ./effects/effect */ "./src/effects/effect.ts"));
+__export(__webpack_require__(/*! ./effects/fadeineffect */ "./src/effects/fadeineffect.ts"));
+__export(__webpack_require__(/*! ./effects/fadeouteffect */ "./src/effects/fadeouteffect.ts"));
+__export(__webpack_require__(/*! ./effects/floatingtexteffect */ "./src/effects/floatingtexteffect.ts"));
+__export(__webpack_require__(/*! ./effects/projectileeffect */ "./src/effects/projectileeffect.ts"));
+__export(__webpack_require__(/*! ./effects/slideeffect */ "./src/effects/slideeffect.ts"));
+__export(__webpack_require__(/*! ./entity */ "./src/entity.ts"));
+__export(__webpack_require__(/*! ./game */ "./src/game.ts"));
+__export(__webpack_require__(/*! ./gui */ "./src/gui.ts"));
+__export(__webpack_require__(/*! ./gui/button */ "./src/gui/button.ts"));
+__export(__webpack_require__(/*! ./gui/buttonslot */ "./src/gui/buttonslot.ts"));
+__export(__webpack_require__(/*! ./gui/complexselectdialog */ "./src/gui/complexselectdialog.ts"));
+__export(__webpack_require__(/*! ./gui/dialog */ "./src/gui/dialog.ts"));
+__export(__webpack_require__(/*! ./gui/dialogrenderer */ "./src/gui/dialogrenderer.ts"));
+__export(__webpack_require__(/*! ./gui/itembutton */ "./src/gui/itembutton.ts"));
+__export(__webpack_require__(/*! ./gui/itemcontainerdialog */ "./src/gui/itemcontainerdialog.ts"));
+__export(__webpack_require__(/*! ./gui/itemshortcutbutton */ "./src/gui/itemshortcutbutton.ts"));
+__export(__webpack_require__(/*! ./gui/imagepanel */ "./src/gui/imagepanel.ts"));
+__export(__webpack_require__(/*! ./gui/panel */ "./src/gui/panel.ts"));
+__export(__webpack_require__(/*! ./gui/messagelog */ "./src/gui/messagelog.ts"));
+__export(__webpack_require__(/*! ./gui/messagepanel */ "./src/gui/messagepanel.ts"));
+__export(__webpack_require__(/*! ./gui/selectdialog */ "./src/gui/selectdialog.ts"));
+__export(__webpack_require__(/*! ./gui/shortcutbuttonslot */ "./src/gui/shortcutbuttonslot.ts"));
+__export(__webpack_require__(/*! ./gui/talentbutton */ "./src/gui/talentbutton.ts"));
+__export(__webpack_require__(/*! ./gui/talentsdialog */ "./src/gui/talentsdialog.ts"));
+__export(__webpack_require__(/*! ./input */ "./src/input.ts"));
+__export(__webpack_require__(/*! ./item */ "./src/item.ts"));
+__export(__webpack_require__(/*! ./keyboard */ "./src/keyboard.ts"));
+__export(__webpack_require__(/*! ./keys */ "./src/keys.ts"));
+__export(__webpack_require__(/*! ./message */ "./src/message.ts"));
+__export(__webpack_require__(/*! ./mouse */ "./src/mouse.ts"));
+__export(__webpack_require__(/*! ./path */ "./src/path.ts"));
+__export(__webpack_require__(/*! ./vec2 */ "./src/vec2.ts"));
+__export(__webpack_require__(/*! ./rect */ "./src/rect.ts"));
+__export(__webpack_require__(/*! ./rng */ "./src/rng.ts"));
+__export(__webpack_require__(/*! ./sprite */ "./src/sprite.ts"));
+__export(__webpack_require__(/*! ./talent */ "./src/talent.ts"));
+__export(__webpack_require__(/*! ./tilemap */ "./src/tilemap.ts"));
+
+
+/***/ }),
+
+/***/ "./src/input.ts":
+/*!**********************!*\
+  !*** ./src/input.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Input {
+    constructor() {
+        this.down = false;
+        this.downCount = 0;
+        this.upCount = 0;
+    }
+    update() {
+        if (this.down) {
+            this.downCount++;
+            this.upCount = 0;
+        }
+        else {
+            this.downCount = 0;
+            this.upCount++;
+        }
+    }
+}
+exports.Input = Input;
+
+
+/***/ }),
+
+/***/ "./src/item.ts":
+/*!*********************!*\
+  !*** ./src/item.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const entity_1 = __webpack_require__(/*! ./entity */ "./src/entity.ts");
+class Item extends entity_1.Entity {
+    onPickup(user) { }
+    onUse(user) {
+        return false;
+    }
+}
+exports.Item = Item;
+
+
+/***/ }),
+
+/***/ "./src/keyboard.ts":
+/*!*************************!*\
+  !*** ./src/keyboard.ts ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const input_1 = __webpack_require__(/*! ./input */ "./src/input.ts");
+/**
+ * Number of keys to track.
+ */
+const KEY_COUNT = 256;
+class Keyboard {
+    /**
+     * Creates a new keyboard module.
+     *
+     * @param el DOM el to attach listeners.
+     */
+    constructor(el) {
+        this.keys = new Array(KEY_COUNT);
+        for (let i = 0; i < KEY_COUNT; i++) {
+            this.keys[i] = new input_1.Input();
+        }
+        el.addEventListener('keydown', e => this.setKey(e, true));
+        el.addEventListener('keyup', e => this.setKey(e, false));
+    }
+    setKey(e, state) {
+        e.stopPropagation();
+        e.preventDefault();
+        const keyCode = e.keyCode;
+        if (keyCode >= 0 && keyCode < KEY_COUNT) {
+            this.keys[keyCode].down = state;
+        }
+    }
+    update() {
+        for (let i = 0; i < KEY_COUNT; i++) {
+            if (this.keys[i].down) {
+                this.keys[i].downCount++;
+            }
+            else {
+                this.keys[i].downCount = 0;
+            }
+        }
+    }
+    getKey(keyCode) {
+        return keyCode >= 0 && keyCode < KEY_COUNT ? this.keys[keyCode] : null;
+    }
+}
+exports.Keyboard = Keyboard;
+
+
+/***/ }),
+
+/***/ "./src/keys.ts":
+/*!*********************!*\
+  !*** ./src/keys.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Keys {
+}
+Keys.VK_CANCEL = 3;
+Keys.VK_HELP = 6;
+Keys.VK_BACK_SPACE = 8;
+Keys.VK_TAB = 9;
+Keys.VK_CLEAR = 12;
+Keys.VK_ENTER = 13;
+Keys.VK_SHIFT = 16;
+Keys.VK_CONTROL = 17;
+Keys.VK_ALT = 18;
+Keys.VK_PAUSE = 19;
+Keys.VK_CAPS_LOCK = 20;
+Keys.VK_ESCAPE = 27;
+Keys.VK_SPACE = 32;
+Keys.VK_PAGE_UP = 33;
+Keys.VK_PAGE_DOWN = 34;
+Keys.VK_END = 35;
+Keys.VK_HOME = 36;
+Keys.VK_LEFT = 37;
+Keys.VK_UP = 38;
+Keys.VK_RIGHT = 39;
+Keys.VK_DOWN = 40;
+Keys.VK_PRINTSCREEN = 44;
+Keys.VK_INSERT = 45;
+Keys.VK_DELETE = 46;
+Keys.VK_0 = 48;
+Keys.VK_1 = 49;
+Keys.VK_2 = 50;
+Keys.VK_3 = 51;
+Keys.VK_4 = 52;
+Keys.VK_5 = 53;
+Keys.VK_6 = 54;
+Keys.VK_7 = 55;
+Keys.VK_8 = 56;
+Keys.VK_9 = 57;
+Keys.VK_COLON = 58;
+Keys.VK_SEMICOLON = 59;
+Keys.VK_LESS_THAN = 60;
+Keys.VK_EQUALS = 61;
+Keys.VK_GREATER_THAN = 62;
+Keys.VK_QUESTION_MARK = 63;
+Keys.VK_AT = 64;
+Keys.VK_A = 65;
+Keys.VK_B = 66;
+Keys.VK_C = 67;
+Keys.VK_D = 68;
+Keys.VK_E = 69;
+Keys.VK_F = 70;
+Keys.VK_G = 71;
+Keys.VK_H = 72;
+Keys.VK_I = 73;
+Keys.VK_J = 74;
+Keys.VK_K = 75;
+Keys.VK_L = 76;
+Keys.VK_M = 77;
+Keys.VK_N = 78;
+Keys.VK_O = 79;
+Keys.VK_P = 80;
+Keys.VK_Q = 81;
+Keys.VK_R = 82;
+Keys.VK_S = 83;
+Keys.VK_T = 84;
+Keys.VK_U = 85;
+Keys.VK_V = 86;
+Keys.VK_W = 87;
+Keys.VK_X = 88;
+Keys.VK_Y = 89;
+Keys.VK_Z = 90;
+Keys.VK_CONTEXT_MENU = 93;
+Keys.VK_NUMPAD0 = 96;
+Keys.VK_NUMPAD1 = 97;
+Keys.VK_NUMPAD2 = 98;
+Keys.VK_NUMPAD3 = 99;
+Keys.VK_NUMPAD4 = 100;
+Keys.VK_NUMPAD5 = 101;
+Keys.VK_NUMPAD6 = 102;
+Keys.VK_NUMPAD7 = 103;
+Keys.VK_NUMPAD8 = 104;
+Keys.VK_NUMPAD9 = 105;
+Keys.VK_MULTIPLY = 106;
+Keys.VK_ADD = 107;
+Keys.VK_SEPARATOR = 108;
+Keys.VK_SUBTRACT = 109;
+Keys.VK_DECIMAL = 110;
+Keys.VK_DIVIDE = 111;
+Keys.VK_F1 = 112;
+Keys.VK_F2 = 113;
+Keys.VK_F3 = 114;
+Keys.VK_F4 = 115;
+Keys.VK_F5 = 116;
+Keys.VK_F6 = 117;
+Keys.VK_F7 = 118;
+Keys.VK_F8 = 119;
+Keys.VK_F9 = 120;
+Keys.VK_F10 = 121;
+Keys.VK_F11 = 122;
+Keys.VK_F12 = 123;
+Keys.VK_F13 = 124;
+Keys.VK_F14 = 125;
+Keys.VK_F15 = 126;
+Keys.VK_F16 = 127;
+Keys.VK_F17 = 128;
+Keys.VK_F18 = 129;
+Keys.VK_F19 = 130;
+Keys.VK_F20 = 131;
+Keys.VK_F21 = 132;
+Keys.VK_F22 = 133;
+Keys.VK_F23 = 134;
+Keys.VK_F24 = 135;
+Keys.VK_NUM_LOCK = 144;
+Keys.VK_SCROLL_LOCK = 145;
+Keys.VK_CIRCUMFLEX = 160;
+Keys.VK_EXCLAMATION = 161;
+Keys.VK_DOUBLE_QUOTE = 162;
+Keys.VK_HASH = 163;
+Keys.VK_DOLLAR = 164;
+Keys.VK_PERCENT = 165;
+Keys.VK_AMPERSAND = 166;
+Keys.VK_UNDERSCORE = 167;
+Keys.VK_OPEN_PAREN = 168;
+Keys.VK_CLOSE_PAREN = 169;
+Keys.VK_ASTERISK = 170;
+Keys.VK_PLUS = 171;
+Keys.VK_PIPE = 172;
+Keys.VK_HYPHEN_MINUS = 173;
+Keys.VK_OPEN_CURLY_BRACKET = 174;
+Keys.VK_CLOSE_CURLY_BRACKET = 175;
+Keys.VK_TILDE = 176;
+Keys.VK_COMMA = 188;
+Keys.VK_PERIOD = 190;
+Keys.VK_SLASH = 191;
+Keys.VK_BACK_QUOTE = 192;
+Keys.VK_OPEN_BRACKET = 219;
+Keys.VK_BACK_SLASH = 220;
+Keys.VK_CLOSE_BRACKET = 221;
+Keys.VK_QUOTE = 222;
+Keys.VK_META = 224;
+Keys.VK_ALTGR = 225;
+Keys.VK_WIN = 91;
+Keys.VK_KANA = 21;
+Keys.VK_HANGUL = 21;
+Keys.VK_EISU = 22;
+Keys.VK_JUNJA = 23;
+Keys.VK_FINAL = 24;
+Keys.VK_HANJA = 25;
+Keys.VK_KANJI = 25;
+Keys.VK_CONVERT = 28;
+Keys.VK_NONCONVERT = 29;
+Keys.VK_ACCEPT = 30;
+Keys.VK_MODECHANGE = 31;
+Keys.VK_SELECT = 41;
+Keys.VK_PRINT = 42;
+Keys.VK_EXECUTE = 43;
+Keys.VK_SLEEP = 95;
+exports.Keys = Keys;
+
+
+/***/ }),
+
+/***/ "./src/message.ts":
+/*!************************!*\
+  !*** ./src/message.ts ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Message {
+    constructor(text, color) {
+        this.text = text;
+        this.color = color;
+    }
+}
+exports.Message = Message;
+
+
+/***/ }),
+
+/***/ "./src/mouse.ts":
+/*!**********************!*\
+  !*** ./src/mouse.ts ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const input_1 = __webpack_require__(/*! ./input */ "./src/input.ts");
+const rect_1 = __webpack_require__(/*! ./rect */ "./src/rect.ts");
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+const MIN_DRAG_DISTANCE = 4;
+const LONG_PRESS_TICKS = 30;
+class Mouse extends input_1.Input {
+    constructor(app) {
+        super();
+        this.app = app;
+        this.prev = new vec2_1.Vec2(0, 0);
+        this.start = new vec2_1.Vec2(0, 0);
+        this.x = 0;
+        this.y = 0;
+        this.dx = 0;
+        this.dy = 0;
+        this.dragDistance = 0;
+        this.longPress = false;
+        const el = app.canvas;
+        const mouseEventHandler = this.handleEvent.bind(this);
+        el.addEventListener('mousedown', mouseEventHandler);
+        el.addEventListener('mouseup', mouseEventHandler);
+        el.addEventListener('mousemove', mouseEventHandler);
+        el.addEventListener('contextmenu', mouseEventHandler);
+        const touchEventHandler = this.handleTouchEvent.bind(this);
+        el.addEventListener('touchstart', touchEventHandler);
+        el.addEventListener('touchend', touchEventHandler);
+        el.addEventListener('touchcancel', touchEventHandler);
+        el.addEventListener('touchmove', touchEventHandler);
+    }
+    handleTouchEvent(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            this.updatePosition(touch.clientX, touch.clientY);
+        }
+        if (e.type === 'touchstart') {
+            this.down = true;
+            this.prev.x = this.x;
+            this.prev.y = this.y;
+            this.start.x = this.x;
+            this.start.y = this.y;
+            this.dx = 0;
+            this.dy = 0;
+            this.dragDistance = 0;
+        }
+        if (e.type === 'touchend') {
+            this.down = false;
+            this.longPress = this.downCount >= LONG_PRESS_TICKS;
+        }
+    }
+    handleEvent(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        this.updatePosition(e.clientX, e.clientY);
+        if (e.type === 'mousedown') {
+            this.down = true;
+            this.start.x = this.x;
+            this.start.y = this.y;
+            this.dragDistance = 0;
+            this.app.canvas.focus();
+        }
+        if (e.type === 'mouseup') {
+            this.down = false;
+            this.longPress = this.downCount >= LONG_PRESS_TICKS;
+        }
+    }
+    updatePosition(clientX, clientY) {
+        let rect = this.app.canvas.getBoundingClientRect();
+        // If the client rect is not the same aspect ratio as canvas,
+        // then we are fullscreen.
+        // Need to update client rect accordingly.
+        const terminalAspectRatio = this.app.size.width / this.app.size.height;
+        const rectAspectRatio = rect.width / rect.height;
+        if (rectAspectRatio - terminalAspectRatio > 0.01) {
+            const actualWidth = terminalAspectRatio * rect.height;
+            const excess = rect.width - actualWidth;
+            rect = new rect_1.Rect(Math.floor(excess / 2), 0, actualWidth, rect.height);
+        }
+        if (rectAspectRatio - terminalAspectRatio < -0.01) {
+            const actualHeight = rect.width / terminalAspectRatio;
+            const excess = rect.height - actualHeight;
+            rect = new rect_1.Rect(0, Math.floor(excess / 2), rect.width, actualHeight);
+        }
+        this.x = (this.app.size.width * (clientX - rect.left) / rect.width) | 0;
+        this.y = (this.app.size.height * (clientY - rect.top) / rect.height) | 0;
+    }
+    update() {
+        super.update();
+        this.dx = this.x - this.prev.x;
+        this.dy = this.y - this.prev.y;
+        this.prev.x = this.x;
+        this.prev.y = this.y;
+        if (this.down) {
+            this.dragDistance += Math.abs(this.dx) + Math.abs(this.dy);
+        }
+    }
+    isClicked() {
+        return this.upCount === 1 && this.dragDistance < MIN_DRAG_DISTANCE && !this.longPress;
+    }
+    isDragging() {
+        return this.down && this.dragDistance > MIN_DRAG_DISTANCE;
+    }
+    isLongPress() {
+        return this.downCount === LONG_PRESS_TICKS && !this.isDragging();
+    }
+}
+exports.Mouse = Mouse;
+
+
+/***/ }),
+
+/***/ "./src/path.ts":
+/*!*********************!*\
+  !*** ./src/path.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
+// const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
+// const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
+const dxs = [0, -1, 1, 0];
+const dys = [-1, 0, 0, 1];
+const costs = [1, 1, 1, 1];
+/**
+ * Calculates Dijkstra's algorithm.
+ *
+ * @param {!Object} source Starting point, must have x and y properties.
+ * @param {!Object=} dest Optional destination point, must have x and y properties.
+ * @param {!number=} maxDist Optional maximum distance to examine.
+ * @return {?Array} Array of steps if destination found; null otherwise.
+ */
+function computePath(map, source, dest, maxDist) {
+    clearDijkstra(map, dest);
+    const sourceCell = map.grid[source.y][source.x];
+    sourceCell.g = 0.0;
+    const q = [sourceCell];
+    while (q.length > 0) {
+        const u = getMinCell(q);
+        if (u.x === dest.x && u.y === dest.y) {
+            return buildPath(u);
+        }
+        for (let i = 0; i < dxs.length; i++) {
+            const x = u.x + dxs[i];
+            const y = u.y + dys[i];
+            if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
+                const v = map.grid[y][x];
+                const alt = u.g + costs[i];
+                if (alt < v.g && alt <= maxDist && !map.grid[y][x].blocked) {
+                    v.g = alt;
+                    v.prev = u;
+                    q.push(v);
+                }
+            }
+        }
+    }
+    return undefined;
+}
+exports.computePath = computePath;
+function clearDijkstra(map, dest) {
+    for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+            const cell = map.grid[y][x];
+            cell.g = Infinity;
+            cell.h = Math.min(Math.abs(x - dest.x), Math.abs(y - dest.y));
+            cell.prev = null;
+        }
+    }
+}
+function getMinCell(q) {
+    let bestCell = null;
+    let bestIndex = -1;
+    let minDist = Infinity;
+    for (let i = 0; i < q.length; i++) {
+        const cell = q[i];
+        if (cell.g !== Infinity && cell.g + cell.h < minDist) {
+            bestCell = cell;
+            bestIndex = i;
+            minDist = cell.g + cell.h;
+        }
+    }
+    q.splice(bestIndex, 1);
+    return bestCell;
+}
+function buildPath(cell) {
+    const result = [];
+    let curr = cell;
+    while (curr) {
+        result.push(curr);
+        curr = curr.prev;
+    }
+    result.reverse();
+    return result;
+}
+
+
+/***/ }),
+
+/***/ "./src/rect.ts":
+/*!*********************!*\
+  !*** ./src/rect.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+class Rect extends vec2_1.Vec2 {
+    constructor(x, y, width, height) {
+        super(x, y);
+        this.width = width;
+        this.height = height;
+    }
+    get x1() {
+        return this.x;
+    }
+    get y1() {
+        return this.y;
+    }
+    get x2() {
+        return this.x + this.width;
+    }
+    get y2() {
+        return this.y + this.height;
+    }
+    get left() {
+        return this.x;
+    }
+    get top() {
+        return this.y;
+    }
+    clone() {
+        return new Rect(this.x, this.y, this.width, this.height);
+    }
+    getCenter() {
+        return new vec2_1.Vec2(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
+    }
+    intersects(other) {
+        return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 && this.y2 >= other.y;
+    }
+    contains(point) {
+        return point.x >= this.x && point.x <= this.x2 && point.y >= this.y && point.y <= this.y2;
+    }
+}
+exports.Rect = Rect;
+
+
+/***/ }),
+
+/***/ "./src/renderset.ts":
+/*!**************************!*\
+  !*** ./src/renderset.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const glutils_1 = __webpack_require__(/*! ./glutils */ "./src/glutils.ts");
+/**
+ * Maximum number of elements per buffer.
+ *
+ * Some browsers / video cards allow large buffers, but 16-bit is the safe max.
+ * https://stackoverflow.com/a/5018021/2051724
+ *
+ * @const {number}
+ */
+const BUFFER_SIZE = 65536;
+const spriteVertexShader = 'uniform vec2 u_viewportSize;' +
+    'attribute vec2 a_position;' +
+    'attribute vec2 a_texCoord;' +
+    'attribute vec4 a_color;' +
+    'varying vec2 v_texCoord;' +
+    'varying vec4 v_color;' +
+    'void main() {' +
+    // convert the rectangle from pixels to 0.0 to 1.0
+    'vec2 zeroToOne = a_position / u_viewportSize;' +
+    // convert from 0->1 to 0->2
+    'vec2 zeroToTwo = zeroToOne * 2.0;' +
+    // convert from 0->2 to -1->+1 (clipspace)
+    'vec2 clipSpace = zeroToTwo - 1.0;' +
+    'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);' +
+    // pass the texCoord to the fragment shader
+    // The GPU will interpolate this value between points.
+    'v_texCoord = a_texCoord;' +
+    'v_color = a_color;' +
+    '}';
+const spriteFragmentShader = 'precision highp float;' +
+    // our texture
+    'uniform sampler2D u_image;' +
+    // the texCoords passed in from the vertex shader.
+    'varying vec2 v_texCoord;' +
+    // the color overrides passed in from the vertex shader.
+    'varying vec4 v_color;' +
+    'void main() {' +
+    'gl_FragColor = texture2D(u_image, v_texCoord);' +
+    'if (gl_FragColor.a < 0.1) discard;' +
+    'if (v_color.a != 0.0) gl_FragColor = v_color;' +
+    '}';
+class RenderSet {
+    constructor(gl, url, font) {
+        this.gl = gl;
+        this.font = font;
+        const program = glutils_1.initShaderProgram(gl, spriteVertexShader, spriteFragmentShader);
+        this.program = program;
+        this.viewportSizeLocation = gl.getUniformLocation(program, 'u_viewportSize');
+        this.positionLocation = gl.getAttribLocation(program, 'a_position');
+        this.texcoordLocation = gl.getAttribLocation(program, 'a_texCoord');
+        this.colorLocation = gl.getAttribLocation(program, 'a_color');
+        this.positionBuffer = gl.createBuffer();
+        this.texcoordBuffer = gl.createBuffer();
+        this.colorBuffer = gl.createBuffer();
+        this.spriteTexture = glutils_1.createTexture(gl, url);
+        this.positionArray = new Float32Array(BUFFER_SIZE);
+        this.positionArrayIndex = 0;
+        this.texcoordArray = new Float32Array(BUFFER_SIZE);
+        this.texcoordArrayIndex = 0;
+        this.colorUint8Array = new Uint8Array(BUFFER_SIZE);
+        this.colorDataView = new DataView(this.colorUint8Array.buffer);
+        this.colorArrayIndex = 0;
+    }
+    /**
+     * Draws a string horizontally centered.
+     * @param {string} str The text string to draw.
+     * @param {number} x The x-coordinate of the center.
+     * @param {number} y The y-coordinate of the top-left corner.
+     * @param {number=} color Optional color.
+     */
+    drawCenteredString(str, x, y, color) {
+        const x2 = x - (this.font.getStringWidth(str) / 2) | 0;
+        this.drawString(str, x2, y, color);
+    }
+    /**
+     * Draws a right-aligned string.
+     * @param {string} str The text string to draw.
+     * @param {number} x The x-coordinate of the top-right corner.
+     * @param {number} y The y-coordinate of the top-right corner.
+     * @param {number=} color Optional color.
+     */
+    drawRightString(str, x, y, color) {
+        const x2 = x - this.font.getStringWidth(str);
+        this.drawString(str, x2, y, color);
+    }
+    /**
+     * Draws a string.
+     * @param {string} str The text string to draw.
+     * @param {number} x0 The x-coordinate of the top-left corner.
+     * @param {number} y0 The y-coordinate of the top-left corner.
+     * @param {number=} color Optional color.
+     */
+    drawString(str, x0, y0, color) {
+        const lines = str.split('\n');
+        const height = this.font.getHeight();
+        let y = y0;
+        for (let i = 0; i < lines.length; i++) {
+            let x = x0;
+            for (let j = 0; j < lines[i].length; j++) {
+                const charCode = lines[i].charCodeAt(j);
+                if (this.font.isInRange(charCode)) {
+                    const offset = this.font.getOffset(charCode);
+                    const width = this.font.getWidth(charCode);
+                    this.drawImage(x, y, offset, 0, width, height, color);
+                    x += width;
+                }
+            }
+            y += height;
+        }
+    }
+    /**
+     * Draws a character.
+     * @param {number} c The ASCII character code.
+     * @param {number} x The x-coordinate of the top-left corner.
+     * @param {number} y The y-coordinate of the top-left corner.
+     * @param {number=} color Optional color.
+     */
+    drawChar(c, x, y, color) {
+        if (this.font.isInRange(c)) {
+            const offset = this.font.getOffset(c);
+            const width = this.font.getWidth(c);
+            const height = this.font.getHeight();
+            this.drawImage(x, y, offset, 0, width, height, color);
+        }
+    }
+    /**
+     * Draws a sprite.
+     * @param {number} x The x-coordinate of the top-left corner on the screen.
+     * @param {number} y The y-coordinate of the top-left corner on the screen.
+     * @param {number} u The x-coordinate of the top-left corner on the sprite sheet.
+     * @param {number} v The y-coordinate of the top-left corner on the sprite sheet.
+     * @param {number} w The width of the sprite.
+     * @param {number} h The height of the sprite.
+     * @param {number=} color Optional color.
+     * @param {number=} dw Optional destination width.
+     * @param {number=} dh Optional destination height.
+     */
+    drawImage(x, y, u, v, w, h, optColor, optDw, optDh) {
+        const spriteTexture = this.spriteTexture;
+        if (!spriteTexture.loaded) {
+            return;
+        }
+        const dw = optDw !== undefined ? optDw : w;
+        const dh = optDh !== undefined ? optDh : h;
+        const x2 = x + Math.abs(dw);
+        const y2 = y + dh;
+        const tx = u / spriteTexture.width;
+        const ty = v / spriteTexture.height;
+        const tx2 = (u + w) / spriteTexture.width;
+        const ty2 = (v + h) / spriteTexture.height;
+        const color = optColor || 0;
+        // First triangle
+        this.positionArray[this.positionArrayIndex++] = x;
+        this.positionArray[this.positionArrayIndex++] = y;
+        this.positionArray[this.positionArrayIndex++] = x2;
+        this.positionArray[this.positionArrayIndex++] = y;
+        this.positionArray[this.positionArrayIndex++] = x;
+        this.positionArray[this.positionArrayIndex++] = y2;
+        this.texcoordArray[this.texcoordArrayIndex++] = tx;
+        this.texcoordArray[this.texcoordArrayIndex++] = ty;
+        this.texcoordArray[this.texcoordArrayIndex++] = tx2;
+        this.texcoordArray[this.texcoordArrayIndex++] = ty;
+        this.texcoordArray[this.texcoordArrayIndex++] = tx;
+        this.texcoordArray[this.texcoordArrayIndex++] = ty2;
+        // Second triangle
+        this.positionArray[this.positionArrayIndex++] = x;
+        this.positionArray[this.positionArrayIndex++] = y2;
+        this.positionArray[this.positionArrayIndex++] = x2;
+        this.positionArray[this.positionArrayIndex++] = y;
+        this.positionArray[this.positionArrayIndex++] = x2;
+        this.positionArray[this.positionArrayIndex++] = y2;
+        this.texcoordArray[this.texcoordArrayIndex++] = tx;
+        this.texcoordArray[this.texcoordArrayIndex++] = ty2;
+        this.texcoordArray[this.texcoordArrayIndex++] = tx2;
+        this.texcoordArray[this.texcoordArrayIndex++] = ty;
+        this.texcoordArray[this.texcoordArrayIndex++] = tx2;
+        this.texcoordArray[this.texcoordArrayIndex++] = ty2;
+        for (let i = 0; i < 6; i++) {
+            this.colorDataView.setUint32(this.colorArrayIndex, color, false);
+            this.colorArrayIndex += 4;
+        }
+    }
+    /**
+     * Renders all sprites in the sprite buffers to the screen.
+     * @param {number} width Viewport width.
+     * @param {number} height Viewport height.
+     */
+    flush(width, height) {
+        if (!this.spriteTexture.loaded || this.positionArrayIndex === 0) {
+            return;
+        }
+        const gl = this.gl;
+        // Tell it to use our program (pair of shaders)
+        gl.useProgram(this.program);
+        // Update the viewport
+        gl.uniform2f(this.viewportSizeLocation, width, height);
+        // Use the leonardo spriteTexture
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.spriteTexture);
+        {
+            // Bind the position buffer.
+            gl.enableVertexAttribArray(this.positionLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this.positionArray, gl.DYNAMIC_DRAW);
+            // Tell the position attribute how to get data out of positionBuffer
+            // (ARRAY_BUFFER)
+            const size = 2; // 2 components per iteration
+            const type = gl.FLOAT; // the data is 32bit floats
+            const normalize = false; // don't normalize the data
+            const stride = 0; // 0 = move forward size * sizeof(type) each iteration
+            // to get the next position
+            const offset = 0; // start at the beginning of the buffer
+            gl.vertexAttribPointer(this.positionLocation, size, type, normalize, stride, offset);
+        }
+        {
+            // Bind the texture coordinate buffer.
+            gl.enableVertexAttribArray(this.texcoordLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.texcoordBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this.texcoordArray, gl.DYNAMIC_DRAW);
+            // Tell the position attribute how to get data out of positionBuffer
+            // (ARRAY_BUFFER)
+            const size = 2; // 2 components per iteration
+            const type = gl.FLOAT; // the data is 32bit floats
+            const normalize = false; // don't normalize the data
+            const stride = 0; // 0 = move forward size * sizeof(type) each iteration
+            // to get the next position
+            const offset = 0; // start at the beginning of the buffer
+            gl.vertexAttribPointer(this.texcoordLocation, size, type, normalize, stride, offset);
+        }
+        {
+            // Bind the color buffer.
+            gl.enableVertexAttribArray(this.colorLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this.colorUint8Array, gl.DYNAMIC_DRAW);
+            // Tell the position attribute how to get data out of positionBuffer
+            // (ARRAY_BUFFER)
+            const size = 4; // 4 components per iteration
+            const type = gl.UNSIGNED_BYTE; // the data is 8-bit unsigned bytes
+            const normalize = true; // Normalize from 0-255 to 0.0-1.0
+            const stride = 0; // 0 = move forward size * sizeof(type) each iteration
+            // to get the next position
+            const offset = 0; // start at the beginning of the buffer
+            gl.vertexAttribPointer(this.colorLocation, size, type, normalize, stride, offset);
+        }
+        // Draw the rectangle.
+        const primitiveType = gl.TRIANGLES;
+        const offset = 0;
+        const count = this.positionArrayIndex / 2;
+        gl.drawArrays(primitiveType, offset, count);
+    }
+}
+exports.RenderSet = RenderSet;
+
+
+/***/ }),
+
+/***/ "./src/rng.ts":
+/*!********************!*\
+  !*** ./src/rng.ts ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Random number generator.
+ *
+ * LCG
+ * https://stackoverflow.com/a/424445/2051724
+ */
+class RNG {
+    /**
+     * Creates a new random number generator.
+     *
+     * @param seed The integer seed.
+     */
+    constructor(seed) {
+        // LCG using GCC's constants
+        this.m = 0x80000000; // 2**31;
+        this.a = 1103515245;
+        this.c = 12345;
+        this.state = seed || 1;
+    }
+    setSeed(seed) {
+        this.state = seed;
+    }
+    nextInt() {
+        this.state = (this.a * this.state + this.c) % this.m;
+        return this.state;
+    }
+    /**
+     * Returns a floating point number between 0.0 and 1.0.
+     */
+    nextFloat() {
+        // returns in range [0,1]
+        return this.nextInt() / (this.m - 1);
+    }
+    /**
+     * Returns an integer in the range start (inclusive) to end (exclusive).
+     * @param start Lower bound, inclusive.
+     * @param end Upper bound, exclusive.
+     */
+    nextRange(start, end) {
+        // returns in range [start, end): including start, excluding end
+        // can't modulu nextInt because of weak randomness in lower bits
+        const rangeSize = end - start;
+        const randomUnder1 = this.nextInt() / this.m;
+        return start + ((randomUnder1 * rangeSize) | 0);
+    }
+    chooseIndex(chances) {
+        const total = chances.reduce((a, b) => a + b);
+        const roll = this.nextRange(1, total + 1);
+        let runningTotal = 0;
+        for (let i = 0; i < chances.length; i++) {
+            runningTotal += chances[i];
+            if (roll <= runningTotal) {
+                return i;
+            }
+        }
+        return chances.length - 1;
+    }
+    chooseKey(chancesMap) {
+        const values = [];
+        const chances = [];
+        for (const property in chancesMap) {
+            if (chancesMap.hasOwnProperty(property)) {
+                values.push(property);
+                chances.push(chancesMap[property]);
+            }
+        }
+        return values[this.chooseIndex(chances)];
+    }
+}
+exports.RNG = RNG;
+
+
+/***/ }),
+
+/***/ "./src/sprite.ts":
+/*!***********************!*\
+  !*** ./src/sprite.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const rect_1 = __webpack_require__(/*! ./rect */ "./src/rect.ts");
+const DEFAULT_TICKS_PER_FRAME = 30;
+class Sprite extends rect_1.Rect {
+    constructor(x, y, width, height, frames, loop, ticksPerFrame, colorOverride) {
+        super(x, y, width, height);
+        this.frames = frames || 1;
+        this.loop = !!loop;
+        this.ticksPerFrame = ticksPerFrame || DEFAULT_TICKS_PER_FRAME;
+        this.colorOverride = colorOverride;
+        this.animIndex = 0;
+        this.animDelay = 0;
+    }
+    draw(app, x, y, colorOverride) {
+        let frame = this.animIndex;
+        if (this.loop) {
+            frame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
+        }
+        const u = this.x + frame * this.width;
+        const v = this.y;
+        const color = colorOverride || this.colorOverride;
+        app.drawImage(x, y, u, v, this.width, this.height, color);
+        this.animDelay++;
+        if (this.animDelay > this.ticksPerFrame) {
+            this.animDelay = 0;
+            this.animIndex++;
+            if (this.animIndex >= this.frames) {
+                if (this.loop) {
+                    this.animIndex = 0;
+                }
+                else {
+                    this.animIndex = this.frames - 1;
+                }
+            }
+        }
+    }
+    static updateGlobalAnimations() {
+        Sprite.globalAnimIndex++;
+    }
+}
+Sprite.globalAnimIndex = 0;
+exports.Sprite = Sprite;
+
+
+/***/ }),
+
+/***/ "./src/talent.ts":
+/*!***********************!*\
+  !*** ./src/talent.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Talent {
+    constructor(actor, ability, rank) {
+        this.actor = actor;
+        this.ability = ability;
+        this.rank = rank || 1;
+        this.cooldown = 0;
+    }
+    use() {
+        if (this.cooldown > 0) {
+            // Ability still on cooldown
+            return false;
+        }
+        this.actor.cast(this.ability, () => {
+            this.cooldown = this.ability.cooldown;
+        });
+        return true;
+    }
+}
+exports.Talent = Talent;
+
+
+/***/ }),
+
+/***/ "./src/tilemap.ts":
+/*!************************!*\
+  !*** ./src/tilemap.ts ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const glutils_1 = __webpack_require__(/*! ./glutils */ "./src/glutils.ts");
+const vec2_1 = __webpack_require__(/*! ./vec2 */ "./src/vec2.ts");
+const TEXTURE_SIZE = 1024;
+// Shader
+const tilemapVS = 'precision highp float;' +
+    'attribute vec2 position;' +
+    'attribute vec2 texture;' +
+    'varying vec2 pixelCoord;' +
+    'varying vec2 texCoord;' +
+    'uniform vec2 viewOffset;' +
+    'uniform vec2 viewportSize;' +
+    'uniform vec2 tileSize;' +
+    'uniform vec2 mapSize;' +
+    'void main(void) {' +
+    '   pixelCoord = (texture * viewportSize) + viewOffset;' +
+    '   texCoord = pixelCoord / mapSize / tileSize;' +
+    '   gl_Position = vec4(position, 0.0, 1.0);' +
+    '}';
+const tilemapFS = 'precision highp float;' +
+    'varying vec2 pixelCoord;' +
+    'varying vec2 texCoord;' +
+    'uniform vec2 tileSize;' +
+    'uniform sampler2D tiles;' +
+    'uniform sampler2D sprites;' +
+    'void main(void) {' +
+    '   vec4 tile = texture2D(tiles, texCoord);' +
+    '   if(tile.x == 1.0 && tile.y == 1.0) { discard; }' +
+    '   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;' +
+    '   vec2 spriteCoord = mod(pixelCoord, tileSize);' +
+    '   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) / ' + TEXTURE_SIZE + '.0);' +
+    '   if (gl_FragColor.a == 0.0) discard;' +
+    '   gl_FragColor.a *= tile.a;' +
+    '}';
+class TileMapCell extends vec2_1.Vec2 {
+    constructor(x, y, tile) {
+        super(x, y);
+        this.tile = tile;
+        this.blocked = true;
+        this.blockedSight = true;
+        this.visible = false;
+        this.seen = false;
+        this.g = 0;
+        this.h = 0;
+        this.prev = null;
+    }
+}
+exports.TileMapCell = TileMapCell;
+/**
+ * @constructor
+ * @param {number} width
+ * @param {number} height
+ */
+class TileMapLayer {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.imageData = new Uint8Array(4 * width * height);
+        this.dimensions = new Float32Array([width, height]);
+        this.texture = null;
+        this.clear();
+    }
+    clear() {
+        for (let i = 0; i < this.imageData.length; i++) {
+            this.imageData[i] = 255;
+        }
+    }
+    setAlpha(x, y, alpha) {
+        this.imageData[4 * (y * this.width + x) + 3] = alpha;
+    }
+    initGl(gl) {
+        this.texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
+        // MUST be filtered with NEAREST or tile lookup fails
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    }
+    updateGl(gl) {
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.width, this.height, gl.RGBA, gl.UNSIGNED_BYTE, this.imageData);
+    }
+}
+exports.TileMapLayer = TileMapLayer;
+/**
+ * @constructor
+ * @param {number} width
+ * @param {number} height
+ * @param {number} layerCount
+ */
+class TileMap {
+    constructor(gl, width, height, layerCount) {
+        this.gl = gl;
+        this.width = width;
+        this.height = height;
+        this.grid = new Array(height);
+        this.layers = new Array(layerCount);
+        this.tileWidth = 16;
+        this.tileHeight = 16;
+        // Field-of-view state
+        // By default, everything is visible
+        this.originX = 0;
+        this.originY = 0;
+        this.minX = 0;
+        this.maxX = width - 1;
+        this.minY = 0;
+        this.maxY = height - 1;
+        for (let y = 0; y < height; y++) {
+            this.grid[y] = new Array(width);
+            for (let x = 0; x < width; x++) {
+                this.grid[y][x] = new TileMapCell(x, y, 0);
+            }
+        }
+        for (let i = 0; i < layerCount; i++) {
+            this.layers[i] = new TileMapLayer(width, height);
+        }
+        const quadVerts = [
+            // x  y  u  v
+            -1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0,
+            -1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 0, 0
+        ];
+        this.quadVertBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.quadVertBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW);
+        this.tilemapShader = glutils_1.initShaderProgram(gl, tilemapVS, tilemapFS);
+        this.positionAttribute = gl.getAttribLocation(this.tilemapShader, 'position');
+        this.textureAttribute = gl.getAttribLocation(this.tilemapShader, 'texture');
+        this.viewportSizeUniform = gl.getUniformLocation(this.tilemapShader, 'viewportSize');
+        this.viewOffsetUniform = gl.getUniformLocation(this.tilemapShader, 'viewOffset');
+        this.mapSizeUniform = gl.getUniformLocation(this.tilemapShader, 'mapSize');
+        this.tileSizeUniform = gl.getUniformLocation(this.tilemapShader, 'tileSize');
+        this.tileSamplerUniform = gl.getUniformLocation(this.tilemapShader, 'tiles');
+        this.spriteSamplerUniform = gl.getUniformLocation(this.tilemapShader, 'sprites');
+        for (let i = 0; i < this.layers.length; i++) {
+            this.layers[i].initGl(gl);
+        }
+    }
+    setTile(layerIndex, x, y, tile, blocked, blockedSight) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+            return;
+        }
+        if (layerIndex === 0) {
+            this.grid[y][x].tile = tile;
+            this.grid[y][x].blocked = !!blocked;
+            this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : !!blocked;
+        }
+        const layer = this.layers[layerIndex];
+        const ti = 4 * (y * layer.width + x);
+        const tx = tile === 0 ? 255 : ((tile - 1) % 64) | 0;
+        const ty = tile === 0 ? 255 : ((tile - 1) / 64) | 0;
+        layer.imageData[ti + 0] = tx;
+        layer.imageData[ti + 1] = ty;
+    }
+    getCell(tx, ty) {
+        if (tx < 0 || tx >= this.width || ty < 0 || ty >= this.height) {
+            return null;
+        }
+        return this.grid[ty][tx];
+    }
+    getTile(tx, ty) {
+        const cell = this.getCell(tx, ty);
+        return cell ? cell.tile : 0;
+    }
+    isBlocked(tx, ty) {
+        const cell = this.getCell(tx, ty);
+        return !cell || cell.blocked;
+    }
+    isVisible(x, y) {
+        if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
+            return false;
+        }
+        return this.grid[y][x].visible;
+    }
+    isSeen(tx, ty) {
+        const cell = this.getCell(tx, ty);
+        return cell && cell.seen;
+    }
+    setSeen(tx, ty, seen) {
+        const cell = this.getCell(tx, ty);
+        if (cell) {
+            cell.seen = seen;
+        }
+    }
+    draw(x, y, width, height) {
+        const gl = this.gl;
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.useProgram(this.tilemapShader);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.quadVertBuffer);
+        gl.enableVertexAttribArray(this.positionAttribute);
+        gl.enableVertexAttribArray(this.textureAttribute);
+        gl.vertexAttribPointer(this.positionAttribute, 2, gl.FLOAT, false, 16, 0);
+        gl.vertexAttribPointer(this.textureAttribute, 2, gl.FLOAT, false, 16, 8);
+        gl.uniform2f(this.viewOffsetUniform, x, y);
+        gl.uniform2f(this.viewportSizeUniform, width, height);
+        gl.uniform2f(this.tileSizeUniform, this.tileWidth, this.tileHeight);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.uniform1i(this.spriteSamplerUniform, 0);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.uniform1i(this.tileSamplerUniform, 1);
+        const tx1 = (x / this.tileWidth) | 0;
+        const ty1 = (y / this.tileHeight) | 0;
+        const tx2 = ((x + width) / this.tileWidth) | 0;
+        const ty2 = ((y + height) / this.tileHeight) | 0;
+        // Draw each layer of the map
+        for (let i = 0; i < this.layers.length; i++) {
+            const layer = this.layers[i];
+            for (let ty = ty1; ty <= ty2; ty++) {
+                for (let tx = tx1; tx <= tx2; tx++) {
+                    const alpha = this.isVisible(tx, ty) ? 255 : this.isSeen(tx, ty) ? 144 : 0;
+                    layer.setAlpha(tx, ty, alpha);
+                }
+            }
+            gl.uniform2fv(this.mapSizeUniform, layer.dimensions);
+            gl.bindTexture(gl.TEXTURE_2D, layer.texture);
+            layer.updateGl(gl);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+    }
+    resetFov() {
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                this.grid[y][x].seen = false;
+                this.grid[y][x].visible = false;
+            }
+        }
+    }
+    computeFov(originX, originY, radius) {
+        this.originX = originX;
+        this.originY = originY;
+        this.minX = Math.max(0, originX - radius);
+        this.minY = Math.max(0, originY - radius);
+        this.maxX = Math.min(this.width - 1, originX + radius);
+        this.maxY = Math.min(this.height - 1, originY + radius);
+        for (let y = this.minY; y <= this.maxY; y++) {
+            for (let x = this.minX; x <= this.maxX; x++) {
+                this.grid[y][x].seen = this.grid[y][x].seen || this.grid[y][x].visible;
+                this.grid[y][x].visible = false;
+            }
+        }
+        this.grid[originY][originX].visible = true;
+        this.computeOctantY(1, 1);
+        this.computeOctantX(1, 1);
+        this.computeOctantY(1, -1);
+        this.computeOctantX(1, -1);
+        this.computeOctantY(-1, 1);
+        this.computeOctantX(-1, 1);
+        this.computeOctantY(-1, -1);
+        this.computeOctantX(-1, -1);
+    }
+    /**
+     * Compute the FOV in an octant adjacent to the Y axis
+     */
+    computeOctantY(deltaX, deltaY) {
+        const startSlopes = [];
+        const endSlopes = [];
+        let iteration = 1;
+        let totalObstacles = 0;
+        let obstaclesInLastLine = 0;
+        let minSlope = 0;
+        let x;
+        let y;
+        let halfSlope;
+        let processedCell;
+        let visible;
+        let extended;
+        let centreSlope;
+        let startSlope;
+        let endSlope;
+        let previousEndSlope;
+        for (y = this.originY + deltaY; y >= this.minY && y <= this.maxY; y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
+            halfSlope = 0.5 / iteration;
+            previousEndSlope = -1;
+            for (processedCell = Math.floor(minSlope * iteration + 0.5), x = this.originX + (processedCell * deltaX); processedCell <= iteration && x >= this.minX && x <= this.maxX; x += deltaX, ++processedCell, previousEndSlope = endSlope) {
+                visible = true;
+                extended = false;
+                centreSlope = processedCell / iteration;
+                startSlope = previousEndSlope;
+                endSlope = centreSlope + halfSlope;
+                if (obstaclesInLastLine > 0) {
+                    if (!(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
+                        !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
+                        visible = false;
+                    }
+                    else {
+                        for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
+                            if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
+                                if (!this.grid[y][x].blockedSight) {
+                                    if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
+                                        visible = false;
+                                        break;
+                                    }
+                                }
+                                else {
+                                    if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
+                                        visible = false;
+                                        break;
+                                    }
+                                    else {
+                                        startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+                                        endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+                                        extended = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (visible) {
+                    this.grid[y][x].visible = true;
+                    if (this.grid[y][x].blockedSight) {
+                        if (minSlope >= startSlope) {
+                            minSlope = endSlope;
+                        }
+                        else if (!extended) {
+                            startSlopes[totalObstacles] = startSlope;
+                            endSlopes[totalObstacles++] = endSlope;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * Compute the FOV in an octant adjacent to the X axis
+     */
+    computeOctantX(deltaX, deltaY) {
+        const startSlopes = [];
+        const endSlopes = [];
+        let iteration = 1;
+        let totalObstacles = 0;
+        let obstaclesInLastLine = 0;
+        let minSlope = 0;
+        let x;
+        let y;
+        let halfSlope;
+        let processedCell;
+        let visible;
+        let extended;
+        let centreSlope;
+        let startSlope;
+        let endSlope;
+        let previousEndSlope;
+        for (x = this.originX + deltaX; x >= this.minX && x <= this.maxX; x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
+            halfSlope = 0.5 / iteration;
+            previousEndSlope = -1;
+            for (processedCell = Math.floor(minSlope * iteration + 0.5), y = this.originY + (processedCell * deltaY); processedCell <= iteration && y >= this.minY && y <= this.maxY; y += deltaY, ++processedCell, previousEndSlope = endSlope) {
+                visible = true;
+                extended = false;
+                centreSlope = processedCell / iteration;
+                startSlope = previousEndSlope;
+                endSlope = centreSlope + halfSlope;
+                if (obstaclesInLastLine > 0) {
+                    if (!(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
+                        !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
+                        visible = false;
+                    }
+                    else {
+                        for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
+                            if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
+                                if (!this.grid[y][x].blockedSight) {
+                                    if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
+                                        visible = false;
+                                        break;
+                                    }
+                                }
+                                else {
+                                    if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
+                                        visible = false;
+                                        break;
+                                    }
+                                    else {
+                                        startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+                                        endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+                                        extended = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (visible) {
+                    this.grid[y][x].visible = true;
+                    if (this.grid[y][x].blockedSight) {
+                        if (minSlope >= startSlope) {
+                            minSlope = endSlope;
+                        }
+                        else if (!extended) {
+                            startSlopes[totalObstacles] = startSlope;
+                            endSlopes[totalObstacles++] = endSlope;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+exports.TileMap = TileMap;
+
+
+/***/ }),
+
+/***/ "./src/vec2.ts":
+/*!*********************!*\
+  !*** ./src/vec2.ts ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Vec2 {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    add(delta) {
+        this.x += delta.x;
+        this.y += delta.y;
+    }
+}
+exports.Vec2 = Vec2;
+
+
+/***/ }),
+
+/***/ "./src/xarray.ts":
+/*!***********************!*\
+  !*** ./src/xarray.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class XArray {
+    constructor() {
+        this.elements = [];
+    }
+    get length() {
+        return this.elements.length;
+    }
+    clear() {
+        this.elements.splice(0, this.elements.length);
+    }
+    get(index) {
+        return this.elements[index];
+    }
+    add(el) {
+        this.elements.push(el);
+        if (this.listeners) {
+            for (let i = 0; i < this.listeners.length; i++) {
+                this.listeners[i].onAdd(this, el);
+            }
+        }
+    }
+    remove(el) {
+        const index = this.elements.indexOf(el);
+        if (index >= 0) {
+            this.elements.splice(index, 1);
+            if (this.listeners) {
+                for (let i = 0; i < this.listeners.length; i++) {
+                    this.listeners[i].onRemove(this, el);
+                }
+            }
+        }
+    }
+    contains(el) {
+        return this.elements.indexOf(el) >= 0;
+    }
+    addListener(listener) {
+        if (!this.listeners) {
+            this.listeners = [];
+        }
+        this.listeners.push(listener);
+    }
+}
+exports.XArray = XArray;
+
+
+/***/ })
+
+/******/ });
+});
 //# sourceMappingURL=index.js.map
