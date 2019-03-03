@@ -339,6 +339,12 @@ export class Game extends AppState {
       return;
     }
 
+    if (this.player.ai) {
+      this.player.ai.doAi();
+      this.player.ap = 0;
+      return;
+    }
+
     const mouse = this.app.mouse;
     if (mouse.down || mouse.dx !== 0 || mouse.dy !== 0) {
       this.cursor.x = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
