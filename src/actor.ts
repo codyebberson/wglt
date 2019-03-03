@@ -151,9 +151,7 @@ export class Actor extends Entity {
   }
 
   addFloatingText(str: string, color: Color) {
-    const x = this.pixelX + (this.sprite.width / 2) | 0;
-    const y = this.pixelY - 4;
-    this.game.effects.push(new FloatingTextEffect(str, x, y, color));
+    this.game.effects.push(new FloatingTextEffect(this, str, color));
   }
 
   onAttack(target: Actor, damage: number) {}
