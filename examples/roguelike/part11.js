@@ -482,19 +482,8 @@ playerStats.drawContents = function () {
 };
 game.gui.add(playerStats);
 
-for (let i = 0; i < 6; i++) {
-    const buttonSlot = new wglt.ShortcutButtonSlot(
-        new wglt.Rect(1 + i * 26, 224 - 26, 24, 24),
-        wglt.Keys.VK_1 + i);
-    game.gui.add(buttonSlot);
-}
-
-const inventoryDialog = new wglt.ItemContainerDialog(
-    new wglt.Rect(40, 40, 110, 110),
-    16,
-    player.inventory);
-inventoryDialog.visible = false;
-game.gui.add(inventoryDialog);
+const shortcutBar = new wglt.ShortcutButtonBar(new wglt.Rect(1, 224 - 26, 26 * 6, 26), 6);
+game.gui.add(shortcutBar);
 
 const inventoryButton = new wglt.Button(
     new wglt.Rect(400 - 24, 224 - 24, 24, 24),
@@ -511,13 +500,6 @@ inventoryButton.tooltipMessages = [
 ];
 game.gui.add(inventoryButton);
 
-const talentsDialog = new wglt.TalentsDialog(
-    new wglt.Rect(40, 40, 110, 110),
-    16,
-    player.talents);
-talentsDialog.visible = false;
-game.gui.add(talentsDialog);
-
 const talentsButton = new wglt.Button(
     new wglt.Rect(400 - 48, 224 - 24, 24, 24),
     new wglt.Sprite(192, 16, 16, 16),
@@ -531,6 +513,36 @@ talentsButton.tooltipMessages = [
     new wglt.Message('character\'s talents.', wglt.Colors.YELLOW)
 ];
 game.gui.add(talentsButton);
+
+const inventoryDialog = new wglt.ItemContainerDialog(
+    new wglt.Rect(40, 40, 110, 110),
+    16,
+    player.inventory);
+inventoryDialog.visible = false;
+game.gui.add(inventoryDialog);
+
+const talentsDialog = new wglt.TalentsDialog(
+    new wglt.Rect(40, 40, 110, 110),
+    16,
+    player.talents);
+talentsDialog.visible = false;
+game.gui.add(talentsDialog);
+
+player.inventory.addListener({
+    onAdd: (_, item) => {
+        console.log('add item!', item);
+        shortcutBar.addItem(player.inventory, item, true);
+    },
+    onRemove: (_, talent) => { }
+});
+
+player.talents.addListener({
+    onAdd: (_, talent) => {
+        console.log('add talent!', talent);
+        shortcutBar.addTalent(talent);
+    },
+    onRemove: (_, talent) => { }
+});
 
 player.talents.add(new wglt.Talent(player, fireballAbility));
 player.talents.add(new wglt.Talent(player, lightningAbility));
