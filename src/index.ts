@@ -31,6 +31,7 @@ export * from './gui/panel';
 export * from './gui/messagelog';
 export * from './gui/messagepanel';
 export * from './gui/selectdialog';
+export * from './gui/shortcutbuttonbar';
 export * from './gui/shortcutbuttonslot';
 export * from './gui/talentbutton';
 export * from './gui/talentsdialog';

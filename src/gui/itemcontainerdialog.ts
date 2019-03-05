@@ -23,12 +23,13 @@ export class ItemContainerDialog extends Dialog {
     this.messages = messages;
     this.capacity = capacity;
     this.items = items;
+    this.modal = true;
 
     items.addListener({onAdd: (_, item) => this.addItem(item), onRemove: (_, item) => this.removeItem(item)});
 
     for (let i = 0; i < capacity; i++) {
       // Slots are repositioned at render time
-      this.add(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), items));
+      this.add(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), items, Keys.VK_A + i));
     }
   }
 
