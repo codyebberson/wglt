@@ -482,7 +482,7 @@ playerStats.drawContents = function () {
 };
 game.gui.add(playerStats);
 
-const shortcutBar = new wglt.ShortcutButtonBar(new wglt.Rect(1, 224 - 26, 26 * 6, 26), 6);
+const shortcutBar = new wglt.ShortcutBar(new wglt.Rect(1, 224 - 26, 26 * 6, 26), 6);
 game.gui.add(shortcutBar);
 
 const inventoryButton = new wglt.Button(

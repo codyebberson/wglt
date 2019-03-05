@@ -9,9 +9,14 @@ import {Panel} from './panel';
 import {ShortcutButtonSlot} from './shortcutbuttonslot';
 import {TalentButton} from './talentbutton';
 
-export class ShortcutButtonBar extends Panel {
-  constructor(rect: Rect, count: number) {
+const DEFAULT_SPACING = 2;
+
+export class ShortcutBar extends Panel {
+  spacing: number;
+
+  constructor(rect: Rect, count: number, spacing?: number) {
     super(rect);
+    this.spacing = spacing !== undefined ? spacing : DEFAULT_SPACING;
 
     for (let i = 0; i < count; i++) {
       const buttonSlot = new ShortcutButtonSlot(new Rect(0, 0, 24, 24), Keys.VK_1 + i);
@@ -71,8 +76,8 @@ export class ShortcutButtonBar extends Panel {
 
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children.get(i);
-      child.rect.x = this.rect.x + 1 + i * (buttonRect.width + 2);
-      child.rect.y = this.rect.y + 1;
+      child.rect.x = this.rect.x + i * (buttonRect.width + DEFAULT_SPACING);
+      child.rect.y = this.rect.y;
       child.rect.width = buttonRect.width;
       child.rect.height = buttonRect.height;
     }
