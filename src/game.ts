@@ -446,9 +446,6 @@ export class Game extends AppState {
       return;
     }
 
-    // TODO: Figure out the right place for this viewport update logic
-    this.recalculateViewportFocus();
-
     const destX = player.x + dx;
     const destY = player.y + dy;
 
@@ -472,30 +469,31 @@ export class Game extends AppState {
       return;
     }
 
-    // Find the bounds of all visible actors
+    // Find the bounds of desired area
     let minX = player.pixelX;
     let minY = player.pixelY;
     let maxX = minX + player.sprite.width;
     let maxY = minY + player.sprite.height;
 
-    for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
-      if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
-        minX = Math.min(minX, entity.pixelX);
-        minY = Math.min(minY, entity.pixelY);
-        maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
-        maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
-      }
-    }
-
-    // If there is a walking path, include that in the bounding rect
     if (this.path) {
+      // If there is an auto-walk path, use that
       for (let i = this.pathIndex; i < this.path.length; i++) {
         const pathTile = this.path[i];
         minX = Math.min(minX, pathTile.x * this.tileSize.width);
         minY = Math.min(minY, pathTile.y * this.tileSize.height);
         maxX = Math.max(maxX, (pathTile.x + 1) * this.tileSize.width);
         maxY = Math.max(maxY, (pathTile.y + 1) * this.tileSize.height);
+      }
+    } else {
+      // Otherwise, use all visible entities.
+      for (let i = 0; i < this.entities.length; i++) {
+        const entity = this.entities[i];
+        if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
+          minX = Math.min(minX, entity.pixelX);
+          minY = Math.min(minY, entity.pixelY);
+          maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
+          maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
+        }
       }
     }
 
@@ -521,6 +519,7 @@ export class Game extends AppState {
       // Update FOV
       if (this.player && this.tileMap) {
         this.recomputeFov();
+        this.recalculateViewportFocus();
       }
 
       // Sort entities by distance from player
