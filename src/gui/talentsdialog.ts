@@ -18,12 +18,13 @@ export class TalentsDialog extends Dialog {
     super(rect);
     this.capacity = capacity;
     this.talents = talents;
+    this.modal = true;
 
     talents.addListener({onAdd: (_, talent) => this.addItem(talent), onRemove: (_, talent) => this.removeItem(talent)});
 
     for (let i = 0; i < capacity; i++) {
       // Slots are repositioned at render time
-      this.add(new ButtonSlot(new Rect(0, 0, 24, 24)));
+      this.add(new ButtonSlot(new Rect(0, 0, 24, 24), Keys.VK_A + i));
     }
   }
 
