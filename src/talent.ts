@@ -1,5 +1,7 @@
 import {Ability} from './ability';
 import {Actor} from './actor';
+import {Entity} from './entity';
+import {TileMapCell} from './tilemap';
 
 export class Talent {
   readonly actor: Actor;
@@ -14,13 +16,13 @@ export class Talent {
     this.cooldown = 0;
   }
 
-  use() {
+  use(target?: Entity|TileMapCell) {
     if (this.cooldown > 0) {
       // Ability still on cooldown
       return false;
     }
 
-    this.actor.cast(this.ability, () => {
+    this.actor.cast(this.ability, target, () => {
       this.cooldown = this.ability.cooldown;
     });
 

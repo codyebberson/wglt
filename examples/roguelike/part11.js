@@ -360,7 +360,7 @@ const confuseAbility = {
 function readScroll() {
     const item = this;
     const ability = this.ability;
-    player.cast(ability, function () {
+    player.cast(ability, undefined, function () {
         player.inventory.remove(item);
     });
 }

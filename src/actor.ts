@@ -10,6 +10,7 @@ import {Game} from './game';
 import {Item} from './item';
 import {Sprite} from './sprite';
 import {Talent} from './talent';
+import {TileMapCell} from './tilemap';
 import {XArray} from './xarray';
 
 export class Actor extends Entity {
@@ -137,9 +138,9 @@ export class Actor extends Entity {
     return item.onUse(this);
   }
 
-  cast(ability: Ability, callback?: Function) {
-    if (ability.targetType === TargetType.SELF) {
-      if (ability.cast(this)) {
+  cast(ability: Ability, target?: Entity|TileMapCell, callback?: Function) {
+    if (ability.targetType === TargetType.SELF || target) {
+      if (ability.cast(this, target)) {
         if (callback) {
           callback();
         }
