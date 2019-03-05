@@ -6,6 +6,7 @@ import { Game } from './game';
 import { Item } from './item';
 import { Sprite } from './sprite';
 import { Talent } from './talent';
+import { TileMapCell } from './tilemap';
 import { XArray } from './xarray';
 export declare class Actor extends Entity {
     hp: number;
@@ -25,7 +26,7 @@ export declare class Actor extends Entity {
     takeDamage(damage: number): void;
     pickup(item: Item): void;
     use(item: Item): boolean;
-    cast(ability: Ability, callback?: Function): void;
+    cast(ability: Ability, target?: Entity | TileMapCell, callback?: Function): void;
     addFloatingText(str: string, color: Color): void;
     onAttack(target: Actor, damage: number): void;
     onDeath(): void;
