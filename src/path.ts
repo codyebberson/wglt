@@ -1,4 +1,3 @@
-import {Entity} from './entity';
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 
