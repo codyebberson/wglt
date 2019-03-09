@@ -36,7 +36,7 @@ export class Actor extends Entity {
     this.seen = false;
   }
 
-  move(dx: number, dy: number) {
+  move(dx: number, dy: number, slideCount?: number) {
     const destX = this.x + dx;
     const destY = this.y + dy;
 
@@ -46,7 +46,7 @@ export class Actor extends Entity {
       return false;
     }
 
-    const count = 4;
+    const count = slideCount || 4;
     const xSpeed = this.game.tileSize.width / count;
     const ySpeed = this.game.tileSize.height / count;
     this.game.effects.push(new SlideEffect(this, dx * xSpeed, dy * ySpeed, count));
@@ -55,34 +55,38 @@ export class Actor extends Entity {
     return true;
   }
 
-  moveToward(targetX: number, targetY: number) {
+  moveTo(destX: number, destY: number, slideCount?: number) {
+    return this.move(destX - this.x, destY - this.y, slideCount);
+  }
+
+  moveToward(targetX: number, targetY: number, slideCount?: number) {
     const dx = targetX - this.x;
     const dy = targetY - this.y;
 
     if (Math.abs(dx) > Math.abs(dy)) {
-      if (dx < 0 && this.move(-1, 0)) {
+      if (dx < 0 && this.move(-1, 0, slideCount)) {
         return true;
       }
-      if (dx > 0 && this.move(1, 0)) {
+      if (dx > 0 && this.move(1, 0, slideCount)) {
         return true;
       }
-      if (dy < 0 && this.move(0, -1)) {
+      if (dy < 0 && this.move(0, -1, slideCount)) {
         return true;
       }
-      if (dy > 0 && this.move(0, 1)) {
+      if (dy > 0 && this.move(0, 1, slideCount)) {
         return true;
       }
     } else {
-      if (dy < 0 && this.move(0, -1)) {
+      if (dy < 0 && this.move(0, -1, slideCount)) {
         return true;
       }
-      if (dy > 0 && this.move(0, 1)) {
+      if (dy > 0 && this.move(0, 1, slideCount)) {
         return true;
       }
-      if (dx < 0 && this.move(-1, 0)) {
+      if (dx < 0 && this.move(-1, 0, slideCount)) {
         return true;
       }
-      if (dx > 0 && this.move(1, 0)) {
+      if (dx > 0 && this.move(1, 0, slideCount)) {
         return true;
       }
     }
