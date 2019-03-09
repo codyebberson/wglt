@@ -10,6 +10,7 @@ export class Entity extends Vec2 implements SelectOption {
   name: string;
   sprite: Sprite;
   blocks: boolean;
+  zIndex: number;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(x, y);
@@ -18,6 +19,7 @@ export class Entity extends Vec2 implements SelectOption {
     this.name = name;
     this.sprite = sprite;
     this.blocks = blocks;
+    this.zIndex = 1;
   }
 
   get pixelX(): number {

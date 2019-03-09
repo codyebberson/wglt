@@ -275,10 +275,12 @@ export class Game extends AppState {
   }
 
   private drawEntities() {
-    for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
-      if (!this.tileMap || this.tileMap.isVisible(entity.x, entity.y)) {
-        entity.draw();
+    for (let z = 0; z < 3; z++) {
+      for (let i = 0; i < this.entities.length; i++) {
+        const entity = this.entities[i];
+        if (entity.zIndex === z && (!this.tileMap || this.tileMap.isVisible(entity.x, entity.y))) {
+          entity.draw();
+        }
       }
     }
   }

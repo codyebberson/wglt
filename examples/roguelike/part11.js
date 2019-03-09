@@ -440,6 +440,7 @@ player.onDeath = playerDeath;
 player.level = 1;
 player.xp = 0;
 player.maxXp = 10;
+player.zIndex = 2;
 player.onBump = function (other) {
     if (other instanceof wglt.Item) {
         player.moveToward(other.x, other.y);
