@@ -1,7 +1,6 @@
 import { Game } from './game';
 import { SelectOption } from './gui/selectoption';
 import { Sprite } from './sprite';
-import { TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
 export declare class Entity extends Vec2 implements SelectOption {
     readonly game: Game;
@@ -15,7 +14,7 @@ export declare class Entity extends Vec2 implements SelectOption {
     readonly pixelY: number;
     readonly centerPixelX: number;
     readonly centerPixelY: number;
-    distanceTo(other: Entity | TileMapCell): number;
+    distanceTo(other: Vec2): number;
     distance(x: number, y: number): number;
     draw(): void;
     startTurn(): void;
