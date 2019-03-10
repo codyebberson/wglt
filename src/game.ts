@@ -521,42 +521,21 @@ export class Game extends AppState {
   }
 
   private nextTurn() {
-    if (this.player && this.entities[this.turnIndex] === this.player) {
-      // Player just finished turn
+    const currEntity = this.entities[this.turnIndex];
+    currEntity.endTurn();
 
-      // Update FOV
-      if (this.player && this.tileMap) {
-        this.recomputeFov();
-        this.recalculateViewportFocus();
-      }
-
-      // Sort entities by distance from player
-      this.entities.sort((a, b) => {
-        if (!this.player) {
-          return 0;
-        }
-        const ad = Math.hypot(a.x - this.player.x, a.y - this.player.y);
-        const bd = Math.hypot(b.x - this.player.x, b.y - this.player.y);
-        return ad - bd;
-      });
+    if (this.player && this.player === currEntity) {
+      this.recomputeFov();
+      this.recalculateViewportFocus();
     }
+
     this.turnIndex++;
     if (this.turnIndex >= this.entities.length) {
-      // Reached the end of the entities list.  Start at beginning.
       this.turnIndex = 0;
-      for (let i = 0; i < this.entities.length; i++) {
-        const entity = this.entities[i];
-        if (entity instanceof Actor) {
-          entity.ap = entity.maxAp;
-          for (let j = 0; j < entity.talents.length; j++) {
-            const talent = entity.talents.get(j);
-            if (talent.cooldown > 0) {
-              talent.cooldown--;
-            }
-          }
-        }
-      }
     }
+
+    const nextEntity = this.entities[this.turnIndex];
+    nextEntity.startTurn();
   }
 
   stopAutoWalk() {

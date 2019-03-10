@@ -50,6 +50,10 @@ export class Entity extends Vec2 implements SelectOption {
     this.sprite.draw(this.game.app, this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
   }
 
+  startTurn() {}
+
+  endTurn() {}
+
   sendToBack() {}
 
   onBump(bumper: Entity) {}

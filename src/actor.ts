@@ -36,6 +36,16 @@ export class Actor extends Entity {
     this.seen = false;
   }
 
+  startTurn() {
+    this.ap = this.maxAp;
+    for (let j = 0; j < this.talents.length; j++) {
+      const talent = this.talents.get(j);
+      if (talent.cooldown > 0) {
+        talent.cooldown--;
+      }
+    }
+  }
+
   move(dx: number, dy: number, slideCount?: number) {
     const destX = this.x + dx;
     const destY = this.y + dy;
