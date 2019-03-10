@@ -13,5 +13,4 @@ export declare class ItemContainerDialog extends Dialog {
     private getExistingButton;
     private getNextFreeSlot;
     drawContents(): void;
-    handleInput(): boolean;
 }

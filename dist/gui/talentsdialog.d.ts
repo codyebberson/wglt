@@ -12,5 +12,4 @@ export declare class TalentsDialog extends Dialog {
     private removeItem;
     private getNextFreeSlot;
     drawContents(): void;
-    handleInput(): boolean;
 }
