@@ -1,8 +1,8 @@
+import {ArrayList} from '../arraylist';
 import {Item} from '../item';
 import {Keys} from '../keys';
 import {Rect} from '../rect';
 import {Talent} from '../talent';
-import {XArray} from '../xarray';
 
 import {ItemShortcutButton} from './itemshortcutbutton';
 import {Panel} from './panel';
@@ -44,7 +44,7 @@ export class ShortcutBar extends Panel {
     return false;
   }
 
-  addItem(items: XArray<Item>, item: Item, rightToLeft?: boolean) {
+  addItem(items: ArrayList<Item>, item: Item, rightToLeft?: boolean) {
     if (this.containsItem(item)) {
       return;
     }

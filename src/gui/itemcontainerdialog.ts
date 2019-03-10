@@ -1,9 +1,9 @@
+import {ArrayList} from '../arraylist';
 import {Entity} from '../entity';
 import {Item} from '../item';
 import {Keys} from '../keys';
 import {Message} from '../message';
 import {Rect} from '../rect';
-import {XArray} from '../xarray';
 
 import {ButtonSlot} from './buttonslot';
 import {Dialog} from './dialog';
@@ -16,9 +16,9 @@ const BUTTON_SPACING = 2;
 export class ItemContainerDialog extends Dialog {
   readonly messages: Message[];
   readonly capacity: number;
-  readonly items: XArray<Item>;
+  readonly items: ArrayList<Item>;
 
-  constructor(rect: Rect, messages: Message[], capacity: number, items: XArray<Item>) {
+  constructor(rect: Rect, messages: Message[], capacity: number, items: ArrayList<Item>) {
     super(rect);
     this.messages = messages;
     this.capacity = capacity;

@@ -1,8 +1,8 @@
-import {XArrayListener} from './xarraylistener';
+import {ArrayListListener} from './arraylistlistener';
 
-export class XArray<T> {
+export class ArrayList<T> {
   private readonly elements: T[];
-  private listeners?: Array<XArrayListener<T>>;
+  private listeners?: Array<ArrayListListener<T>>;
 
   constructor() {
     this.elements = [];
@@ -45,7 +45,7 @@ export class XArray<T> {
     return this.elements.indexOf(el) >= 0;
   }
 
-  addListener(listener: XArrayListener<T>) {
+  addListener(listener: ArrayListListener<T>) {
     if (!this.listeners) {
       this.listeners = [];
     }

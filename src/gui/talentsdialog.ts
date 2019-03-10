@@ -1,8 +1,8 @@
+import {ArrayList} from '../arraylist';
 import {Keys} from '../keys';
 import {Message} from '../message';
 import {Rect} from '../rect';
 import {Talent} from '../talent';
-import {XArray} from '../xarray';
 
 import {ButtonSlot} from './buttonslot';
 import {Dialog} from './dialog';
@@ -14,9 +14,9 @@ const BUTTON_SPACING = 2;
 export class TalentsDialog extends Dialog {
   readonly messages: Message[];
   readonly capacity: number;
-  readonly talents: XArray<Talent>;
+  readonly talents: ArrayList<Talent>;
 
-  constructor(rect: Rect, messages: Message[], capacity: number, talents: XArray<Talent>) {
+  constructor(rect: Rect, messages: Message[], capacity: number, talents: ArrayList<Talent>) {
     super(rect);
     this.messages = messages;
     this.capacity = capacity;

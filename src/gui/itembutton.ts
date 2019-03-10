@@ -1,17 +1,17 @@
+import {ArrayList} from '../arraylist';
 import {Item} from '../item';
 import {Rect} from '../rect';
-import {XArray} from '../xarray';
 
 import {Button} from './button';
 
 export class ItemButton extends Button {
-  readonly containerItems: XArray<Item>;
-  readonly stackItems: XArray<Item>;
+  readonly containerItems: ArrayList<Item>;
+  readonly stackItems: ArrayList<Item>;
 
-  constructor(rect: Rect, containerItems: XArray<Item>, initialItem: Item) {
+  constructor(rect: Rect, containerItems: ArrayList<Item>, initialItem: Item) {
     super(rect, initialItem.sprite);
     this.containerItems = containerItems;
-    this.stackItems = new XArray<Item>();
+    this.stackItems = new ArrayList<Item>();
     this.stackItems.add(initialItem);
     this.tooltipMessages = initialItem.tooltipMessages;
   }

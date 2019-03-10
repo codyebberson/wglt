@@ -1,5 +1,6 @@
 import {Ability, TargetType} from './ability';
 import {AI} from './ai/ai';
+import {ArrayList} from './arraylist';
 import {Color} from './color';
 import {Colors} from './colors';
 import {BumpEffect} from './effects/bumpeffect';
@@ -11,15 +12,14 @@ import {Item} from './item';
 import {Sprite} from './sprite';
 import {Talent} from './talent';
 import {TileMapCell} from './tilemap';
-import {XArray} from './xarray';
 
 export class Actor extends Entity {
   hp: number;
   maxHp: number;
   ap: number;
   maxAp: number;
-  inventory: XArray<Item>;
-  talents: XArray<Talent>;
+  inventory: ArrayList<Item>;
+  talents: ArrayList<Talent>;
   activatedCount: number;
   seen: boolean;
   ai?: AI;
@@ -30,8 +30,8 @@ export class Actor extends Entity {
     this.maxHp = 100;
     this.ap = 1;
     this.maxAp = 1;
-    this.inventory = new XArray<Item>();
-    this.talents = new XArray<Talent>();
+    this.inventory = new ArrayList<Item>();
+    this.talents = new ArrayList<Talent>();
     this.activatedCount = -1;
     this.seen = false;
   }

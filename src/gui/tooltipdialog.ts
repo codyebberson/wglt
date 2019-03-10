@@ -1,6 +1,6 @@
+import {ArrayList} from '../arraylist';
 import {Message} from '../message';
 import {Rect} from '../rect';
-import {XArray} from '../xarray';
 
 import {Dialog} from './dialog';
 

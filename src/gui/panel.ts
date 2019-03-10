@@ -1,14 +1,15 @@
+import {ArrayList} from '../arraylist';
 import {GUI} from '../gui';
 import {Mouse} from '../mouse';
 import {Rect} from '../rect';
 import {Vec2} from '../vec2';
-import {XArray} from '../xarray';
+
 import {TooltipDialog} from './tooltipdialog';
 
 export class Panel {
   gui: GUI|null;
   readonly rect: Rect;
-  readonly children: XArray<Panel>;
+  readonly children: ArrayList<Panel>;
   modal: boolean;
   visible: boolean;
   parent?: Panel;
@@ -16,7 +17,7 @@ export class Panel {
   constructor(rect: Rect) {
     this.gui = null;
     this.rect = rect;
-    this.children = new XArray();
+    this.children = new ArrayList();
     this.modal = false;
     this.visible = true;
   }

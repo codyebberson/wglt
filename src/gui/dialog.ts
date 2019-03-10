@@ -1,7 +1,7 @@
+import {Keys} from '../keys';
 import {Rect} from '../rect';
 
 import {Panel} from './panel';
-import {Keys} from '../keys';
 
 export class Dialog extends Panel {
   closeButton: boolean;
