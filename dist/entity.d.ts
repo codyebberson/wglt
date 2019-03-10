@@ -18,6 +18,8 @@ export declare class Entity extends Vec2 implements SelectOption {
     distanceTo(other: Entity | TileMapCell): number;
     distance(x: number, y: number): number;
     draw(): void;
+    startTurn(): void;
+    endTurn(): void;
     sendToBack(): void;
     onBump(bumper: Entity): void;
 }

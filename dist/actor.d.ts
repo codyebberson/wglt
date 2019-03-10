@@ -19,6 +19,7 @@ export declare class Actor extends Entity {
     seen: boolean;
     ai?: AI;
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);
+    startTurn(): void;
     move(dx: number, dy: number, slideCount?: number): boolean;
     moveTo(destX: number, destY: number, slideCount?: number): boolean;
     moveToward(targetX: number, targetY: number, slideCount?: number): boolean;
