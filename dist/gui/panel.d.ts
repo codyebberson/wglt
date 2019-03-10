@@ -1,13 +1,13 @@
+import { ArrayList } from '../arraylist';
 import { GUI } from '../gui';
 import { Mouse } from '../mouse';
 import { Rect } from '../rect';
 import { Vec2 } from '../vec2';
-import { XArray } from '../xarray';
 import { TooltipDialog } from './tooltipdialog';
 export declare class Panel {
     gui: GUI | null;
     readonly rect: Rect;
-    readonly children: XArray<Panel>;
+    readonly children: ArrayList<Panel>;
     modal: boolean;
     visible: boolean;
     parent?: Panel;

@@ -1,11 +1,11 @@
+import { ArrayList } from '../arraylist';
 import { Item } from '../item';
 import { Rect } from '../rect';
-import { XArray } from '../xarray';
 import { Button } from './button';
 export declare class ItemButton extends Button {
-    readonly containerItems: XArray<Item>;
-    readonly stackItems: XArray<Item>;
-    constructor(rect: Rect, containerItems: XArray<Item>, initialItem: Item);
+    readonly containerItems: ArrayList<Item>;
+    readonly stackItems: ArrayList<Item>;
+    constructor(rect: Rect, containerItems: ArrayList<Item>, initialItem: Item);
     click(): void;
     drawContents(): void;
 }

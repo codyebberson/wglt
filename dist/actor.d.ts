@@ -1,5 +1,6 @@
 import { Ability } from './ability';
 import { AI } from './ai/ai';
+import { ArrayList } from './arraylist';
 import { Color } from './color';
 import { Entity } from './entity';
 import { Game } from './game';
@@ -7,14 +8,13 @@ import { Item } from './item';
 import { Sprite } from './sprite';
 import { Talent } from './talent';
 import { TileMapCell } from './tilemap';
-import { XArray } from './xarray';
 export declare class Actor extends Entity {
     hp: number;
     maxHp: number;
     ap: number;
     maxAp: number;
-    inventory: XArray<Item>;
-    talents: XArray<Talent>;
+    inventory: ArrayList<Item>;
+    talents: ArrayList<Talent>;
     activatedCount: number;
     seen: boolean;
     ai?: AI;
