@@ -121,21 +121,4 @@ export class ItemContainerDialog extends Dialog {
     this.rect.height = (y + MARGIN) - containerRect.y;
     this.drawChildren();
   }
-
-  handleInput() {
-    if (!this.gui) {
-      return false;
-    }
-
-    if (this.handleChildrenInput()) {
-      return true;
-    }
-
-    if (this.gui.app.isKeyPressed(Keys.VK_ESCAPE)) {
-      this.visible = false;
-      return true;
-    }
-
-    return false;
-  }
 }
