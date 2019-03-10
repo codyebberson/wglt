@@ -3,7 +3,7 @@ import {Entity} from './entity';
 import {Message} from './message';
 
 export class Item extends Entity {
-  readonly tooltipMessages?: Message[];
+  tooltipMessages?: Message[];
 
   onPickup(user: Actor) {}
 
