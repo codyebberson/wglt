@@ -176,9 +176,15 @@ export class Game extends AppState {
     // const startTurnIndex = this.turnIndex;
     let turnCount = 0;
     while (true) {
-      if (this.turnIndex < 0 || this.turnIndex >= this.entities.length) {
-        // Turn index out of range
+      if (this.entities.length === 0) {
+        // No entities
         break;
+      }
+
+      if (this.turnIndex >= this.entities.length) {
+        // Turn index out of range.  Entities list must have changed.
+        // Restart back to first entity.
+        this.turnIndex = 0;
       }
 
       if (turnCount > this.entities.length * 2) {

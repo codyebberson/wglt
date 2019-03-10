@@ -1,7 +1,6 @@
 import {Game} from './game';
 import {SelectOption} from './gui/selectoption';
 import {Sprite} from './sprite';
-import {TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 
 export class Entity extends Vec2 implements SelectOption {
@@ -38,7 +37,7 @@ export class Entity extends Vec2 implements SelectOption {
     return this.pixelY + (this.sprite.height / 2) | 0;
   }
 
-  distanceTo(other: Entity|TileMapCell) {
+  distanceTo(other: Vec2) {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }
 
