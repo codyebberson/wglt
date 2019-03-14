@@ -38,7 +38,8 @@ export declare class Game extends AppState {
     cooldownSprite?: Sprite;
     tooltipElement?: Panel;
     blackoutRect?: Rect;
-    viewDistance: number;
+    horizontalViewDistance: number;
+    verticalViewDistance: number;
     constructor(app: App, options: GameOptions);
     log(text: string, color?: Color): void;
     addAnimation(animation: Animation): import("./animations/animationpromise").AnimationPromise;

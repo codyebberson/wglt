@@ -67,7 +67,7 @@ export declare class TileMap {
     setSeen(tx: number, ty: number, seen: boolean): void;
     draw(x: number, y: number, width: number, height: number): void;
     resetFov(): void;
-    computeFov(originX: number, originY: number, radius: number): void;
+    computeFov(originX: number, originY: number, radius: number, vradius?: number): void;
     /**
      * Compute the FOV in an octant adjacent to the Y axis
      */
