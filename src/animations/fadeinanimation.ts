@@ -1,9 +1,9 @@
 import {fromRgb} from '../color';
 import {Game} from '../game';
 
-import {Effect} from './effect';
+import {Animation} from './animation';
 
-export class FadeInEffect extends Effect {
+export class FadeInAnimation extends Animation {
   readonly duration: number;
 
   constructor(duration: number) {

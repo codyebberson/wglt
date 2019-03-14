@@ -1,9 +1,9 @@
 
 import {Entity} from '../entity';
 
-import {Effect} from './effect';
+import {Animation} from './animation';
 
-export class SlideEffect extends Effect {
+export class SlideAnimation extends Animation {
   readonly entity: Entity;
   readonly dx: number;
   readonly dy: number;

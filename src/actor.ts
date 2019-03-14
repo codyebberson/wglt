@@ -3,9 +3,9 @@ import {AI} from './ai/ai';
 import {ArrayList} from './arraylist';
 import {Color} from './color';
 import {Colors} from './colors';
-import {BumpEffect} from './effects/bumpeffect';
-import {FloatingTextEffect} from './effects/floatingtexteffect';
-import {SlideEffect} from './effects/slideeffect';
+import {BumpAnimation} from './animations/bumpanimation';
+import {FloatingTextAnimation} from './animations/floatingtextanimation';
+import {SlideAnimation} from './animations/slideanimation';
 import {Entity} from './entity';
 import {Game} from './game';
 import {Item} from './item';
@@ -59,7 +59,7 @@ export class Actor extends Entity {
     const count = slideCount || 4;
     const xSpeed = this.game.tileSize.width / count;
     const ySpeed = this.game.tileSize.height / count;
-    this.game.effects.push(new SlideEffect(this, dx * xSpeed, dy * ySpeed, count));
+    this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
     this.ap--;
     return true;
@@ -113,7 +113,7 @@ export class Actor extends Entity {
     this.onAttack(target, damage);
     target.takeDamage(damage);
     this.ap--;
-    this.game.effects.push(new BumpEffect(this, target));
+    this.game.animations.push(new BumpAnimation(this, target));
     this.game.blocked = true;
   }
 
@@ -165,7 +165,7 @@ export class Actor extends Entity {
   }
 
   addFloatingText(str: string, color: Color) {
-    this.game.effects.push(new FloatingTextEffect(this, str, color));
+    this.game.animations.push(new FloatingTextAnimation(this, str, color));
   }
 
   onAttack(target: Actor, damage: number) {}

@@ -1,6 +1,6 @@
 import {Game} from '../game';
 
-export abstract class Effect {
+export abstract class Animation {
   countdown: number;
   blocking: boolean;
   onDone?: Function;
