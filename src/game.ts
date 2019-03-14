@@ -53,7 +53,8 @@ export class Game extends AppState {
   cooldownSprite?: Sprite;
   tooltipElement?: Panel;
   blackoutRect?: Rect;
-  viewDistance: number;
+  horizontalViewDistance: number;
+  verticalViewDistance: number;
 
   constructor(app: App, options: GameOptions) {
     super(app);
@@ -68,7 +69,15 @@ export class Game extends AppState {
     this.tooltip = new TooltipDialog();
     this.rng = new RNG();
     this.pathIndex = 0;
-    this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    this.horizontalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    this.verticalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+
+    if (options.horizontalViewDistance) {
+      this.horizontalViewDistance = options.horizontalViewDistance;
+    }
+    if (options.verticalViewDistance) {
+      this.verticalViewDistance = options.verticalViewDistance;
+    }
   }
 
   log(text: string, color?: Color) {
@@ -586,7 +595,7 @@ export class Game extends AppState {
 
   recomputeFov() {
     if (this.player && this.tileMap) {
-      this.tileMap.computeFov(this.player.x, this.player.y, this.viewDistance);
+      this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance, this.verticalViewDistance);
 
       // Determine which entities are activated
       for (let i = 0; i < this.entities.length; i++) {

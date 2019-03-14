@@ -416,7 +416,9 @@ const app = new wglt.App({
 
 const game = new wglt.Game(app, {
     tileWidth: 16,
-    tileHeight: 16
+    tileHeight: 16,
+    horizontalViewDistance: 8,
+    verticalViewDistance: 4
 });
 
 game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
