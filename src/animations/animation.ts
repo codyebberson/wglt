@@ -5,7 +5,6 @@ export abstract class Animation {
   readonly promise: AnimationPromise;
   countdown: number;
   blocking: boolean;
-  onDone?: Function;
 
   constructor(countdown: number, blocking: boolean) {
     this.promise = new AnimationPromise();

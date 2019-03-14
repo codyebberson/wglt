@@ -525,12 +525,14 @@ export class Game extends AppState {
   }
 
   private nextTurn() {
-    const currEntity = this.entities[this.turnIndex];
-    currEntity.endTurn();
+    if (this.turnIndex < this.entities.length) {
+      const currEntity = this.entities[this.turnIndex];
+      currEntity.endTurn();
 
-    if (this.player && this.player === currEntity) {
-      this.recomputeFov();
-      this.recalculateViewportFocus();
+      if (this.player === currEntity) {
+        this.recomputeFov();
+        this.recalculateViewportFocus();
+      }
     }
 
     this.turnIndex++;
@@ -538,8 +540,10 @@ export class Game extends AppState {
       this.turnIndex = 0;
     }
 
-    const nextEntity = this.entities[this.turnIndex];
-    nextEntity.startTurn();
+    if (this.turnIndex >= 0 && this.turnIndex < this.entities.length) {
+      const nextEntity = this.entities[this.turnIndex];
+      nextEntity.startTurn();
+    }
   }
 
   stopAutoWalk() {
