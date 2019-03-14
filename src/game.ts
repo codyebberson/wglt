@@ -524,10 +524,14 @@ export class Game extends AppState {
   }
 
   private doAi(entity: Actor) {
-    if (entity.ai) {
-      if (!this.tileMap || (this.tileMap.isVisible(entity.x, entity.y) && entity.activatedCount > 0)) {
-        entity.ai.doAi();
-      }
+    if (!entity.ai) {
+      // No AI - do nothing
+      entity.ap = 0;
+      return;
+    }
+
+    if (entity.visibleDuration > 0 || entity.ai.alwaysActive) {
+      entity.ai.doAi();
     }
 
     entity.ap = 0;
@@ -594,31 +598,35 @@ export class Game extends AppState {
   }
 
   recomputeFov() {
-    if (this.player && this.tileMap) {
-      this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance, this.verticalViewDistance);
+    if (!this.player || !this.tileMap) {
+      // FOV requires a player and a tile map
+      return;
+    }
 
-      // Determine which entities are activated
-      for (let i = 0; i < this.entities.length; i++) {
-        const entity = this.entities[i];
-        if (entity === this.player) {
-          continue;
-        }
-        if (entity instanceof Actor) {
-          if (this.tileMap.isVisible(entity.x, entity.y)) {
-            if (!entity.seen) {
-              // Spotted a new entity, stop auto walking
-              entity.seen = true;
-              this.player.addFloatingText('!', Colors.WHITE);
-              this.stopAutoWalk();
+    this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance, this.verticalViewDistance);
 
-              this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;
-              this.viewportFocus.y = ((this.player.centerPixelY + entity.centerPixelY) / 2) | 0;
-            }
-            entity.activatedCount++;
-          } else {
-            entity.activatedCount = -1;
-          }
+    // Determine which entities are visible
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (entity === this.player) {
+        continue;
+      }
+      if (!(entity instanceof Actor)) {
+        continue;
+      }
+      if (this.tileMap.isVisible(entity.x, entity.y)) {
+        if (!entity.seen) {
+          // Spotted a new entity, stop auto walking
+          entity.seen = true;
+          this.player.addFloatingText('!', Colors.WHITE);
+          this.stopAutoWalk();
+
+          this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;
+          this.viewportFocus.y = ((this.player.centerPixelY + entity.centerPixelY) / 2) | 0;
         }
+        entity.visibleDuration++;
+      } else {
+        entity.visibleDuration = -1;
       }
     }
   }

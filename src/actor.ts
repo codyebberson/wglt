@@ -20,7 +20,7 @@ export class Actor extends Entity {
   maxAp: number;
   inventory: ArrayList<Item>;
   talents: ArrayList<Talent>;
-  activatedCount: number;
+  visibleDuration: number;
   seen: boolean;
   ai?: AI;
 
@@ -32,7 +32,7 @@ export class Actor extends Entity {
     this.maxAp = 1;
     this.inventory = new ArrayList<Item>();
     this.talents = new ArrayList<Talent>();
-    this.activatedCount = -1;
+    this.visibleDuration = -1;
     this.seen = false;
   }
 
