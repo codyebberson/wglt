@@ -1,11 +1,11 @@
 import {Ability, TargetType} from './ability';
 import {AI} from './ai/ai';
-import {ArrayList} from './arraylist';
-import {Color} from './color';
-import {Colors} from './colors';
 import {BumpAnimation} from './animations/bumpanimation';
 import {FloatingTextAnimation} from './animations/floatingtextanimation';
 import {SlideAnimation} from './animations/slideanimation';
+import {ArrayList} from './arraylist';
+import {Color} from './color';
+import {Colors} from './colors';
 import {Entity} from './entity';
 import {Game} from './game';
 import {Item} from './item';
@@ -56,12 +56,20 @@ export class Actor extends Entity {
       return false;
     }
 
+    // The actor technically moves instantly.
+    // However, we set the offset such that it looks like the actor slides over time.
+    this.x = destX;
+    this.y = destY;
+    this.ap--;
+    this.offset.x = -dx * this.game.tileSize.width;
+    this.offset.y = -dy * this.game.tileSize.height;
+
+    // Now create the slide animation
     const count = slideCount || 4;
     const xSpeed = this.game.tileSize.width / count;
     const ySpeed = this.game.tileSize.height / count;
     this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
-    this.ap--;
     return true;
   }
 

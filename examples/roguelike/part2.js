@@ -33,13 +33,13 @@ const game = new wglt.Game(app, {
 });
 
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
-const player = new wglt.Entity(game, 30, 20, 'Player', sprite, true);
+const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
 const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);
 game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 1, 100, 100));
+const messageLog = new wglt.MessageLog(new wglt.Rect(1, 1, 100, 100));
 messageLog.add('Hello world!');
 messageLog.add('Use arrow keys to move');
 game.gui.add(messageLog);

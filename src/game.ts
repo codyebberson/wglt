@@ -1,10 +1,10 @@
 import {Ability, TargetType} from './ability';
 import {Actor} from './actor';
+import {Animation} from './animations/animation';
 import {App} from './app';
 import {AppState} from './appstate';
 import {Color} from './color';
 import {Colors} from './colors';
-import {Animation} from './animations/animation';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
 import {MessageLog} from './gui/messagelog';
@@ -75,6 +75,11 @@ export class Game extends AppState {
     if (this.messageLog) {
       this.messageLog.add(text, color);
     }
+  }
+
+  addAnimation(animation: Animation) {
+    this.animations.push(animation);
+    return animation.promise;
   }
 
   update() {
@@ -150,21 +155,16 @@ export class Game extends AppState {
     // Update animations
     for (let i = 0; i < this.animations.length; i++) {
       const animation = this.animations[i];
-      if (!animation.blocking || !this.blocked) {
-        animation.update();
-        if (animation.blocking) {
-          this.blocked = true;
-        }
+      animation.update();
+      if (animation.blocking) {
+        this.blocked = true;
       }
     }
 
     // Remove completed animations
     for (let i = this.animations.length - 1; i >= 0; i--) {
       if (this.animations[i].isDone()) {
-        const animation = this.animations[i];
-        if (animation.onDone) {
-          animation.onDone();
-        }
+        this.animations[i].promise.resolve();
         this.animations.splice(i, 1);
       }
     }
@@ -197,23 +197,21 @@ export class Game extends AppState {
       if (currEntity instanceof Actor) {
         if (currEntity.ap > 0) {
           if (currEntity === this.player) {
-            this.handlePlayerInput();
+            if (!this.blocked) {
+              this.handlePlayerInput();
+            }
             break;
           } else {
             this.doAi(currEntity);
           }
         }
-        if (!this.blocked && currEntity.ap <= 0) {
+        if (currEntity.ap <= 0) {
           // Turn is over
           currEntity.ap = 0;
           this.nextTurn();
         }
       } else {
         this.nextTurn();
-      }
-      if (this.blocked) {
-        // Waiting for animations
-        break;
       }
 
       turnCount++;

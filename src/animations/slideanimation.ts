@@ -22,8 +22,6 @@ export class SlideAnimation extends Animation {
       this.entity.offset.y += this.dy;
     }
     if (this.countdown === 0) {
-      this.entity.x += this.entity.offset.x / this.entity.game.tileSize.width;
-      this.entity.y += this.entity.offset.y / this.entity.game.tileSize.height;
       this.entity.offset.x = 0;
       this.entity.offset.y = 0;
     }

@@ -313,14 +313,14 @@ const fireballAbility = {
         const dx = (target.x * game.tileSize.width - caster.pixelX) / count;
         const dy = (target.y * game.tileSize.height - caster.pixelY) / count;
 
-        game.effects.push(new wglt.ProjectileEffect(
+        game.addAnimation(new wglt.ProjectileAnimation(
             new wglt.Sprite(128, 32, 16, 16, 3, false),
             new wglt.Vec2(caster.pixelX, caster.pixelY),
             new wglt.Vec2(dx, dy),
             count
         ));
 
-        game.effects.push(new wglt.ProjectileEffect(
+        game.addAnimation(new wglt.ProjectileAnimation(
             new wglt.Sprite(176, 32, 16, 16, 4, false, 4),
             new wglt.Vec2(target.x * game.tileSize.width, target.y * game.tileSize.height),
             new wglt.Vec2(0, 0),
@@ -398,20 +398,14 @@ function monsterDeath() {
 }
 
 function nextLevel() {
-    // Advance to the next level
-    const fadeOut = new wglt.FadeOutEffect(30);
-    const fadeIn = new wglt.FadeInEffect(30);
-
-    fadeOut.onDone = () => {
+    game.addAnimation(new wglt.FadeOutAnimation(30)).then(() => {
         game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
         game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
         game.entities = [player];
         game.stopAutoWalk();
         createMap();
-    };
-
-    game.effects.push(fadeOut);
-    game.effects.push(fadeIn);
+        game.addAnimation(new wglt.FadeInAnimation(30));
+    });
 }
 
 const app = new wglt.App({
