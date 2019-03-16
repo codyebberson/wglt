@@ -491,8 +491,9 @@ export class Game extends AppState {
     }
 
     // Find the bounds of desired area
-    let minX = player.pixelX;
-    let minY = player.pixelY;
+    // Ignore Actor.offset, because we're jumping to the destination.
+    let minX = player.x * player.sprite.width;
+    let minY = player.y * player.sprite.height;
     let maxX = minX + player.sprite.width;
     let maxY = minY + player.sprite.height;
 
