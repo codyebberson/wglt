@@ -52,8 +52,16 @@ export class Actor extends Entity {
 
     // TODO: Enforce diagonal vs cardinal movement?
 
-    if (this.game.isBlocked(destX, destY)) {
-      return false;
+    if (this.blocks) {
+      // If this actor blocks (default), then check for walls and entities
+      if (this.game.isBlocked(destX, destY)) {
+        return false;
+      }
+    } else {
+      // If this actor does *not* block, then only check tile map.
+      if (this.game.tileMap && this.game.tileMap.isBlocked(destX, destY)) {
+        return false;
+      }
     }
 
     // The actor technically moves instantly.
