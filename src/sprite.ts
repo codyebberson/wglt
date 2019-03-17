@@ -5,7 +5,7 @@ import {Rect} from './rect';
 const DEFAULT_TICKS_PER_FRAME = 30;
 
 export class Sprite extends Rect {
-  private static globalAnimIndex = 0;
+  static globalAnimIndex = 0;
   readonly frames: number;
   readonly loop: boolean;
   readonly ticksPerFrame: number;

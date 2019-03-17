@@ -268,7 +268,8 @@ export class Game extends AppState {
 
   private drawTileMap() {
     if (this.app.renderSet.spriteTexture.loaded && this.tileMap) {
-      this.tileMap.draw(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height);
+      const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
+      this.tileMap.draw(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height, animFrame);
     }
   }
 

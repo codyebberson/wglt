@@ -29,6 +29,7 @@ const tilemapFS = 'precision highp float;' +
     'varying vec2 texCoord;' +
 
     'uniform vec2 tileSize;' +
+    'uniform float animFrame;' +
     'uniform sampler2D tiles;' +
     'uniform sampler2D sprites;' +
 
@@ -36,6 +37,7 @@ const tilemapFS = 'precision highp float;' +
     '   vec4 tile = texture2D(tiles, texCoord);' +
     '   if(tile.x == 1.0 && tile.y == 1.0) { discard; }' +
     '   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;' +
+    '   if(tile.z != 1.0) spriteOffset.x += animFrame * tileSize.x;' +
     '   vec2 spriteCoord = mod(pixelCoord, tileSize);' +
     '   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) / ' + TEXTURE_SIZE + '.0);' +
     '   if (gl_FragColor.a == 0.0) discard;' +
@@ -136,6 +138,7 @@ export class TileMap {
   private readonly viewOffsetUniform: WebGLUniformLocation;
   private readonly mapSizeUniform: WebGLUniformLocation;
   private readonly tileSizeUniform: WebGLUniformLocation;
+  private readonly animFrameUniform: WebGLUniformLocation;
   private readonly tileSamplerUniform: WebGLUniformLocation;
   private readonly spriteSamplerUniform: WebGLUniformLocation;
 
@@ -194,6 +197,7 @@ export class TileMap {
     this.viewOffsetUniform = gl.getUniformLocation(this.tilemapShader, 'viewOffset') as WebGLUniformLocation;
     this.mapSizeUniform = gl.getUniformLocation(this.tilemapShader, 'mapSize') as WebGLUniformLocation;
     this.tileSizeUniform = gl.getUniformLocation(this.tilemapShader, 'tileSize') as WebGLUniformLocation;
+    this.animFrameUniform = gl.getUniformLocation(this.tilemapShader, 'animFrame') as WebGLUniformLocation;
     this.tileSamplerUniform = gl.getUniformLocation(this.tilemapShader, 'tiles') as WebGLUniformLocation;
     this.spriteSamplerUniform = gl.getUniformLocation(this.tilemapShader, 'sprites') as WebGLUniformLocation;
 
@@ -257,7 +261,27 @@ export class TileMap {
     }
   }
 
-  draw(x: number, y: number, width: number, height: number) {
+  isAnimated(tx: number, ty: number, layerIndex: number) {
+    if (tx < 0 || tx >= this.width || ty < 0 || ty >= this.height) {
+      return false;
+    }
+
+    const layer = this.layers[layerIndex];
+    const ti = 4 * (ty * layer.width + tx);
+    return layer.imageData[ti + 2] < 255;
+  }
+
+  setAnimated(tx: number, ty: number, layerIndex: number, animated: boolean) {
+    if (tx < 0 || tx >= this.width || ty < 0 || ty >= this.height) {
+      return;
+    }
+
+    const layer = this.layers[layerIndex];
+    const ti = 4 * (ty * layer.width + tx);
+    layer.imageData[ti + 2] = animated ? 1 : 255;
+  }
+
+  draw(x: number, y: number, width: number, height: number, animFrame?: number) {
     const gl = this.gl;
 
     gl.enable(gl.BLEND);
@@ -275,6 +299,7 @@ export class TileMap {
     gl.uniform2f(this.viewOffsetUniform, x, y);
     gl.uniform2f(this.viewportSizeUniform, width, height);
     gl.uniform2f(this.tileSizeUniform, this.tileWidth, this.tileHeight);
+    gl.uniform1f(this.animFrameUniform, animFrame || 0);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.uniform1i(this.spriteSamplerUniform, 0);

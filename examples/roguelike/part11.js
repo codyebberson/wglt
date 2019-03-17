@@ -51,6 +51,7 @@ function createMap() {
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
             map.setTile(0, x, y, TILE_WALL, true);
+            map.setAnimated(x, y, 0, false);
         }
     }
 
@@ -94,6 +95,7 @@ function createMap() {
                 player.x = center.x;
                 player.y = center.y;
                 map.setTile(1, player.x, player.y, TILE_SHADOW);
+                map.setAnimated(player.x, player.y, 0, true);
 
             } else {
                 // All rooms after the first:
