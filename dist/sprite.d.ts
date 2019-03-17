@@ -2,7 +2,7 @@ import { App } from './app';
 import { Color } from './color';
 import { Rect } from './rect';
 export declare class Sprite extends Rect {
-    private static globalAnimIndex;
+    static globalAnimIndex: number;
     readonly frames: number;
     readonly loop: boolean;
     readonly ticksPerFrame: number;

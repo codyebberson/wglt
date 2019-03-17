@@ -49,6 +49,7 @@ export declare class TileMap {
     private readonly viewOffsetUniform;
     private readonly mapSizeUniform;
     private readonly tileSizeUniform;
+    private readonly animFrameUniform;
     private readonly tileSamplerUniform;
     private readonly spriteSamplerUniform;
     private originX;
@@ -65,7 +66,9 @@ export declare class TileMap {
     isVisible(x: number, y: number): boolean;
     isSeen(tx: number, ty: number): boolean | null;
     setSeen(tx: number, ty: number, seen: boolean): void;
-    draw(x: number, y: number, width: number, height: number): void;
+    isAnimated(tx: number, ty: number, layerIndex: number): boolean;
+    setAnimated(tx: number, ty: number, layerIndex: number, animated: boolean): void;
+    draw(x: number, y: number, width: number, height: number, animFrame?: number): void;
     resetFov(): void;
     computeFov(originX: number, originY: number, radius: number, vradius?: number): void;
     /**
