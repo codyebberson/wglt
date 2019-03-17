@@ -1,11 +1,11 @@
 import {Ability, TargetType} from './ability';
 import {AI} from './ai/ai';
+import {BumpAnimation} from './animations/bumpanimation';
+import {FloatingTextAnimation} from './animations/floatingtextanimation';
+import {SlideAnimation} from './animations/slideanimation';
 import {ArrayList} from './arraylist';
 import {Color} from './color';
 import {Colors} from './colors';
-import {BumpEffect} from './effects/bumpeffect';
-import {FloatingTextEffect} from './effects/floatingtexteffect';
-import {SlideEffect} from './effects/slideeffect';
 import {Entity} from './entity';
 import {Game} from './game';
 import {Item} from './item';
@@ -20,7 +20,7 @@ export class Actor extends Entity {
   maxAp: number;
   inventory: ArrayList<Item>;
   talents: ArrayList<Talent>;
-  activatedCount: number;
+  visibleDuration: number;
   seen: boolean;
   ai?: AI;
 
@@ -32,7 +32,7 @@ export class Actor extends Entity {
     this.maxAp = 1;
     this.inventory = new ArrayList<Item>();
     this.talents = new ArrayList<Talent>();
-    this.activatedCount = -1;
+    this.visibleDuration = -1;
     this.seen = false;
   }
 
@@ -52,16 +52,32 @@ export class Actor extends Entity {
 
     // TODO: Enforce diagonal vs cardinal movement?
 
-    if (this.game.isBlocked(destX, destY)) {
-      return false;
+    if (this.blocks) {
+      // If this actor blocks (default), then check for walls and entities
+      if (this.game.isBlocked(destX, destY)) {
+        return false;
+      }
+    } else {
+      // If this actor does *not* block, then only check tile map.
+      if (this.game.tileMap && this.game.tileMap.isBlocked(destX, destY)) {
+        return false;
+      }
     }
 
+    // The actor technically moves instantly.
+    // However, we set the offset such that it looks like the actor slides over time.
+    this.x = destX;
+    this.y = destY;
+    this.ap--;
+    this.offset.x = -dx * this.game.tileSize.width;
+    this.offset.y = -dy * this.game.tileSize.height;
+
+    // Now create the slide animation
     const count = slideCount || 4;
     const xSpeed = this.game.tileSize.width / count;
     const ySpeed = this.game.tileSize.height / count;
-    this.game.effects.push(new SlideEffect(this, dx * xSpeed, dy * ySpeed, count));
+    this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
-    this.ap--;
     return true;
   }
 
@@ -113,7 +129,7 @@ export class Actor extends Entity {
     this.onAttack(target, damage);
     target.takeDamage(damage);
     this.ap--;
-    this.game.effects.push(new BumpEffect(this, target));
+    this.game.animations.push(new BumpAnimation(this, target));
     this.game.blocked = true;
   }
 
@@ -165,7 +181,7 @@ export class Actor extends Entity {
   }
 
   addFloatingText(str: string, color: Color) {
-    this.game.effects.push(new FloatingTextEffect(this, str, color));
+    this.game.animations.push(new FloatingTextAnimation(this, str, color));
   }
 
   onAttack(target: Actor, damage: number) {}

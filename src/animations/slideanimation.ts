@@ -1,9 +1,9 @@
 
 import {Entity} from '../entity';
 
-import {Effect} from './effect';
+import {Animation} from './animation';
 
-export class SlideEffect extends Effect {
+export class SlideAnimation extends Animation {
   readonly entity: Entity;
   readonly dx: number;
   readonly dy: number;
@@ -22,8 +22,6 @@ export class SlideEffect extends Effect {
       this.entity.offset.y += this.dy;
     }
     if (this.countdown === 0) {
-      this.entity.x += this.entity.offset.x / this.entity.game.tileSize.width;
-      this.entity.y += this.entity.offset.y / this.entity.game.tileSize.height;
       this.entity.offset.x = 0;
       this.entity.offset.y = 0;
     }

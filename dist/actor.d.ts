@@ -15,7 +15,7 @@ export declare class Actor extends Entity {
     maxAp: number;
     inventory: ArrayList<Item>;
     talents: ArrayList<Talent>;
-    activatedCount: number;
+    visibleDuration: number;
     seen: boolean;
     ai?: AI;
     constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean);

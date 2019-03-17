@@ -1,11 +1,11 @@
 
 import {Entity} from '../entity';
 
-import {Effect} from './effect';
+import {Animation} from './animation';
 
 const DURATION = 12;
 
-export class BumpEffect extends Effect {
+export class BumpAnimation extends Animation {
   readonly entity: Entity;
   readonly dx: number;
   readonly dy: number;

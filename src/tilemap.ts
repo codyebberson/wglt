@@ -339,13 +339,16 @@ export class TileMap {
     }
   }
 
-  computeFov(originX: number, originY: number, radius: number) {
+  computeFov(originX: number, originY: number, radius: number, vradius?: number) {
     this.originX = originX;
     this.originY = originY;
-    this.minX = Math.max(0, originX - radius);
-    this.minY = Math.max(0, originY - radius);
-    this.maxX = Math.min(this.width - 1, originX + radius);
-    this.maxY = Math.min(this.height - 1, originY + radius);
+
+    const dx = radius;
+    const dy = vradius || radius;
+    this.minX = Math.max(0, originX - dx);
+    this.minY = Math.max(0, originY - dy);
+    this.maxX = Math.min(this.width - 1, originX + dx);
+    this.maxY = Math.min(this.height - 1, originY + dy);
 
     for (let y = this.minY; y <= this.maxY; y++) {
       for (let x = this.minX; x <= this.maxX; x++) {

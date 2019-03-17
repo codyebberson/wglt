@@ -1,10 +1,10 @@
 import {Ability, TargetType} from './ability';
 import {Actor} from './actor';
+import {Animation} from './animations/animation';
 import {App} from './app';
 import {AppState} from './appstate';
 import {Color} from './color';
 import {Colors} from './colors';
-import {Effect} from './effects/effect';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
 import {MessageLog} from './gui/messagelog';
@@ -33,7 +33,7 @@ export class Game extends AppState {
   readonly tileSize: Rect;
   readonly viewport: Rect;
   readonly viewportFocus: Vec2;
-  readonly effects: Effect[];
+  readonly animations: Animation[];
   readonly entities: Entity[];
   readonly cursor: Vec2;
   readonly tooltip: TooltipDialog;
@@ -53,14 +53,15 @@ export class Game extends AppState {
   cooldownSprite?: Sprite;
   tooltipElement?: Panel;
   blackoutRect?: Rect;
-  viewDistance: number;
+  horizontalViewDistance: number;
+  verticalViewDistance: number;
 
   constructor(app: App, options: GameOptions) {
     super(app);
     this.tileSize = options.tileSize || new Rect(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.viewportFocus = new Vec2(0, 0);
-    this.effects = [];
+    this.animations = [];
     this.entities = [];
     this.turnIndex = 0;
     this.blocked = false;
@@ -68,7 +69,15 @@ export class Game extends AppState {
     this.tooltip = new TooltipDialog();
     this.rng = new RNG();
     this.pathIndex = 0;
-    this.viewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    this.horizontalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    this.verticalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+
+    if (options.horizontalViewDistance) {
+      this.horizontalViewDistance = options.horizontalViewDistance;
+    }
+    if (options.verticalViewDistance) {
+      this.verticalViewDistance = options.verticalViewDistance;
+    }
   }
 
   log(text: string, color?: Color) {
@@ -77,12 +86,17 @@ export class Game extends AppState {
     }
   }
 
+  addAnimation(animation: Animation) {
+    this.animations.push(animation);
+    return animation.promise;
+  }
+
   update() {
     Sprite.updateGlobalAnimations();
     this.updateTooltip();
 
     if (!this.gui.handleInput()) {
-      this.updateEffects();
+      this.updateAnimations();
       this.updateEntities();
 
       if (this.onUpdate) {
@@ -95,7 +109,7 @@ export class Game extends AppState {
     this.drawTileMap();
     this.drawTargeting();
     this.drawEntities();
-    this.drawEffects();
+    this.drawAnimations();
     this.gui.draw();
   }
 
@@ -143,29 +157,24 @@ export class Game extends AppState {
     }
   }
 
-  private updateEffects() {
+  private updateAnimations() {
     // Reset blocked
     this.blocked = false;
 
-    // Update effects
-    for (let i = 0; i < this.effects.length; i++) {
-      const effect = this.effects[i];
-      if (!effect.blocking || !this.blocked) {
-        effect.update();
-        if (effect.blocking) {
-          this.blocked = true;
-        }
+    // Update animations
+    for (let i = 0; i < this.animations.length; i++) {
+      const animation = this.animations[i];
+      animation.update();
+      if (animation.blocking) {
+        this.blocked = true;
       }
     }
 
-    // Remove completed effects
-    for (let i = this.effects.length - 1; i >= 0; i--) {
-      if (this.effects[i].isDone()) {
-        const effect = this.effects[i];
-        if (effect.onDone) {
-          effect.onDone();
-        }
-        this.effects.splice(i, 1);
+    // Remove completed animations
+    for (let i = this.animations.length - 1; i >= 0; i--) {
+      if (this.animations[i].isDone()) {
+        this.animations[i].promise.resolve();
+        this.animations.splice(i, 1);
       }
     }
   }
@@ -197,23 +206,21 @@ export class Game extends AppState {
       if (currEntity instanceof Actor) {
         if (currEntity.ap > 0) {
           if (currEntity === this.player) {
-            this.handlePlayerInput();
+            if (!this.blocked) {
+              this.handlePlayerInput();
+            }
             break;
           } else {
             this.doAi(currEntity);
           }
         }
-        if (!this.blocked && currEntity.ap <= 0) {
+        if (currEntity.ap <= 0) {
           // Turn is over
           currEntity.ap = 0;
           this.nextTurn();
         }
       } else {
         this.nextTurn();
-      }
-      if (this.blocked) {
-        // Waiting for animations
-        break;
       }
 
       turnCount++;
@@ -292,14 +299,14 @@ export class Game extends AppState {
     }
   }
 
-  private drawEffects() {
+  private drawAnimations() {
     let blockingCount = 0;
-    for (let i = 0; i < this.effects.length; i++) {
-      const effect = this.effects[i];
-      if (blockingCount === 0 || !effect.blocking) {
-        effect.draw(this);
+    for (let i = 0; i < this.animations.length; i++) {
+      const animation = this.animations[i];
+      if (blockingCount === 0 || !animation.blocking) {
+        animation.draw(this);
       }
-      if (effect.blocking) {
+      if (animation.blocking) {
         blockingCount++;
       }
     }
@@ -485,8 +492,9 @@ export class Game extends AppState {
     }
 
     // Find the bounds of desired area
-    let minX = player.pixelX;
-    let minY = player.pixelY;
+    // Ignore Actor.offset, because we're jumping to the destination.
+    let minX = player.x * player.sprite.width;
+    let minY = player.y * player.sprite.height;
     let maxX = minX + player.sprite.width;
     let maxY = minY + player.sprite.height;
 
@@ -518,22 +526,28 @@ export class Game extends AppState {
   }
 
   private doAi(entity: Actor) {
-    if (entity.ai) {
-      if (!this.tileMap || (this.tileMap.isVisible(entity.x, entity.y) && entity.activatedCount > 0)) {
-        entity.ai.doAi();
-      }
+    if (!entity.ai) {
+      // No AI - do nothing
+      entity.ap = 0;
+      return;
+    }
+
+    if (entity.visibleDuration > 0 || entity.ai.alwaysActive) {
+      entity.ai.doAi();
     }
 
     entity.ap = 0;
   }
 
   private nextTurn() {
-    const currEntity = this.entities[this.turnIndex];
-    currEntity.endTurn();
+    if (this.turnIndex < this.entities.length) {
+      const currEntity = this.entities[this.turnIndex];
+      currEntity.endTurn();
 
-    if (this.player && this.player === currEntity) {
-      this.recomputeFov();
-      this.recalculateViewportFocus();
+      if (this.player === currEntity) {
+        this.recomputeFov();
+        this.recalculateViewportFocus();
+      }
     }
 
     this.turnIndex++;
@@ -541,8 +555,10 @@ export class Game extends AppState {
       this.turnIndex = 0;
     }
 
-    const nextEntity = this.entities[this.turnIndex];
-    nextEntity.startTurn();
+    if (this.turnIndex >= 0 && this.turnIndex < this.entities.length) {
+      const nextEntity = this.entities[this.turnIndex];
+      nextEntity.startTurn();
+    }
   }
 
   stopAutoWalk() {
@@ -584,31 +600,35 @@ export class Game extends AppState {
   }
 
   recomputeFov() {
-    if (this.player && this.tileMap) {
-      this.tileMap.computeFov(this.player.x, this.player.y, this.viewDistance);
+    if (!this.player || !this.tileMap) {
+      // FOV requires a player and a tile map
+      return;
+    }
 
-      // Determine which entities are activated
-      for (let i = 0; i < this.entities.length; i++) {
-        const entity = this.entities[i];
-        if (entity === this.player) {
-          continue;
-        }
-        if (entity instanceof Actor) {
-          if (this.tileMap.isVisible(entity.x, entity.y)) {
-            if (!entity.seen) {
-              // Spotted a new entity, stop auto walking
-              entity.seen = true;
-              this.player.addFloatingText('!', Colors.WHITE);
-              this.stopAutoWalk();
+    this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance, this.verticalViewDistance);
 
-              this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;
-              this.viewportFocus.y = ((this.player.centerPixelY + entity.centerPixelY) / 2) | 0;
-            }
-            entity.activatedCount++;
-          } else {
-            entity.activatedCount = -1;
-          }
+    // Determine which entities are visible
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (entity === this.player) {
+        continue;
+      }
+      if (!(entity instanceof Actor)) {
+        continue;
+      }
+      if (this.tileMap.isVisible(entity.x, entity.y)) {
+        if (!entity.seen) {
+          // Spotted a new entity, stop auto walking
+          entity.seen = true;
+          this.player.addFloatingText('!', Colors.WHITE);
+          this.stopAutoWalk();
+
+          this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;
+          this.viewportFocus.y = ((this.player.centerPixelY + entity.centerPixelY) / 2) | 0;
         }
+        entity.visibleDuration++;
+      } else {
+        entity.visibleDuration = -1;
       }
     }
   }

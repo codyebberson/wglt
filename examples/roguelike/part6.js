@@ -120,10 +120,10 @@ function placeObjects(room) {
         // 80% chance of getting an orc
         if (rng.nextRange(0, 100) < 80) {
             // Create an orc
-            monster = new wglt.Entity(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
+            monster = new wglt.Actor(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
         } else {
             // Create a troll
-            monster = new wglt.Entity(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
+            monster = new wglt.Actor(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
         }
 
         monster.health = 20;
@@ -162,13 +162,13 @@ const game = new wglt.Game(app, {
 
 const rng = new wglt.RNG(1);
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
-const player = new wglt.Entity(game, 30, 20, 'Player', sprite, true);
+const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
 const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 1);
 game.tileMap = map;
 game.player = player;
 game.entities.push(player);
 
-const messageLog = new wglt.MessageLog(game.gui, new wglt.Rect(1, 1, 100, 100));
+const messageLog = new wglt.MessageLog(new wglt.Rect(1, 1, 100, 100));
 messageLog.add('Hello world!');
 messageLog.add('Use arrow keys to move');
 game.gui.add(messageLog);
