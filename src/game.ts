@@ -17,6 +17,7 @@ import {RNG} from './rng';
 import {Sprite} from './sprite';
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
+import { ArrayList } from './arraylist';
 
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
@@ -27,7 +28,7 @@ export class Game extends AppState {
   readonly viewport: Rect;
   readonly viewportFocus: Vec2;
   readonly animations: Animation[];
-  readonly entities: Entity[];
+  readonly entities: ArrayList<Entity>;
   readonly cursor: Vec2;
   readonly tooltip: TooltipDialog;
   readonly rng: RNG;
@@ -55,7 +56,7 @@ export class Game extends AppState {
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.viewportFocus = new Vec2(0, 0);
     this.animations = [];
-    this.entities = [];
+    this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
     this.blocked = false;
     this.cursor = new Vec2(-1, -1);
@@ -200,7 +201,7 @@ export class Game extends AppState {
         break;
       }
 
-      const currEntity = this.entities[this.turnIndex];
+      const currEntity = this.entities.get(this.turnIndex);
       if (currEntity instanceof Actor) {
         if (currEntity.ap > 0) {
           if (currEntity === this.player) {
@@ -289,7 +290,7 @@ export class Game extends AppState {
   private drawEntities() {
     for (let z = 0; z < 3; z++) {
       for (let i = 0; i < this.entities.length; i++) {
-        const entity = this.entities[i];
+        const entity = this.entities.get(i);
         if (entity.zIndex === z && (!this.tileMap || this.tileMap.isVisible(entity.x, entity.y))) {
           entity.draw();
         }
@@ -510,7 +511,7 @@ export class Game extends AppState {
     const destY = player.y + dy;
 
     for (let i = 0; i < this.entities.length; i++) {
-      const other = this.entities[i];
+      const other = this.entities.get(i);
       if (player !== other && other.x === destX && other.y === destY) {
         if (player.onBump) {
           player.onBump(other);
@@ -548,7 +549,7 @@ export class Game extends AppState {
     } else {
       // Otherwise, use all visible entities.
       for (let i = 0; i < this.entities.length; i++) {
-        const entity = this.entities[i];
+        const entity = this.entities.get(i);
         if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
           minX = Math.min(minX, entity.pixelX);
           minY = Math.min(minY, entity.pixelY);
@@ -579,7 +580,7 @@ export class Game extends AppState {
 
   private nextTurn() {
     if (this.turnIndex < this.entities.length) {
-      const currEntity = this.entities[this.turnIndex];
+      const currEntity = this.entities.get(this.turnIndex);
       currEntity.endTurn();
 
       if (this.player === currEntity) {
@@ -594,7 +595,7 @@ export class Game extends AppState {
     }
 
     if (this.turnIndex >= 0 && this.turnIndex < this.entities.length) {
-      const nextEntity = this.entities[this.turnIndex];
+      const nextEntity = this.entities.get(this.turnIndex);
       nextEntity.startTurn();
     }
   }
@@ -609,7 +610,7 @@ export class Game extends AppState {
       return true;
     }
     for (let i = 0; i < this.entities.length; i++) {
-      const other = this.entities[i];
+      const other = this.entities.get(i);
       if (other.blocks && other.x === x && other.y === y) {
         return true;
       }
@@ -619,7 +620,7 @@ export class Game extends AppState {
 
   getEntityAt(x: number, y: number) {
     for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
+      const entity = this.entities.get(i);
       if (entity.x === x && entity.y === y) {
         return entity;
       }
@@ -629,7 +630,7 @@ export class Game extends AppState {
 
   getActorAt(x: number, y: number) {
     for (let i = 0; i < this.entities.length; i++) {
-      const other = this.entities[i];
+      const other = this.entities.get(i);
       if (other instanceof Actor && other.x === x && other.y === y) {
         return other;
       }
@@ -647,7 +648,7 @@ export class Game extends AppState {
 
     // Determine which entities are visible
     for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
+      const entity = this.entities.get(i);
       if (entity === this.player) {
         continue;
       }

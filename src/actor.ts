@@ -152,6 +152,11 @@ export class Actor extends Entity {
   }
 
   takeDamage(damage: number) {
+    if (this.hp <= 0) {
+      // Already dead
+      return;
+    }
+
     this.hp -= damage;
     this.addFloatingText(damage.toString(), Colors.RED);
 
@@ -160,21 +165,14 @@ export class Actor extends Entity {
       if (this.onDeath) {
         this.onDeath();
       }
-
-      const index = this.game.entities.indexOf(this);
-      if (index >= 0) {
-        this.game.entities.splice(index, 1);
-      }
+      this.game.entities.remove(this);
     }
   }
 
   pickup(item: Item) {
     item.onPickup(this);
     this.inventory.add(item);
-    const index = this.game.entities.indexOf(item);
-    if (index >= 0) {
-      this.game.entities.splice(index, 1);
-    }
+    this.game.entities.remove(item);
   }
 
   use(item: Item) {

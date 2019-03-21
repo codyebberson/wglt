@@ -127,7 +127,7 @@ function createMap() {
     // Create stairs at the center of the last room
     const stairsLoc = rooms[rooms.length - 1].getCenter();
     stairs = new wglt.Entity(game, stairsLoc.x, stairsLoc.y, 'stairs', new wglt.Sprite(32, 32, 16, 16, 1), true);
-    game.entities.push(stairs);
+    game.entities.add(stairs);
 
     // Initial FOV
     game.resetViewport();
@@ -158,7 +158,7 @@ function placeObjects(room) {
         monster.ai = new wglt.BasicMonster(monster, calculateDamage);
         monster.onAttack = attackCallback;
         monster.onDeath = monsterDeath;
-        game.entities.push(monster);
+        game.entities.add(monster);
     }
 
     // Choose random number of items
@@ -214,7 +214,7 @@ function placeObjects(room) {
         item.onUse = itemUse;
         item.ability = itemAbility;
         item.tooltipMessages = itemTooltips;
-        game.entities.push(item);
+        game.entities.add(item);
     }
 }
 
@@ -227,7 +227,7 @@ function getClosestMonster(x, y, range) {
     let minDist = range + 1;
     let result = null;
     for (let i = 0; i < game.entities.length; i++) {
-        const entity = game.entities[i];
+        const entity = game.entities.get(i);
         if (entity instanceof wglt.Actor && entity !== player) {
             const dist = entity.distance(x, y);
             if (dist < minDist) {
@@ -332,7 +332,7 @@ const fireballAbility = {
         game.log('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
 
         for (let i = game.entities.length - 1; i >= 0; i--) {
-            const entity = game.entities[i];
+            const entity = game.entities.get(i);
             if (entity instanceof wglt.Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
                 game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
                 entity.takeDamage(FIREBALL_DAMAGE);
@@ -403,7 +403,8 @@ function nextLevel() {
     game.addAnimation(new wglt.FadeOutAnimation(30)).then(() => {
         game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
         game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
-        game.entities = [player];
+        game.entities = new wglt.ArrayList();
+        game.entities.add(player);
         game.stopAutoWalk();
         createMap();
         game.addAnimation(new wglt.FadeInAnimation(30));
@@ -458,7 +459,7 @@ player.onBump = function (other) {
 const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 3);
 game.tileMap = map;
 game.player = player;
-game.entities.push(player);
+game.entities.add(player);
 
 game.messageLog = new wglt.MessageLog(new wglt.Rect(1, -78, 100, 50));
 game.gui.add(game.messageLog);
