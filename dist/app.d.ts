@@ -72,4 +72,14 @@ export declare class App {
     drawRightString(str: string, x: number, y: number, color?: Color): void;
     isKeyDown(keyCode: number): boolean | null;
     isKeyPressed(keyCode: number): boolean;
+    isDownLeftKeyPressed(): boolean;
+    isDownKeyPressed(): boolean;
+    isDownRightKeyPressed(): boolean;
+    isLeftKeyPressed(): boolean;
+    isWaitKeyPressed(): boolean;
+    isRightKeyPressed(): boolean;
+    isUpLeftKeyPressed(): boolean;
+    isUpKeyPressed(): boolean;
+    isUpRightKeyPressed(): boolean;
+    private isKeyArrayPressed;
 }

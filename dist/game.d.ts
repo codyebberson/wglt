@@ -58,7 +58,6 @@ export declare class Game extends AppState {
     private endTargeting;
     cancelTargeting(): void;
     private handlePlayerInput;
-    private isKeyPressed;
     tryMoveOrAttack(dx: number, dy: number): boolean | undefined;
     private recalculateViewportFocus;
     private doAi;
