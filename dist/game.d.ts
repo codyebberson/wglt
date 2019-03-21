@@ -14,12 +14,13 @@ import { RNG } from './rng';
 import { Sprite } from './sprite';
 import { TileMap, TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
+import { ArrayList } from './arraylist';
 export declare class Game extends AppState {
     readonly tileSize: Rect;
     readonly viewport: Rect;
     readonly viewportFocus: Vec2;
     readonly animations: Animation[];
-    readonly entities: Entity[];
+    readonly entities: ArrayList<Entity>;
     readonly cursor: Vec2;
     readonly tooltip: TooltipDialog;
     readonly rng: RNG;
