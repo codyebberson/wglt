@@ -10,7 +10,7 @@ import {GameOptions} from './gameoptions';
 import {MessageLog} from './gui/messagelog';
 import {Panel} from './gui/panel';
 import {TooltipDialog} from './gui/tooltipdialog';
-import {Key, Keys} from './keys';
+import {Keys} from './keys';
 import {computePath} from './path';
 import {Rect} from './rect';
 import {RNG} from './rng';
@@ -173,6 +173,11 @@ export class Game extends AppState {
   }
 
   private updateEntities() {
+    if (this.player && this.player.hp <= 0) {
+      // Player is dead.  Do nothing.
+      return;
+    }
+
     // If not blocked on any animations,
     // then try to do enemy AI
     // const startTurnIndex = this.turnIndex;
