@@ -89,6 +89,19 @@ export class Actor extends Entity {
     const dx = targetX - this.x;
     const dy = targetY - this.y;
 
+    if (dx < 0 && dy < 0 && this.move(-1, -1, slideCount)) {
+      return true;
+    }
+    if (dx < 0 && dy > 0 && this.move(-1, 1, slideCount)) {
+      return true;
+    }
+    if (dx > 0 && dy < 0 && this.move(1, -1, slideCount)) {
+      return true;
+    }
+    if (dx > 0 && dy > 0 && this.move(1, 1, slideCount)) {
+      return true;
+    }
+
     if (Math.abs(dx) > Math.abs(dy)) {
       if (dx < 0 && this.move(-1, 0, slideCount)) {
         return true;

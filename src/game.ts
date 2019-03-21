@@ -22,13 +22,6 @@ const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 const DEFAULT_VIEW_DISTANCE = 13;
 
-// Arrow keys, numpad, vi, WASD, or ZQSD
-const UP_KEYS = [Keys.VK_UP, Keys.VK_NUMPAD8, Keys.VK_K, Keys.VK_W, Keys.VK_Z];
-const LEFT_KEYS = [Keys.VK_LEFT, Keys.VK_NUMPAD4, Keys.VK_H, Keys.VK_A, Keys.VK_Q];
-const DOWN_KEYS = [Keys.VK_DOWN, Keys.VK_NUMPAD2, Keys.VK_J, Keys.VK_S];
-const RIGHT_KEYS = [Keys.VK_RIGHT, Keys.VK_NUMPAD6, Keys.VK_L, Keys.VK_D];
-const WAIT_KEYS = [Keys.VK_SPACE, Keys.VK_NUMPAD5];
-
 export class Game extends AppState {
   readonly tileSize: Rect;
   readonly viewport: Rect;
@@ -368,18 +361,38 @@ export class Game extends AppState {
     }
 
     if (this.app.isKeyDown(Keys.VK_SHIFT)) {
-      if (this.isKeyPressed(UP_KEYS)) {
-        this.viewportFocus.y -= 2 * this.tileSize.height;
+      let dx = 0;
+      let dy = 0;
+      if (this.app.isDownLeftKeyPressed()) {
+        dx = -1;
+        dy = 1
       }
-      if (this.isKeyPressed(LEFT_KEYS)) {
-        this.viewportFocus.x -= 2 * this.tileSize.width;
+      if (this.app.isDownKeyPressed()) {
+        dy = 1;
       }
-      if (this.isKeyPressed(RIGHT_KEYS)) {
-        this.viewportFocus.x += 2 * this.tileSize.width;
+      if (this.app.isDownRightKeyPressed()) {
+        dx = 1;
+        dy = 1;
       }
-      if (this.isKeyPressed(DOWN_KEYS)) {
-        this.viewportFocus.y += 2 * this.tileSize.height;
+      if (this.app.isLeftKeyPressed()) {
+        dx = -1;
       }
+      if (this.app.isRightKeyPressed()) {
+        dx = 1;
+      }
+      if (this.app.isUpLeftKeyPressed()) {
+        dx = -1;
+        dy = -1;
+      }
+      if (this.app.isUpKeyPressed()) {
+        dy = -1;
+      }
+      if (this.app.isUpRightKeyPressed()) {
+        dx = 1;
+        dy = -1;
+      }
+      this.viewportFocus.x -= dx * this.tileSize.height;
+      this.viewportFocus.y -= dy * this.tileSize.height;
       return;
     }
 
@@ -390,17 +403,33 @@ export class Game extends AppState {
       if (this.app.isKeyPressed(Keys.VK_ESCAPE)) {
         this.cancelTargeting();
       }
-      if (this.isKeyPressed(UP_KEYS)) {
-        this.cursor.y--;
+      if (this.app.isDownLeftKeyPressed()) {
+        this.cursor.x--;
+        this.cursor.y++;
       }
-      if (this.isKeyPressed(LEFT_KEYS)) {
+      if (this.app.isDownKeyPressed()) {
+        this.cursor.y++;
+      }
+      if (this.app.isDownRightKeyPressed()) {
+        this.cursor.x++;
+        this.cursor.y++;
+      }
+      if (this.app.isLeftKeyPressed()) {
         this.cursor.x--;
       }
-      if (this.isKeyPressed(RIGHT_KEYS)) {
+      if (this.app.isRightKeyPressed()) {
         this.cursor.x++;
       }
-      if (this.isKeyPressed(DOWN_KEYS)) {
-        this.cursor.y++;
+      if (this.app.isUpLeftKeyPressed()) {
+        this.cursor.x--;
+        this.cursor.y--;
+      }
+      if (this.app.isUpKeyPressed()) {
+        this.cursor.y--;
+      }
+      if (this.app.isUpRightKeyPressed()) {
+        this.cursor.x++;
+        this.cursor.y--;
       }
       return;
     }
@@ -430,36 +459,40 @@ export class Game extends AppState {
       }
     }
 
-    const down = this.isKeyPressed(DOWN_KEYS) || (nextStep && nextStep.y > this.player.y);
-    const left = this.isKeyPressed(LEFT_KEYS) || (nextStep && nextStep.x < this.player.x);
-    const right = this.isKeyPressed(RIGHT_KEYS) || (nextStep && nextStep.x > this.player.x);
-    const up = this.isKeyPressed(UP_KEYS) || (nextStep && nextStep.y < this.player.y);
-    const wait = this.isKeyPressed(WAIT_KEYS);
+    if (nextStep) {
+      const dx = nextStep.x - this.player.x;
+      const dy = nextStep.y - this.player.y;
+      this.tryMoveOrAttack(dx, dy);
+      return;
+    }
 
-    if (up) {
-      this.tryMoveOrAttack(0, -1);
+    if (this.app.isDownLeftKeyPressed() && this.tryMoveOrAttack(-1, 1)) {
+      return;
     }
-    if (left) {
-      this.tryMoveOrAttack(-1, 0);
+    if (this.app.isDownKeyPressed() && this.tryMoveOrAttack(0, 1)) {
+      return;
     }
-    if (right) {
-      this.tryMoveOrAttack(1, 0);
+    if (this.app.isDownRightKeyPressed() && this.tryMoveOrAttack(1, 1)) {
+      return;
     }
-    if (down) {
-      this.tryMoveOrAttack(0, 1);
+    if (this.app.isLeftKeyPressed() && this.tryMoveOrAttack(-1, 0)) {
+      return;
     }
-    if (wait) {
+    if (this.app.isRightKeyPressed() && this.tryMoveOrAttack(1, 0)) {
+      return;
+    }
+    if (this.app.isUpLeftKeyPressed() && this.tryMoveOrAttack(-1, -1)) {
+      return;
+    }
+    if (this.app.isUpKeyPressed() && this.tryMoveOrAttack(0, -1)) {
+      return;
+    }
+    if (this.app.isUpRightKeyPressed() && this.tryMoveOrAttack(1, -1)) {
+      return;
+    }
+    if (this.app.isWaitKeyPressed()) {
       this.player.ap = 0;
     }
-  }
-
-  private isKeyPressed(keys: Key[]) {
-    for (let i = 0; i < keys.length; i++) {
-      if (this.app.isKeyPressed(keys[i])) {
-        return true;
-      }
-    }
-    return false;
   }
 
   tryMoveOrAttack(dx: number, dy: number) {

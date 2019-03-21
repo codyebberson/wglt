@@ -7,11 +7,23 @@ import {Mouse} from './mouse';
 import {Rect} from './rect';
 import {RenderSet} from './renderset';
 import {Vec2} from './vec2';
+import { Keys, Key } from './keys';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 224;
 const DEFAULT_FILL_WINDOW = false;
 const DEFAULT_SCALE_FACTOR = 2.0;
+
+// Arrow keys, numpad, vi, WASD, or ZQSD
+const NORTHWEST_KEYS = [Keys.VK_NUMPAD7];
+const NORTHEAST_KEYS = [Keys.VK_NUMPAD9];
+const SOUTHWEST_KEYS = [Keys.VK_NUMPAD1];
+const SOUTHEAST_KEYS = [Keys.VK_NUMPAD3];
+const UP_KEYS = [Keys.VK_UP, Keys.VK_NUMPAD8, Keys.VK_K, Keys.VK_W, Keys.VK_Z];
+const LEFT_KEYS = [Keys.VK_LEFT, Keys.VK_NUMPAD4, Keys.VK_H, Keys.VK_A, Keys.VK_Q];
+const DOWN_KEYS = [Keys.VK_DOWN, Keys.VK_NUMPAD2, Keys.VK_J, Keys.VK_S];
+const RIGHT_KEYS = [Keys.VK_RIGHT, Keys.VK_NUMPAD6, Keys.VK_L, Keys.VK_D];
+const WAIT_KEYS = [Keys.VK_SPACE, Keys.VK_NUMPAD5];
 
 export class App {
   readonly canvas: HTMLCanvasElement;
@@ -198,5 +210,50 @@ export class App {
     const key = this.keyboard.getKey(keyCode);
     const count = key ? key.downCount : 0;
     return count === 1 || (count > 30);
+  }
+
+  isDownLeftKeyPressed() {
+    return this.isKeyArrayPressed(SOUTHWEST_KEYS);
+  }
+
+  isDownKeyPressed() {
+    return this.isKeyArrayPressed(DOWN_KEYS);
+  }
+
+  isDownRightKeyPressed() {
+    return this.isKeyArrayPressed(SOUTHEAST_KEYS);
+  }
+
+  isLeftKeyPressed() {
+    return this.isKeyArrayPressed(LEFT_KEYS);
+  }
+
+  isWaitKeyPressed() {
+    return this.isKeyArrayPressed(WAIT_KEYS);
+  }
+
+  isRightKeyPressed() {
+    return this.isKeyArrayPressed(RIGHT_KEYS);
+  }
+
+  isUpLeftKeyPressed() {
+    return this.isKeyArrayPressed(NORTHWEST_KEYS);
+  }
+
+  isUpKeyPressed() {
+    return this.isKeyArrayPressed(UP_KEYS);
+  }
+
+  isUpRightKeyPressed() {
+    return this.isKeyArrayPressed(NORTHEAST_KEYS);
+  }
+
+  private isKeyArrayPressed(keys: Key[]) {
+    for (let i = 0; i < keys.length; i++) {
+      if (this.isKeyPressed(keys[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 }

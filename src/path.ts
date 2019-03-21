@@ -1,13 +1,13 @@
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 
-// const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
-// const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
-// const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
+const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
+const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
+const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
 
-const dxs = [0, -1, 1, 0];
-const dys = [-1, 0, 0, 1];
-const costs = [1, 1, 1, 1];
+// const dxs = [0, -1, 1, 0];
+// const dys = [-1, 0, 0, 1];
+// const costs = [1, 1, 1, 1];
 
 /**
  * Calculates Dijkstra's algorithm.
