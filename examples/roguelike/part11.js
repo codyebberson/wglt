@@ -292,7 +292,7 @@ const lightningAbility = {
         // Zap it!
         game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
         game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
-        monster.takeDamage(LIGHTNING_DAMAGE);
+        monster.takeDamage(caster, LIGHTNING_DAMAGE);
         caster.ap--;
         return true;
     }
@@ -342,7 +342,7 @@ const fireballAbility = {
             const entity = game.entities.get(i);
             if (entity instanceof wglt.Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
                 game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
-                entity.takeDamage(FIREBALL_DAMAGE);
+                entity.takeDamage(caster, FIREBALL_DAMAGE);
             }
         }
 

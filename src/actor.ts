@@ -137,10 +137,8 @@ export class Actor extends Entity {
       return;
     }
 
-    // TODO: Enforce distance check?
-
     this.onAttack(target, damage);
-    target.takeDamage(damage);
+    target.takeDamage(this, damage);
     this.ap--;
     this.game.animations.push(new BumpAnimation(this, target));
     this.game.blocked = true;
@@ -151,7 +149,7 @@ export class Actor extends Entity {
     this.addFloatingText(heal.toString(), Colors.LIGHT_GREEN);
   }
 
-  takeDamage(damage: number) {
+  takeDamage(attacker: Actor, damage: number) {
     if (this.hp <= 0) {
       // Already dead
       return;
@@ -162,9 +160,7 @@ export class Actor extends Entity {
 
     if (this.hp <= 0) {
       this.hp = 0;
-      if (this.onDeath) {
-        this.onDeath();
-      }
+      this.onDeath(attacker);
       this.game.entities.remove(this);
     }
   }
@@ -196,5 +192,5 @@ export class Actor extends Entity {
   }
 
   onAttack(target: Actor, damage: number) {}
-  onDeath() {}
+  onDeath(attacker: Actor) {}
 }
