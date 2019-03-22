@@ -25,11 +25,11 @@ export declare class Actor extends Entity {
     moveToward(targetX: number, targetY: number, slideCount?: number): boolean;
     attack(target: Actor, damage: number): void;
     takeHeal(heal: number): void;
-    takeDamage(damage: number): void;
+    takeDamage(attacker: Actor, damage: number): void;
     pickup(item: Item): void;
     use(item: Item): boolean;
     cast(ability: Ability, target?: Entity | TileMapCell, callback?: Function): void;
     addFloatingText(str: string, color: Color): void;
     onAttack(target: Actor, damage: number): void;
-    onDeath(): void;
+    onDeath(attacker: Actor): void;
 }
