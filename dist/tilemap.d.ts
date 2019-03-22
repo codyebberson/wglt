@@ -41,6 +41,7 @@ export declare class TileMap {
     readonly layers: TileMapLayer[];
     tileWidth: number;
     tileHeight: number;
+    dirty: boolean;
     private readonly quadVertBuffer;
     private readonly tilemapShader;
     private readonly positionAttribute;
@@ -59,6 +60,7 @@ export declare class TileMap {
     private minY;
     private maxY;
     constructor(gl: WebGLRenderingContext, width: number, height: number, layerCount: number);
+    clear(): void;
     setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean, blockedSight?: boolean): void;
     getCell(tx: number, ty: number): TileMapCell | null;
     getTile(tx: number, ty: number): number;
