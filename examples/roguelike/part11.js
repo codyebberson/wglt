@@ -47,6 +47,9 @@ function createVTunnel(map, y1, y2, x) {
 }
 
 function createMap() {
+    // Reset all FOV data
+    map.clear();
+
     // Clear the map to all walls
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {

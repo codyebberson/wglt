@@ -37,7 +37,7 @@ const tilemapFS = 'precision highp float;' +
     '   vec4 tile = texture2D(tiles, texCoord);' +
     '   if(tile.x == 1.0 && tile.y == 1.0) { discard; }' +
     '   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;' +
-    '   if(tile.z != 1.0) spriteOffset.x += animFrame * tileSize.x;' +
+    '   if(tile.z != 0.0) spriteOffset.x += animFrame * tileSize.x;' +
     '   vec2 spriteCoord = mod(pixelCoord, tileSize);' +
     '   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) / ' + TEXTURE_SIZE + '.0);' +
     '   if (gl_FragColor.a == 0.0) discard;' +
@@ -89,8 +89,12 @@ export class TileMapLayer {
   }
 
   clear() {
-    for (let i = 0; i < this.imageData.length; i++) {
-      this.imageData[i] = 255;
+    let i = 0;
+    while (i < this.imageData.length) {
+      this.imageData[i++] = 255;
+      this.imageData[i++] = 255;
+      this.imageData[i++] = 0;
+      this.imageData[i++] = 0;
     }
   }
 
@@ -129,6 +133,7 @@ export class TileMap {
   readonly layers: TileMapLayer[];
   tileWidth: number;
   tileHeight: number;
+  dirty: boolean;
 
   private readonly quadVertBuffer: WebGLBuffer;
   private readonly tilemapShader: WebGLShader;
@@ -158,6 +163,7 @@ export class TileMap {
     this.layers = new Array(layerCount);
     this.tileWidth = 16;
     this.tileHeight = 16;
+    this.dirty = true;
 
     // Field-of-view state
     // By default, everything is visible
@@ -203,6 +209,12 @@ export class TileMap {
 
     for (let i = 0; i < this.layers.length; i++) {
       this.layers[i].initGl(gl);
+    }
+  }
+
+  clear() {
+    for (let i = 0; i < this.layers.length; i++) {
+      this.layers[i].clear();
     }
   }
 
@@ -268,7 +280,7 @@ export class TileMap {
 
     const layer = this.layers[layerIndex];
     const ti = 4 * (ty * layer.width + tx);
-    return layer.imageData[ti + 2] < 255;
+    return layer.imageData[ti + 2] !== 0;
   }
 
   setAnimated(tx: number, ty: number, layerIndex: number, animated: boolean) {
@@ -278,7 +290,7 @@ export class TileMap {
 
     const layer = this.layers[layerIndex];
     const ti = 4 * (ty * layer.width + tx);
-    layer.imageData[ti + 2] = animated ? 1 : 255;
+    layer.imageData[ti + 2] = animated ? 1 : 0;
   }
 
   draw(x: number, y: number, width: number, height: number, animFrame?: number) {
@@ -315,19 +327,23 @@ export class TileMap {
     // Draw each layer of the map
     for (let i = 0; i < this.layers.length; i++) {
       const layer = this.layers[i];
-
-      for (let ty = ty1; ty <= ty2; ty++) {
-        for (let tx = tx1; tx <= tx2; tx++) {
-          const alpha = this.isVisible(tx, ty) ? 255 : this.isSeen(tx, ty) ? 144 : 0;
-          layer.setAlpha(tx, ty, alpha);
-        }
-      }
-
       gl.uniform2fv(this.mapSizeUniform, layer.dimensions);
       gl.bindTexture(gl.TEXTURE_2D, layer.texture);
-      layer.updateGl(gl);
+
+      if (this.dirty) {
+        for (let ty = ty1; ty <= ty2; ty++) {
+          for (let tx = tx1; tx <= tx2; tx++) {
+            const alpha = this.isVisible(tx, ty) ? 255 : this.isSeen(tx, ty) ? 144 : 0;
+            layer.setAlpha(tx, ty, alpha);
+          }
+        }
+
+        layer.updateGl(gl);
+      }
+
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
+    this.dirty = false;
   }
 
   resetFov() {
@@ -367,6 +383,7 @@ export class TileMap {
     this.computeOctantX(-1, 1);
     this.computeOctantY(-1, -1);
     this.computeOctantX(-1, -1);
+    this.dirty = true;
   }
 
   /**
