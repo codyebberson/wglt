@@ -319,11 +319,6 @@ export class TileMap {
     gl.activeTexture(gl.TEXTURE1);
     gl.uniform1i(this.tileSamplerUniform, 1);
 
-    const tx1 = (x / this.tileWidth) | 0;
-    const ty1 = (y / this.tileHeight) | 0;
-    const tx2 = ((x + width) / this.tileWidth) | 0;
-    const ty2 = ((y + height) / this.tileHeight) | 0;
-
     // Draw each layer of the map
     for (let i = 0; i < this.layers.length; i++) {
       const layer = this.layers[i];
@@ -331,13 +326,12 @@ export class TileMap {
       gl.bindTexture(gl.TEXTURE_2D, layer.texture);
 
       if (this.dirty) {
-        for (let ty = ty1; ty <= ty2; ty++) {
-          for (let tx = tx1; tx <= tx2; tx++) {
-            const alpha = this.isVisible(tx, ty) ? 255 : this.isSeen(tx, ty) ? 144 : 0;
-            layer.setAlpha(tx, ty, alpha);
+        for (let y = 0; y < this.height; y++) {
+          for (let x = 0; x < this.width; x++) {
+            const alpha = this.isVisible(x, y) ? 255 : this.isSeen(x, y) ? 144 : 0;
+            layer.setAlpha(x, y, alpha);
           }
         }
-
         layer.updateGl(gl);
       }
 
