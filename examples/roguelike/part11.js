@@ -130,6 +130,9 @@ function createMap() {
     // Create stairs at the center of the last room
     const stairsLoc = rooms[rooms.length - 1].getCenter();
     stairs = new wglt.Entity(game, stairsLoc.x, stairsLoc.y, 'stairs', new wglt.Sprite(32, 32, 16, 16, 1), true);
+    stairs.onBump = function() {
+        nextLevel();
+    }
     game.entities.add(stairs);
 
     // Initial FOV
@@ -159,6 +162,7 @@ function placeObjects(room) {
 
         monster.hp = 20;
         monster.ai = new wglt.BasicMonster(monster, calculateDamage);
+        monster.onBump = onBumpMonster;
         monster.onAttack = attackCallback;
         monster.onDeath = monsterDeath;
         game.entities.add(monster);
@@ -370,6 +374,11 @@ function readScroll() {
     });
 }
 
+function onBumpMonster(player) {
+    const monster = this;
+    player.attack(monster, 10);
+}
+
 function attackCallback(target, damage) {
     const attacker = this;
     if (damage > 0) {
@@ -443,21 +452,6 @@ player.level = 1;
 player.xp = 0;
 player.maxXp = 10;
 player.zIndex = 2;
-player.onBump = function (other) {
-    if (other instanceof wglt.Item) {
-        player.moveToward(other.x, other.y);
-        player.pickup(other);
-        return true;
-    }
-    if (other instanceof wglt.Actor) {
-        player.attack(other, 10);
-        return true;
-    }
-    if (other.name === 'stairs') {
-        nextLevel();
-        return true;
-    }
-};
 
 const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 3);
 game.tileMap = map;

@@ -18,6 +18,7 @@ import {Sprite} from './sprite';
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 import { ArrayList } from './arraylist';
+import { Item } from './item';
 
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
@@ -513,10 +514,26 @@ export class Game extends AppState {
     for (let i = 0; i < this.entities.length; i++) {
       const other = this.entities.get(i);
       if (player !== other && other.x === destX && other.y === destY) {
-        if (player.onBump) {
-          player.onBump(other);
+        if (this.path) {
+          // Autowalking...
+          if (!(other instanceof Actor)) {
+            // If it's not an actor (i.e., item or stairs), pick it up and carry on
+            other.onBump(player);
+            return true;
+          }
+          if (this.pathIndex === 1) {
+            // If it's an entity, only attack if it's the first target
+            other.onBump(player);
+            this.stopAutoWalk();
+            return true;
+          }
+          // Otherwise stop and make player confirm
+          this.stopAutoWalk();
+          return true;
         }
-        this.stopAutoWalk();
+
+        // Otherwise, this is keyboard input, so go ahead and bump
+        other.onBump(player);
         return true;
       }
     }

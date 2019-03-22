@@ -5,6 +5,11 @@ import {Message} from './message';
 export class Item extends Entity {
   tooltipMessages?: Message[];
 
+  onBump(player: Actor) {
+    player.pickup(this);
+    player.moveToward(this.x, this.y);
+  }
+
   onPickup(user: Actor) {}
 
   onUse(user: Actor): boolean {
