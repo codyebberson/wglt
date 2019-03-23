@@ -1,5 +1,6 @@
 import {initShaderProgram} from './glutils';
 import {Vec2} from './vec2';
+import { Rect } from './rect';
 
 const TEXTURE_SIZE = 1024;
 
@@ -150,10 +151,8 @@ export class TileMap {
   // Field-of-view state
   private originX: number;
   private originY: number;
-  private minX: number;
-  private maxX: number;
-  private minY: number;
-  private maxY: number;
+  private visibleRect: Rect;
+  private prevVisibleRect: Rect;
 
   constructor(gl: WebGLRenderingContext, width: number, height: number, layerCount: number) {
     this.gl = gl;
@@ -169,10 +168,8 @@ export class TileMap {
     // By default, everything is visible
     this.originX = 0;
     this.originY = 0;
-    this.minX = 0;
-    this.maxX = width - 1;
-    this.minY = 0;
-    this.maxY = height - 1;
+    this.visibleRect = new Rect(0, 0, width, height);
+    this.prevVisibleRect = new Rect(0, 0, width, height);
 
     for (let y = 0; y < height; y++) {
       this.grid[y] = new Array(width);
@@ -255,7 +252,7 @@ export class TileMap {
   }
 
   isVisible(x: number, y: number) {
-    if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
+    if (x < this.visibleRect.x1 || x >= this.visibleRect.x2 || y < this.visibleRect.y1 || y >= this.visibleRect.y2) {
       return false;
     }
     return this.grid[y][x].visible;
@@ -319,6 +316,11 @@ export class TileMap {
     gl.activeTexture(gl.TEXTURE1);
     gl.uniform1i(this.tileSamplerUniform, 1);
 
+    const minX = Math.min(this.visibleRect.x1, this.prevVisibleRect.x1);
+    const minY = Math.min(this.visibleRect.y1, this.prevVisibleRect.y1);
+    const maxX = Math.max(this.visibleRect.x2, this.prevVisibleRect.x2);
+    const maxY = Math.max(this.visibleRect.y2, this.prevVisibleRect.y2);
+
     // Draw each layer of the map
     for (let i = 0; i < this.layers.length; i++) {
       const layer = this.layers[i];
@@ -326,8 +328,8 @@ export class TileMap {
       gl.bindTexture(gl.TEXTURE_2D, layer.texture);
 
       if (this.dirty) {
-        for (let y = 0; y < this.height; y++) {
-          for (let x = 0; x < this.width; x++) {
+        for (let y = minY; y < maxY; y++) {
+          for (let x = minX; x < maxX; x++) {
             const alpha = this.isVisible(x, y) ? 255 : this.isSeen(x, y) ? 144 : 0;
             layer.setAlpha(x, y, alpha);
           }
@@ -352,17 +354,17 @@ export class TileMap {
   computeFov(originX: number, originY: number, radius: number, vradius?: number) {
     this.originX = originX;
     this.originY = originY;
+    this.prevVisibleRect.copy(this.visibleRect);
 
     const dx = radius;
     const dy = vradius || radius;
-    this.minX = Math.max(0, originX - dx);
-    this.minY = Math.max(0, originY - dy);
-    this.maxX = Math.min(this.width - 1, originX + dx);
-    this.maxY = Math.min(this.height - 1, originY + dy);
+    this.visibleRect.x = Math.max(0, originX - dx);
+    this.visibleRect.y = Math.max(0, originY - dy);
+    this.visibleRect.width = Math.min(this.width - 1, originX + dx) - this.visibleRect.x + 1;
+    this.visibleRect.height = Math.min(this.height - 1, originY + dy) - this.visibleRect.y + 1;
 
-    for (let y = this.minY; y <= this.maxY; y++) {
-      for (let x = this.minX; x <= this.maxX; x++) {
-        this.grid[y][x].seen = this.grid[y][x].seen || this.grid[y][x].visible;
+    for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
+      for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
         this.grid[y][x].visible = false;
       }
     }
@@ -401,12 +403,12 @@ export class TileMap {
     let endSlope;
     let previousEndSlope;
 
-    for (y = this.originY + deltaY; y >= this.minY && y <= this.maxY;
+    for (y = this.originY + deltaY; y >= this.visibleRect.y1 && y < this.visibleRect.y2;
          y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (processedCell = Math.floor(minSlope * iteration + 0.5), x = this.originX + (processedCell * deltaX);
-           processedCell <= iteration && x >= this.minX && x <= this.maxX;
+           processedCell <= iteration && x >= this.visibleRect.x1 && x < this.visibleRect.x2;
            x += deltaX, ++processedCell, previousEndSlope = endSlope) {
         visible = true;
         extended = false;
@@ -442,6 +444,7 @@ export class TileMap {
         }
         if (visible) {
           this.grid[y][x].visible = true;
+          this.grid[y][x].seen = true;
           if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
@@ -476,12 +479,12 @@ export class TileMap {
     let endSlope;
     let previousEndSlope;
 
-    for (x = this.originX + deltaX; x >= this.minX && x <= this.maxX;
+    for (x = this.originX + deltaX; x >= this.visibleRect.x1 && x < this.visibleRect.x2;
          x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (processedCell = Math.floor(minSlope * iteration + 0.5), y = this.originY + (processedCell * deltaY);
-           processedCell <= iteration && y >= this.minY && y <= this.maxY;
+           processedCell <= iteration && y >= this.visibleRect.y1 && y < this.visibleRect.y2;
            y += deltaY, ++processedCell, previousEndSlope = endSlope) {
         visible = true;
         extended = false;
@@ -517,6 +520,7 @@ export class TileMap {
         }
         if (visible) {
           this.grid[y][x].visible = true;
+          this.grid[y][x].seen = true;
           if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;

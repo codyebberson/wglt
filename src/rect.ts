@@ -39,6 +39,13 @@ export class Rect extends Vec2 {
     return new Rect(this.x, this.y, this.width, this.height);
   }
 
+  copy(other: Rect) {
+    this.x = other.x;
+    this.y = other.y;
+    this.width = other.width;
+    this.height = other.height;
+  }
+
   getCenter() {
     return new Vec2(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
   }
