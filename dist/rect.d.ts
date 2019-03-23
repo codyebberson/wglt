@@ -11,6 +11,7 @@ export declare class Rect extends Vec2 {
     readonly left: number;
     readonly top: number;
     clone(): Rect;
+    copy(other: Rect): void;
     getCenter(): Vec2;
     intersects(other: Rect): boolean;
     contains(point: Vec2 | Mouse): boolean;

@@ -55,10 +55,8 @@ export declare class TileMap {
     private readonly spriteSamplerUniform;
     private originX;
     private originY;
-    private minX;
-    private maxX;
-    private minY;
-    private maxY;
+    private visibleRect;
+    private prevVisibleRect;
     constructor(gl: WebGLRenderingContext, width: number, height: number, layerCount: number);
     clear(): void;
     setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean, blockedSight?: boolean): void;
