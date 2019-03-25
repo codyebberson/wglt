@@ -38,7 +38,7 @@ export function computePath(map: TileMap, source: Vec2, dest: Vec2, maxDist: num
       if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
         const v = map.grid[y][x];
         const alt = u.g + costs[i];
-        if (alt < v.g && alt <= maxDist && !map.grid[y][x].blocked) {
+        if (alt < v.g && alt <= maxDist && ((x === dest.x && y === dest.y) || !map.grid[y][x].blocked)) {
           v.g = alt;
           v.prev = u;
           q.push(v);
