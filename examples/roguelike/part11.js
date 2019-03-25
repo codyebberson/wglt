@@ -4,9 +4,9 @@ const MAP_WIDTH = 60;
 const MAP_HEIGHT = 40;
 
 const TILE_SIZE = 16;
-const TILE_WALL = 1 + 2 * 64 + 0;
-const TILE_FLOOR = 1 + 2 * 64 + 1;
-const TILE_SHADOW = 1 + 10 * 64 + 10;
+const TILE_WALL = wglt.getTileId(0, 2);
+const TILE_FLOOR = wglt.getTileId(1, 2);
+const TILE_SHADOW = wglt.getTileId(10, 10);
 
 // Parameters for dungeon generator
 const ROOM_MAX_SIZE = 10;
