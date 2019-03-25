@@ -41,11 +41,13 @@ export declare class Game extends AppState {
     blackoutRect?: Rect;
     horizontalViewDistance: number;
     verticalViewDistance: number;
+    zoom: number;
     constructor(app: App, options: GameOptions);
     log(text: string, color?: Color): void;
     addAnimation(animation: Animation): import("./animations/animationpromise").AnimationPromise;
     update(): void;
     private updateTooltip;
+    private updateZoom;
     private updateAnimations;
     private updateEntities;
     resetViewport(): void;

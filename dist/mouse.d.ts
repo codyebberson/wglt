@@ -11,10 +11,13 @@ export declare class Mouse extends Input {
     dy: number;
     dragDistance: number;
     longPress: boolean;
+    wheelDelta: number;
+    lastWheelDelta: number;
     constructor(app: App);
     private handleTouchEvent;
     private handleEvent;
     private updatePosition;
+    private handleMouseWheel;
     update(): void;
     isClicked(): boolean;
     isDragging(): boolean;
