@@ -496,7 +496,9 @@ export class Game extends AppState {
     if (nextStep) {
       const dx = nextStep.x - this.player.x;
       const dy = nextStep.y - this.player.y;
-      this.tryMoveOrAttack(dx, dy);
+      if (!this.tryMoveOrAttack(dx, dy)) {
+        this.stopAutoWalk();
+      }
       return;
     }
 
