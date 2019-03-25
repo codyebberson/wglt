@@ -274,9 +274,10 @@ export class Game extends AppState {
       this.viewportFocus.y = this.viewport.y + ((this.viewport.height / 2) | 0);
     } else {
       // Drift viewport toward focus
+      const driftRate = 0.05;
       const focusLeftX = this.viewportFocus.x - ((this.app.size.width / this.zoom / 2) | 0);
       if (focusLeftX !== this.viewport.x) {
-        let dx = 0.1 * focusLeftX - 0.1 * this.viewport.x;
+        let dx = driftRate * focusLeftX - driftRate * this.viewport.x;
         if (dx < 0) {
           dx = Math.floor(dx);
         } else {
@@ -287,7 +288,7 @@ export class Game extends AppState {
 
       const focusTopY = this.viewportFocus.y - ((this.app.size.height / this.zoom / 2) | 0);
       if (focusTopY !== this.viewport.y) {
-        let dy = 0.1 * focusTopY - 0.1 * this.viewport.y;
+        let dy = driftRate * focusTopY - driftRate * this.viewport.y;
         if (dy < 0) {
           dy = Math.floor(dy);
         } else {
@@ -603,10 +604,6 @@ export class Game extends AppState {
         }
       }
     }
-
-    // If the visible area is smaller than the screen,
-    // then just center on the visible area.
-    // if ((maxX - minX) < this.viewport.width && (maxY - minY) < this.viewport)
 
     // Find the bounds of desired area
     // Ignore Actor.offset, because we're jumping to the destination.
