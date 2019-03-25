@@ -18,7 +18,6 @@ import {Sprite} from './sprite';
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 import { ArrayList } from './arraylist';
-import { Item } from './item';
 
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
@@ -50,6 +49,7 @@ export class Game extends AppState {
   blackoutRect?: Rect;
   horizontalViewDistance: number;
   verticalViewDistance: number;
+  zoom: number;
 
   constructor(app: App, options: GameOptions) {
     super(app);
@@ -66,6 +66,7 @@ export class Game extends AppState {
     this.pathIndex = 0;
     this.horizontalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
     this.verticalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    this.zoom = 1.0;
 
     if (options.horizontalViewDistance) {
       this.horizontalViewDistance = options.horizontalViewDistance;
@@ -89,6 +90,7 @@ export class Game extends AppState {
   update() {
     Sprite.updateGlobalAnimations();
     this.updateTooltip();
+    this.updateZoom();
 
     if (!this.gui.handleInput()) {
       this.updateAnimations();
@@ -102,9 +104,13 @@ export class Game extends AppState {
     }
 
     this.drawTileMap();
-    this.drawTargeting();
-    this.drawEntities();
-    this.drawAnimations();
+
+    if (this.zoom === 1.0) {
+      this.drawTargeting();
+      this.drawEntities();
+      this.drawAnimations();
+    }
+
     this.gui.draw();
   }
 
@@ -149,6 +155,25 @@ export class Game extends AppState {
         // On mobile devices, the tooltip is modal
         this.tooltip.modal = this.app.mobile;
       }
+    }
+  }
+
+  private updateZoom() {
+    if (this.app.mouse.wheelDelta !== 0) {
+      const center = this.viewport.getCenter();
+      this.viewportFocus.x = center.x;
+      this.viewportFocus.y = center.y;
+
+      if (this.app.mouse.wheelDelta > 0) {
+        this.zoom *= 0.5;
+      } else {
+        this.zoom *= 2.0;
+      }
+
+      this.viewport.width = (this.zoom * this.app.size.width) | 0;
+      this.viewport.height = (this.zoom * this.app.size.height) | 0;
+      this.viewport.x = center.x - ((this.app.size.width / this.zoom / 2) | 0);
+      this.viewport.y = center.y - ((this.app.size.height / this.zoom / 2) | 0);
     }
   }
 
@@ -233,23 +258,23 @@ export class Game extends AppState {
     }
     this.viewportFocus.x = this.player.centerPixelX;
     this.viewportFocus.y = this.player.centerPixelY;
-    this.viewport.x = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
-    this.viewport.y = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
+    this.viewport.x = this.viewportFocus.x - ((this.app.size.width / this.zoom / 2) | 0);
+    this.viewport.y = this.viewportFocus.y - ((this.app.size.height / this.zoom / 2) | 0);
   }
 
   private updateViewport() {
-    this.viewport.width = this.app.size.width;
-    this.viewport.height = this.app.size.height;
+    this.viewport.width = this.app.size.width / this.zoom;
+    this.viewport.height = this.app.size.height / this.zoom;
 
     const mouse = this.app.mouse;
     if (mouse.isDragging()) {
-      this.viewport.x -= mouse.dx;
-      this.viewport.y -= mouse.dy;
+      this.viewport.x -= mouse.dx / this.zoom;
+      this.viewport.y -= mouse.dy / this.zoom;
       this.viewportFocus.x = this.viewport.x + ((this.viewport.width / 2) | 0);
       this.viewportFocus.y = this.viewport.y + ((this.viewport.height / 2) | 0);
     } else {
       // Drift viewport toward focus
-      const focusLeftX = this.viewportFocus.x - ((this.app.size.width / 2) | 0);
+      const focusLeftX = this.viewportFocus.x - ((this.app.size.width / this.zoom / 2) | 0);
       if (focusLeftX !== this.viewport.x) {
         let dx = 0.1 * focusLeftX - 0.1 * this.viewport.x;
         if (dx < 0) {
@@ -260,7 +285,7 @@ export class Game extends AppState {
         this.viewport.x += dx;
       }
 
-      const focusTopY = this.viewportFocus.y - ((this.app.size.height / 2) | 0);
+      const focusTopY = this.viewportFocus.y - ((this.app.size.height / this.zoom / 2) | 0);
       if (focusTopY !== this.viewport.y) {
         let dy = 0.1 * focusTopY - 0.1 * this.viewport.y;
         if (dy < 0) {
@@ -275,8 +300,10 @@ export class Game extends AppState {
 
   private drawTileMap() {
     if (this.app.renderSet.spriteTexture.loaded && this.tileMap) {
+      const x = ((this.viewport.x / this.zoom) | 0) * this.zoom;
+      const y = ((this.viewport.y / this.zoom) | 0) * this.zoom;
       const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
-      this.tileMap.draw(this.viewport.x, this.viewport.y, this.viewport.width, this.viewport.height, animFrame);
+      this.tileMap.draw(x, y, this.viewport.width, this.viewport.height, animFrame);
     }
   }
 

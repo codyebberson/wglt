@@ -1,8 +1,8 @@
 
-import {App} from './app';
-import {Input} from './input';
-import {Rect} from './rect';
-import {Vec2} from './vec2';
+import { App } from './app';
+import { Input } from './input';
+import { Rect } from './rect';
+import { Vec2 } from './vec2';
 
 const MIN_DRAG_DISTANCE = 4;
 const LONG_PRESS_TICKS = 30;
@@ -17,6 +17,8 @@ export class Mouse extends Input {
   dy: number;
   dragDistance: number;
   longPress: boolean;
+  wheelDelta: number;
+  lastWheelDelta: number;
 
   constructor(app: App) {
     super();
@@ -29,6 +31,8 @@ export class Mouse extends Input {
     this.dy = 0;
     this.dragDistance = 0;
     this.longPress = false;
+    this.wheelDelta = 0;
+    this.lastWheelDelta = 0;
 
     const el = app.canvas;
 
@@ -43,6 +47,9 @@ export class Mouse extends Input {
     el.addEventListener('touchend', touchEventHandler);
     el.addEventListener('touchcancel', touchEventHandler);
     el.addEventListener('touchmove', touchEventHandler);
+
+    const wheelEventHandler = this.handleMouseWheel.bind(this);
+    el.addEventListener('mousewheel', wheelEventHandler);
   }
 
   private handleTouchEvent(e: TouchEvent) {
@@ -92,7 +99,7 @@ export class Mouse extends Input {
   }
 
   private updatePosition(clientX: number, clientY: number) {
-    let rect: ClientRect|DOMRect|Rect = this.app.canvas.getBoundingClientRect();
+    let rect: ClientRect | DOMRect | Rect = this.app.canvas.getBoundingClientRect();
 
     // If the client rect is not the same aspect ratio as canvas,
     // then we are fullscreen.
@@ -117,12 +124,23 @@ export class Mouse extends Input {
     this.y = (this.app.size.height * (clientY - rect.top) / rect.height) | 0;
   }
 
+  private handleMouseWheel(e: Event) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const mwe = e as WheelEvent;
+    this.lastWheelDelta = Math.max(-1, Math.min(1, mwe.deltaY));
+    return false;
+  }
+
   update() {
     super.update();
     this.dx = this.x - this.prev.x;
     this.dy = this.y - this.prev.y;
     this.prev.x = this.x;
     this.prev.y = this.y;
+    this.wheelDelta = this.lastWheelDelta;
+    this.lastWheelDelta = 0;
 
     if (this.down) {
       this.dragDistance += Math.abs(this.dx) + Math.abs(this.dy);

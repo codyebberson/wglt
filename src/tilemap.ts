@@ -183,10 +183,13 @@ export class TileMap {
     }
 
     const quadVerts = [
-      // x  y  u  v
-      -1, -1, 0, 1, 1, -1, 1, 1, 1,  1, 1, 0,
-
-      -1, -1, 0, 1, 1, 1,  1, 0, -1, 1, 0, 0
+     // x   y   u  v
+       -1, -1,  0, 1,
+        1, -1,  1, 1,
+        1,  1,  1, 0,
+       -1, -1,  0, 1,
+        1,  1,  1, 0,
+       -1,  1,  0, 0
     ];
 
     this.quadVertBuffer = gl.createBuffer() as WebGLBuffer;
