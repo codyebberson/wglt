@@ -8,6 +8,7 @@ export class Item extends Entity {
   onBump(player: Actor) {
     player.pickup(this);
     player.moveToward(this.x, this.y);
+    return true;
   }
 
   onPickup(user: Actor) {}

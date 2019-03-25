@@ -529,10 +529,17 @@ export class Game extends AppState {
     }
   }
 
+  /**
+   * Tries to move or attack in the specified direction.
+   * Returns true on success (the player moved or attacked).
+   * Returns false on failure (unable to move or attack).
+   * @param dx The x direction to move.
+   * @param dy The y direction to move.
+   */
   tryMoveOrAttack(dx: number, dy: number) {
     const player = this.player;
     if (!player) {
-      return;
+      return false;
     }
 
     const destX = player.x + dx;
@@ -545,14 +552,11 @@ export class Game extends AppState {
           // Autowalking...
           if (!(other instanceof Actor)) {
             // If it's not an actor (i.e., item or stairs), pick it up and carry on
-            other.onBump(player);
-            return true;
+            return other.onBump(player);
           }
           if (this.pathIndex === 1) {
-            // If it's an entity, only attack if it's the first target
-            other.onBump(player);
             this.stopAutoWalk();
-            return true;
+            return other.onBump(player);
           }
           // Otherwise stop and make player confirm
           this.stopAutoWalk();
@@ -560,8 +564,7 @@ export class Game extends AppState {
         }
 
         // Otherwise, this is keyboard input, so go ahead and bump
-        other.onBump(player);
-        return true;
+        return other.onBump(player);
       }
     }
 

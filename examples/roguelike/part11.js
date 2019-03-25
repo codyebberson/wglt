@@ -132,6 +132,7 @@ function createMap() {
     stairs = new wglt.Entity(game, stairsLoc.x, stairsLoc.y, 'stairs', new wglt.Sprite(32, 32, 16, 16, 1), true);
     stairs.onBump = function() {
         nextLevel();
+        return true;
     }
     game.entities.add(stairs);
 
@@ -377,6 +378,7 @@ function readScroll() {
 function onBumpMonster(player) {
     const monster = this;
     player.attack(monster, 10);
+    return true;
 }
 
 function attackCallback(target, damage) {

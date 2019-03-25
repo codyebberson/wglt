@@ -1,7 +1,8 @@
-import {Game} from './game';
-import {SelectOption} from './gui/selectoption';
-import {Sprite} from './sprite';
-import {Vec2} from './vec2';
+import { Game } from './game';
+import { SelectOption } from './gui/selectoption';
+import { Sprite } from './sprite';
+import { Vec2 } from './vec2';
+import { Actor } from './actor';
 
 export class Entity extends Vec2 implements SelectOption {
   readonly game: Game;
@@ -49,11 +50,19 @@ export class Entity extends Vec2 implements SelectOption {
     this.sprite.draw(this.game.app, this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
   }
 
-  startTurn() {}
+  startTurn() { }
 
-  endTurn() {}
+  endTurn() { }
 
-  sendToBack() {}
+  sendToBack() { }
 
-  onBump(bumper: Entity) {}
+  /**
+   * Handles when another actor bumps this entity.
+   * Returns true on success (something happened).
+   * Returns false on failure (bump is rejected).
+   * @param bumper The actor that bumped this entity.
+   */
+  onBump(bumper: Actor) {
+    return false;
+  }
 }
