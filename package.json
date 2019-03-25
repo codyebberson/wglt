@@ -1,6 +1,6 @@
 {
   "name": "wglt",
-  "version": "0.1.49",
+  "version": "0.1.50",
   "description": "WebGL Terminal",
   "main": "dist/index.js",
   "source": "src/index.ts",
