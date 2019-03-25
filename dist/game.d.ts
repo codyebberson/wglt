@@ -61,7 +61,14 @@ export declare class Game extends AppState {
     private endTargeting;
     cancelTargeting(): void;
     private handlePlayerInput;
-    tryMoveOrAttack(dx: number, dy: number): boolean | undefined;
+    /**
+     * Tries to move or attack in the specified direction.
+     * Returns true on success (the player moved or attacked).
+     * Returns false on failure (unable to move or attack).
+     * @param dx The x direction to move.
+     * @param dy The y direction to move.
+     */
+    tryMoveOrAttack(dx: number, dy: number): boolean;
     private recalculateViewportFocus;
     private doAi;
     private nextTurn;

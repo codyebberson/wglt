@@ -2,6 +2,7 @@ import { Game } from './game';
 import { SelectOption } from './gui/selectoption';
 import { Sprite } from './sprite';
 import { Vec2 } from './vec2';
+import { Actor } from './actor';
 export declare class Entity extends Vec2 implements SelectOption {
     readonly game: Game;
     readonly offset: Vec2;
@@ -20,5 +21,11 @@ export declare class Entity extends Vec2 implements SelectOption {
     startTurn(): void;
     endTurn(): void;
     sendToBack(): void;
-    onBump(bumper: Entity): void;
+    /**
+     * Handles when another actor bumps this entity.
+     * Returns true on success (something happened).
+     * Returns false on failure (bump is rejected).
+     * @param bumper The actor that bumped this entity.
+     */
+    onBump(bumper: Actor): boolean;
 }
