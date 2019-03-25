@@ -579,38 +579,81 @@ export class Game extends AppState {
       return;
     }
 
+    const map = this.tileMap;
+    if (!map) {
+      return;
+    }
+
+    const tileWidth = this.tileSize.width;
+    const tileHeight = this.tileSize.height;
+
+    let visibleMinX = player.x * tileWidth;
+    let visibleMinY = player.y * tileHeight;
+    let visibleMaxX = (player.x + 1) * tileWidth;
+    let visibleMaxY = (player.y + 1) * tileHeight;
+
+    // Find the bounds of the visible area.
+    for (let y = player.y - this.verticalViewDistance; y <= player.y + this.verticalViewDistance; y++) {
+      for (let x = player.x - this.horizontalViewDistance; x <= player.x + this.horizontalViewDistance; x++) {
+        if (map.isVisible(x, y)) {
+          visibleMinX = Math.min(visibleMinX, x * tileWidth);
+          visibleMinY = Math.min(visibleMinY, y * tileHeight);
+          visibleMaxX = Math.max(visibleMaxX, (x + 1) * tileWidth);
+          visibleMaxY = Math.max(visibleMaxY, (y + 1) * tileHeight);
+        }
+      }
+    }
+
+    // If the visible area is smaller than the screen,
+    // then just center on the visible area.
+    // if ((maxX - minX) < this.viewport.width && (maxY - minY) < this.viewport)
+
     // Find the bounds of desired area
     // Ignore Actor.offset, because we're jumping to the destination.
-    let minX = player.x * player.sprite.width;
-    let minY = player.y * player.sprite.height;
-    let maxX = minX + player.sprite.width;
-    let maxY = minY + player.sprite.height;
+    let minX = player.x * tileWidth;
+    let minY = player.y * tileHeight;
+    let maxX = minX + tileWidth;
+    let maxY = minY + tileHeight;
 
     if (this.path) {
       // If there is an auto-walk path, use that
       for (let i = this.pathIndex; i < this.path.length; i++) {
         const pathTile = this.path[i];
-        minX = Math.min(minX, pathTile.x * this.tileSize.width);
-        minY = Math.min(minY, pathTile.y * this.tileSize.height);
-        maxX = Math.max(maxX, (pathTile.x + 1) * this.tileSize.width);
-        maxY = Math.max(maxY, (pathTile.y + 1) * this.tileSize.height);
+        minX = Math.min(minX, pathTile.x * tileWidth);
+        minY = Math.min(minY, pathTile.y * tileHeight);
+        maxX = Math.max(maxX, (pathTile.x + 1) * tileWidth);
+        maxY = Math.max(maxY, (pathTile.y + 1) * tileHeight);
       }
     } else {
       // Otherwise, use all visible entities.
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities.get(i);
-        if (entity instanceof Actor && this.tileMap && this.tileMap.isVisible(entity.x, entity.y)) {
-          minX = Math.min(minX, entity.pixelX);
-          minY = Math.min(minY, entity.pixelY);
-          maxX = Math.max(maxX, entity.pixelX + entity.sprite.width);
-          maxY = Math.max(maxY, entity.pixelY + entity.sprite.height);
+        if (entity instanceof Actor && map.isVisible(entity.x, entity.y)) {
+          minX = Math.min(minX, entity.x * tileWidth);
+          minY = Math.min(minY, entity.y * tileHeight);
+          maxX = Math.max(maxX, (entity.x + 1) * tileWidth);
+          maxY = Math.max(maxY, (entity.y + 1) * tileHeight);
         }
       }
     }
 
     // Find the center of the bounds of all visible actors
-    this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
-    this.viewportFocus.y = Math.round((minY + maxY) / 2.0);
+
+    if ((visibleMaxX - visibleMinX) <= this.viewport.width) {
+      // The entire visible range fits in the viewport, so center it
+      this.viewportFocus.x = Math.round((visibleMinX + visibleMaxX) / 2.0);
+    } else {
+      // The visible range goes beyond, so focus on entities or path
+      this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
+    }
+
+    if ((visibleMaxY - visibleMinY) <= this.viewport.height) {
+      // The entire visible range fits in the viewport, so center it
+      this.viewportFocus.y = Math.round((visibleMinY + visibleMaxY) / 2.0);
+    } else {
+      // The visible range goes beyond, so focus on entities or path
+      this.viewportFocus.y = Math.round((minY + maxY) / 2.0);
+    }
   }
 
   private doAi(entity: Actor) {
