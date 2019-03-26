@@ -16,4 +16,6 @@ export class Item extends Entity {
   onUse(user: Actor): boolean {
     return false;
   }
+
+  onUpdateTooltip() { }
 }

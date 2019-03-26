@@ -3,6 +3,7 @@ import {Item} from '../item';
 import {Rect} from '../rect';
 
 import {Button} from './button';
+import { TooltipDialog } from './tooltipdialog';
 
 export class ItemButton extends Button {
   readonly containerItems: ArrayList<Item>;
@@ -43,5 +44,14 @@ export class ItemButton extends Button {
       const dst = this.rect;
       this.gui.app.drawRightString(this.stackItems.length.toString(), dst.x2 - 3, dst.y2 - 10);
     }
+  }
+
+  updateTooltip(tooltip: TooltipDialog) {
+    if (this.stackItems.length > 0) {
+      const item = this.stackItems.get(0);
+      item.onUpdateTooltip();
+      this.tooltipMessages = item.tooltipMessages;
+    }
+    super.updateTooltip(tooltip);
   }
 }

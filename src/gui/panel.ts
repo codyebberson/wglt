@@ -115,6 +115,8 @@ export class Panel {
   }
 
   updateTooltip(tooltip: TooltipDialog) {
+    // By default, no visible tooltips
+    // Inheriting classes can override this method with tooltip details
     tooltip.visible = false;
   }
 }
