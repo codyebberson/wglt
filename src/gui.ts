@@ -7,6 +7,7 @@ import {TalentButton} from './gui/talentbutton';
 import {Mouse} from './mouse';
 import {Rect} from './rect';
 import {Vec2} from './vec2';
+import { ItemButton } from './gui/itembutton';
 
 export class GUI {
   readonly app: App;
@@ -74,6 +75,9 @@ export class GUI {
         dragElement.rect.x = target.rect.x;
         dragElement.rect.y = target.rect.y;
         dragElement.move(target);
+      } else if (dragElement instanceof ItemButton && target === this.rootPanel) {
+        // Drop item(s)
+        dragElement.removeAll();
       } else if (dragElement instanceof ItemShortcutButton && target === this.rootPanel) {
         // Destroy the shortcut
         if (dragElement.parent) {

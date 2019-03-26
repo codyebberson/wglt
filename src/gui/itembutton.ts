@@ -26,6 +26,12 @@ export class ItemButton extends Button {
     }
   }
 
+  removeAll() {
+    for (let i = this.stackItems.length - 1; i >= 0; i--) {
+      this.containerItems.remove(this.stackItems.get(i));
+    }
+  }
+
   drawContents() {
     if (!this.gui) {
       return;
