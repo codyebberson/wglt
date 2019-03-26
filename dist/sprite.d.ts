@@ -11,5 +11,6 @@ export declare class Sprite extends Rect {
     private animDelay;
     constructor(x: number, y: number, width: number, height: number, frames?: number, loop?: boolean, ticksPerFrame?: number, colorOverride?: Color);
     draw(app: App, x: number, y: number, colorOverride?: Color): void;
+    clone(): Sprite;
     static updateGlobalAnimations(): void;
 }
