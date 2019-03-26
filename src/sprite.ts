@@ -1,6 +1,6 @@
-import {App} from './app';
-import {Color} from './color';
-import {Rect} from './rect';
+import { App } from './app';
+import { Color } from './color';
+import { Rect } from './rect';
 
 const DEFAULT_TICKS_PER_FRAME = 30;
 
@@ -14,7 +14,13 @@ export class Sprite extends Rect {
   private animDelay: number;
 
   constructor(
-      x: number, y: number, width: number, height: number, frames?: number, loop?: boolean, ticksPerFrame?: number,
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      frames?: number,
+      loop?: boolean,
+      ticksPerFrame?: number,
       colorOverride?: Color) {
     super(x, y, width, height);
     this.frames = frames || 1;
@@ -48,6 +54,18 @@ export class Sprite extends Rect {
         }
       }
     }
+  }
+
+  clone() {
+    return new Sprite(
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      this.frames,
+      this.loop,
+      this.ticksPerFrame,
+      this.colorOverride);
   }
 
   static updateGlobalAnimations() {
