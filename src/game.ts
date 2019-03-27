@@ -674,7 +674,6 @@ export class Game extends AppState {
 
       if (this.player === currEntity) {
         this.recomputeFov();
-        this.recalculateViewportFocus();
       }
     }
 
@@ -686,6 +685,10 @@ export class Game extends AppState {
     if (this.turnIndex >= 0 && this.turnIndex < this.entities.length) {
       const nextEntity = this.entities.get(this.turnIndex);
       nextEntity.startTurn();
+
+      if (this.player === nextEntity) {
+        this.recalculateViewportFocus();
+      }
     }
   }
 
