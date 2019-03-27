@@ -61,13 +61,13 @@ export class ItemContainerDialog extends Dialog {
     }
   }
 
-  private getExistingButton(item: Entity) {
+  private getExistingButton(item: Item) {
     for (let i = 0; i < this.children.length; i++) {
       const buttonSlot = this.children.get(i) as ButtonSlot;
       const button = buttonSlot.button;
       if (button && button instanceof ItemButton) {
         const existing = button.stackItems.get(0);
-        if (existing.name === item.name) {
+        if (item.isStackable(existing)) {
           return button;
         }
       }

@@ -57,7 +57,7 @@ export class ShortcutBar extends Panel {
   containsItem(item: Item) {
     for (let i = 0; i < this.children.length; i++) {
       const slot = this.children.get(i) as ShortcutButtonSlot;
-      if (slot.button && slot.button instanceof ItemShortcutButton && slot.button.shortcutItem.name === item.name) {
+      if (slot.button && slot.button instanceof ItemShortcutButton && item.isStackable(slot.button.shortcutItem)) {
         return true;
       }
     }

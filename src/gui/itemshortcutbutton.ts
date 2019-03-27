@@ -42,7 +42,7 @@ export class ItemShortcutButton extends Button {
   private getItem() {
     for (let i = 0; i < this.containerItems.length; i++) {
       const item = this.containerItems.get(i);
-      if (item.name === this.shortcutItem.name) {
+      if (this.shortcutItem.isStackable(item)) {
         return item;
       }
     }
@@ -52,7 +52,7 @@ export class ItemShortcutButton extends Button {
   private countItems() {
     let count = 0;
     for (let i = 0; i < this.containerItems.length; i++) {
-      if (this.containerItems.get(i).name === this.shortcutItem.name) {
+      if (this.shortcutItem.isStackable(this.containerItems.get(i))) {
         count++;
       }
     }
