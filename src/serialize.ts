@@ -3,13 +3,8 @@ import { RenderSet } from "./renderset";
 import { TileMap } from "./tilemap";
 import { App } from "./app";
 import { GUI } from "./gui";
-import { Message } from "./message";
 import { Panel } from "./gui/panel";
 import { getSerializeMetadata } from "./serializemetadata";
-import { Actor } from "./actor";
-
-// export const GLOBAL_CHECK: any[] = [];
-// let DUP_COUNT = 0;
 
 export class Serializer {
   readonly typeLists: any = {};
@@ -30,10 +25,6 @@ export class Serializer {
     const objType = typeof obj;
     if (objType === 'boolean' || objType === 'number' || objType === 'string') {
       return obj;
-    }
-
-    if (obj instanceof Actor) {
-      console.log('wtf actor');
     }
 
     if (!obj.constructor) {
@@ -75,15 +66,6 @@ export class Serializer {
       obj['__index'] = typeList.length;
       typeList.push(result);
     }
-
-    // if (!(obj instanceof Message) && GLOBAL_CHECK.indexOf(obj) >= 0) {
-    //   console.log('DUP!', obj);
-    //   DUP_COUNT++;
-    //   if (DUP_COUNT > 10) {
-    //     throw new Error('DUP!');
-    //   }
-    // }
-    // GLOBAL_CHECK.push(obj);
 
     const properties = Object.getOwnPropertyNames(obj);
     let propertyCount = 0;
@@ -134,4 +116,3 @@ export class Serializer {
     return result;
   }
 }
-

@@ -1,9 +1,11 @@
 import {Actor} from '../actor';
 
 import {AI} from './ai';
+import { Serializable } from '../serializable';
 
 const DEFAULT_DAMAGE = 1;
 
+@Serializable('BasicMonster')
 export class BasicMonster extends AI {
   damageFunc?: (attacker: Actor, target: Actor) => number;
 

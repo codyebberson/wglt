@@ -1,7 +1,9 @@
 import {Actor} from '../actor';
 
 import {AI} from './ai';
+import { Serializable } from '../serializable';
 
+@Serializable('ConfusedMonster')
 export class ConfusedMonster extends AI {
   numTurns: number;
   oldAi?: AI;
