@@ -12,7 +12,9 @@ import {Item} from './item';
 import {Sprite} from './sprite';
 import {Talent} from './talent';
 import {TileMapCell} from './tilemap';
+import { Serializable } from './serializable';
 
+@Serializable('Actor')
 export class Actor extends Entity {
   hp: number;
   maxHp: number;

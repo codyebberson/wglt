@@ -1,13 +1,14 @@
-import {ArrayList} from '../arraylist';
 import {Message} from '../message';
 import {Rect} from '../rect';
 
 import {Dialog} from './dialog';
+import { Serializable } from '../serializable';
 
 const WIDTH = 100;
 const MARGIN = 5;
 const LINE_PADDING = 2;
 
+@Serializable('TooltipDialog')
 export class TooltipDialog extends Dialog {
   messages: Message[];
 
@@ -15,7 +16,6 @@ export class TooltipDialog extends Dialog {
     super(new Rect(0, 0, WIDTH, 10));
     this.messages = [];
     this.visible = false;
-    // this.modal = true;
   }
 
   showAt(x: number, y: number) {

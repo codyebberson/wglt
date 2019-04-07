@@ -1,9 +1,11 @@
 import { App } from './app';
 import { Color } from './color';
 import { Rect } from './rect';
+import { Serializable } from './serializable';
 
 const DEFAULT_TICKS_PER_FRAME = 30;
 
+@Serializable('Sprite')
 export class Sprite extends Rect {
   static globalAnimIndex = 0;
   readonly frames: number;

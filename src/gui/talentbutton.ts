@@ -3,7 +3,9 @@ import {Rect} from '../rect';
 import {Talent} from '../talent';
 
 import {Button} from './button';
+import { Serializable } from '../serializable';
 
+@Serializable('TalentButton')
 export class TalentButton extends Button {
   readonly talent: Talent;
   readonly shortcut: boolean;

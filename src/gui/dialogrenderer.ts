@@ -3,7 +3,9 @@ import {App} from '../app';
 import {Rect} from '../rect';
 
 import {Dialog} from './dialog';
+import { Serializable } from '../serializable';
 
+@Serializable('DialogRenderer')
 export class DialogRenderer {
   baseRect: Rect;
   closeButtonRect?: Rect;

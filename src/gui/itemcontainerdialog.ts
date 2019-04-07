@@ -1,5 +1,4 @@
 import {ArrayList} from '../arraylist';
-import {Entity} from '../entity';
 import {Item} from '../item';
 import {Keys} from '../keys';
 import {Message} from '../message';
@@ -9,10 +8,12 @@ import {ButtonSlot} from './buttonslot';
 import {Dialog} from './dialog';
 import {ItemButton} from './itembutton';
 import {ItemContainerButtonSlot} from './itemcontainerbuttonslot';
+import { Serializable } from '../serializable';
 
 const MARGIN = 4;
 const BUTTON_SPACING = 2;
 
+@Serializable('ItemContainerDialog')
 export class ItemContainerDialog extends Dialog {
   readonly messages: Message[];
   readonly capacity: number;

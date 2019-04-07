@@ -18,11 +18,13 @@ import {Sprite} from './sprite';
 import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 import { ArrayList } from './arraylist';
+import { Serializable } from './serializable';
 
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 const DEFAULT_VIEW_DISTANCE = 13;
 
+@Serializable('Game')
 export class Game extends AppState {
   readonly tileSize: Rect;
   readonly viewport: Rect;

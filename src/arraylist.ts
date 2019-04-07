@@ -1,5 +1,7 @@
 import {ArrayListListener} from './arraylistlistener';
+import { Serializable } from './serializable';
 
+@Serializable('ArrayList')
 export class ArrayList<T> {
   private readonly elements: T[];
   private listeners?: Array<ArrayListListener<T>>;

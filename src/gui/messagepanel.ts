@@ -2,7 +2,9 @@ import {Message} from '../message';
 import {Rect} from '../rect';
 
 import {Panel} from './panel';
+import { Serializable } from '../serializable';
 
+@Serializable('MessagePanel')
 export class MessagePanel extends Panel {
   readonly message: Message;
 

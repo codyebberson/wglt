@@ -2,10 +2,12 @@ import {Keys} from '../keys';
 import {Rect} from '../rect';
 import {Dialog} from './dialog';
 import {SelectOption} from './selectoption';
+import { Serializable } from '../serializable';
 
 const MARGIN = 4;
 const LINE_HEIGHT = 10;
 
+@Serializable('SelectDialog')
 export class SelectDialog extends Dialog {
   options: SelectOption[];
   callback: Function;

@@ -8,7 +8,9 @@ import {Mouse} from './mouse';
 import {Rect} from './rect';
 import {Vec2} from './vec2';
 import { ItemButton } from './gui/itembutton';
+import { Serializable } from './serializable';
 
+@Serializable('GUI')
 export class GUI {
   readonly app: App;
   readonly renderer: DialogRenderer;

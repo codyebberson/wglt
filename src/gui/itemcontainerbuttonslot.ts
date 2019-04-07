@@ -6,7 +6,9 @@ import {Rect} from '../rect';
 import {ButtonSlot} from './buttonslot';
 import {ItemButton} from './itembutton';
 import {Panel} from './panel';
+import { Serializable } from '../serializable';
 
+@Serializable('ItemContainerButtonSlot')
 export class ItemContainerButtonSlot extends ButtonSlot {
   readonly items: ArrayList<Item>;
 

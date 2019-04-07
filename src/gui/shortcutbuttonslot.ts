@@ -3,7 +3,9 @@ import {ItemButton} from './itembutton';
 import {ItemShortcutButton} from './itemshortcutbutton';
 import {Panel} from './panel';
 import {TalentButton} from './talentbutton';
+import { Serializable } from '../serializable';
 
+@Serializable('ShortcutButtonSlot')
 export class ShortcutButtonSlot extends ButtonSlot {
   onDrop(panel: Panel) {
     if (this.children.length > 0) {

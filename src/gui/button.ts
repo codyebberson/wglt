@@ -5,7 +5,9 @@ import {Sprite} from '../sprite';
 
 import {Panel} from './panel';
 import {TooltipDialog} from './tooltipdialog';
+import { Serializable } from '../serializable';
 
+@Serializable('Button')
 export class Button extends Panel {
   readonly sprite: Sprite;
   shortcutKey?: Key;

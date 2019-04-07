@@ -5,7 +5,9 @@ import {Rect} from '../rect';
 import {Vec2} from '../vec2';
 
 import {TooltipDialog} from './tooltipdialog';
+import { Serializable } from '../serializable';
 
+@Serializable('Panel')
 export class Panel {
   gui: GUI|null;
   readonly rect: Rect;

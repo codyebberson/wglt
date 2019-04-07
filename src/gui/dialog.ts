@@ -2,7 +2,9 @@ import {Keys} from '../keys';
 import {Rect} from '../rect';
 
 import {Panel} from './panel';
+import { Serializable } from '../serializable';
 
+@Serializable('Dialog')
 export class Dialog extends Panel {
   closeButton: boolean;
 

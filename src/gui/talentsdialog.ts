@@ -7,10 +7,12 @@ import {Talent} from '../talent';
 import {ButtonSlot} from './buttonslot';
 import {Dialog} from './dialog';
 import {TalentButton} from './talentbutton';
+import { Serializable } from '../serializable';
 
 const MARGIN = 4;
 const BUTTON_SPACING = 2;
 
+@Serializable('TalentsDialog')
 export class TalentsDialog extends Dialog {
   readonly messages: Message[];
   readonly capacity: number;

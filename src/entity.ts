@@ -3,7 +3,9 @@ import { SelectOption } from './gui/selectoption';
 import { Sprite } from './sprite';
 import { Vec2 } from './vec2';
 import { Actor } from './actor';
+import { Serializable } from './serializable';
 
+@Serializable('Entity')
 export class Entity extends Vec2 implements SelectOption {
   readonly game: Game;
   readonly offset: Vec2;

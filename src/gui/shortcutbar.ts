@@ -8,9 +8,11 @@ import {ItemShortcutButton} from './itemshortcutbutton';
 import {Panel} from './panel';
 import {ShortcutButtonSlot} from './shortcutbuttonslot';
 import {TalentButton} from './talentbutton';
+import { Serializable } from '../serializable';
 
 const DEFAULT_SPACING = 2;
 
+@Serializable('ShortcutBar')
 export class ShortcutBar extends Panel {
   spacing: number;
 

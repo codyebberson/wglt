@@ -3,7 +3,9 @@ import {Item} from '../item';
 import {Rect} from '../rect';
 
 import {Button} from './button';
+import { Serializable } from '../serializable';
 
+@Serializable('ItemShortcutButton')
 export class ItemShortcutButton extends Button {
   readonly containerItems: ArrayList<Item>;
   readonly shortcutItem: Item;

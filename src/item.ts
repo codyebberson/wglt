@@ -1,7 +1,9 @@
 import {Actor} from './actor';
 import {Entity} from './entity';
 import {Message} from './message';
+import { Serializable } from './serializable';
 
+@Serializable('Item')
 export class Item extends Entity {
   tooltipMessages?: Message[];
 

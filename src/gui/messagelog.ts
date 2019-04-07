@@ -4,7 +4,9 @@ import {Message} from '../message';
 import {Rect} from '../rect';
 
 import {Panel} from './panel';
+import { Serializable } from '../serializable';
 
+@Serializable('MessageLog')
 export class MessageLog extends Panel {
   private readonly messages: Message[];
   readonly maxItems: number;

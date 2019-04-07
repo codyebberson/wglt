@@ -3,7 +3,9 @@ import {Rect} from '../rect';
 
 import {Button} from './button';
 import {Panel} from './panel';
+import { Serializable } from '../serializable';
 
+@Serializable('ButtonSlot')
 export class ButtonSlot extends Panel {
   shortcutKey?: Key;
 

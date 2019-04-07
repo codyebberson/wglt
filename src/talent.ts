@@ -2,7 +2,9 @@ import {Ability} from './ability';
 import {Actor} from './actor';
 import {Entity} from './entity';
 import {TileMapCell} from './tilemap';
+import { Serializable } from './serializable';
 
+@Serializable('Talent')
 export class Talent {
   readonly actor: Actor;
   readonly ability: Ability;

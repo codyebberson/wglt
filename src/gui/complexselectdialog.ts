@@ -6,9 +6,11 @@ import {DefaultSelectOptionRenderer} from './defaultselectoptionrenderer';
 import {Dialog} from './dialog';
 import {SelectOption} from './selectoption';
 import {SelectOptionRenderer} from './selectoptionrenderer';
+import { Serializable } from '../serializable';
 
 const MARGIN = 4;
 
+@Serializable('ComplexSelectDialog')
 export class ComplexSelectDialog extends Dialog {
   options: SelectOption[];
   selectedIndex: number;

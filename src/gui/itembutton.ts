@@ -4,7 +4,9 @@ import {Rect} from '../rect';
 
 import {Button} from './button';
 import { TooltipDialog } from './tooltipdialog';
+import { Serializable } from '../serializable';
 
+@Serializable('ItemButton')
 export class ItemButton extends Button {
   readonly containerItems: ArrayList<Item>;
   readonly stackItems: ArrayList<Item>;

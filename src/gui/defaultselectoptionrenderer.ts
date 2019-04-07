@@ -4,7 +4,9 @@ import {Vec2} from '../vec2';
 
 import {SelectOption} from './selectoption';
 import {SelectOptionRenderer} from './selectoptionrenderer';
+import { Serializable } from '../serializable';
 
+@Serializable('DefaultSelectOptionRenderer')
 export class DefaultSelectOptionRenderer implements SelectOptionRenderer {
   getHeight(option: SelectOption, selected: boolean) {
     return 10;

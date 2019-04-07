@@ -1,7 +1,9 @@
 import {Rect} from '../rect';
 
 import {Panel} from './panel';
+import { Serializable } from '../serializable';
 
+@Serializable('ImagePanel')
 export class ImagePanel extends Panel {
   readonly srcRect: Rect;
 
