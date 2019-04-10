@@ -174,9 +174,10 @@ export class App {
    * @param {number} x The x-coordinate of the top-left corner.
    * @param {number} y The y-coordinate of the top-left corner.
    * @param {Color=} color Optional color.
+   * @param {Vec2=} out Optional output location of cursor.
    */
-  drawString(str: string, x: number, y: number, color?: Color) {
-    this.renderSet.drawString(str, x, y, color);
+  drawString(str: string, x: number, y: number, color?: Color, out?: Vec2) {
+    this.renderSet.drawString(str, x, y, color, out);
   }
 
   /**

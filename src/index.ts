@@ -16,6 +16,7 @@ export * from './arraylist';
 export * from './arraylistlistener';
 export * from './color';
 export * from './colors';
+export * from './compoundmessage';
 export * from './entity';
 export * from './game';
 export * from './gameoptions';

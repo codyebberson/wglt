@@ -446,6 +446,7 @@ game.gui.renderer.baseRect = new wglt.Rect(0, 64, 24, 24);
 game.gui.renderer.closeButtonRect = new wglt.Rect(208, 16, 16, 16);
 game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
 
+const map = game.tileMap;
 const rng = new wglt.RNG(1);
 const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
 const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
@@ -455,16 +456,15 @@ player.level = 1;
 player.xp = 0;
 player.maxXp = 10;
 player.zIndex = 2;
-
-// const map = new wglt.TileMap(app.gl, MAP_WIDTH, MAP_HEIGHT, 3);
-const map = game.tileMap;
-// game.tileMap = map;
 game.player = player;
 game.entities.add(player);
 
 game.messageLog = new wglt.MessageLog(new wglt.Rect(1, -78, 100, 50));
 game.gui.add(game.messageLog);
-game.log('Welcome stranger! Prepare to perish!', wglt.Colors.DARK_RED);
+game.log(new wglt.CompoundMessage(
+  new wglt.Message('Welcome stranger! ', wglt.Colors.DARK_RED),
+  new wglt.Message('Prepare to perish!', wglt.Colors.RED)
+));
 
 const playerStats = new wglt.Panel(new wglt.Rect(1, 1, 100, 100));
 playerStats.drawContents = function () {

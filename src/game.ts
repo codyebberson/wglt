@@ -21,6 +21,7 @@ import { Serializable } from './serializable';
 import { TileMapCell } from './tilemap/tilemapcell';
 import { TileMap } from './tilemap/tilemap';
 import { TileMapRenderer } from './tilemap/tilemaprenderer';
+import { Message } from './message';
 
 const DEFAULT_MAP_SIZE = new Rect(0, 0, 256, 256);
 const DEFAULT_MAP_LAYERS = 1;
@@ -87,9 +88,9 @@ export class Game extends AppState {
     this.tileMapRenderer = new TileMapRenderer(app.gl, this.tileMap);
   }
 
-  log(text: string, color?: Color) {
+  log(message: string|Message, color?: Color) {
     if (this.messageLog) {
-      this.messageLog.add(text, color);
+      this.messageLog.add(message, color);
     }
   }
 

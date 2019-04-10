@@ -5,6 +5,7 @@ import {Rect} from '../rect';
 
 import {Panel} from './panel';
 import { Serializable } from '../serializable';
+import { Vec2 } from '../vec2';
 
 @Serializable('MessageLog')
 export class MessageLog extends Panel {
@@ -17,14 +18,18 @@ export class MessageLog extends Panel {
     this.maxItems = maxItems || 5;
   }
 
-  add(text: string|Panel, color?: Color) {
-    if (text instanceof Panel) {
+  add(message: string|Message|Panel, color?: Color) {
+    if (message instanceof Panel) {
       // TODO:  This is a weird artifact of history
       // The original API was designed before Panels were hierarchical.
       return;
     }
 
-    this.messages.push(new Message(text, color || Colors.WHITE));
+    if (message instanceof Message) {
+      this.messages.push(message);
+    } else {
+      this.messages.push(new Message(message, color || Colors.WHITE));
+    }
 
     if (this.messages.length > this.maxItems) {
       this.messages.splice(0, this.messages.length - this.maxItems);
@@ -36,19 +41,19 @@ export class MessageLog extends Panel {
       return;
     }
 
-    const x = this.rect.x;
-    let y = this.rect.y;
+    const pos = new Vec2(this.rect.x, this.rect.y);
 
-    if (y < 0) {
+    if (pos.y < 0) {
       // Negative y value indicates attached to bottom of screen
-      const bottom = this.gui.app.size.height + y + this.rect.height;
-      y = bottom - this.messages.length * 10;
+      const bottom = this.gui.app.size.height + pos.y + this.rect.height;
+      pos.y = bottom - this.messages.length * 10;
     }
 
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];
-      this.gui.app.drawString(msg.text, x, y, msg.color);
-      y += 10;
+      msg.draw(this.gui.app, pos);
+      pos.x = 0;
+      pos.y += 10;
     }
   }
 
