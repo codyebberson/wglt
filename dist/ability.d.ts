@@ -2,7 +2,7 @@ import { Actor } from './actor';
 import { Entity } from './entity';
 import { Message } from './message';
 import { Sprite } from './sprite';
-import { TileMapCell } from './tilemap';
+import { TileMapCell } from './tilemap/tilemapcell';
 export declare enum TargetType {
     SELF = 0,
     ENTITY = 1,

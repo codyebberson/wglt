@@ -12,11 +12,13 @@ import { TooltipDialog } from './gui/tooltipdialog';
 import { Rect } from './rect';
 import { RNG } from './rng';
 import { Sprite } from './sprite';
-import { TileMap, TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
 import { ArrayList } from './arraylist';
+import { TileMapCell } from './tilemap/tilemapcell';
+import { TileMap } from './tilemap/tilemap';
+import { TileMapRenderer } from './tilemap/tilemaprenderer';
+import { Message } from './message';
 export declare class Game extends AppState {
-    readonly tileSize: Rect;
     readonly viewport: Rect;
     readonly viewportFocus: Vec2;
     readonly animations: Animation[];
@@ -34,7 +36,8 @@ export declare class Game extends AppState {
     path?: TileMapCell[];
     pathIndex: number;
     onUpdate?: Function;
-    tileMap?: TileMap;
+    tileMap: TileMap;
+    tileMapRenderer: TileMapRenderer;
     player?: Actor;
     cooldownSprite?: Sprite;
     tooltipElement?: Panel;
@@ -43,7 +46,7 @@ export declare class Game extends AppState {
     verticalViewDistance: number;
     zoom: number;
     constructor(app: App, options: GameOptions);
-    log(text: string, color?: Color): void;
+    log(message: string | Message, color?: Color): void;
     addAnimation(animation: Animation): import("./animations/animationpromise").AnimationPromise;
     update(): void;
     private updateTooltip;

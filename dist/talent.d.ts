@@ -1,7 +1,7 @@
 import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
-import { TileMapCell } from './tilemap';
+import { TileMapCell } from './tilemap/tilemapcell';
 export declare class Talent {
     readonly actor: Actor;
     readonly ability: Ability;
