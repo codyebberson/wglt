@@ -1,18 +1,18 @@
-import {Ability, TargetType} from './ability';
-import {AI} from './ai/ai';
-import {BumpAnimation} from './animations/bumpanimation';
-import {FloatingTextAnimation} from './animations/floatingtextanimation';
-import {SlideAnimation} from './animations/slideanimation';
-import {ArrayList} from './arraylist';
-import {Color} from './color';
-import {Colors} from './colors';
-import {Entity} from './entity';
-import {Game} from './game';
-import {Item} from './item';
-import {Sprite} from './sprite';
-import {Talent} from './talent';
-import {TileMapCell} from './tilemap';
+import { Ability, TargetType } from './ability';
+import { AI } from './ai/ai';
+import { BumpAnimation } from './animations/bumpanimation';
+import { FloatingTextAnimation } from './animations/floatingtextanimation';
+import { SlideAnimation } from './animations/slideanimation';
+import { ArrayList } from './arraylist';
+import { Color } from './color';
+import { Colors } from './colors';
+import { Entity } from './entity';
+import { Game } from './game';
+import { Item } from './item';
+import { Sprite } from './sprite';
+import { Talent } from './talent';
 import { Serializable } from './serializable';
+import { TileMapCell } from './tilemap/tilemapcell';
 
 @Serializable('Actor')
 export class Actor extends Entity {
@@ -71,13 +71,13 @@ export class Actor extends Entity {
     this.x = destX;
     this.y = destY;
     this.ap--;
-    this.offset.x = -dx * this.game.tileSize.width;
-    this.offset.y = -dy * this.game.tileSize.height;
+    this.offset.x = -dx * this.game.tileMap.tileSize.width;
+    this.offset.y = -dy * this.game.tileMap.tileSize.height;
 
     // Now create the slide animation
     const count = slideCount || 4;
-    const xSpeed = this.game.tileSize.width / count;
-    const ySpeed = this.game.tileSize.height / count;
+    const xSpeed = this.game.tileMap.tileSize.width / count;
+    const ySpeed = this.game.tileMap.tileSize.height / count;
     this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
     return true;
@@ -177,7 +177,7 @@ export class Actor extends Entity {
     return item.onUse(this);
   }
 
-  cast(ability: Ability, target?: Entity|TileMapCell, callback?: Function) {
+  cast(ability: Ability, target?: Entity | TileMapCell, callback?: Function) {
     if (ability.targetType === TargetType.SELF || target) {
       if (ability.cast(this, target)) {
         if (callback) {
@@ -193,6 +193,6 @@ export class Actor extends Entity {
     this.game.animations.push(new FloatingTextAnimation(this, str, color));
   }
 
-  onAttack(target: Actor, damage: number) {}
-  onDeath(attacker: Actor) {}
+  onAttack(target: Actor, damage: number) { }
+  onDeath(attacker: Actor) { }
 }

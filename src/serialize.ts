@@ -1,15 +1,12 @@
 import { Game } from "./game";
 import { RenderSet } from "./renderset";
-import { TileMap } from "./tilemap";
 import { App } from "./app";
 import { GUI } from "./gui";
-import { Message } from "./message";
 import { Panel } from "./gui/panel";
 import { getSerializeMetadata } from "./serializemetadata";
 import { Actor } from "./actor";
-
-// export const GLOBAL_CHECK: any[] = [];
-// let DUP_COUNT = 0;
+import { TileMap } from "./tilemap/tilemap";
+import { TileMapRenderer } from "./tilemap/tilemaprenderer";
 
 export class Serializer {
   readonly typeLists: any = {};
@@ -32,12 +29,7 @@ export class Serializer {
       return obj;
     }
 
-    if (obj instanceof Actor) {
-      console.log('wtf actor');
-    }
-
     if (!obj.constructor) {
-      console.log('no constructor', obj);
       throw new Error('Object does not have a constructor');
     }
 
@@ -46,6 +38,7 @@ export class Serializer {
       obj instanceof Panel ||
       obj instanceof RenderSet ||
       obj instanceof TileMap ||
+      obj instanceof TileMapRenderer ||
       obj instanceof Function) {
       return undefined;
     }
@@ -75,15 +68,6 @@ export class Serializer {
       obj['__index'] = typeList.length;
       typeList.push(result);
     }
-
-    // if (!(obj instanceof Message) && GLOBAL_CHECK.indexOf(obj) >= 0) {
-    //   console.log('DUP!', obj);
-    //   DUP_COUNT++;
-    //   if (DUP_COUNT > 10) {
-    //     throw new Error('DUP!');
-    //   }
-    // }
-    // GLOBAL_CHECK.push(obj);
 
     const properties = Object.getOwnPropertyNames(obj);
     let propertyCount = 0;

@@ -1,8 +1,8 @@
-import {Actor} from './actor';
-import {Entity} from './entity';
-import {Message} from './message';
-import {Sprite} from './sprite';
-import {TileMapCell} from './tilemap';
+import { Actor } from './actor';
+import { Entity } from './entity';
+import { Message } from './message';
+import { Sprite } from './sprite';
+import { TileMapCell } from './tilemap/tilemapcell';
 
 export enum TargetType {
   SELF,
@@ -19,5 +19,5 @@ export interface Ability {
   readonly cooldown: number;
   readonly tooltipMessages: Message[];
 
-  cast(caster: Actor, target?: Entity|TileMapCell): boolean;
+  cast(caster: Actor, target?: Entity | TileMapCell): boolean;
 }

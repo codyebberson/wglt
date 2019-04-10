@@ -52,5 +52,7 @@ export * from './serializable';
 export * from './serialize';
 export * from './sprite';
 export * from './talent';
-export * from './tilemap';
+export * from './tilemap/tilemap';
+export * from './tilemap/tilemapcell';
+export * from './tilemap/tilemaprenderer';
 export * from './vec2';

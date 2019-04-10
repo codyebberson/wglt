@@ -25,11 +25,11 @@ export class Entity extends Vec2 implements SelectOption {
   }
 
   get pixelX(): number {
-    return this.x * this.game.tileSize.width + this.offset.x;
+    return this.x * this.game.tileMap.tileSize.width + this.offset.x;
   }
 
   get pixelY(): number {
-    return this.y * this.game.tileSize.height + this.offset.y;
+    return this.y * this.game.tileMap.tileSize.height + this.offset.y;
   }
 
   get centerPixelX(): number {
