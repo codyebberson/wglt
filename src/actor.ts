@@ -61,7 +61,7 @@ export class Actor extends Entity {
       }
     } else {
       // If this actor does *not* block, then only check tile map.
-      if (this.game.tileMap && this.game.tileMap.isBlocked(destX, destY)) {
+      if (this.game.tileMap.isBlocked(destX, destY)) {
         return false;
       }
     }
@@ -71,13 +71,13 @@ export class Actor extends Entity {
     this.x = destX;
     this.y = destY;
     this.ap--;
-    this.offset.x = -dx * this.game.tileMap.tileSize.width;
-    this.offset.y = -dy * this.game.tileMap.tileSize.height;
+    this.offset.x = -dx * this.game.tileSize.width;
+    this.offset.y = -dy * this.game.tileSize.height;
 
     // Now create the slide animation
     const count = slideCount || 4;
-    const xSpeed = this.game.tileMap.tileSize.width / count;
-    const ySpeed = this.game.tileMap.tileSize.height / count;
+    const xSpeed = this.game.tileSize.width / count;
+    const ySpeed = this.game.tileSize.height / count;
     this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, count));
     this.game.blocked = true;
     return true;

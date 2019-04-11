@@ -88,6 +88,10 @@ export class Game extends AppState {
     this.tileMapRenderer = new TileMapRenderer(app.gl, this.tileMap);
   }
 
+  get tileSize() {
+    return this.tileMap.tileSize;
+  }
+
   log(message: string|Message, color?: Color) {
     if (this.messageLog) {
       this.messageLog.add(message, color);
