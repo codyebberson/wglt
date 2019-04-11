@@ -1,5 +1,6 @@
 import { TileMapCell } from "./tilemapcell";
 import { Rect } from "../rect";
+import { TileMapLayer } from "./tilemaplayer";
 /**
  * Returns the numeric tile ID for a given tile.
  * The underlying format is based on Tiled, an open source tilemap editor.
@@ -20,27 +21,28 @@ export declare function getTileId(tileX: number, tileY: number): number;
 export declare class TileMap {
     readonly width: number;
     readonly height: number;
+    readonly depth: number;
     readonly tileSize: Rect;
     readonly grid: TileMapCell[][];
-    readonly layerImageData: Uint8Array[];
-    tileWidth: number;
-    tileHeight: number;
+    readonly layers: TileMapLayer[];
     dirty: boolean;
     originX: number;
     originY: number;
     visibleRect: Rect;
     prevVisibleRect: Rect;
     constructor(width: number, height: number, layerCount: number, tileSize: Rect);
+    isOutOfRange(x: number, y: number, z: number): boolean;
     clear(): void;
-    setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean, blockedSight?: boolean): void;
-    getCell(tx: number, ty: number): TileMapCell | null;
-    getTile(tx: number, ty: number): number;
-    isBlocked(tx: number, ty: number): boolean;
+    getTile(x: number, y: number, z: number): number;
+    setTile(x: number, y: number, z: number, tile: number): void;
+    isBlocked(x: number, y: number): boolean;
+    setBlocked(x: number, y: number, blocked: boolean, blockedSight?: boolean): void;
+    getCell(x: number, y: number): TileMapCell | null;
     isVisible(x: number, y: number): boolean;
-    isSeen(tx: number, ty: number): boolean | null;
-    setSeen(tx: number, ty: number, seen: boolean): void;
-    isAnimated(tx: number, ty: number, layerIndex: number): boolean;
-    setAnimated(tx: number, ty: number, layerIndex: number, animated: boolean): void;
+    isSeen(x: number, y: number): boolean | null;
+    setSeen(x: number, y: number, seen: boolean): void;
+    isAnimated(x: number, y: number, z: number): boolean;
+    setAnimated(x: number, y: number, z: number, animated: boolean): void;
     resetFov(): void;
     computeFov(originX: number, originY: number, radius: number, vradius?: number): void;
     /**
