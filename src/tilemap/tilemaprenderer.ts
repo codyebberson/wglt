@@ -1,8 +1,6 @@
-import { TileMapCell } from "./tilemapcell";
-import { Rect } from "../rect";
+
 import { initShaderProgram } from "../glutils";
 import { TileMap } from "./tilemap";
-
 
 const TEXTURE_SIZE = 1024;
 
@@ -38,7 +36,7 @@ const tilemapFS = 'precision highp float;' +
 
   'void main(void) {' +
   '   vec4 tile = texture2D(tiles, texCoord);' +
-  '   if(tile.x == 1.0 && tile.y == 1.0) { discard; }' +
+  '   if(tile.x == 0.0 && tile.y == 0.0) { discard; }' +
   '   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;' +
   '   if(tile.z != 0.0) spriteOffset.x += animFrame * tileSize.x;' +
   '   vec2 spriteCoord = mod(pixelCoord, tileSize);' +
@@ -57,14 +55,6 @@ const tilemapFS = 'precision highp float;' +
 export class TileMapRenderer {
   readonly gl: WebGLRenderingContext;
   readonly tileMap: TileMap;
-  //   readonly width: number;
-  //   readonly height: number;
-  //   readonly grid: TileMapCell[][];
-  //   readonly layers: TileMapLayer[];
-  //   tileWidth: number;
-  //   tileHeight: number;
-  //   dirty: boolean;
-
   private readonly quadVertBuffer: WebGLBuffer;
   private readonly tilemapShader: WebGLShader;
   private readonly positionAttribute: number;
@@ -76,43 +66,11 @@ export class TileMapRenderer {
   private readonly animFrameUniform: WebGLUniformLocation;
   private readonly tileSamplerUniform: WebGLUniformLocation;
   private readonly spriteSamplerUniform: WebGLUniformLocation;
-
   private readonly layerTextures: WebGLTexture[];
-
-  //   // Field-of-view state
-  //   private originX: number;
-  //   private originY: number;
-  //   private visibleRect: Rect;
-  //   private prevVisibleRect: Rect;
 
   constructor(gl: WebGLRenderingContext, tileMap: TileMap) {
     this.gl = gl;
     this.tileMap = tileMap;
-    // this.width = width;
-    // this.height = height;
-    // this.grid = new Array(height);
-    // this.layers = new Array(layerCount);
-    // this.tileWidth = 16;
-    // this.tileHeight = 16;
-    // this.dirty = true;
-
-    // Field-of-view state
-    // By default, everything is visible
-    // this.originX = 0;
-    // this.originY = 0;
-    // this.visibleRect = new Rect(0, 0, width, height);
-    // this.prevVisibleRect = new Rect(0, 0, width, height);
-
-    // for (let y = 0; y < height; y++) {
-    //   this.grid[y] = new Array(width);
-    //   for (let x = 0; x < width; x++) {
-    //     this.grid[y][x] = new TileMapCell(x, y, 0);
-    //   }
-    // }
-
-    // for (let i = 0; i < layerCount; i++) {
-    //   this.layers[i] = new TileMapLayer(width, height);
-    // }
 
     const quadVerts = [
       // x   y   u  v
@@ -139,15 +97,11 @@ export class TileMapRenderer {
     this.tileSamplerUniform = gl.getUniformLocation(this.tilemapShader, 'tiles') as WebGLUniformLocation;
     this.spriteSamplerUniform = gl.getUniformLocation(this.tilemapShader, 'sprites') as WebGLUniformLocation;
 
-    // for (let i = 0; i < this.layers.length; i++) {
-    //     this.layers[i].initGl(gl);
-    // }
+    this.layerTextures = new Array(tileMap.depth);
 
-    this.layerTextures = new Array(tileMap.layerImageData.length);
-
-    for (let i = 0; i < tileMap.layerImageData.length; i++) {
+    for (let i = 0; i < tileMap.depth; i++) {
       const texture = gl.createTexture() as WebGLTexture;
-      const imageData = tileMap.layerImageData[i];
+      const imageData = tileMap.layers[i].imageData;
 
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, tileMap.width, tileMap.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
@@ -161,87 +115,6 @@ export class TileMapRenderer {
       this.layerTextures[i] = texture;
     }
   }
-
-  // clear() {
-  //   for (let i = 0; i < this.layers.length; i++) {
-  //     this.layers[i].clear();
-  //   }
-  // }
-
-  // setTile(layerIndex: number, x: number, y: number, tile: number, blocked?: boolean, blockedSight?: boolean) {
-  //   if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
-  //     return;
-  //   }
-
-  //   if (layerIndex === 0) {
-  //     this.grid[y][x].tile = tile;
-  //     this.grid[y][x].blocked = !!blocked;
-  //     this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : !!blocked;
-  //   }
-
-  //   const layer = this.layers[layerIndex];
-  //   const ti = 4 * (y * layer.width + x);
-  //   const tx = tile === 0 ? 255 : ((tile - 1) % 64) | 0;
-  //   const ty = tile === 0 ? 255 : ((tile - 1) / 64) | 0;
-  //   layer.imageData[ti + 0] = tx;
-  //   layer.imageData[ti + 1] = ty;
-  // }
-
-  // getCell(tx: number, ty: number) {
-  //   if (tx < 0 || tx >= this.width || ty < 0 || ty >= this.height) {
-  //     return null;
-  //   }
-  //   return this.grid[ty][tx];
-  // }
-
-  // getTile(tx: number, ty: number) {
-  //   const cell = this.getCell(tx, ty);
-  //   return cell ? cell.tile : 0;
-  // }
-
-  // isBlocked(tx: number, ty: number) {
-  //   const cell = this.getCell(tx, ty);
-  //   return !cell || cell.blocked;
-  // }
-
-  // isVisible(x: number, y: number) {
-  //   if (x < this.visibleRect.x1 || x >= this.visibleRect.x2 || y < this.visibleRect.y1 || y >= this.visibleRect.y2) {
-  //     return false;
-  //   }
-  //   return this.grid[y][x].visible;
-  // }
-
-  // isSeen(tx: number, ty: number) {
-  //   const cell = this.getCell(tx, ty);
-  //   return cell && cell.seen;
-  // }
-
-  // setSeen(tx: number, ty: number, seen: boolean) {
-  //   const cell = this.getCell(tx, ty);
-  //   if (cell) {
-  //     cell.seen = seen;
-  //   }
-  // }
-
-  // isAnimated(tx: number, ty: number, layerIndex: number) {
-  //   if (tx < 0 || tx >= this.width || ty < 0 || ty >= this.height) {
-  //     return false;
-  //   }
-
-  //   const layer = this.layers[layerIndex];
-  //   const ti = 4 * (ty * layer.width + tx);
-  //   return layer.imageData[ti + 2] !== 0;
-  // }
-
-  // setAnimated(tx: number, ty: number, layerIndex: number, animated: boolean) {
-  //   if (tx < 0 || tx >= this.width || ty < 0 || ty >= this.height) {
-  //     return;
-  //   }
-
-  //   const layer = this.layers[layerIndex];
-  //   const ti = 4 * (ty * layer.width + tx);
-  //   layer.imageData[ti + 2] = animated ? 1 : 0;
-  // }
 
   draw(x: number, y: number, width: number, height: number, animFrame?: number) {
     const gl = this.gl;
@@ -261,7 +134,7 @@ export class TileMapRenderer {
 
     gl.uniform2f(this.viewOffsetUniform, x, y);
     gl.uniform2f(this.viewportSizeUniform, width, height);
-    gl.uniform2f(this.tileSizeUniform, tileMap.tileWidth, tileMap.tileHeight);
+    gl.uniform2f(this.tileSizeUniform, tileMap.tileSize.width, tileMap.tileSize.height);
     gl.uniform1f(this.animFrameUniform, animFrame || 0);
 
     gl.activeTexture(gl.TEXTURE0);
@@ -276,221 +149,24 @@ export class TileMapRenderer {
     const maxY = Math.max(tileMap.visibleRect.y2, tileMap.prevVisibleRect.y2);
 
     // Draw each layer of the map
-    for (let i = 0; i < tileMap.layerImageData.length; i++) {
-      // const layer = this.layers[i];
+    for (let i = 0; i < tileMap.depth; i++) {
+      const layer = tileMap.layers[i];
       const texture = this.layerTextures[i];
-      // gl.uniform2fv(this.mapSizeUniform, layer.dimensions);
       gl.uniform2f(this.mapSizeUniform, tileMap.width, tileMap.height);
       gl.bindTexture(gl.TEXTURE_2D, texture);
 
       if (tileMap.dirty) {
-        const imageData = tileMap.layerImageData[i];
-
         for (let y = minY; y < maxY; y++) {
           for (let x = minX; x < maxX; x++) {
             const alpha = tileMap.isVisible(x, y) ? 255 : tileMap.isSeen(x, y) ? 144 : 0;
-            // layer.setAlpha(x, y, alpha);
-            imageData[4 * (y * tileMap.width + x) + 3] = alpha;
+            layer.setAlpha(x, y, alpha);
           }
         }
-        // layer.updateGl(gl);
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, tileMap.width, tileMap.height, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, layer.width, layer.height, gl.RGBA, gl.UNSIGNED_BYTE, layer.imageData);
       }
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
     tileMap.dirty = false;
   }
-
-  // resetFov() {
-  //   for (let y = 0; y < this.height; y++) {
-  //     for (let x = 0; x < this.width; x++) {
-  //       this.grid[y][x].seen = false;
-  //       this.grid[y][x].visible = false;
-  //     }
-  //   }
-  // }
-
-  // computeFov(originX: number, originY: number, radius: number, vradius?: number) {
-  //   this.originX = originX;
-  //   this.originY = originY;
-  //   this.prevVisibleRect.copy(this.visibleRect);
-
-  //   const dx = radius;
-  //   const dy = vradius || radius;
-  //   this.visibleRect.x = Math.max(0, originX - dx);
-  //   this.visibleRect.y = Math.max(0, originY - dy);
-  //   this.visibleRect.width = Math.min(this.width - 1, originX + dx) - this.visibleRect.x + 1;
-  //   this.visibleRect.height = Math.min(this.height - 1, originY + dy) - this.visibleRect.y + 1;
-
-  //   for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
-  //     for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
-  //       this.grid[y][x].visible = false;
-  //     }
-  //   }
-
-  //   this.grid[originY][originX].visible = true;
-
-  //   this.computeOctantY(1, 1);
-  //   this.computeOctantX(1, 1);
-  //   this.computeOctantY(1, -1);
-  //   this.computeOctantX(1, -1);
-  //   this.computeOctantY(-1, 1);
-  //   this.computeOctantX(-1, 1);
-  //   this.computeOctantY(-1, -1);
-  //   this.computeOctantX(-1, -1);
-  //   this.dirty = true;
-  // }
-
-  // /**
-  //  * Compute the FOV in an octant adjacent to the Y axis
-  //  */
-  // private computeOctantY(deltaX: number, deltaY: number) {
-  //   const startSlopes: number[] = [];
-  //   const endSlopes: number[] = [];
-  //   let iteration = 1;
-  //   let totalObstacles = 0;
-  //   let obstaclesInLastLine = 0;
-  //   let minSlope = 0;
-  //   let x;
-  //   let y;
-  //   let halfSlope;
-  //   let processedCell;
-  //   let visible;
-  //   let extended;
-  //   let centreSlope;
-  //   let startSlope;
-  //   let endSlope;
-  //   let previousEndSlope;
-
-  //   for (y = this.originY + deltaY; y >= this.visibleRect.y1 && y < this.visibleRect.y2;
-  //     y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
-  //     halfSlope = 0.5 / iteration;
-  //     previousEndSlope = -1;
-  //     for (processedCell = Math.floor(minSlope * iteration + 0.5), x = this.originX + (processedCell * deltaX);
-  //       processedCell <= iteration && x >= this.visibleRect.x1 && x < this.visibleRect.x2;
-  //       x += deltaX, ++processedCell, previousEndSlope = endSlope) {
-  //       visible = true;
-  //       extended = false;
-  //       centreSlope = processedCell / iteration;
-  //       startSlope = previousEndSlope;
-  //       endSlope = centreSlope + halfSlope;
-
-  //       if (obstaclesInLastLine > 0) {
-  //         if (!(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
-  //           !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
-  //           visible = false;
-  //         } else {
-  //           for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
-  //             if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
-  //               if (!this.grid[y][x].blockedSight) {
-  //                 if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
-  //                   visible = false;
-  //                   break;
-  //                 }
-  //               } else {
-  //                 if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
-  //                   visible = false;
-  //                   break;
-  //                 } else {
-  //                   startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-  //                   endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-  //                   extended = true;
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //       if (visible) {
-  //         this.grid[y][x].visible = true;
-  //         this.grid[y][x].seen = true;
-  //         if (this.grid[y][x].blockedSight) {
-  //           if (minSlope >= startSlope) {
-  //             minSlope = endSlope;
-  //           } else if (!extended) {
-  //             startSlopes[totalObstacles] = startSlope;
-  //             endSlopes[totalObstacles++] = endSlope;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // /**
-  //  * Compute the FOV in an octant adjacent to the X axis
-  //  */
-  // private computeOctantX(deltaX: number, deltaY: number) {
-  //   const startSlopes: number[] = [];
-  //   const endSlopes: number[] = [];
-  //   let iteration = 1;
-  //   let totalObstacles = 0;
-  //   let obstaclesInLastLine = 0;
-  //   let minSlope = 0;
-  //   let x;
-  //   let y;
-  //   let halfSlope;
-  //   let processedCell;
-  //   let visible;
-  //   let extended;
-  //   let centreSlope;
-  //   let startSlope;
-  //   let endSlope;
-  //   let previousEndSlope;
-
-  //   for (x = this.originX + deltaX; x >= this.visibleRect.x1 && x < this.visibleRect.x2;
-  //     x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
-  //     halfSlope = 0.5 / iteration;
-  //     previousEndSlope = -1;
-  //     for (processedCell = Math.floor(minSlope * iteration + 0.5), y = this.originY + (processedCell * deltaY);
-  //       processedCell <= iteration && y >= this.visibleRect.y1 && y < this.visibleRect.y2;
-  //       y += deltaY, ++processedCell, previousEndSlope = endSlope) {
-  //       visible = true;
-  //       extended = false;
-  //       centreSlope = processedCell / iteration;
-  //       startSlope = previousEndSlope;
-  //       endSlope = centreSlope + halfSlope;
-
-  //       if (obstaclesInLastLine > 0) {
-  //         if (!(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
-  //           !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
-  //           visible = false;
-  //         } else {
-  //           for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
-  //             if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
-  //               if (!this.grid[y][x].blockedSight) {
-  //                 if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
-  //                   visible = false;
-  //                   break;
-  //                 }
-  //               } else {
-  //                 if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
-  //                   visible = false;
-  //                   break;
-  //                 } else {
-  //                   startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-  //                   endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-  //                   extended = true;
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //       if (visible) {
-  //         this.grid[y][x].visible = true;
-  //         this.grid[y][x].seen = true;
-  //         if (this.grid[y][x].blockedSight) {
-  //           if (minSlope >= startSlope) {
-  //             minSlope = endSlope;
-  //           } else if (!extended) {
-  //             startSlopes[totalObstacles] = startSlope;
-  //             endSlopes[totalObstacles++] = endSlope;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 }

@@ -29,20 +29,23 @@ const FIREBALL_DAMAGE = 12;
 function createRoom(map, room) {
   for (let y = room.y1 + 1; y < room.y2; y++) {
     for (let x = room.x1 + 1; x < room.x2; x++) {
-      map.setTile(0, x, y, TILE_FLOOR, false);
+      map.setTile(x, y, 0, TILE_FLOOR);
+      map.setBlocked(x, y, false);
     }
   }
 }
 
 function createHTunnel(map, x1, x2, y) {
   for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-    map.setTile(0, x, y, TILE_FLOOR, false);
+    map.setTile(x, y, 0, TILE_FLOOR);
+    map.setBlocked(x, y, false);
   }
 }
 
 function createVTunnel(map, y1, y2, x) {
   for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-    map.setTile(0, x, y, TILE_FLOOR, false);
+    map.setTile(x, y, 0, TILE_FLOOR);
+    map.setBlocked(x, y, false);
   }
 }
 
@@ -53,8 +56,9 @@ function createMap() {
   // Clear the map to all walls
   for (let y = 0; y < MAP_HEIGHT; y++) {
     for (let x = 0; x < MAP_WIDTH; x++) {
-      map.setTile(0, x, y, TILE_WALL, true);
+      map.setTile(x, y, 0, TILE_WALL);
       map.setAnimated(x, y, 0, false);
+      map.setBlocked(x, y, true);
     }
   }
 
@@ -97,7 +101,7 @@ function createMap() {
         // This is the first room, where the player starts at
         player.x = center.x;
         player.y = center.y;
-        map.setTile(1, player.x, player.y, TILE_SHADOW);
+        map.setTile(player.x, player.y, 1, TILE_SHADOW);
         map.setAnimated(player.x, player.y, 0, true);
 
       } else {

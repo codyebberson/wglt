@@ -1,7 +1,6 @@
 import { Vec2 } from "../vec2";
 
 export class TileMapCell extends Vec2 {
-  tile: number;
   blocked: boolean;
   blockedSight: boolean;
   visible: boolean;
@@ -10,9 +9,8 @@ export class TileMapCell extends Vec2 {
   h: number;
   prev: TileMapCell | null;
 
-  constructor(x: number, y: number, tile: number) {
+  constructor(x: number, y: number) {
     super(x, y);
-    this.tile = tile;
     this.blocked = true;
     this.blockedSight = true;
     this.visible = false;

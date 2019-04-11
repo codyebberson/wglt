@@ -8,10 +8,6 @@ export interface SerializableOptions {
 
 export function Serializable(name: string, options?: SerializableOptions) {
   return function (ctor: Function) {
-    if (name === 'Actor') {
-      console.log('wtf actor serializable');
-    }
-
     const metadata = createSerializeMetadata(ctor);
     metadata.className = name;
 
