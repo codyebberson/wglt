@@ -46,6 +46,7 @@ export declare class Game extends AppState {
     verticalViewDistance: number;
     zoom: number;
     constructor(app: App, options: GameOptions);
+    readonly tileSize: Rect;
     log(message: string | Message, color?: Color): void;
     addAnimation(animation: Animation): import("./animations/animationpromise").AnimationPromise;
     update(): void;
