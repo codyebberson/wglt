@@ -509,7 +509,7 @@ game.gui.add(inventoryButton);
 const talentsButton = new wglt.Button(
   new wglt.Rect(400 - 48, 224 - 24, 24, 24),
   new wglt.Sprite(192, 16, 16, 16),
-  wglt.Keys.VK_N,
+  wglt.Keys.VK_T,
   function () {
     talentsDialog.visible = !talentsDialog.visible;
     inventoryDialog.visible = false;
