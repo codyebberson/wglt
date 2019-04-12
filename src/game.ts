@@ -33,6 +33,7 @@ const DEFAULT_VIEW_DISTANCE = 13;
 export class Game extends AppState {
   readonly viewport: Rect;
   readonly viewportFocus: Vec2;
+  readonly focusMargins: Vec2;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
   readonly cursor: Vec2;
@@ -62,6 +63,7 @@ export class Game extends AppState {
     super(app);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.viewportFocus = new Vec2(0, 0);
+    this.focusMargins = options.focusMargins || new Vec2(0, 0);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
@@ -646,7 +648,7 @@ export class Game extends AppState {
 
     // Find the center of the bounds of all visible actors
 
-    if ((visibleMaxX - visibleMinX) <= this.viewport.width) {
+    if ((visibleMaxX - visibleMinX) <= (this.viewport.width - 2 * this.focusMargins.x)) {
       // The entire visible range fits in the viewport, so center it
       this.viewportFocus.x = Math.round((visibleMinX + visibleMaxX) / 2.0);
     } else {
@@ -654,7 +656,7 @@ export class Game extends AppState {
       this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
     }
 
-    if ((visibleMaxY - visibleMinY) <= this.viewport.height) {
+    if ((visibleMaxY - visibleMinY) <= (this.viewport.height - 2 * this.focusMargins.y)) {
       // The entire visible range fits in the viewport, so center it
       this.viewportFocus.y = Math.round((visibleMinY + visibleMaxY) / 2.0);
     } else {

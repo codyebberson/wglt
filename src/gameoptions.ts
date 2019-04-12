@@ -1,4 +1,5 @@
-import {Rect} from './rect';
+import { Rect } from './rect';
+import { Vec2 } from './vec2';
 
 export interface GameOptions {
   tileSize?: Rect;
@@ -7,4 +8,5 @@ export interface GameOptions {
   viewDistance?: number;
   horizontalViewDistance?: number;
   verticalViewDistance?: number;
+  focusMargins?: Vec2;
 }

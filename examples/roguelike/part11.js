@@ -440,7 +440,8 @@ const game = new wglt.Game(app, {
   mapSize: new wglt.Rect(0, 0, MAP_WIDTH, MAP_HEIGHT),
   mapLayers: 3,
   horizontalViewDistance: 8,
-  verticalViewDistance: 4
+  verticalViewDistance: 4,
+  focusMargins: new wglt.Vec2(32, 32)
 });
 
 game.targetSprite = new wglt.Sprite(0, 48, 16, 16);
