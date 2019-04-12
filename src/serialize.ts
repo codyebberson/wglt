@@ -1,10 +1,12 @@
 import { Game } from "./game";
 import { RenderSet } from "./renderset";
-import { TileMap } from "./tilemap";
 import { App } from "./app";
 import { GUI } from "./gui";
 import { Panel } from "./gui/panel";
 import { getSerializeMetadata } from "./serializemetadata";
+import { Actor } from "./actor";
+import { TileMap } from "./tilemap/tilemap";
+import { TileMapRenderer } from "./tilemap/tilemaprenderer";
 
 export class Serializer {
   readonly typeLists: any = {};
@@ -28,7 +30,6 @@ export class Serializer {
     }
 
     if (!obj.constructor) {
-      console.log('no constructor', obj);
       throw new Error('Object does not have a constructor');
     }
 
@@ -37,6 +38,7 @@ export class Serializer {
       obj instanceof Panel ||
       obj instanceof RenderSet ||
       obj instanceof TileMap ||
+      obj instanceof TileMapRenderer ||
       obj instanceof Function) {
       return undefined;
     }

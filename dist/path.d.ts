@@ -1,5 +1,6 @@
-import { TileMap, TileMapCell } from './tilemap';
 import { Vec2 } from './vec2';
+import { TileMap } from './tilemap/tilemap';
+import { TileMapCell } from './tilemap/tilemapcell';
 /**
  * Calculates Dijkstra's algorithm.
  *

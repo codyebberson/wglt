@@ -1,6 +1,7 @@
 import { Color } from './color';
 import { Font } from './font';
 import { ExtendedTexture } from './glutils';
+import { Vec2 } from './vec2';
 export declare class RenderSet {
     readonly font: Font;
     readonly gl: WebGLRenderingContext;
@@ -42,9 +43,10 @@ export declare class RenderSet {
      * @param {string} str The text string to draw.
      * @param {number} x0 The x-coordinate of the top-left corner.
      * @param {number} y0 The y-coordinate of the top-left corner.
-     * @param {number=} color Optional color.
+     * @param {Color=} color Optional color.
+     * @param {Vec2=} out Optional output location of cursor.
      */
-    drawString(str: string, x0: number, y0: number, color?: Color): void;
+    drawString(str: string, x0: number, y0: number, color?: Color, out?: Vec2): void;
     /**
      * Draws a character.
      * @param {number} c The ASCII character code.

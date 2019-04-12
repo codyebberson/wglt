@@ -1,5 +1,7 @@
-import {TileMap, TileMapCell} from './tilemap';
-import {Vec2} from './vec2';
+
+import { Vec2 } from './vec2';
+import { TileMap } from './tilemap/tilemap';
+import { TileMapCell } from './tilemap/tilemapcell';
 
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
@@ -80,7 +82,7 @@ function getMinCell(q: TileMapCell[]): TileMapCell {
 
 function buildPath(cell: TileMapCell) {
   const result = [];
-  let curr: TileMapCell|null = cell;
+  let curr: TileMapCell | null = cell;
   while (curr) {
     result.push(curr);
     curr = curr.prev;

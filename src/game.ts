@@ -15,20 +15,25 @@ import {computePath} from './path';
 import {Rect} from './rect';
 import {RNG} from './rng';
 import {Sprite} from './sprite';
-import {TileMap, TileMapCell} from './tilemap';
 import {Vec2} from './vec2';
 import { ArrayList } from './arraylist';
 import { Serializable } from './serializable';
+import { TileMapCell } from './tilemap/tilemapcell';
+import { TileMap } from './tilemap/tilemap';
+import { TileMapRenderer } from './tilemap/tilemaprenderer';
+import { Message } from './message';
 
+const DEFAULT_MAP_SIZE = new Rect(0, 0, 256, 256);
+const DEFAULT_MAP_LAYERS = 1;
 const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 const DEFAULT_VIEW_DISTANCE = 13;
 
 @Serializable('Game')
 export class Game extends AppState {
-  readonly tileSize: Rect;
   readonly viewport: Rect;
   readonly viewportFocus: Vec2;
+  readonly focusMargins: Vec2;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
   readonly cursor: Vec2;
@@ -44,7 +49,8 @@ export class Game extends AppState {
   path?: TileMapCell[];
   pathIndex: number;
   onUpdate?: Function;
-  tileMap?: TileMap;
+  tileMap: TileMap;
+  tileMapRenderer: TileMapRenderer;
   player?: Actor;
   cooldownSprite?: Sprite;
   tooltipElement?: Panel;
@@ -55,9 +61,9 @@ export class Game extends AppState {
 
   constructor(app: App, options: GameOptions) {
     super(app);
-    this.tileSize = options.tileSize || new Rect(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.viewportFocus = new Vec2(0, 0);
+    this.focusMargins = options.focusMargins || new Vec2(0, 0);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
@@ -76,11 +82,21 @@ export class Game extends AppState {
     if (options.verticalViewDistance) {
       this.verticalViewDistance = options.verticalViewDistance;
     }
+
+    const mapSize = options.mapSize || DEFAULT_MAP_SIZE;
+    const mapLayers = options.mapLayers || DEFAULT_MAP_LAYERS;
+    const tileSize = options.tileSize || new Rect(0, 0, DEFAULT_TILE_WIDTH, DEFAULT_TILE_HEIGHT);
+    this.tileMap = new TileMap(mapSize.width, mapSize.height, mapLayers, tileSize);
+    this.tileMapRenderer = new TileMapRenderer(app.gl, this.tileMap);
   }
 
-  log(text: string, color?: Color) {
+  get tileSize() {
+    return this.tileMap.tileSize;
+  }
+
+  log(message: string|Message, color?: Color) {
     if (this.messageLog) {
-      this.messageLog.add(text, color);
+      this.messageLog.add(message, color);
     }
   }
 
@@ -302,18 +318,18 @@ export class Game extends AppState {
   }
 
   private drawTileMap() {
-    if (this.app.renderSet.spriteTexture.loaded && this.tileMap) {
+    if (this.app.renderSet.spriteTexture.loaded) {
       const x = ((this.viewport.x / this.zoom) | 0) * this.zoom;
       const y = ((this.viewport.y / this.zoom) | 0) * this.zoom;
       const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
-      this.tileMap.draw(x, y, this.viewport.width, this.viewport.height, animFrame);
+      this.tileMapRenderer.draw(x, y, this.viewport.width, this.viewport.height, animFrame);
     }
   }
 
   private drawTargeting() {
     if (this.isTargeting() && this.targetSprite) {
-      const x = this.cursor.x * this.tileSize.width - this.viewport.x;
-      const y = this.cursor.y * this.tileSize.height - this.viewport.y;
+      const x = this.cursor.x * this.tileMap.tileSize.width - this.viewport.x;
+      const y = this.cursor.y * this.tileMap.tileSize.height - this.viewport.y;
       this.targetSprite.draw(this.app, x, y);
     }
   }
@@ -322,7 +338,7 @@ export class Game extends AppState {
     for (let z = 0; z < 3; z++) {
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities.get(i);
-        if (entity.zIndex === z && (!this.tileMap || this.tileMap.isVisible(entity.x, entity.y))) {
+        if (entity.zIndex === z && this.tileMap.isVisible(entity.x, entity.y)) {
           entity.draw();
         }
       }
@@ -361,7 +377,7 @@ export class Game extends AppState {
       let target = null;
       if (targetType === TargetType.ENTITY) {
         target = this.getActorAt(this.cursor.x, this.cursor.y);
-      } else if (targetType === TargetType.TILE && this.tileMap) {
+      } else if (targetType === TargetType.TILE) {
         target = this.tileMap.getCell(this.cursor.x, this.cursor.y);
       }
       if (target) {
@@ -393,8 +409,8 @@ export class Game extends AppState {
 
     const mouse = this.app.mouse;
     if (mouse.down || mouse.dx !== 0 || mouse.dy !== 0) {
-      this.cursor.x = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
-      this.cursor.y = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
+      this.cursor.x = ((this.viewport.x + mouse.x) / this.tileMap.tileSize.width) | 0;
+      this.cursor.y = ((this.viewport.y + mouse.y) / this.tileMap.tileSize.height) | 0;
     }
 
     if (this.app.isKeyDown(Keys.VK_SHIFT)) {
@@ -428,8 +444,8 @@ export class Game extends AppState {
         dx = 1;
         dy = -1;
       }
-      this.viewportFocus.x -= dx * this.tileSize.height;
-      this.viewportFocus.y -= dy * this.tileSize.height;
+      this.viewportFocus.x -= dx * this.tileMap.tileSize.height;
+      this.viewportFocus.y -= dy * this.tileMap.tileSize.height;
       return;
     }
 
@@ -472,15 +488,13 @@ export class Game extends AppState {
     }
 
     if (mouse.isClicked()) {
-      const tx = ((this.viewport.x + mouse.x) / this.tileSize.width) | 0;
-      const ty = ((this.viewport.y + mouse.y) / this.tileSize.height) | 0;
-      if (this.tileMap) {
-        const target = this.tileMap.getCell(tx, ty);
-        if (target && target !== this.targetTile) {
-          this.targetTile = target;
-          this.path = computePath(this.tileMap, this.player, this.targetTile, 100);
-          this.pathIndex = 0;
-        }
+      const tx = ((this.viewport.x + mouse.x) / this.tileMap.tileSize.width) | 0;
+      const ty = ((this.viewport.y + mouse.y) / this.tileMap.tileSize.height) | 0;
+      const target = this.tileMap.getCell(tx, ty);
+      if (target && target !== this.targetTile) {
+        this.targetTile = target;
+        this.path = computePath(this.tileMap, this.player, this.targetTile, 100);
+        this.pathIndex = 0;
       }
     }
 
@@ -583,12 +597,8 @@ export class Game extends AppState {
     }
 
     const map = this.tileMap;
-    if (!map) {
-      return;
-    }
-
-    const tileWidth = this.tileSize.width;
-    const tileHeight = this.tileSize.height;
+    const tileWidth = map.tileSize.width;
+    const tileHeight = map.tileSize.height;
 
     let visibleMinX = player.x * tileWidth;
     let visibleMinY = player.y * tileHeight;
@@ -638,7 +648,7 @@ export class Game extends AppState {
 
     // Find the center of the bounds of all visible actors
 
-    if ((visibleMaxX - visibleMinX) <= this.viewport.width) {
+    if ((visibleMaxX - visibleMinX) <= (this.viewport.width - 2 * this.focusMargins.x)) {
       // The entire visible range fits in the viewport, so center it
       this.viewportFocus.x = Math.round((visibleMinX + visibleMaxX) / 2.0);
     } else {
@@ -646,7 +656,7 @@ export class Game extends AppState {
       this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
     }
 
-    if ((visibleMaxY - visibleMinY) <= this.viewport.height) {
+    if ((visibleMaxY - visibleMinY) <= (this.viewport.height - 2 * this.focusMargins.y)) {
       // The entire visible range fits in the viewport, so center it
       this.viewportFocus.y = Math.round((visibleMinY + visibleMaxY) / 2.0);
     } else {
@@ -700,7 +710,7 @@ export class Game extends AppState {
   }
 
   isBlocked(x: number, y: number) {
-    if (this.tileMap && this.tileMap.isBlocked(x, y)) {
+    if (this.tileMap.isBlocked(x, y)) {
       return true;
     }
     for (let i = 0; i < this.entities.length; i++) {
@@ -733,7 +743,7 @@ export class Game extends AppState {
   }
 
   recomputeFov() {
-    if (!this.player || !this.tileMap) {
+    if (!this.player) {
       // FOV requires a player and a tile map
       return;
     }

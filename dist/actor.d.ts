@@ -7,7 +7,7 @@ import { Game } from './game';
 import { Item } from './item';
 import { Sprite } from './sprite';
 import { Talent } from './talent';
-import { TileMapCell } from './tilemap';
+import { TileMapCell } from './tilemap/tilemapcell';
 export declare class Actor extends Entity {
     hp: number;
     maxHp: number;

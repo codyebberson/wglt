@@ -14,15 +14,15 @@ const DEFAULT_HEIGHT = 224;
 const DEFAULT_FILL_WINDOW = false;
 const DEFAULT_SCALE_FACTOR = 2.0;
 
-// Arrow keys, numpad, vi, WASD, or ZQSD
-const NORTHWEST_KEYS = [Keys.VK_NUMPAD7];
-const NORTHEAST_KEYS = [Keys.VK_NUMPAD9];
-const SOUTHWEST_KEYS = [Keys.VK_NUMPAD1];
-const SOUTHEAST_KEYS = [Keys.VK_NUMPAD3];
-const UP_KEYS = [Keys.VK_UP, Keys.VK_NUMPAD8, Keys.VK_K, Keys.VK_W, Keys.VK_Z];
-const LEFT_KEYS = [Keys.VK_LEFT, Keys.VK_NUMPAD4, Keys.VK_H, Keys.VK_A, Keys.VK_Q];
-const DOWN_KEYS = [Keys.VK_DOWN, Keys.VK_NUMPAD2, Keys.VK_J, Keys.VK_S];
-const RIGHT_KEYS = [Keys.VK_RIGHT, Keys.VK_NUMPAD6, Keys.VK_L, Keys.VK_D];
+// Arrow keys, numpad, vi
+const NORTHWEST_KEYS = [Keys.VK_NUMPAD7, Keys.VK_Y];
+const NORTHEAST_KEYS = [Keys.VK_NUMPAD9, Keys.VK_U];
+const SOUTHWEST_KEYS = [Keys.VK_NUMPAD1, Keys.VK_B];
+const SOUTHEAST_KEYS = [Keys.VK_NUMPAD3, Keys.VK_N];
+const UP_KEYS = [Keys.VK_UP, Keys.VK_NUMPAD8, Keys.VK_K];
+const LEFT_KEYS = [Keys.VK_LEFT, Keys.VK_NUMPAD4, Keys.VK_H];
+const DOWN_KEYS = [Keys.VK_DOWN, Keys.VK_NUMPAD2, Keys.VK_J];
+const RIGHT_KEYS = [Keys.VK_RIGHT, Keys.VK_NUMPAD6, Keys.VK_L];
 const WAIT_KEYS = [Keys.VK_SPACE, Keys.VK_NUMPAD5];
 
 export class App {
@@ -174,9 +174,10 @@ export class App {
    * @param {number} x The x-coordinate of the top-left corner.
    * @param {number} y The y-coordinate of the top-left corner.
    * @param {Color=} color Optional color.
+   * @param {Vec2=} out Optional output location of cursor.
    */
-  drawString(str: string, x: number, y: number, color?: Color) {
-    this.renderSet.drawString(str, x, y, color);
+  drawString(str: string, x: number, y: number, color?: Color, out?: Vec2) {
+    this.renderSet.drawString(str, x, y, color, out);
   }
 
   /**

@@ -2,6 +2,7 @@
 import {Color} from './color';
 import {Font} from './font';
 import {createTexture, ExtendedTexture, initShaderProgram} from './glutils';
+import { Vec2 } from './vec2';
 
 /**
  * Maximum number of elements per buffer.
@@ -128,14 +129,19 @@ export class RenderSet {
    * @param {string} str The text string to draw.
    * @param {number} x0 The x-coordinate of the top-left corner.
    * @param {number} y0 The y-coordinate of the top-left corner.
-   * @param {number=} color Optional color.
+   * @param {Color=} color Optional color.
+   * @param {Vec2=} out Optional output location of cursor.
    */
-  drawString(str: string, x0: number, y0: number, color?: Color) {
+  drawString(str: string, x0: number, y0: number, color?: Color, out?: Vec2) {
     const lines = str.split('\n');
     const height = this.font.getHeight();
+    let x = x0;
     let y = y0;
     for (let i = 0; i < lines.length; i++) {
-      let x = x0;
+      if (i > 0) {
+        x = x0;
+        y += height;
+      }
       for (let j = 0; j < lines[i].length; j++) {
         const charCode = lines[i].charCodeAt(j);
         if (this.font.isInRange(charCode)) {
@@ -145,7 +151,10 @@ export class RenderSet {
           x += width;
         }
       }
-      y += height;
+    }
+    if (out) {
+      out.x = x;
+      out.y = y;
     }
   }
 
