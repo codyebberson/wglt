@@ -21,6 +21,7 @@ import { Message } from './message';
 export declare class Game extends AppState {
     readonly viewport: Rect;
     readonly viewportFocus: Vec2;
+    readonly focusMargins: Vec2;
     readonly animations: Animation[];
     readonly entities: ArrayList<Entity>;
     readonly cursor: Vec2;
