@@ -50,7 +50,7 @@ export * from './path';
 export * from './rect';
 export * from './rng';
 export * from './serializable';
-export * from './serialize';
+export * from './serializer';
 export * from './sprite';
 export * from './talent';
 export * from './tilemap/tilemap';

@@ -1,5 +1,5 @@
 
-import { Serializer } from './serialize';
+import { Serializer } from './serializer';
 import { Serializable } from './serializable';
 import { Vec2 } from './vec2';
 import { ArrayList } from './arraylist';
@@ -84,8 +84,8 @@ test('serialize anonymous', () => {
       ]
     },
     'root': {
-      '__className': 'Object',
-      '__index': 0
+      '_c': 'Object',
+      '_i': 0
     }
   });
 });
@@ -116,8 +116,8 @@ test('serialize ArrayList', () => {
       ]
     },
     'root': {
-      '__className': 'ArrayList',
-      '__index': 0
+      '_c': 'ArrayList',
+      '_i': 0
     }
   });
 });
@@ -138,8 +138,8 @@ test('custom class with decorator', () => {
   const s = new Serializer();
   const result = s.serialize(testActor);
   expect(result['root']).toEqual({
-    "__className": "MyActor",
-    "__index": 0
+    "_c": "MyActor",
+    "_i": 0
   });
 
   expect(result['refs']['MyActor'][0]).toEqual({
@@ -148,8 +148,8 @@ test('custom class with decorator', () => {
     "foo": "bar",
     "hp": 100,
     "inventory": {
-      '__className': 'ArrayList',
-      '__index': 0
+      '_c': 'ArrayList',
+      '_i': 0
     },
     "maxAp": 1,
     "maxHp": 100,
@@ -160,12 +160,12 @@ test('custom class with decorator', () => {
     },
     "seen": false,
     "sprite": {
-      '__className': 'Sprite',
-      '__index': 0
+      '_c': 'Sprite',
+      '_i': 0
     },
     "talents": {
-      '__className': 'ArrayList',
-      '__index': 1
+      '_c': 'ArrayList',
+      '_i': 1
     },
     "visibleDuration": -1,
     "x": 0,
@@ -182,7 +182,7 @@ test('circular reference', () => {
   const s = new Serializer();
   const result = s.serialize(testActor);
   expect(result['root']).toEqual({
-    "__className": "MyActor",
-    "__index": 0
+    "_c": "MyActor",
+    "_i": 0
   });
 });
