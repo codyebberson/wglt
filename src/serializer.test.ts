@@ -115,10 +115,7 @@ test('serialize ArrayList', () => {
         }
       ]
     },
-    'root': {
-      '_c': 'ArrayList',
-      '_i': 0
-    }
+    'root': { '_c': 'ArrayList', '_i': 0 }
   });
 });
 
@@ -126,8 +123,12 @@ test('serialize Vec2', () => {
   const s = new Serializer();
   const result = s.serialize(new Vec2(1, 2));
   expect(result).toEqual({
-    'refs': {},
-    'root': { 'x': 1, 'y': 2 }
+    'refs': {
+      'Vec2': [
+        { 'x': 1, 'y': 2 }
+      ]
+    },
+    'root': { '_c': 'Vec2', '_i': 0 }
   });
 });
 
@@ -155,8 +156,8 @@ test('custom class with decorator', () => {
     "maxHp": 100,
     "name": "test",
     "offset": {
-      "x": 0,
-      "y": 0,
+      "_c": 'Vec2',
+      "_i": 0,
     },
     "seen": false,
     "sprite": {

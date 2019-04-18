@@ -1,6 +1,6 @@
 import { Serializable } from "./serializable";
 
-@Serializable('Vec2', {valueType: true})
+@Serializable('Vec2')
 export class Vec2 {
   x: number;
   y: number;
