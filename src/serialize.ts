@@ -4,7 +4,6 @@ import { App } from "./app";
 import { GUI } from "./gui";
 import { Panel } from "./gui/panel";
 import { getSerializeMetadata } from "./serializemetadata";
-import { Actor } from "./actor";
 import { TileMap } from "./tilemap/tilemap";
 import { TileMapRenderer } from "./tilemap/tilemaprenderer";
 
@@ -19,7 +18,7 @@ export class Serializer {
     }
   }
 
-  serializeObject(obj: any): any {
+  private serializeObject(obj: any): any {
     if (obj === null || obj === undefined) {
       return obj;
     }

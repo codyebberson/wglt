@@ -12,16 +12,8 @@ import { Message } from './message';
 
 const TEST_SPRITE = new Sprite(0, 0, 16, 16);
 
-class MyActor1 extends Actor {
-  foo: string;
-  constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 'test', TEST_SPRITE, true);
-    this.foo = 'bar';
-  }
-}
-
-@Serializable('MyActor2')
-class MyActor2 extends Actor {
+@Serializable('MyActor')
+class MyActor extends Actor {
   foo: string;
   constructor(game: Game, x: number, y: number) {
     super(game, x, y, 'test', TEST_SPRITE, true);
@@ -46,32 +38,65 @@ class MyAbility implements Ability {
 
 test('serialize undefined', () => {
   const s = new Serializer();
-  expect(s.serializeObject(undefined)).toBe(undefined);
+  const result = s.serialize(undefined);
+  expect(result).toEqual({
+    'refs': {},
+    'root': undefined
+  });
 });
 
 test('serialize null', () => {
   const s = new Serializer();
-  expect(s.serializeObject(null)).toBe(null);
+  const result = s.serialize(null);
+  expect(result).toEqual({
+    'refs': {},
+    'root': null
+  });
 });
 
 test('serialize zero', () => {
   const s = new Serializer();
-  expect(s.serializeObject(0)).toBe(0);
+  const result = s.serialize(0);
+  expect(result).toEqual({
+    'refs': {},
+    'root': 0
+  });
 });
 
 test('serialize number', () => {
   const s = new Serializer();
-  expect(s.serializeObject(100)).toBe(100);
+  const result = s.serialize(100);
+  expect(result).toEqual({
+    'refs': {},
+    'root': 100
+  });
 });
 
 test('serialize anonymous', () => {
   const s = new Serializer();
-  expect(s.serializeObject({ 'x': 100 })).toEqual({ 'x': 100 });
+  const result = s.serialize({ 'x': 100 });
+  expect(result).toEqual({
+    'refs': {
+      'Object': [
+        {
+          'x': 100
+        }
+      ]
+    },
+    'root': {
+      '__className': 'Object',
+      '__index': 0
+    }
+  });
 });
 
 test('serialize array', () => {
   const s = new Serializer();
-  expect(s.serializeObject([2, 4, 6, 8])).toEqual([2, 4, 6, 8]);
+  const result = s.serialize([2, 4, 6, 8]);
+  expect(result).toEqual({
+    'refs': {},
+    'root': [2, 4, 6, 8]
+  });
 });
 
 test('serialize ArrayList', () => {
@@ -81,72 +106,51 @@ test('serialize ArrayList', () => {
   a.add(6);
 
   const s = new Serializer();
-  expect(s.serializeObject(a)).toEqual([2, 4, 6]);
+  const result = s.serialize(a);
+  expect(result).toEqual({
+    'refs': {
+      'ArrayList': [
+        {
+          'elements': [2, 4, 6]
+        }
+      ]
+    },
+    'root': {
+      '__className': 'ArrayList',
+      '__index': 0
+    }
+  });
 });
 
 test('serialize Vec2', () => {
   const s = new Serializer();
-  expect(s.serializeObject(new Vec2(1, 2))).toEqual({ 'x': 1, 'y': 2 });
-});
-
-test('custom class', () => {
-  const mockGame = {} as Game;
-  const testActor = new MyActor1(mockGame, 0, 0);
-
-  const s = new Serializer();
-  expect(s.serializeObject(testActor)).toEqual({
-    "ap": 1,
-    "blocks": true,
-    "foo": "bar",
-    "game": {},
-    "hp": 100,
-    "inventory": [],
-    "maxAp": 1,
-    "maxHp": 100,
-    "name": "test",
-    "offset": {
-      "x": 0,
-      "y": 0,
-    },
-    "seen": false,
-    "sprite": {
-      "animDelay": 0,
-      "animIndex": 0,
-      "colorOverride": undefined,
-      "frames": 1,
-      "height": 16,
-      "loop": false,
-      "ticksPerFrame": 30,
-      "width": 16,
-      "x": 0,
-      "y": 0,
-    },
-    "talents": [],
-    "visibleDuration": -1,
-    "x": 0,
-    "y": 0,
-    "zIndex": 1,
+  const result = s.serialize(new Vec2(1, 2));
+  expect(result).toEqual({
+    'refs': {},
+    'root': { 'x': 1, 'y': 2 }
   });
 });
 
 test('custom class with decorator', () => {
   const mockGame = {} as Game;
-  const testActor = new MyActor2(mockGame, 0, 0);
+  const testActor = new MyActor(mockGame, 0, 0);
 
   const s = new Serializer();
   const result = s.serialize(testActor);
   expect(result['root']).toEqual({
-    "__className": "MyActor2",
+    "__className": "MyActor",
     "__index": 0
   });
 
-  expect(result['refs']['MyActor2'][0]).toEqual({
+  expect(result['refs']['MyActor'][0]).toEqual({
     "ap": 1,
     "blocks": true,
     "foo": "bar",
-    "game": {},
     "hp": 100,
-    "inventory": [],
+    "inventory": {
+      '__className': 'ArrayList',
+      '__index': 0
+    },
     "maxAp": 1,
     "maxHp": 100,
     "name": "test",
@@ -156,18 +160,13 @@ test('custom class with decorator', () => {
     },
     "seen": false,
     "sprite": {
-      "animDelay": 0,
-      "animIndex": 0,
-      "colorOverride": undefined,
-      "frames": 1,
-      "height": 16,
-      "loop": false,
-      "ticksPerFrame": 30,
-      "width": 16,
-      "x": 0,
-      "y": 0,
+      '__className': 'Sprite',
+      '__index': 0
     },
-    "talents": [],
+    "talents": {
+      '__className': 'ArrayList',
+      '__index': 1
+    },
     "visibleDuration": -1,
     "x": 0,
     "y": 0,
@@ -177,17 +176,13 @@ test('custom class with decorator', () => {
 
 test('circular reference', () => {
   const mockGame = {} as Game;
-  const testActor = new MyActor2(mockGame, 0, 0);
+  const testActor = new MyActor(mockGame, 0, 0);
   testActor.talents.add(new Talent(testActor, new MyAbility()));
 
   const s = new Serializer();
   const result = s.serialize(testActor);
-  console.log(result);
-  console.log(result['refs']['MyActor2'][0]);
-  console.log(result['refs']['MyActor2'][0]['talents'][0]);
-  console.log(result['refs']['MyActor2'][0]['talents'][0]['actor']);
   expect(result['root']).toEqual({
-    "__className": "MyActor2",
+    "__className": "MyActor",
     "__index": 0
   });
 });
