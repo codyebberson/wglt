@@ -26,6 +26,85 @@ const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
 
+class Fighter extends wglt.Actor {
+  constructor(game, x, y, name, sprite) {
+    super(game, x, y, name, sprite, true);
+  }
+
+  onAttack(target, damage) {
+    const attacker = this;
+    if (damage > 0) {
+      this.game.log(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
+    } else {
+      this.game.log(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
+    }
+  }
+}
+
+class Player extends Fighter {
+  constructor(game, x, y) {
+    super(game, x, y, 'Player', new wglt.Sprite(0, 16, 16, 16, 2, true));
+    this.level = 1;
+    this.xp = 0;
+    this.maxXp = 10;
+    this.zIndex = 2;
+  }
+
+  onDeath() {
+    this.game.log('You died!');
+  }
+}
+
+class Monster extends Fighter {
+  constructor(game, x, y, name, sprite) {
+    super(game, x, y, name, sprite);
+    this.hp = 20;
+    this.ai = new wglt.BasicMonster(this, calculateDamage);
+  }
+
+  onBump(player) {
+    player.attack(this, 10);
+    return true;
+  }
+
+  onDeath() {
+    const monster = this;
+    game.log(monster.name + ' is dead');
+    monster.blocks = false;
+    monster.ai = null;
+    monster.name = 'remains of ' + monster.name;
+    monster.sendToBack();
+
+    const xpGain = 10;
+    player.xp += xpGain;
+
+    while (player.xp >= player.maxXp) {
+      player.level++;
+      player.xp = 0;
+      player.maxXp *= 2;
+      game.log('You reached level ' + player.level, 0xFF8000FF);
+    }
+  }
+}
+
+class Orc extends Monster {
+  constructor(game, x, y) {
+    super(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true));
+  }
+}
+
+class Troll extends Monster {
+  constructor(game, x, y) {
+    super(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true));
+  }
+}
+
+class Item extends wglt.Item {
+  onPickup(entity) {
+    this.game.log(entity.name + ' picked up gold coins', Colors.LIGHT_GREEN);
+  }
+}
+
 function createRoom(map, room) {
   for (let y = room.y1 + 1; y < room.y2; y++) {
     for (let x = room.x1 + 1; x < room.x2; x++) {
@@ -158,18 +237,11 @@ function placeObjects(room) {
     // Only place it if the tile is not blocked
     // 80% chance of getting an orc
     if (rng.nextRange(0, 100) < 80) {
-      // Create an orc
-      monster = new wglt.Actor(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
+      monster = new Orc(game, x, y);
     } else {
-      // Create a troll
-      monster = new wglt.Actor(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
+      monster = new Troll(game, x, y);
     }
 
-    monster.hp = 20;
-    monster.ai = new wglt.BasicMonster(monster, calculateDamage);
-    monster.onBump = onBumpMonster;
-    monster.onAttack = attackCallback;
-    monster.onDeath = monsterDeath;
     game.entities.add(monster);
   }
 
@@ -204,21 +276,21 @@ function placeObjects(room) {
       itemName = 'scroll of lightning bolt';
       itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
       itemUse = readScroll;
-      itemAbility = lightningAbility;
+      itemAbility = new LightningAbility();
 
     } else if (dice < 50 + 20 + 15) {
       // Create a fireball scroll (15% chance)
       itemName = 'scroll of fireball';
       itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
       itemUse = readScroll;
-      itemAbility = fireballAbility;
+      itemAbility = new FireballAbility();
 
     } else {
       // Create a confuse scroll (15% chance)
       itemName = 'scroll of confusion';
       itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
       itemUse = readScroll;
-      itemAbility = confuseAbility;
+      itemAbility = new ConfuseAbility();
     }
 
     const item = new wglt.Item(game, x, y, itemName, itemSprite);
@@ -274,19 +346,22 @@ function castHeal(caster) {
   caster.ap--;
 }
 
-const lightningAbility = {
-  name: 'Lightning',
-  sprite: new wglt.Sprite(128, 32, 16, 16, 3),
-  targetType: wglt.TargetType.SELF,
-  cooldown: 10,
-  tooltipMessages: [
-    new wglt.Message('Lightning', wglt.Colors.WHITE),
-    new wglt.Message('2% of base mana', wglt.Colors.WHITE),
-    new wglt.Message('2 turn cast', wglt.Colors.WHITE),
-    new wglt.Message('Hurls a bolt of lightning at the target', wglt.Colors.YELLOW),
-    new wglt.Message('dealing 20 damage.', wglt.Colors.YELLOW),
-  ],
-  cast: function (caster) {
+class LightningAbility {
+  constructor() {
+    this.name = 'Lightning';
+    this.sprite = new wglt.Sprite(128, 32, 16, 16, 3);
+    this.targetType = wglt.TargetType.SELF;
+    this.cooldown = 10;
+    this.tooltipMessages = [
+      new wglt.Message('Lightning', wglt.Colors.WHITE),
+      new wglt.Message('2% of base mana', wglt.Colors.WHITE),
+      new wglt.Message('2 turn cast', wglt.Colors.WHITE),
+      new wglt.Message('Hurls a bolt of lightning at the target', wglt.Colors.YELLOW),
+      new wglt.Message('dealing 20 damage.', wglt.Colors.YELLOW),
+    ];
+  }
+
+  cast(caster) {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
     if (!monster) {
@@ -301,21 +376,24 @@ const lightningAbility = {
     caster.ap--;
     return true;
   }
-};
+}
 
-const fireballAbility = {
-  name: 'Fireball',
-  sprite: new wglt.Sprite(128, 32, 16, 16, 3),
-  targetType: wglt.TargetType.TILE,
-  cooldown: 20,
-  tooltipMessages: [
-    new wglt.Message('Fireball', wglt.Colors.WHITE),
-    new wglt.Message('2% of base mana', wglt.Colors.WHITE),
-    new wglt.Message('2 turn cast', wglt.Colors.WHITE),
-    new wglt.Message('Throws a fiery ball causing 10 damage', wglt.Colors.YELLOW),
-    new wglt.Message('to all enemies within 3 tiles.', wglt.Colors.YELLOW),
-  ],
-  cast: function (caster, target) {
+class FireballAbility {
+  constructor() {
+    this.name = 'Fireball';
+    this.sprite = new wglt.Sprite(128, 32, 16, 16, 3);
+    this.targetType = wglt.TargetType.TILE;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new wglt.Message('Fireball', wglt.Colors.WHITE),
+      new wglt.Message('2% of base mana', wglt.Colors.WHITE),
+      new wglt.Message('2 turn cast', wglt.Colors.WHITE),
+      new wglt.Message('Throws a fiery ball causing 10 damage', wglt.Colors.YELLOW),
+      new wglt.Message('to all enemies within 3 tiles.', wglt.Colors.YELLOW),
+    ];
+  }
+
+  cast(caster, target) {
     const distance = caster.distanceTo(target);
     if (distance > FIREBALL_RANGE) {
       game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
@@ -354,11 +432,24 @@ const fireballAbility = {
     caster.ap--;
     return true;
   }
-};
+}
 
-const confuseAbility = {
-  targetType: wglt.TargetType.ENTITY,
-  cast: function (caster, target) {
+class ConfuseAbility {
+  constructor() {
+    this.name = 'Confuse';
+    this.sprite = new wglt.Sprite(128, 32, 16, 16, 3);
+    this.targetType = wglt.TargetType.ENTITY;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new wglt.Message('Confuse', wglt.Colors.WHITE),
+      new wglt.Message('2% of base mana', wglt.Colors.WHITE),
+      new wglt.Message('2 turn cast', wglt.Colors.WHITE),
+      new wglt.Message('Throws a fiery ball causing 10 damage', wglt.Colors.YELLOW),
+      new wglt.Message('to all enemies within 3 tiles.', wglt.Colors.YELLOW),
+    ];
+  }
+
+  cast(caster, target) {
     if (caster.distanceTo(target) > CONFUSE_RANGE) {
       game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
       return;
@@ -369,7 +460,7 @@ const confuseAbility = {
     caster.ap--;
     return true;
   }
-};
+}
 
 function readScroll() {
   const item = this;
@@ -377,44 +468,6 @@ function readScroll() {
   player.cast(ability, undefined, function () {
     player.inventory.remove(item);
   });
-}
-
-function onBumpMonster(player) {
-  const monster = this;
-  player.attack(monster, 10);
-  return true;
-}
-
-function attackCallback(target, damage) {
-  const attacker = this;
-  if (damage > 0) {
-    game.log(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
-  } else {
-    game.log(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
-  }
-}
-
-function playerDeath() {
-  game.log('You died!');
-}
-
-function monsterDeath() {
-  const monster = this;
-  game.log(monster.name + ' is dead');
-  monster.blocks = false;
-  monster.ai = null;
-  monster.name = 'remains of ' + monster.name;
-  monster.sendToBack();
-
-  const xpGain = 10;
-  player.xp += xpGain;
-
-  while (player.xp >= player.maxXp) {
-    player.level++;
-    player.xp = 0;
-    player.maxXp *= 2;
-    game.log('You reached level ' + player.level, 0xFF8000FF);
-  }
 }
 
 function nextLevel() {
@@ -453,14 +506,7 @@ game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
 
 const map = game.tileMap;
 const rng = new wglt.RNG(1);
-const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
-const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
-player.onAttack = attackCallback;
-player.onDeath = playerDeath;
-player.level = 1;
-player.xp = 0;
-player.maxXp = 10;
-player.zIndex = 2;
+const player = new Player(game, 30, 20);
 game.player = player;
 game.entities.add(player);
 
@@ -562,8 +608,8 @@ player.talents.addListener({
   onRemove: (_, talent) => { }
 });
 
-player.talents.add(new wglt.Talent(player, fireballAbility));
-player.talents.add(new wglt.Talent(player, lightningAbility));
+player.talents.add(new wglt.Talent(player, new FireballAbility()));
+player.talents.add(new wglt.Talent(player, new LightningAbility()));
 
 // Generate the map
 createMap();
