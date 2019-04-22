@@ -1,4 +1,4 @@
-import {Colors} from '../colors';
+import {StandardColors} from '../palettes/standardcolors';
 import {Rect} from '../rect';
 import {Talent} from '../talent';
 
@@ -38,8 +38,8 @@ export class TalentButton extends Button {
 
         const cx = this.rect.x + (this.rect.width / 2) | 0;
         const cy = this.rect.y + (this.rect.height / 2) | 0;
-        game.app.drawCenteredString(this.talent.cooldown.toString(), cx + 1, cy - 2, Colors.BLACK);
-        game.app.drawCenteredString(this.talent.cooldown.toString(), cx, cy - 3, Colors.WHITE);
+        game.app.drawCenteredString(this.talent.cooldown.toString(), cx + 1, cy - 2, StandardColors.BLACK);
+        game.app.drawCenteredString(this.talent.cooldown.toString(), cx, cy - 3, StandardColors.WHITE);
       }
     }
   }

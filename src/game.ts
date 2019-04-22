@@ -4,7 +4,7 @@ import {Animation} from './animations/animation';
 import {App} from './app';
 import {AppState} from './appstate';
 import {Color} from './color';
-import {Colors} from './colors';
+import {StandardColors} from './palettes/standardcolors';
 import {Entity} from './entity';
 import {GameOptions} from './gameoptions';
 import {MessageLog} from './gui/messagelog';
@@ -763,7 +763,7 @@ export class Game extends AppState {
         if (!entity.seen) {
           // Spotted a new entity, stop auto walking
           entity.seen = true;
-          this.player.addFloatingText('!', Colors.WHITE);
+          this.player.addFloatingText('!', StandardColors.WHITE);
           this.stopAutoWalk();
 
           this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;

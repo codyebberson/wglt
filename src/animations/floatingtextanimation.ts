@@ -1,6 +1,6 @@
 import {Actor} from '../actor';
 import {Color} from '../color';
-import {Colors} from '../colors';
+import {StandardColors} from '../palettes/standardcolors';
 import {Game} from '../game';
 
 import {Animation} from './animation';
@@ -16,7 +16,7 @@ export class FloatingTextAnimation extends Animation {
     super(DURATION, false);
     this.actor = actor;
     this.str = str;
-    this.color = color || Colors.WHITE;
+    this.color = color || StandardColors.WHITE;
   }
 
   draw(game: Game) {

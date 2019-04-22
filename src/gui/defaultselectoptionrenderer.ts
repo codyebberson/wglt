@@ -1,4 +1,4 @@
-import {Colors} from '../colors';
+import {StandardColors} from '../palettes/standardcolors';
 import {GUI} from '../gui';
 import {Vec2} from '../vec2';
 
@@ -13,7 +13,7 @@ export class DefaultSelectOptionRenderer implements SelectOptionRenderer {
   }
 
   drawOption(gui: GUI, point: Vec2, option: SelectOption, selected: boolean) {
-    const color = selected ? Colors.YELLOW : Colors.WHITE;
+    const color = selected ? StandardColors.YELLOW : StandardColors.WHITE;
     gui.app.drawString(option.name, point.x, point.y, color);
   }
 }
