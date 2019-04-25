@@ -30,7 +30,7 @@ export class ItemContainerDialog extends Dialog {
 
     for (let i = 0; i < capacity; i++) {
       // Slots are repositioned at render time
-      this.add(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), items, Keys.VK_A + i));
+      this.add(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), Keys.VK_A + i));
     }
   }
 
