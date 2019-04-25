@@ -33,7 +33,7 @@ export class TooltipDialog extends Dialog {
 
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];
-      const width = 2 * MARGIN + font.getStringWidth(msg.text);
+      const width = 2 * MARGIN + msg.getWidth(font);
       this.rect.width = Math.max(this.rect.width, width);
     }
 
