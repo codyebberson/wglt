@@ -3,6 +3,7 @@ import {Rect} from '../rect';
 
 import {Dialog} from './dialog';
 import { Serializable } from '../serializable';
+import { Vec2 } from '../vec2';
 
 const WIDTH = 100;
 const MARGIN = 5;
@@ -68,13 +69,13 @@ export class TooltipDialog extends Dialog {
     super.drawContents();
 
     const lineHeight = this.gui.app.font.getHeight() + LINE_PADDING;
-    const x = this.rect.x + MARGIN;
-    let y = this.rect.y + MARGIN;
+    const pos = new Vec2(this.rect.x + MARGIN, this.rect.y + MARGIN);
 
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];
-      this.gui.app.drawString(msg.text, x, y, msg.color);
-      y += lineHeight;
+      msg.draw(this.gui.app, pos);
+      pos.x = this.rect.x + MARGIN;
+      pos.y += lineHeight;
     }
   }
 
