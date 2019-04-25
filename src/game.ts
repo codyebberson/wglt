@@ -22,6 +22,7 @@ import { TileMapCell } from './tilemap/tilemapcell';
 import { TileMap } from './tilemap/tilemap';
 import { TileMapRenderer } from './tilemap/tilemaprenderer';
 import { Message } from './message';
+import { Item } from './item';
 
 const DEFAULT_MAP_SIZE = new Rect(0, 0, 256, 256);
 const DEFAULT_MAP_LAYERS = 1;
@@ -564,26 +565,36 @@ export class Game extends AppState {
     const destX = player.x + dx;
     const destY = player.y + dy;
 
+    // Check for blocking actors
+    // If there is a blocking actor, either bump or stop
     for (let i = 0; i < this.entities.length; i++) {
       const other = this.entities.get(i);
-      if (player !== other && other.x === destX && other.y === destY) {
+      if (other.blocks && player !== other && other.x === destX && other.y === destY) {
         if (this.path) {
           // Autowalking...
-          if (!(other instanceof Actor)) {
-            // If it's not an actor (i.e., item or stairs), pick it up and carry on
-            return other.onBump(player);
-          }
           if (this.pathIndex === 1) {
+            // If this is the first stop, go ahead and bump
             this.stopAutoWalk();
             return other.onBump(player);
+          } else {
+            // Otherwise stop and make player confirm
+            this.stopAutoWalk();
+            return true;
           }
-          // Otherwise stop and make player confirm
-          this.stopAutoWalk();
-          return true;
         }
 
         // Otherwise, this is keyboard input, so go ahead and bump
         return other.onBump(player);
+      }
+    }
+
+    // Check for items
+    // There may be multiple items on a tile
+    // If there are items, pick them up
+    for (let i = this.entities.length - 1; i >= 0; i--) {
+      const other = this.entities.get(i);
+      if (other instanceof Item && !other.blocks && other.x === destX && other.y === destY) {
+        player.pickup(other);
       }
     }
 
