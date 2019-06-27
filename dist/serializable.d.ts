@@ -1,3 +1,7 @@
+import { SerializeMetadata } from "./serializemetadata";
+export declare const KNOWN_CLASSES: {
+    [name: string]: SerializeMetadata;
+};
 export interface SerializableOptions {
     valueType?: boolean;
     customSerializer?: Function;

@@ -1,5 +1,3 @@
-import {ArrayList} from '../arraylist';
-import {Item} from '../item';
 import {Key} from '../keys';
 import {Rect} from '../rect';
 
@@ -10,11 +8,9 @@ import { Serializable } from '../serializable';
 
 @Serializable('ItemContainerButtonSlot')
 export class ItemContainerButtonSlot extends ButtonSlot {
-  readonly items: ArrayList<Item>;
 
-  constructor(rect: Rect, items: ArrayList<Item>, shortcutKey?: Key) {
+  constructor(rect: Rect, shortcutKey?: Key) {
     super(rect, shortcutKey);
-    this.items = items;
   }
 
   onDrop(panel: Panel) {

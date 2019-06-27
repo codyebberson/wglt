@@ -1,4 +1,6 @@
-import { createSerializeMetadata } from "./serializemetadata";
+import { createSerializeMetadata, SerializeMetadata } from "./serializemetadata";
+
+export const KNOWN_CLASSES: { [name: string]: SerializeMetadata } = {};
 
 export interface SerializableOptions {
   valueType?: boolean;
@@ -14,5 +16,7 @@ export function Serializable(name: string, options?: SerializableOptions) {
     if (options) {
       metadata.valueType = !!options.valueType;
     }
+
+    KNOWN_CLASSES[name] = metadata;
   };
 }

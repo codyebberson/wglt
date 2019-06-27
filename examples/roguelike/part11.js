@@ -26,6 +26,87 @@ const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
 
+const Colors = wglt.Pico8Colors;
+
+class Fighter extends wglt.Actor {
+  constructor(game, x, y, name, sprite) {
+    super(game, x, y, name, sprite, true);
+  }
+
+  onAttack(target, damage) {
+    const attacker = this;
+    if (damage > 0) {
+      this.game.log(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
+    } else {
+      this.game.log(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
+    }
+  }
+}
+
+class Player extends Fighter {
+  constructor(game, x, y) {
+    super(game, x, y, 'Player', new wglt.Sprite(0, 16, 16, 16, 2, true));
+    this.level = 1;
+    this.xp = 0;
+    this.maxXp = 10;
+    this.zIndex = 2;
+  }
+
+  onDeath() {
+    this.game.log('You died!');
+  }
+}
+
+class Monster extends Fighter {
+  constructor(game, x, y, name, sprite) {
+    super(game, x, y, name, sprite);
+    this.hp = 20;
+    this.ai = new wglt.BasicMonster(this, calculateDamage);
+  }
+
+  onBump(player) {
+    player.attack(this, 10);
+    return true;
+  }
+
+  onDeath() {
+    const monster = this;
+    game.log(monster.name + ' is dead');
+    monster.blocks = false;
+    monster.ai = null;
+    monster.name = 'remains of ' + monster.name;
+    monster.sendToBack();
+
+    const xpGain = 10;
+    player.xp += xpGain;
+
+    while (player.xp >= player.maxXp) {
+      player.level++;
+      player.xp = 0;
+      player.maxXp *= 2;
+      game.log('You reached level ' + player.level, 0xFF8000FF);
+    }
+  }
+}
+
+class Orc extends Monster {
+  constructor(game, x, y) {
+    super(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true));
+  }
+}
+
+class Troll extends Monster {
+  constructor(game, x, y) {
+    super(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true));
+  }
+}
+
+class Item extends wglt.Item {
+  onPickup(entity) {
+    this.game.log(entity.name + ' picked up gold coins', Colors.GREEN);
+  }
+}
+
 function createRoom(map, room) {
   for (let y = room.y1 + 1; y < room.y2; y++) {
     for (let x = room.x1 + 1; x < room.x2; x++) {
@@ -158,18 +239,11 @@ function placeObjects(room) {
     // Only place it if the tile is not blocked
     // 80% chance of getting an orc
     if (rng.nextRange(0, 100) < 80) {
-      // Create an orc
-      monster = new wglt.Actor(game, x, y, 'Orc', new wglt.Sprite(32, 16, 16, 16, 2, true), true);
+      monster = new Orc(game, x, y);
     } else {
-      // Create a troll
-      monster = new wglt.Actor(game, x, y, 'Troll', new wglt.Sprite(64, 16, 16, 16, 2, true), true);
+      monster = new Troll(game, x, y);
     }
 
-    monster.hp = 20;
-    monster.ai = new wglt.BasicMonster(monster, calculateDamage);
-    monster.onBump = onBumpMonster;
-    monster.onAttack = attackCallback;
-    monster.onDeath = monsterDeath;
     game.entities.add(monster);
   }
 
@@ -194,9 +268,9 @@ function placeObjects(room) {
       itemSprite = new wglt.Sprite(128, 16, 16, 16, 1);
       itemUse = castHeal;
       itemTooltips = [
-        new wglt.Message('Ancient Healing Potion', wglt.Colors.BLUE),
-        new wglt.Message('Item Level 5', wglt.Colors.YELLOW),
-        new wglt.Message('Use: Restore 10 health', wglt.Colors.GREEN),
+        new wglt.Message('Ancient Healing Potion', Colors.BLUE),
+        new wglt.Message('Item Level 5', Colors.YELLOW),
+        new wglt.Message('Use: Restore 10 health', Colors.GREEN),
       ];
 
     } else if (dice < 50 + 20) {
@@ -204,21 +278,21 @@ function placeObjects(room) {
       itemName = 'scroll of lightning bolt';
       itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
       itemUse = readScroll;
-      itemAbility = lightningAbility;
+      itemAbility = new LightningAbility();
 
     } else if (dice < 50 + 20 + 15) {
       // Create a fireball scroll (15% chance)
       itemName = 'scroll of fireball';
       itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
       itemUse = readScroll;
-      itemAbility = fireballAbility;
+      itemAbility = new FireballAbility();
 
     } else {
       // Create a confuse scroll (15% chance)
       itemName = 'scroll of confusion';
       itemSprite = new wglt.Sprite(144, 16, 16, 16, 1);
       itemUse = readScroll;
-      itemAbility = confuseAbility;
+      itemAbility = new ConfuseAbility();
     }
 
     const item = new wglt.Item(game, x, y, itemName, itemSprite);
@@ -232,7 +306,7 @@ function placeObjects(room) {
 
 function pickupCallback(entity) {
   const item = this;
-  game.log(entity.name + ' picked up a ' + item.name, wglt.Colors.LIGHT_GREEN);
+  game.log(entity.name + ' picked up a ' + item.name, Colors.GREEN);
 }
 
 function getClosestMonster(x, y, range) {
@@ -264,61 +338,67 @@ function castHeal(caster) {
 
   // Heal the player
   if (caster.hp === caster.maxHp) {
-    game.log('You are already at full health.', wglt.Colors.RED);
+    game.log('You are already at full health.', Colors.RED);
     return;
   }
 
-  game.log('Your wounds start to feel better!', wglt.Colors.LIGHT_MAGENTA);
+  game.log('Your wounds start to feel better!', Colors.PINK);
   caster.takeHeal(HEAL_AMOUNT);
   caster.inventory.remove(item);
   caster.ap--;
 }
 
-const lightningAbility = {
-  name: 'Lightning',
-  sprite: new wglt.Sprite(128, 32, 16, 16, 3),
-  targetType: wglt.TargetType.SELF,
-  cooldown: 10,
-  tooltipMessages: [
-    new wglt.Message('Lightning', wglt.Colors.WHITE),
-    new wglt.Message('2% of base mana', wglt.Colors.WHITE),
-    new wglt.Message('2 turn cast', wglt.Colors.WHITE),
-    new wglt.Message('Hurls a bolt of lightning at the target', wglt.Colors.YELLOW),
-    new wglt.Message('dealing 20 damage.', wglt.Colors.YELLOW),
-  ],
-  cast: function (caster) {
+class LightningAbility {
+  constructor() {
+    this.name = 'Lightning';
+    this.sprite = new wglt.Sprite(128, 32, 16, 16, 3);
+    this.targetType = wglt.TargetType.SELF;
+    this.cooldown = 10;
+    this.tooltipMessages = [
+      new wglt.Message('Lightning', Colors.WHITE),
+      new wglt.Message('2% of base mana', Colors.WHITE),
+      new wglt.Message('2 turn cast', Colors.WHITE),
+      new wglt.Message('Hurls a bolt of lightning at the target', Colors.YELLOW),
+      new wglt.Message('dealing 20 damage.', Colors.YELLOW),
+    ];
+  }
+
+  cast(caster) {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
     if (!monster) {
-      game.log('No enemy is close enough to strike.', wglt.Colors.LIGHT_RED);
+      game.log('No enemy is close enough to strike.', Colors.RED);
       return false;
     }
 
     // Zap it!
-    game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', wglt.Colors.LIGHT_BLUE);
-    game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', wglt.Colors.LIGHT_BLUE);
+    game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', Colors.BLUE);
+    game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', Colors.BLUE);
     monster.takeDamage(caster, LIGHTNING_DAMAGE);
     caster.ap--;
     return true;
   }
-};
+}
 
-const fireballAbility = {
-  name: 'Fireball',
-  sprite: new wglt.Sprite(128, 32, 16, 16, 3),
-  targetType: wglt.TargetType.TILE,
-  cooldown: 20,
-  tooltipMessages: [
-    new wglt.Message('Fireball', wglt.Colors.WHITE),
-    new wglt.Message('2% of base mana', wglt.Colors.WHITE),
-    new wglt.Message('2 turn cast', wglt.Colors.WHITE),
-    new wglt.Message('Throws a fiery ball causing 10 damage', wglt.Colors.YELLOW),
-    new wglt.Message('to all enemies within 3 tiles.', wglt.Colors.YELLOW),
-  ],
-  cast: function (caster, target) {
+class FireballAbility {
+  constructor() {
+    this.name = 'Fireball';
+    this.sprite = new wglt.Sprite(128, 32, 16, 16, 3);
+    this.targetType = wglt.TargetType.TILE;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new wglt.Message('Fireball', Colors.WHITE),
+      new wglt.Message('2% of base mana', Colors.WHITE),
+      new wglt.Message('2 turn cast', Colors.WHITE),
+      new wglt.Message('Throws a fiery ball causing 10 damage', Colors.YELLOW),
+      new wglt.Message('to all enemies within 3 tiles.', Colors.YELLOW),
+    ];
+  }
+
+  cast(caster, target) {
     const distance = caster.distanceTo(target);
     if (distance > FIREBALL_RANGE) {
-      game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
+      game.log('Target out of range.', Colors.LIGHT_GRAY);
       return false;
     }
 
@@ -341,12 +421,12 @@ const fireballAbility = {
       16
     ));
 
-    game.log('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', wglt.Colors.ORANGE);
+    game.log('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', Colors.ORANGE);
 
     for (let i = game.entities.length - 1; i >= 0; i--) {
       const entity = game.entities.get(i);
       if (entity instanceof wglt.Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
-        game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', wglt.Colors.ORANGE);
+        game.log('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', Colors.ORANGE);
         entity.takeDamage(caster, FIREBALL_DAMAGE);
       }
     }
@@ -354,22 +434,35 @@ const fireballAbility = {
     caster.ap--;
     return true;
   }
-};
+}
 
-const confuseAbility = {
-  targetType: wglt.TargetType.ENTITY,
-  cast: function (caster, target) {
+class ConfuseAbility {
+  constructor() {
+    this.name = 'Confuse';
+    this.sprite = new wglt.Sprite(128, 32, 16, 16, 3);
+    this.targetType = wglt.TargetType.ENTITY;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new wglt.Message('Confuse', Colors.WHITE),
+      new wglt.Message('2% of base mana', Colors.WHITE),
+      new wglt.Message('2 turn cast', Colors.WHITE),
+      new wglt.Message('Throws a fiery ball causing 10 damage', Colors.YELLOW),
+      new wglt.Message('to all enemies within 3 tiles.', Colors.YELLOW),
+    ];
+  }
+
+  cast(caster, target) {
     if (caster.distanceTo(target) > CONFUSE_RANGE) {
-      game.log('Target out of range.', wglt.Colors.LIGHT_GRAY);
+      game.log('Target out of range.', Colors.LIGHT_GRAY);
       return;
     }
 
     target.ai = new wglt.ConfusedMonster(target);
-    game.log('The eyes of the ' + target.name + ' look vacant, as he stumbles around!', wglt.Colors.LIGHT_GREEN);
+    game.log('The eyes of the ' + target.name + ' look vacant, as he stumbles around!', Colors.GREEN);
     caster.ap--;
     return true;
   }
-};
+}
 
 function readScroll() {
   const item = this;
@@ -379,48 +472,10 @@ function readScroll() {
   });
 }
 
-function onBumpMonster(player) {
-  const monster = this;
-  player.attack(monster, 10);
-  return true;
-}
-
-function attackCallback(target, damage) {
-  const attacker = this;
-  if (damage > 0) {
-    game.log(attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.', 0x808080FF);
-  } else {
-    game.log(attacker.name + ' attacks ' + target.name + ' but it has no effect!', 0x808080FF);
-  }
-}
-
-function playerDeath() {
-  game.log('You died!');
-}
-
-function monsterDeath() {
-  const monster = this;
-  game.log(monster.name + ' is dead');
-  monster.blocks = false;
-  monster.ai = null;
-  monster.name = 'remains of ' + monster.name;
-  monster.sendToBack();
-
-  const xpGain = 10;
-  player.xp += xpGain;
-
-  while (player.xp >= player.maxXp) {
-    player.level++;
-    player.xp = 0;
-    player.maxXp *= 2;
-    game.log('You reached level ' + player.level, 0xFF8000FF);
-  }
-}
-
 function nextLevel() {
   game.addAnimation(new wglt.FadeOutAnimation(30)).then(() => {
-    game.log('You take a moment to rest, and recover your strength.', wglt.Colors.LIGHT_MAGENTA);
-    game.log('After a rare moment of peace, you descend deeper...', wglt.Colors.LIGHT_RED);
+    game.log('You take a moment to rest, and recover your strength.', Colors.PINK);
+    game.log('After a rare moment of peace, you descend deeper...', Colors.RED);
     game.entities = new wglt.ArrayList();
     game.entities.add(player);
     game.stopAutoWalk();
@@ -453,22 +508,15 @@ game.gui.renderer.buttonSlotRect = new wglt.Rect(0, 88, 24, 24);
 
 const map = game.tileMap;
 const rng = new wglt.RNG(1);
-const sprite = new wglt.Sprite(0, 16, 16, 16, 2, true);
-const player = new wglt.Actor(game, 30, 20, 'Player', sprite, true);
-player.onAttack = attackCallback;
-player.onDeath = playerDeath;
-player.level = 1;
-player.xp = 0;
-player.maxXp = 10;
-player.zIndex = 2;
+const player = new Player(game, 30, 20);
 game.player = player;
 game.entities.add(player);
 
 game.messageLog = new wglt.MessageLog(new wglt.Rect(1, -78, 100, 50));
 game.gui.add(game.messageLog);
 game.log(new wglt.CompoundMessage(
-  new wglt.Message('Welcome stranger! ', wglt.Colors.DARK_RED),
-  new wglt.Message('Prepare to perish!', wglt.Colors.RED)
+  new wglt.Message('Welcome stranger! ', Colors.DARK_PURPLE),
+  new wglt.Message('Prepare to perish!', Colors.RED)
 ));
 
 const playerStats = new wglt.Panel(new wglt.Rect(1, 1, 100, 100));
@@ -500,10 +548,10 @@ const inventoryButton = new wglt.Button(
     talentsDialog.visible = false;
   });
 inventoryButton.tooltipMessages = [
-  new wglt.Message('Traveler\'s Backpack', wglt.Colors.GREEN),
-  new wglt.Message('Item Level 55', wglt.Colors.YELLOW),
-  new wglt.Message('16 Slot Bag', wglt.Colors.WHITE),
-  new wglt.Message('Sell Price: 87 coins', wglt.Colors.WHITE)
+  new wglt.Message('Traveler\'s Backpack', Colors.GREEN),
+  new wglt.Message('Item Level 55', Colors.YELLOW),
+  new wglt.Message('16 Slot Bag', Colors.WHITE),
+  new wglt.Message('Sell Price: 87 coins', Colors.WHITE)
 ];
 game.gui.add(inventoryButton);
 
@@ -516,18 +564,18 @@ const talentsButton = new wglt.Button(
     inventoryDialog.visible = false;
   });
 talentsButton.tooltipMessages = [
-  new wglt.Message('Talents', wglt.Colors.WHITE),
-  new wglt.Message('A list of all of your', wglt.Colors.YELLOW),
-  new wglt.Message('character\'s talents.', wglt.Colors.YELLOW)
+  new wglt.Message('Talents', Colors.WHITE),
+  new wglt.Message('A list of all of your', Colors.YELLOW),
+  new wglt.Message('character\'s talents.', Colors.YELLOW)
 ];
 game.gui.add(talentsButton);
 
 const inventoryDialog = new wglt.ItemContainerDialog(
   new wglt.Rect(10, 25, 110, 110),
   [
-    new wglt.Message('Traveler\'s Backpack', wglt.Colors.GREEN),
-    new wglt.Message('Click to use', wglt.Colors.LIGHT_GRAY),
-    new wglt.Message('Drag for shortcut', wglt.Colors.LIGHT_GRAY),
+    new wglt.Message('Traveler\'s Backpack', Colors.GREEN),
+    new wglt.Message('Click to use', Colors.LIGHT_GRAY),
+    new wglt.Message('Drag for shortcut', Colors.LIGHT_GRAY),
   ],
   16,
   player.inventory);
@@ -537,9 +585,9 @@ game.gui.add(inventoryDialog);
 const talentsDialog = new wglt.TalentsDialog(
   new wglt.Rect(10, 25, 110, 110),
   [
-    new wglt.Message('Talents', wglt.Colors.GREEN),
-    new wglt.Message('Click to use', wglt.Colors.LIGHT_GRAY),
-    new wglt.Message('Drag for shortcut', wglt.Colors.LIGHT_GRAY),
+    new wglt.Message('Talents', Colors.GREEN),
+    new wglt.Message('Click to use', Colors.LIGHT_GRAY),
+    new wglt.Message('Drag for shortcut', Colors.LIGHT_GRAY),
   ],
   16,
   player.talents);
@@ -562,8 +610,8 @@ player.talents.addListener({
   onRemove: (_, talent) => { }
 });
 
-player.talents.add(new wglt.Talent(player, fireballAbility));
-player.talents.add(new wglt.Talent(player, lightningAbility));
+player.talents.add(new wglt.Talent(player, new FireballAbility()));
+player.talents.add(new wglt.Talent(player, new LightningAbility()));
 
 // Generate the map
 createMap();

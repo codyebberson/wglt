@@ -5,7 +5,7 @@ import { FloatingTextAnimation } from './animations/floatingtextanimation';
 import { SlideAnimation } from './animations/slideanimation';
 import { ArrayList } from './arraylist';
 import { Color } from './color';
-import { Colors } from './colors';
+import { StandardColors } from './palettes/standardcolors';
 import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';
@@ -148,7 +148,7 @@ export class Actor extends Entity {
 
   takeHeal(heal: number) {
     this.hp = Math.min(this.hp + heal, this.maxHp);
-    this.addFloatingText(heal.toString(), Colors.LIGHT_GREEN);
+    this.addFloatingText(heal.toString(), StandardColors.GREEN);
   }
 
   takeDamage(attacker: Actor, damage: number) {
@@ -158,7 +158,7 @@ export class Actor extends Entity {
     }
 
     this.hp -= damage;
-    this.addFloatingText(damage.toString(), Colors.RED);
+    this.addFloatingText(damage.toString(), StandardColors.RED);
 
     if (this.hp <= 0) {
       this.hp = 0;

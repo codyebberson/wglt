@@ -1,15 +1,19 @@
 
-export class ExtendedTexture extends WebGLTexture {
+/**
+ * The ExtendedTexture class "extends" WebGLTexture and
+ * provides additional helper properties.
+ *
+ * It is not actually a class, as we are really just dynamically
+ * adding properties to a WebGLTexture object.
+ *
+ * Previously this was actually a class, and actually extended WebGLTexture.
+ * However, that caused type errors with Jest.
+ * This works well enough.
+ */
+export interface ExtendedTexture {
   loaded: boolean;
   width: number;
   height: number;
-
-  constructor() {
-    super();
-    this.loaded = false;
-    this.width = 0;
-    this.height = 0;
-  }
 }
 
 /**

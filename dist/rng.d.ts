@@ -1,22 +1,14 @@
-/**
- * Random number generator.
- *
- * LCG
- * https://stackoverflow.com/a/424445/2051724
- */
 export declare class RNG {
-    private readonly m;
-    private readonly a;
-    private readonly c;
-    private state;
+    private readonly mt;
+    private mti;
     /**
      * Creates a new random number generator.
      *
      * @param seed The integer seed.
      */
     constructor(seed?: number);
-    setSeed(seed: number): void;
-    private nextInt;
+    setSeed(s: number): void;
+    nextInt(): number;
     /**
      * Returns a floating point number between 0.0 and 1.0.
      */

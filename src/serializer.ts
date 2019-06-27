@@ -4,7 +4,6 @@ import { App } from "./app";
 import { GUI } from "./gui";
 import { Panel } from "./gui/panel";
 import { getSerializeMetadata } from "./serializemetadata";
-import { Actor } from "./actor";
 import { TileMap } from "./tilemap/tilemap";
 import { TileMapRenderer } from "./tilemap/tilemaprenderer";
 
@@ -19,7 +18,7 @@ export class Serializer {
     }
   }
 
-  serializeObject(obj: any): any {
+  private serializeObject(obj: any): any {
     if (obj === null || obj === undefined) {
       return obj;
     }
@@ -53,10 +52,10 @@ export class Serializer {
     const result: any = {};
 
     if (className && refType) {
-      if (obj['__index'] !== undefined) {
+      if (obj['_i'] !== undefined) {
         return {
-          '__className': className,
-          '__index': obj['__index']
+          '_c': className,
+          '_i': obj['_i']
         }
       }
 
@@ -65,7 +64,7 @@ export class Serializer {
         typeList = [];
         this.typeLists[className] = typeList;
       }
-      obj['__index'] = typeList.length;
+      obj['_i'] = typeList.length;
       typeList.push(result);
     }
 
@@ -76,7 +75,7 @@ export class Serializer {
       const key = properties[i];
       const value = (obj as any)[key];
 
-      if (key === '__index') {
+      if (key === '_i') {
         continue;
       }
 
@@ -102,8 +101,8 @@ export class Serializer {
 
     if (className && refType) {
       return {
-        '__className': className,
-        '__index': obj['__index']
+        '_c': className,
+        '_i': obj['_i']
       };
     } else {
       return result;
@@ -118,4 +117,3 @@ export class Serializer {
     return result;
   }
 }
-

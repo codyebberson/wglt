@@ -4,13 +4,13 @@ import {RNG} from './rng';
 test('nextFloat with seed', () => {
   // When providing a seed, should always get the same value
   const rng = new RNG(1);
-  expect(rng.nextFloat()).toBeCloseTo(0.51387);
+  expect(rng.nextFloat()).toBeCloseTo(0.41702);
 });
 
 test('nextRange with seed', () => {
   // When providing a seed, should always get the same value
   const rng = new RNG(1);
-  expect(rng.nextRange(0, 10)).toBe(5);
+  expect(rng.nextRange(0, 10)).toBe(4);
 });
 
 test('chooseIndex with equal chances', () => {
@@ -22,8 +22,8 @@ test('chooseIndex with equal chances', () => {
     counts[rng.chooseIndex(chances)]++;
   }
 
-  expect(counts[0]).toBe(505);
-  expect(counts[1]).toBe(495);
+  expect(counts[0]).toBe(490);
+  expect(counts[1]).toBe(510);
 });
 
 test('chooseIndex with different chances', () => {
@@ -35,8 +35,8 @@ test('chooseIndex with different chances', () => {
     counts[rng.chooseIndex(chances)]++;
   }
 
-  expect(counts[0]).toBe(729);
-  expect(counts[1]).toBe(271);
+  expect(counts[0]).toBe(740);
+  expect(counts[1]).toBe(260);
 });
 
 test('chooseKey', () => {
@@ -48,6 +48,6 @@ test('chooseKey', () => {
     counts[rng.chooseKey(chancesMap)]++;
   }
 
-  expect(counts['foo']).toBe(729);
-  expect(counts['bar']).toBe(271);
+  expect(counts['foo']).toBe(740);
+  expect(counts['bar']).toBe(260);
 });

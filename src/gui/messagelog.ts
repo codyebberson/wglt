@@ -1,5 +1,5 @@
 import {Color} from '../color';
-import {Colors} from '../colors';
+import {StandardColors} from '../palettes/standardcolors';
 import {Message} from '../message';
 import {Rect} from '../rect';
 
@@ -28,7 +28,7 @@ export class MessageLog extends Panel {
     if (message instanceof Message) {
       this.messages.push(message);
     } else {
-      this.messages.push(new Message(message, color || Colors.WHITE));
+      this.messages.push(new Message(message, color || StandardColors.WHITE));
     }
 
     if (this.messages.length > this.maxItems) {
