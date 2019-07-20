@@ -27,6 +27,8 @@ export declare class Game extends AppState {
     readonly cursor: Vec2;
     readonly tooltip: TooltipDialog;
     readonly rng: RNG;
+    readonly damageColor: Color;
+    readonly healColor: Color;
     turnIndex: number;
     blocked: boolean;
     messageLog?: MessageLog;

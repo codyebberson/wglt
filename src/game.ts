@@ -40,6 +40,8 @@ export class Game extends AppState {
   readonly cursor: Vec2;
   readonly tooltip: TooltipDialog;
   readonly rng: RNG;
+  readonly damageColor: Color;
+  readonly healColor: Color;
   turnIndex: number;
   blocked: boolean;
   messageLog?: MessageLog;
@@ -76,6 +78,8 @@ export class Game extends AppState {
     this.horizontalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
     this.verticalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
     this.zoom = 1.0;
+    this.damageColor = options.damageColor || StandardColors.RED;
+    this.healColor = options.healColor || StandardColors.GREEN;
 
     if (options.horizontalViewDistance) {
       this.horizontalViewDistance = options.horizontalViewDistance;
