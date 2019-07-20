@@ -69,11 +69,11 @@ export class ComplexSelectDialog extends Dialog {
       }
     }
 
-    if (app.isKeyPressed(Keys.VK_UP)) {
+    if (app.isUpKeyPressed()) {
       this.selectedIndex--;
     }
 
-    if (app.isKeyPressed(Keys.VK_DOWN)) {
+    if (app.isDownKeyPressed()) {
       this.selectedIndex++;
     }
 
