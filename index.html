@@ -19,92 +19,9 @@
         <li>No external dependencies</li>
     </ul>
 
-    <canvas width="256" height="144"></canvas>
-    <script src="dist/index.js"></script>
-    <script src="examples/hello.js"></script>
-
-    <h2>What is it?</h2>
-    <p>WGLT is a JavaScript/TypeScript library for creating ASCII/tile games in the browser.</p>
-    <p>WGLT is absurdly overoptimized for performance.</p>
-    <p>WGLT is modelled after <a href="https://bitbucket.org/libtcod/libtcod">libtcod</a> and <a href="http://ondras.github.io/rot.js/hp/">rot.js</a>.</p>
-
-    <h2>Usage</h2>
-    <p>Add dependency:</p>
-    <pre>npm i -D wglt</pre>
-    <p>Import library:</p>
-    <pre>import * as wglt from 'wglt';</pre>
-    <p>Or, simply use the prebuilt:</p>
-    <pre>&lt;script src="https://unpkg.com/wglt@0.0.4/dist/index.js"&gt;&lt;/script&gt;</pre>
-    <p>Use it:</p>
-    <pre>const app = new wglt.App({
-    canvas: document.querySelector('canvas'),
-    imageUrl: 'graphics.png',
-    width: 400,
-    height: 224
-});
-
-let x = 20;
-let y = 20;
-
-app.update = function () {
-    if (app.isKeyDown(wglt.Keys.VK_UP)) {
-        y--;
-    }
-    if (app.isKeyDown(wglt.Keys.VK_LEFT)) {
-        x--;
-    }
-    if (app.isKeyDown(wglt.Keys.VK_RIGHT)) {
-        x++;
-    }
-    if (app.isKeyDown(wglt.Keys.VK_DOWN)) {
-        y++;
-    }
-
-    app.drawString('Hello world!', 1, 1);
-    app.drawString('Use arrow keys to move', 1, 11);
-    app.drawString('@', x, y);
-};
-</pre>
-
-    <h2>Examples</h2>
-    <ul>
-        <li><a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls</li>
-        <li><a href="examples/performance.html">Performance</a> - Smooth and consistent 60 fps without CPU fan</li>
-        <li><a href="examples/colors.html">Colors</a> - True color palette, HSV color manipulation</li>
-        <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
-        <li><a href="examples/font.html">Custom Font</a> - Use custom font image with non-square size</li>
-        <li><a href="examples/graphics.html">Graphical Tiles</a> - True color pixel art graphics</li>
-        <li><a href="examples/fullscreen.html">Fullscreen</a> - Request fullscreen on click</li>
-        <li><a href="examples/fov.html">Field of View</a> - Fast and accurate shadowcasting using <a href="https://bitbucket.org/mingos/mrpas/">MRPAS</a></a></li>
-        <li><a href="examples/path.html">Path Finding</a> - Fast and accurate routing using Dijkstra's algorithm</li>
-        <li><a href="examples/alpha.html">Alpha Blending</a> - Use "additive" blending to create light effects</li>
-        <li><a href="examples/flame.html">Flame</a> - Procedurally generated fire effect</li>
-        <li><a href="examples/matrixrain.html">Matrix Rain</a> - Green falling text effect</li>
-        <li><a href="examples/gui.html">GUI</a> - Message boxes and select dialogs</li>
-        <li><a href="examples/customgui.html">Custom GUI</a> - Custom dialog renderers for special effects</li>
-        <li><a href="examples/image.html">Image Loading</a> - Load an image from a URL and render as ASCII</li>
-        <li><a href="examples/image2x.html">Image 2x</a> - Double resolution using extended ASCII block characters</li>
-        <li><a href="examples/boxutils.html">Box Utils</a> - Utility methods for working with <a href="https://en.wikipedia.org/wiki/Box-drawing_character">box-drawing</a></a></li>
-    </ul>
-
-    <h2>Roguelike Tutorial</h2>
-    <p>Full implementation of the classic <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod">Rogue
-            Basin Complete Roguelike Tutorial</a></p>
-    <ul>
-        <li><a href="examples/roguelike/part1.html">Part 1: Graphics</a></li>
-        <li><a href="examples/roguelike/part2.html">Part 2: The object and the map</a></li>
-        <li><a href="examples/roguelike/part3.html">Part 3: The dungeon</a></li>
-        <li><a href="examples/roguelike/part4.html">Part 4: Field-of-view and exploration</a></li>
-        <li><a href="examples/roguelike/part5.html">Part 5: Preparing for combat</a></li>
-        <li><a href="examples/roguelike/part6.html">Part 6: Going Berserk!</a></li>
-        <li><a href="examples/roguelike/part7.html">Part 7: The GUI</a></li>
-        <li><a href="examples/roguelike/part8.html">Part 8: Items and Inventory</a></li>
-        <li><a href="examples/roguelike/part9.html">Part 9: Spells and ranged combat</a></li>
-        <li><a href="examples/roguelike/part10.html">Part 10: Main menu and saving</a></li>
-        <li><a href="examples/roguelike/part11.html">Part 11: Dungeon levels and character progression</a></li>
-        <li><a href="examples/roguelike/part12.html">Part 12: Monster and item progression</a></li>
-        <li><a href="examples/roguelike/part13.html">Part 13: Adventure gear</a></li>
-    </ul>
+    <div class="warning">
+        <strong>Warning:</strong> Early alpha, lots of breaking changes, beware.
+    </div>
 </body>
 
 </html>
