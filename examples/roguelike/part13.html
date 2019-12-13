@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+	<title>WGLT - Roguelike Tutorial - Part 13 - Adventure gear</title>
+    <link href="../../styles.css" rel="stylesheet">
+</head>
+
+<body>
+	<canvas></canvas>
+	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_13">Part 13: Adventure gear</a></p>
+	<p>Swords, shields and other equipment can now help the player by granting hefty bonuses. The bonus system can also be used for all kinds of magics and buffs!</p>
+    <div class="diff">
+        <!--STARTDIFF--><div class="c3">--- part12.js	2019-12-13 11:33:03.284607400 -0800</div>
+<div class="c2">+++ part13.js	2019-12-13 11:33:26.625334900 -0800</div>
+<div class="c1">@@ -133,13 +133,31 @@</div>
+<div class="c0"> </div>
+<div class="c0"> function Fighter(hp, defense, power, xp, deathFunction) {</div>
+<div class="c0">     this.owner = null;</div>
+<div class="c3">-    this.maxHp = hp;</div>
+<div class="c2">+    this.baseMaxHp = hp;</div>
+<div class="c2">+    this.baseDefense = defense;</div>
+<div class="c2">+    this.basePower = power;</div>
+<div class="c0">     this.hp = hp;</div>
+<div class="c3">-    this.defense = defense;</div>
+<div class="c3">-    this.power = power;</div>
+<div class="c0">     this.xp = xp;</div>
+<div class="c0">     this.deathFunction = deathFunction || null;</div>
+<div class="c0"> </div>
+<div class="c2">+    Object.defineProperty(this, &#x27;maxHp&#x27;, {</div>
+<div class="c2">+        get: function () {</div>
+<div class="c2">+            return this.baseMaxHp + getAllEquipped(this.owner).reduce((acc, item) =&gt; acc + item.maxHpBonus, 0);</div>
+<div class="c2">+        }</div>
+<div class="c2">+    });</div>
+<div class="c2">+</div>
+<div class="c2">+    Object.defineProperty(this, &#x27;defense&#x27;, {</div>
+<div class="c2">+        get: function () {</div>
+<div class="c2">+            return this.baseDefense + getAllEquipped(this.owner).reduce((acc, item) =&gt; acc + item.defenseBonus, 0);</div>
+<div class="c2">+        }</div>
+<div class="c2">+    });</div>
+<div class="c2">+</div>
+<div class="c2">+    Object.defineProperty(this, &#x27;power&#x27;, {</div>
+<div class="c2">+        get: function () {</div>
+<div class="c2">+            return this.basePower + getAllEquipped(this.owner).reduce((acc, item) =&gt; acc + item.powerBonus, 0);</div>
+<div class="c2">+        }</div>
+<div class="c2">+    });</div>
+<div class="c2">+</div>
+<div class="c0">     this.attack = function (target) {</div>
+<div class="c0">         const damage = this.power - target.fighter.defense;</div>
+<div class="c0"> </div>
+<div class="c1">@@ -227,6 +245,8 @@</div>
+<div class="c0">     this.use = function () {</div>
+<div class="c0">         if (this.useFunction) {</div>
+<div class="c0">             this.useFunction(this);</div>
+<div class="c2">+        } else if (this.owner.equipment) {</div>
+<div class="c2">+            this.owner.equipment.toggleEquip();</div>
+<div class="c0">         } else {</div>
+<div class="c0">             addMessage(&#x27;The &#x27; + this.owner.name + &#x27; cannot be used.&#x27;);</div>
+<div class="c0">         }</div>
+<div class="c1">@@ -237,6 +257,61 @@</div>
+<div class="c0">     };</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<div class="c2">+function Equipment(slot, powerBonus, defenseBonus, maxHpBonus) {</div>
+<div class="c2">+    this.slot = slot;</div>
+<div class="c2">+    this.powerBonus = powerBonus;</div>
+<div class="c2">+    this.defenseBonus = defenseBonus;</div>
+<div class="c2">+    this.maxHpBonus = maxHpBonus;</div>
+<div class="c2">+    this.equipped = false;</div>
+<div class="c2">+</div>
+<div class="c2">+    this.toggleEquip = function () {</div>
+<div class="c2">+        if (this.equipped) {</div>
+<div class="c2">+            this.dequip();</div>
+<div class="c2">+        } else {</div>
+<div class="c2">+            this.equip();</div>
+<div class="c2">+        }</div>
+<div class="c2">+    };</div>
+<div class="c2">+</div>
+<div class="c2">+    this.equip = function () {</div>
+<div class="c2">+        // If the slot is already being used, dequip whatever is there first</div>
+<div class="c2">+        const old = getEquippedInSlot(this.slot);</div>
+<div class="c2">+        if (old) {</div>
+<div class="c2">+            old.dequip();</div>
+<div class="c2">+        }</div>
+<div class="c2">+</div>
+<div class="c2">+        // Equip object and show a message about it</div>
+<div class="c2">+        this.equipped = true;</div>
+<div class="c2">+        addMessage(&#x27;Equipped &#x27; + this.owner.name + &#x27; on &#x27; + this.slot + &#x27;.&#x27;, Colors.LIGHT_GREEN);</div>
+<div class="c2">+    };</div>
+<div class="c2">+</div>
+<div class="c2">+    this.dequip = function () {</div>
+<div class="c2">+        // Dequip object and show a message about it</div>
+<div class="c2">+        if (!this.equipped) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
+<div class="c2">+        this.equipped = false;</div>
+<div class="c2">+        addMessage(&#x27;Dequipped &#x27; + this.owner.name + &#x27; on &#x27; + this.slot + &#x27;.&#x27;, Colors.YELLOW);</div>
+<div class="c2">+    };</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c2">+function getEquippedInSlot(slot) {</div>
+<div class="c2">+    for (let i = 0; i &lt; inventory.length; i++) {</div>
+<div class="c2">+        const obj = inventory[i];</div>
+<div class="c2">+        if (obj.equipment &amp;&amp; obj.equipment.slot === slot &amp;&amp; obj.equipment.equipped) {</div>
+<div class="c2">+            return obj.equipment;</div>
+<div class="c2">+        }</div>
+<div class="c2">+    }</div>
+<div class="c2">+    return null;</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c2">+function getAllEquipped(obj) {</div>
+<div class="c2">+    if (obj === player) {</div>
+<div class="c2">+        return inventory.filter(item =&gt; item.equipment &amp;&amp; item.equipment.equipped).map(item =&gt; item.equipment);</div>
+<div class="c2">+    } else {</div>
+<div class="c2">+        return [];</div>
+<div class="c2">+    }</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c0"> function isBlocked(x, y) {</div>
+<div class="c0">     // First test the map tile</div>
+<div class="c0">     if (map[y][x].blocked) {</div>
+<div class="c1">@@ -391,7 +466,9 @@</div>
+<div class="c0">         &#x27;heal&#x27;: 35,  // healing potion always shows up, even if all other items have 0 chance</div>
+<div class="c0">         &#x27;lightning&#x27;: fromDungeonLevel([[25, 4]]),</div>
+<div class="c0">         &#x27;fireball&#x27;: fromDungeonLevel([[25, 6]]),</div>
+<div class="c3">-        &#x27;confuse&#x27;: fromDungeonLevel([[10, 2]])</div>
+<div class="c2">+        &#x27;confuse&#x27;: fromDungeonLevel([[10, 2]]),</div>
+<div class="c2">+        &#x27;sword&#x27;: fromDungeonLevel([[5, 4]]),</div>
+<div class="c2">+        &#x27;shield&#x27;: fromDungeonLevel([[15, 8]])</div>
+<div class="c0">     };</div>
+<div class="c0"> </div>
+<div class="c0">     // Choose random number of monsters</div>
+<div class="c1">@@ -443,6 +520,20 @@</div>
+<div class="c0">         } else if (choice === &#x27;confuse&#x27;) {</div>
+<div class="c0">             // Create a confuse scroll</div>
+<div class="c0">             item = new Entity(x, y, &#x27;#&#x27;, &#x27;scroll of confusion&#x27;, Colors.YELLOW, false, { item: new Item(castConfuse) });</div>
+<div class="c2">+</div>
+<div class="c2">+        } else if (choice === &#x27;sword&#x27;) {</div>
+<div class="c2">+            // Create a sword</div>
+<div class="c2">+            item = new Entity(x, y, &#x27;/&#x27;, &#x27;sword&#x27;, Colors.LIGHT_CYAN, false, {</div>
+<div class="c2">+                equipment: new Equipment(&#x27;right hand&#x27;, 3, 0, 0),</div>
+<div class="c2">+                item: new Item()</div>
+<div class="c2">+            });</div>
+<div class="c2">+</div>
+<div class="c2">+        } else if (choice === &#x27;shield&#x27;) {</div>
+<div class="c2">+            // Create a shield</div>
+<div class="c2">+            item = new Entity(x, y, &#x27;[&#x27;, &#x27;shield&#x27;, Colors.BROWN, false, {</div>
+<div class="c2">+                equipment: new Equipment(&#x27;left hand&#x27;, 3, 0, 0),</div>
+<div class="c2">+                item: new Item()</div>
+<div class="c2">+            });</div>
+<div class="c0">         }</div>
+<div class="c0"> </div>
+<div class="c0">         entities.push(item);</div>
+<div class="c1">@@ -593,7 +684,13 @@</div>
+<div class="c0">         if (inventory.length === 0) {</div>
+<div class="c0">             gui.add(new MessageDialog(&#x27;ALERT&#x27;, &#x27;Inventory is empty&#x27;));</div>
+<div class="c0">         } else {</div>
+<div class="c3">-            const options = inventory.map(item =&gt; item.name);</div>
+<div class="c2">+            const options = inventory.map(item =&gt; {</div>
+<div class="c2">+                if (item.equipment &amp;&amp; item.equipment.equipped) {</div>
+<div class="c2">+                    return item.name + &#x27; (on &#x27; + item.equipment.slot + &#x27;)&#x27;;</div>
+<div class="c2">+                } else {</div>
+<div class="c2">+                    return item.name;</div>
+<div class="c2">+                }</div>
+<div class="c2">+            });</div>
+<div class="c0">             gui.add(new SelectDialog(&#x27;INVENTORY&#x27;, options, useInventory));</div>
+<div class="c0">         }</div>
+<div class="c0">     }</div>
+<div class="c1">@@ -636,12 +733,12 @@</div>
+<div class="c0"> </div>
+<div class="c0">         gui.add(new SelectDialog(&#x27;LEVEL UP&#x27;, options, (choice) =&gt; {</div>
+<div class="c0">             if (choice === 0) {</div>
+<div class="c3">-                player.fighter.maxHp += 20;</div>
+<div class="c2">+                player.fighter.baseMaxHp += 20;</div>
+<div class="c0">                 player.fighter.hp += 20;</div>
+<div class="c0">             } else if (choice === 1) {</div>
+<div class="c3">-                player.fighter.power += 1;</div>
+<div class="c2">+                player.fighter.basePower += 1;</div>
+<div class="c0">             } else if (choice === 2) {</div>
+<div class="c3">-                player.fighter.defense += 1;</div>
+<div class="c2">+                player.fighter.baseDefense += 1;</div>
+<div class="c0">             }</div>
+<div class="c0">         }));</div>
+<div class="c0">     }</div>
+<div class="c1">@@ -860,6 +957,15 @@</div>
+<div class="c0">     fovRecompute = true;</div>
+<div class="c0">     inventory = [];</div>
+<div class="c0">     addMessage(&#x27;Welcome stranger! Prepare to perish!&#x27;, Colors.DARK_RED);</div>
+<div class="c2">+</div>
+<div class="c2">+    // Initial equipment: a dagger</div>
+<div class="c2">+    const dagger = new Entity(0, 0, &#x27;-&#x27;, &#x27;dagger&#x27;, Colors.LIGHT_CYAN, false, {</div>
+<div class="c2">+        equipment: new Equipment(&#x27;right hand&#x27;, 2, 0, 0),</div>
+<div class="c2">+        item: new Item()</div>
+<div class="c2">+    });</div>
+<div class="c2">+    inventory.push(dagger);</div>
+<div class="c2">+    dagger.equipment.equip();</div>
+<div class="c2">+</div>
+<div class="c0">     appState = &#x27;game&#x27;;</div>
+<div class="c0"> }</div>
+<div class="c0"> </div>
+<!--ENDDIFF-->
+    </div>
+	<script src="part13.min.js"></script>
+</body>
+
+</html>
