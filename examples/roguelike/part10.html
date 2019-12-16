@@ -12,17 +12,17 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_10">Part 10: Main menu and saving</a></p>
 	<p>A main menu complete with a background image and the ability to save and load the game.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part9.js	2019-12-13 11:29:52.432566900 -0800</div>
-<div class="c2">+++ part10.js	2019-12-13 11:30:33.271645900 -0800</div>
-<div class="c1">@@ -7,6 +7,7 @@</div>
-<div class="c0"> import {FovMap} from &#x27;../../src/fov.js&#x27;;</div>
+        <!--STARTDIFF--><div class="c3">--- part9.js	2019-12-15 15:52:01.461141200 -0800</div>
+<div class="c2">+++ part10.js	2019-12-15 15:52:11.884940100 -0800</div>
+<div class="c1">@@ -3,6 +3,7 @@</div>
+<div class="c0"> import {fromRgb} from &#x27;../../src/color.js&#x27;;</div>
 <div class="c0"> import {GUI} from &#x27;../../src/gui.js&#x27;;</div>
-<div class="c0"> import {SelectDialog} from &#x27;../../src/gui/selectdialog.js&#x27;;</div>
+<div class="c0"> import {Keys} from &#x27;../../src/keys.js&#x27;;</div>
 <div class="c2">+import {loadImage2x} from &#x27;../../src/image.js&#x27;;</div>
-<div class="c0"> </div>
-<div class="c0"> // Actual size of the window</div>
-<div class="c0"> const SCREEN_WIDTH = 80;</div>
-<div class="c1">@@ -518,6 +519,10 @@</div>
+<div class="c0"> import {MessageDialog} from &#x27;../../src/gui/messagedialog.js&#x27;;</div>
+<div class="c0"> import {Rect} from &#x27;../../src/rect.js&#x27;;</div>
+<div class="c0"> import {RNG} from &#x27;../../src/rng.js&#x27;;</div>
+<div class="c1">@@ -505,6 +506,10 @@</div>
 <div class="c0">         return;</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
@@ -33,7 +33,7 @@
 <div class="c0">     if (term.isKeyPressed(Keys.VK_UP)) {</div>
 <div class="c0">         playerMoveOrAttack(0, -1);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -736,22 +741,87 @@</div>
+<div class="c1">@@ -721,21 +726,85 @@</div>
 <div class="c0">     gui.draw();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -56,7 +56,6 @@
 <div class="c2">+    entities = [player];</div>
 <div class="c2">+    messages = [];</div>
 <div class="c2">+    map = createMap();</div>
-<div class="c2">+    fovMap = new FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
 <div class="c2">+    fovRecompute = true;</div>
 <div class="c2">+    inventory = [];</div>
 <div class="c2">+    addMessage(&#x27;Welcome stranger! Prepare to perish!&#x27;, Colors.DARK_RED);</div>
@@ -100,13 +99,11 @@
 <div class="c3">-const entities = [player];</div>
 <div class="c3">-const messages = [];</div>
 <div class="c3">-const map = createMap();</div>
-<div class="c3">-const fovMap = new FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
 <div class="c2">+let rng = null;</div>
 <div class="c2">+let player = null;</div>
 <div class="c2">+let entities = null;</div>
 <div class="c2">+let messages = null;</div>
 <div class="c2">+let map = null;</div>
-<div class="c2">+let fovMap = null;</div>
 <div class="c0"> let fovRecompute = true;</div>
 <div class="c3">-const inventory = [];</div>
 <div class="c2">+let inventory = null;</div>

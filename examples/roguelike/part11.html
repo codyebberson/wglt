@@ -12,9 +12,9 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_11">Part 11: Dungeon levels and character progression</a></p>
 	<p>Let the player venture deeper into the dungeon and grow stronger, including experience gain, levels and raising stats!</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part10.js	2019-12-13 11:30:33.271645900 -0800</div>
-<div class="c2">+++ part11.js	2019-12-13 11:30:41.586632900 -0800</div>
-<div class="c1">@@ -34,14 +34,18 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part10.js	2019-12-15 15:52:11.884940100 -0800</div>
+<div class="c2">+++ part11.js	2019-12-15 15:52:17.999912600 -0800</div>
+<div class="c1">@@ -36,14 +36,18 @@</div>
 <div class="c0"> const TORCH_RADIUS = 10;</div>
 <div class="c0"> </div>
 <div class="c0"> // Spell values</div>
@@ -36,22 +36,22 @@
 <div class="c0"> </div>
 <div class="c0"> const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
 <div class="c0"> const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);</div>
-<div class="c1">@@ -129,12 +133,13 @@</div>
-<div class="c0">     };</div>
+<div class="c1">@@ -109,12 +113,13 @@</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c3">-function Fighter(hp, defense, power, deathFunction) {</div>
-<div class="c2">+function Fighter(hp, defense, power, xp, deathFunction) {</div>
-<div class="c0">     this.owner = null;</div>
-<div class="c0">     this.maxHp = hp;</div>
-<div class="c0">     this.hp = hp;</div>
-<div class="c0">     this.defense = defense;</div>
-<div class="c0">     this.power = power;</div>
-<div class="c2">+    this.xp = xp;</div>
-<div class="c0">     this.deathFunction = deathFunction || null;</div>
+<div class="c0"> class Fighter {</div>
+<div class="c3">-    constructor(hp, defense, power, deathFunction) {</div>
+<div class="c2">+    constructor(hp, defense, power, xp, deathFunction) {</div>
+<div class="c0">         this.owner = null;</div>
+<div class="c0">         this.maxHp = hp;</div>
+<div class="c0">         this.defense = defense;</div>
+<div class="c0">         this.power = power;</div>
+<div class="c0">         this.hp = hp;</div>
+<div class="c2">+        this.xp = xp;</div>
+<div class="c0">         this.deathFunction = deathFunction || null;</div>
+<div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c0">     this.attack = function (target) {</div>
-<div class="c1">@@ -157,6 +162,10 @@</div>
+<div class="c1">@@ -138,6 +143,10 @@</div>
 <div class="c0">             if (this.deathFunction) {</div>
 <div class="c0">                 this.deathFunction(this.owner);</div>
 <div class="c0">             }</div>
@@ -60,9 +60,9 @@
 <div class="c2">+                checkLevelUp();</div>
 <div class="c2">+            }</div>
 <div class="c0">         }</div>
-<div class="c0">     };</div>
+<div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -342,6 +351,12 @@</div>
+<div class="c1">@@ -329,6 +338,12 @@</div>
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
@@ -75,7 +75,7 @@
 <div class="c0">     return map;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -359,12 +374,12 @@</div>
+<div class="c1">@@ -346,12 +361,12 @@</div>
 <div class="c0">         // 80% chance of getting an orc</div>
 <div class="c0">         if (rng.nextRange(0, 100) &lt; 80) {</div>
 <div class="c0">             // Create an orc</div>
@@ -90,7 +90,7 @@
 <div class="c0">             const ai = new BasicMonster();</div>
 <div class="c0">             monster = new Entity(x, y, &#x27;T&#x27;, &#x27;troll&#x27;, Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });</div>
 <div class="c0">         }</div>
-<div class="c1">@@ -552,6 +567,21 @@</div>
+<div class="c1">@@ -539,6 +554,21 @@</div>
 <div class="c0">             gui.add(new SelectDialog(&#x27;INVENTORY&#x27;, options, useInventory));</div>
 <div class="c0">         }</div>
 <div class="c0">     }</div>
@@ -112,7 +112,7 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function useInventory(choice) {</div>
-<div class="c1">@@ -560,12 +590,39 @@</div>
+<div class="c1">@@ -547,12 +577,39 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -153,7 +153,7 @@
 <div class="c0">     monster.char = &#x27;%&#x27;;</div>
 <div class="c0">     monster.color = Colors.DARK_RED;</div>
 <div class="c0">     monster.blocks = false;</div>
-<div class="c1">@@ -730,6 +787,13 @@</div>
+<div class="c1">@@ -715,6 +772,13 @@</div>
 <div class="c0">         &#x27;HP&#x27;, player.fighter.hp, player.fighter.maxHp,</div>
 <div class="c0">         Colors.LIGHT_RED, Colors.DARK_RED);</div>
 <div class="c0"> </div>
@@ -167,7 +167,7 @@
 <div class="c0">     // Display names of objects under the mouse</div>
 <div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);</div>
 <div class="c0"> </div>
-<div class="c1">@@ -756,9 +820,11 @@</div>
+<div class="c1">@@ -741,9 +805,11 @@</div>
 <div class="c0"> </div>
 <div class="c0"> function newGame() {</div>
 <div class="c0">     rng = new RNG(Date.now());</div>
@@ -178,9 +178,9 @@
 <div class="c0">     messages = [];</div>
 <div class="c2">+    dungeonLevel = 1;</div>
 <div class="c0">     map = createMap();</div>
-<div class="c0">     fovMap = new FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
 <div class="c0">     fovRecompute = true;</div>
-<div class="c1">@@ -767,6 +833,18 @@</div>
+<div class="c0">     inventory = [];</div>
+<div class="c1">@@ -751,6 +817,17 @@</div>
 <div class="c0">     appState = &#x27;game&#x27;;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -192,14 +192,13 @@
 <div class="c2">+    addMessage(&#x27;After a rare moment of peace, you descend deeper...&#x27;, Colors.LIGHT_RED);</div>
 <div class="c2">+    entities = [player];</div>
 <div class="c2">+    map = createMap(); // Create a fresh new level!</div>
-<div class="c2">+    fovMap = new FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
 <div class="c2">+    fovRecompute = true;</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c0"> function playGame() {</div>
 <div class="c0">     handleKeys();</div>
 <div class="c0">     renderAll();</div>
-<div class="c1">@@ -801,8 +879,10 @@</div>
+<div class="c1">@@ -785,8 +862,10 @@</div>
 <div class="c0"> const gui = new GUI(term);</div>
 <div class="c0"> let rng = null;</div>
 <div class="c0"> let player = null;</div>
@@ -208,8 +207,8 @@
 <div class="c0"> let messages = null;</div>
 <div class="c2">+let dungeonLevel = 0;</div>
 <div class="c0"> let map = null;</div>
-<div class="c0"> let fovMap = null;</div>
 <div class="c0"> let fovRecompute = true;</div>
+<div class="c0"> let inventory = null;</div>
 <!--ENDDIFF-->
     </div>
 	<script src="part11.min.js"></script>

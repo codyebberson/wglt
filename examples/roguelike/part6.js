@@ -1,10 +1,11 @@
 
-import {Terminal} from '../../src/terminal.js';
 import {Colors} from '../../src/colors.js';
-import {Keys} from '../../src/keys.js';
 import {fromRgb} from '../../src/color.js';
+import {Keys} from '../../src/keys.js';
+import {Rect} from '../../src/rect.js';
 import {RNG} from '../../src/rng.js';
-import {FovMap} from '../../src/fov.js';
+import {Terminal} from '../../src/terminal.js';
+import {TileMap} from '../../src/tilemap.js';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
@@ -26,92 +27,71 @@ const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);
 const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
 const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);
 
-function Tile(blocked) {
-    this.blocked = blocked;
-    this.blockSight = blocked;
-    this.explored = false;
-}
+class Entity {
+    constructor(x, y, char, name, color, blocks, components) {
+        this.x = x;
+        this.y = y;
+        this.char = char;
+        this.name = name;
+        this.color = color;
+        this.blocks = !!blocks;
 
-function Rect(x, y, w, h) {
-    this.x1 = x;
-    this.y1 = y;
-    this.x2 = x + w;
-    this.y2 = y + h;
-
-    this.getCenter = function () {
-        return {
-            x: ((this.x1 + this.x2) / 2) | 0,
-            y: ((this.y1 + this.y2) / 2) | 0
-        };
-    }
-
-    this.intersects = function (other) {
-        return this.x1 <= other.x2 && this.x2 >= other.x1 &&
-            this.y1 <= other.y2 && this.y2 >= other.y1;
-    }
-}
-
-function Entity(x, y, char, name, color, blocks, components) {
-    this.x = x;
-    this.y = y;
-    this.char = char;
-    this.name = name;
-    this.color = color;
-    this.blocks = !!blocks;
-
-    if (components) {
-        for (var property in components) {
-            if (components.hasOwnProperty(property)) {
-                this[property] = components[property];
-                this[property].owner = this;
+        if (components) {
+            for (var property in components) {
+                if (components.hasOwnProperty(property)) {
+                    this[property] = components[property];
+                    this[property].owner = this;
+                }
             }
         }
     }
 
-    this.move = function (dx, dy) {
+    move(dx, dy) {
         if (isBlocked(this.x + dx, this.y + dy)) {
             return;
         }
         this.x += dx;
         this.y += dy;
-    };
+    }
 
-    this.moveToward = function (targetX, targetY) {
+    moveToward(targetX, targetY) {
         const dx = targetX - this.x;
         const dy = targetY - this.y;
         const distance = Math.hypot(dx, dy);
         this.move(Math.round(dx / distance), Math.round(dy / distance));
-    };
+    }
 
-    this.distanceTo = function (other) {
+    distanceTo(other) {
         return Math.hypot(other.x - this.x, other.y - this.y);
-    };
+    }
 
-    this.sendToBack = function () {
+    sendToBack() {
         this.remove();
         entities.unshift(this);
-    };
+    }
 
-    this.remove = function () {
+    remove() {
         entities.splice(entities.indexOf(this), 1);
-    };
+    }
 
-    this.draw = function () {
-        if (fovMap.isVisible(this.x, this.y)) {
+    draw() {
+        if (map.isVisible(this.x, this.y)) {
             term.drawString(this.x, this.y, this.char, this.color);
         }
-    };
+    }
 }
 
-function Fighter(hp, defense, power, deathFunction) {
-    this.owner = null;
-    this.maxHp = hp;
-    this.hp = hp;
-    this.defense = defense;
-    this.power = power;
-    this.deathFunction = deathFunction || null;
+class Fighter {
+    constructor(hp, defense, power, deathFunction) {
+        this.owner = null;
+        this.maxHp = hp;
+        this.defense = defense;
+        this.power = power;
+        this.hp = hp;
+        this.deathFunction = deathFunction || null;
+    }
 
-    this.attack = function (target) {
+    attack(target) {
         const damage = this.power - target.fighter.defense;
 
         if (damage > 0) {
@@ -120,9 +100,9 @@ function Fighter(hp, defense, power, deathFunction) {
         } else {
             console.log(this.owner.name + ' attacks ' + target.name + ' but it has no effect!');
         }
-    };
+    }
 
-    this.takeDamage = function (damage) {
+    takeDamage(damage) {
         this.hp -= damage;
 
         // Check for death. if there's a death function, call it
@@ -132,17 +112,19 @@ function Fighter(hp, defense, power, deathFunction) {
                 this.deathFunction(this.owner);
             }
         }
-    };
+    }
 }
 
-function BasicMonster() {
-    this.owner = null;
+class BasicMonster {
+    constructor() {
+        this.owner = null;
+    }
 
-    this.takeTurn = function () {
+    takeTurn() {
         const monster = this.owner;
 
         // A basic monster takes its turn. if you can see it, it can see you
-        if (fovMap.isVisible(monster.x, monster.y)) {
+        if (map.isVisible(monster.x, monster.y)) {
 
             if (monster.distanceTo(player) >= 2) {
                 // Move towards player if far away
@@ -153,12 +135,12 @@ function BasicMonster() {
                 monster.fighter.attack(player);
             }
         }
-    };
+    }
 }
 
 function isBlocked(x, y) {
     // First test the map tile
-    if (map[y][x].blocked) {
+    if (map.grid[y][x].blocked) {
         return true;
     }
 
@@ -174,34 +156,34 @@ function isBlocked(x, y) {
 }
 
 function createRoom(map, room) {
-    for (let y = room.y1 + 1; y < room.y2; y++) {
-        for (let x = room.x1 + 1; x < room.x2; x++) {
-            map[y][x].blocked = false;
-            map[y][x].blockSight = false;
+    for (let y = room.y + 1; y < room.y2; y++) {
+        for (let x = room.x + 1; x < room.x2; x++) {
+            map.grid[y][x].blocked = false;
+            map.grid[y][x].blockSight = false;
         }
     }
 }
 
 function createHTunnel(map, x1, x2, y) {
     for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-        map[y][x].blocked = false;
-        map[y][x].blockSight = false;
+        map.grid[y][x].blocked = false;
+        map.grid[y][x].blockSight = false;
     }
 }
 
 function createVTunnel(map, y1, y2, x) {
     for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-        map[y][x].blocked = false;
-        map[y][x].blockSight = false;
+        map.grid[y][x].blocked = false;
+        map.grid[y][x].blockSight = false;
     }
 }
 
 function createMap() {
-    const map = new Array(MAP_HEIGHT);
+    const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);
     for (let y = 0; y < MAP_HEIGHT; y++) {
-        map[y] = new Array(MAP_WIDTH);
         for (let x = 0; x < MAP_WIDTH; x++) {
-            map[y][x] = new Tile(true);
+            map.grid[y][x].blocked = true;
+            map.grid[y][x].blockSight = true;
         }
     }
 
@@ -277,8 +259,8 @@ function placeObjects(room) {
 
     for (let i = 0; i < numMonsters; i++) {
         // Choose random spot for this monster
-        const x = rng.nextRange(room.x1 + 1, room.x2 - 1);
-        const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
+        const x = rng.nextRange(room.x + 1, room.x2 - 1);
+        const y = rng.nextRange(room.y + 1, room.y2 - 1);
         let monster = null;
 
         // Only place it if the tile is not blocked
@@ -362,23 +344,21 @@ function monsterDeath(monster) {
 
 function renderAll() {
     if (fovRecompute) {
-        fovMap.computeFov(player.x, player.y, TORCH_RADIUS);
+        map.computeFov(player.x, player.y, TORCH_RADIUS);
         fovRecompute = false;
     }
 
-    term.clear();
-
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
-            const visible = fovMap.isVisible(x, y);
-            const wall = map[y][x].blockSight;
+            const visible = map.isVisible(x, y);
+            const wall = map.grid[y][x].blockSight;
             let color = Colors.BLACK;
 
             if (visible) {
                 // It's visible
                 color = wall ? COLOR_LIGHT_WALL : COLOR_LIGHT_GROUND;
-                map[y][x].explored = true;
-            } else if (map[y][x].explored) {
+                map.grid[y][x].explored = true;
+            } else if (map.grid[y][x].explored) {
                 // It's remembered
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
@@ -397,7 +377,6 @@ const rng = new RNG(1);
 const player = new Entity(40, 25, '@', 'player', Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
 const entities = [player];
 const map = createMap();
-const fovMap = new FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) => map[y][x].blocked);
 let fovRecompute = true;
 
 term.update = function () {

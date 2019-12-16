@@ -12,18 +12,22 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_8">Part 8: Items and Inventory</a></p>
 	<p>The player gets to collect ("borrow") items from the dungeon and use them, with a neat inventory screen. More items added in the next part.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part7.js	2019-12-13 11:26:18.237487500 -0800</div>
-<div class="c2">+++ part8.js	2019-12-13 11:28:56.758058200 -0800</div>
-<div class="c1">@@ -5,6 +5,8 @@</div>
-<div class="c0"> import {fromRgb} from &#x27;../../src/color.js&#x27;;</div>
-<div class="c0"> import {RNG} from &#x27;../../src/rng.js&#x27;;</div>
-<div class="c0"> import {FovMap} from &#x27;../../src/fov.js&#x27;;</div>
-<div class="c2">+import {GUI} from &#x27;../../src/gui.js&#x27;;</div>
-<div class="c2">+import {SelectDialog} from &#x27;../../src/gui/selectdialog.js&#x27;;</div>
+        <!--STARTDIFF--><div class="c3">--- part7.js	2019-12-15 15:47:56.810494100 -0800</div>
+<div class="c2">+++ part8.js	2019-12-15 15:48:07.690883100 -0800</div>
+<div class="c1">@@ -1,9 +1,12 @@</div>
 <div class="c0"> </div>
-<div class="c0"> // Actual size of the window</div>
-<div class="c0"> const SCREEN_WIDTH = 80;</div>
-<div class="c1">@@ -27,8 +29,12 @@</div>
+<div class="c0"> import {Colors} from &#x27;../../src/colors.js&#x27;;</div>
+<div class="c0"> import {fromRgb} from &#x27;../../src/color.js&#x27;;</div>
+<div class="c2">+import {GUI} from &#x27;../../src/gui.js&#x27;;</div>
+<div class="c0"> import {Keys} from &#x27;../../src/keys.js&#x27;;</div>
+<div class="c2">+import {MessageDialog} from &#x27;../../src/gui/messagedialog.js&#x27;;</div>
+<div class="c0"> import {Rect} from &#x27;../../src/rect.js&#x27;;</div>
+<div class="c0"> import {RNG} from &#x27;../../src/rng.js&#x27;;</div>
+<div class="c2">+import {SelectDialog} from &#x27;../../src/gui/selectdialog.js&#x27;;</div>
+<div class="c0"> import {Terminal} from &#x27;../../src/terminal.js&#x27;;</div>
+<div class="c0"> import {TileMap} from &#x27;../../src/tilemap.js&#x27;;</div>
+<div class="c0"> </div>
+<div class="c1">@@ -28,8 +31,12 @@</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
 <div class="c0"> const MAX_ROOM_MONSTERS = 3;</div>
@@ -36,25 +40,16 @@
 <div class="c0"> const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
 <div class="c0"> const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);</div>
 <div class="c0"> const COLOR_DARK_GROUND = fromRgb(50, 50, 150);</div>
-<div class="c1">@@ -141,6 +147,10 @@</div>
-<div class="c0">             }</div>
-<div class="c0">         }</div>
-<div class="c0">     };</div>
-<div class="c2">+</div>
-<div class="c2">+    this.heal = function (amount) {</div>
-<div class="c2">+        this.hp = Math.min(this.hp + amount, this.maxHp);</div>
-<div class="c2">+    };</div>
+<div class="c1">@@ -150,6 +157,34 @@</div>
+<div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function BasicMonster() {</div>
-<div class="c1">@@ -164,6 +174,32 @@</div>
-<div class="c0">     };</div>
-<div class="c0"> }</div>
-<div class="c0"> </div>
-<div class="c2">+function Item(useFunction) {</div>
-<div class="c2">+    this.useFunction = useFunction;</div>
+<div class="c2">+class Item {</div>
+<div class="c2">+    constructor(useFunction) {</div>
+<div class="c2">+        this.useFunction = useFunction;</div>
+<div class="c2">+    }</div>
 <div class="c2">+</div>
-<div class="c2">+    this.pickUp = function () {</div>
+<div class="c2">+    pickUp() {</div>
 <div class="c2">+        if (inventory.length &gt;= 26) {</div>
 <div class="c2">+            addMessage(&#x27;Your inventory is full, cannot pick up &#x27; + this.owner.name + &#x27;.&#x27;, Colors.LIGHT_RED);</div>
 <div class="c2">+        } else {</div>
@@ -62,25 +57,25 @@
 <div class="c2">+            this.owner.remove();</div>
 <div class="c2">+            addMessage(&#x27;You picked up a &#x27; + this.owner.name + &#x27;!&#x27;, Colors.LIGHT_GREEN);</div>
 <div class="c2">+        }</div>
-<div class="c2">+    };</div>
+<div class="c2">+    }</div>
 <div class="c2">+</div>
-<div class="c2">+    this.use = function () {</div>
+<div class="c2">+    use() {</div>
 <div class="c2">+        if (this.useFunction) {</div>
 <div class="c2">+            this.useFunction(this);</div>
 <div class="c2">+        } else {</div>
 <div class="c2">+            addMessage(&#x27;The &#x27; + this.owner.name + &#x27; cannot be used.&#x27;);</div>
 <div class="c2">+        }</div>
-<div class="c2">+    };</div>
+<div class="c2">+    }</div>
 <div class="c2">+</div>
-<div class="c2">+    this.remove = function () {</div>
+<div class="c2">+    remove() {</div>
 <div class="c2">+        inventory.splice(inventory.indexOf(this.owner), 1);</div>
-<div class="c2">+    };</div>
+<div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c0"> function isBlocked(x, y) {</div>
 <div class="c0">     // First test the map tile</div>
-<div class="c0">     if (map[y][x].blocked) {</div>
-<div class="c1">@@ -305,6 +341,23 @@</div>
+<div class="c0">     if (map.grid[y][x].blocked) {</div>
+<div class="c1">@@ -291,6 +326,23 @@</div>
 <div class="c0"> </div>
 <div class="c0">         entities.push(monster);</div>
 <div class="c0">     }</div>
@@ -90,8 +85,8 @@
 <div class="c2">+</div>
 <div class="c2">+    for (let i = 0; i &lt; numItems; i++) {</div>
 <div class="c2">+        // Choose random spot for this item</div>
-<div class="c2">+        const x = rng.nextRange(room.x1 + 1, room.x2 - 1)</div>
-<div class="c2">+        const y = rng.nextRange(room.y1 + 1, room.y2 - 1)</div>
+<div class="c2">+        const x = rng.nextRange(room.x + 1, room.x2 - 1)</div>
+<div class="c2">+        const y = rng.nextRange(room.y + 1, room.y2 - 1)</div>
 <div class="c2">+</div>
 <div class="c2">+        // Create a healing potion</div>
 <div class="c2">+        const itemComponent = new Item(castHeal);</div>
@@ -104,7 +99,7 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {</div>
-<div class="c1">@@ -390,6 +443,11 @@</div>
+<div class="c1">@@ -376,6 +428,11 @@</div>
 <div class="c0">     if (player.fighter.hp &lt;= 0) {</div>
 <div class="c0">         return;</div>
 <div class="c0">     }</div>
@@ -116,7 +111,7 @@
 <div class="c0">     if (term.isKeyPressed(Keys.VK_UP)) {</div>
 <div class="c0">         playerMoveOrAttack(0, -1);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -402,6 +460,29 @@</div>
+<div class="c1">@@ -388,6 +445,29 @@</div>
 <div class="c0">     if (term.isKeyPressed(Keys.VK_DOWN)) {</div>
 <div class="c0">         playerMoveOrAttack(0, 1);</div>
 <div class="c0">     }</div>
@@ -146,7 +141,7 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function playerDeath(player) {</div>
-<div class="c1">@@ -419,6 +500,18 @@</div>
+<div class="c1">@@ -405,6 +485,18 @@</div>
 <div class="c0">     monster.sendToBack();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -164,8 +159,8 @@
 <div class="c2">+</div>
 <div class="c0"> function renderAll() {</div>
 <div class="c0">     if (fovRecompute) {</div>
-<div class="c0">         fovMap.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -469,9 +562,13 @@</div>
+<div class="c0">         map.computeFov(player.x, player.y, TORCH_RADIUS);</div>
+<div class="c1">@@ -453,15 +545,20 @@</div>
 <div class="c0"> </div>
 <div class="c0">     // Display names of objects under the mouse</div>
 <div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);</div>
@@ -179,9 +174,8 @@
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c0"> const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
 <div class="c0"> const entities = [player];</div>
-<div class="c1">@@ -479,6 +576,7 @@</div>
+<div class="c0"> const messages = [];</div>
 <div class="c0"> const map = createMap();</div>
-<div class="c0"> const fovMap = new FovMap(MAP_WIDTH, MAP_HEIGHT, (x, y) =&gt; map[y][x].blocked);</div>
 <div class="c0"> let fovRecompute = true;</div>
 <div class="c2">+const inventory = [];</div>
 <div class="c0"> </div>

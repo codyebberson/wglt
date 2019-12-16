@@ -1,9 +1,11 @@
 
-import {Terminal} from '../../src/terminal.js';
 import {Colors} from '../../src/colors.js';
-import {Keys} from '../../src/keys.js';
 import {fromRgb} from '../../src/color.js';
+import {Keys} from '../../src/keys.js';
+import {Rect} from '../../src/rect.js';
 import {RNG} from '../../src/rng.js';
+import {Terminal} from '../../src/terminal.js';
+import {TileMap} from '../../src/tilemap.js';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
@@ -21,78 +23,56 @@ const MAX_ROOMS = 30;
 const COLOR_DARK_WALL = fromRgb(0, 0, 100);
 const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
 
-function Tile(blocked) {
-    this.blocked = blocked;
-    this.blockSight = blocked;
-}
-
-function Rect(x, y, w, h) {
-    this.x1 = x;
-    this.y1 = y;
-    this.x2 = x + w;
-    this.y2 = y + h;
-
-    this.getCenter = function () {
-        return {
-            x: ((this.x1 + this.x2) / 2) | 0,
-            y: ((this.y1 + this.y2) / 2) | 0
-        };
+class Entity {
+    constructor(x, y, char, color) {
+        this.x = x;
+        this.y = y;
+        this.char = char;
+        this.color = color;
     }
 
-    this.intersects = function (other) {
-        return this.x1 <= other.x2 && this.x2 >= other.x1 &&
-            this.y1 <= other.y2 && this.y2 >= other.y1;
-    }
-}
-
-function Entity(x, y, char, color) {
-    this.x = x;
-    this.y = y;
-    this.char = char;
-    this.color = color;
-
-    this.move = function (dx, dy) {
-        if (map[this.y + dy][this.x + dx].blocked) {
+    move(dx, dy) {
+        if (map.grid[this.y + dy][this.x + dx].blocked) {
             return;
         }
         this.x += dx;
         this.y += dy;
-    };
+    }
 
-    this.draw = function () {
+    draw() {
         term.drawString(this.x, this.y, this.char, this.color);
-    };
+    }
 }
 
 function createRoom(map, room) {
-    for (let y = room.y1 + 1; y < room.y2; y++) {
-        for (let x = room.x1 + 1; x < room.x2; x++) {
-            map[y][x].blocked = false;
-            map[y][x].blockSight = false;
+    for (let y = room.y + 1; y < room.y2; y++) {
+        for (let x = room.x + 1; x < room.x2; x++) {
+            map.grid[y][x].blocked = false;
+            map.grid[y][x].blockSight = false;
         }
     }
 }
 
 function createHTunnel(map, x1, x2, y) {
     for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-        map[y][x].blocked = false;
-        map[y][x].blockSight = false;
+        map.grid[y][x].blocked = false;
+        map.grid[y][x].blockSight = false;
     }
 }
 
 function createVTunnel(map, y1, y2, x) {
     for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-        map[y][x].blocked = false;
-        map[y][x].blockSight = false;
+        map.grid[y][x].blocked = false;
+        map.grid[y][x].blockSight = false;
     }
 }
 
 function createMap() {
-    const map = new Array(MAP_HEIGHT);
+    const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);
     for (let y = 0; y < MAP_HEIGHT; y++) {
-        map[y] = new Array(MAP_WIDTH);
         for (let x = 0; x < MAP_WIDTH; x++) {
-            map[y][x] = new Tile(true);
+            map.grid[y][x].blocked = true;
+            map.grid[y][x].blockSight = true;
         }
     }
 
@@ -175,11 +155,9 @@ function handleKeys() {
 }
 
 function renderAll() {
-    term.clear();
-
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
-            let wall = map[y][x].blockSight;
+            let wall = map.grid[y][x].blockSight;
             if (wall) {
                 term.drawChar(x, y, 0, 0, COLOR_DARK_WALL);
             } else {

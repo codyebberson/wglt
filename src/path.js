@@ -11,8 +11,7 @@ const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
  * @param {!number=} opt_maxDist Optional maximum distance to examine.
  * @return {?Array} Array of steps if destination found; null otherwise.
  */
-export function computePath(
-    map, source, dest, maxDist) {
+export function computePath(map, source, dest, maxDist) {
   clearDijkstra(map, dest);
 
   const sourceCell = map.grid[source.y][source.x];

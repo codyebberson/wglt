@@ -5,6 +5,7 @@ const Terser = require('terser-webpack-plugin');
 const entries = ['./src/index.js'];
 addDir('./examples/');
 addDir('./examples/roguelike/');
+addFile('./examples/stacio/', 'stacio.js');
 
 function addDir(dir) {
   fs.readdirSync(dir).forEach(file => addFile(dir, file));

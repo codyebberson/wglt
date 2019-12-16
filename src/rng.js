@@ -43,7 +43,11 @@ export class RNG {
     // can't modulu nextInt because of weak randomness in lower bits
     const rangeSize = end - start;
     const randomUnder1 = this.nextInt() / this.m;
-    return start + ((randomUnder1 * rangeSize) | 0);
+    const result = start + ((randomUnder1 * rangeSize) | 0);
+    if (isNaN(result)) {
+      throw new Error('rand nan');
+    }
+    return result;
   }
 
   chooseIndex(chances) {

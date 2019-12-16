@@ -1,8 +1,9 @@
 
-import {Terminal} from '../../src/terminal.js';
 import {Colors} from '../../src/colors.js';
-import {Keys} from '../../src/keys.js';
 import {fromRgb} from '../../src/color.js';
+import {Keys} from '../../src/keys.js';
+import {Terminal} from '../../src/terminal.js';
+import {TileMap} from '../../src/tilemap.js';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
@@ -15,39 +16,25 @@ const MAP_HEIGHT = 45;
 const COLOR_DARK_WALL = fromRgb(0, 0, 100);
 const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
 
-function Tile(blocked) {
-    this.blocked = blocked;
-    this.blockSight = blocked;
-}
+class Entity {
+    constructor(x, y, char, color) {
+        this.x = x;
+        this.y = y;
+        this.char = char;
+        this.color = color;
+    }
 
-function Entity(x, y, char, color) {
-    this.x = x;
-    this.y = y;
-    this.char = char;
-    this.color = color;
-
-    this.move = function (dx, dy) {
-        if (map[this.y + dy][this.x + dx].blocked) {
+    move(dx, dy) {
+        if (map.grid[this.y + dy][this.x + dx].blocked) {
             return;
         }
         this.x += dx;
         this.y += dy;
-    };
-
-    this.draw = function () {
-        term.drawString(this.x, this.y, this.char, this.color);
-    };
-}
-
-function createMap() {
-    const map = new Array(MAP_HEIGHT);
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        map[y] = new Array(MAP_WIDTH);
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            map[y][x] = new Tile(false);
-        }
     }
-    return map;
+
+    draw() {
+        term.drawString(this.x, this.y, this.char, this.color);
+    }
 }
 
 function handleKeys() {
@@ -66,11 +53,9 @@ function handleKeys() {
 }
 
 function renderAll() {
-    term.clear();
-
     for (let y = 0; y < MAP_HEIGHT; y++) {
         for (let x = 0; x < MAP_WIDTH; x++) {
-            let wall = map[y][x].blockSight;
+            let wall = map.grid[y][x].blockSight;
             if (wall) {
                 term.drawChar(x, y, 0, 0, COLOR_DARK_WALL);
             } else {
@@ -88,12 +73,12 @@ const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN
 const player = new Entity(40, 25, '@', Colors.WHITE);
 const npc = new Entity(40, 20, '@', Colors.YELLOW);
 const entities = [player, npc];
-const map = createMap();
+const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);
 
-map[22][30].blocked = true;
-map[22][30].blockSight = true;
-map[22][50].blocked = true;
-map[22][50].blockSight = true;
+map.grid[22][30].blocked = true;
+map.grid[22][30].blockSight = true;
+map.grid[22][50].blocked = true;
+map.grid[22][50].blockSight = true;
 
 term.update = function () {
     handleKeys();

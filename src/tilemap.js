@@ -3,12 +3,14 @@
 // Mingos' Restrictive Precise Angle Shadowcasting
 // https://bitbucket.org/mingos/mrpas/overview
 
-export class FovCell {
+export class Tile {
 
   constructor(x, y) {
     this.x = x;
     this.y = y;
     this.blocked = false;
+    this.blockSight = false;
+    this.explored = false;
     this.visible = false;
     this.g = 0.0;
     this.h = 0.0;
@@ -16,7 +18,7 @@ export class FovCell {
   }
 }
 
-export class FovMap {
+export class TileMap {
 
   /**
    * Creates a new FOV map.
@@ -24,9 +26,7 @@ export class FovMap {
    * @param height
    * @param blockedFunc
    */
-  constructor(
-      width, height,
-      blockedFunc) {
+  constructor(width, height, blockedFunc) {
     this.width = width;
     this.height = height;
 
@@ -34,7 +34,7 @@ export class FovMap {
     for (let y = 0; y < height; y++) {
       this.grid[y] = new Array(width);
       for (let x = 0; x < width; x++) {
-        this.grid[y][x] = new FovCell(x, y);
+        this.grid[y][x] = new Tile(x, y);
       }
     }
 

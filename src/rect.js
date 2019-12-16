@@ -11,12 +11,10 @@ export class Rect {
   }
 
   getCenter() {
-    return new Point(
-        this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
+    return new Point(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
   }
 
   intersects(other) {
-    return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 &&
-        this.y2 >= other.y;
+    return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 && this.y2 >= other.y;
   }
 }

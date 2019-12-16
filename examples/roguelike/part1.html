@@ -12,13 +12,13 @@
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_1">Part 1: Graphics</a></p>
 	<p>Start your game right away by setting up the screen, printing the stereotypical @ character and moving it around with the arrow keys.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part0.js	2019-12-12 21:09:32.767897800 -0800</div>
-<div class="c2">+++ part1.js	2019-12-13 11:21:51.966477700 -0800</div>
-<div class="c1">@@ -0,0 +1,41 @@</div>
+        <!--STARTDIFF--><div class="c3">--- /dev/null	2019-12-16 11:26:25.000000000 -0800</div>
+<div class="c2">+++ part1.js	2019-12-15 15:45:59.811441100 -0800</div>
+<div class="c1">@@ -0,0 +1,40 @@</div>
 <div class="c2">+</div>
-<div class="c2">+import {Terminal} from &#x27;../../src/terminal.js&#x27;;</div>
 <div class="c2">+import {Colors} from &#x27;../../src/colors.js&#x27;;</div>
 <div class="c2">+import {Keys} from &#x27;../../src/keys.js&#x27;;</div>
+<div class="c2">+import {Terminal} from &#x27;../../src/terminal.js&#x27;;</div>
 <div class="c2">+</div>
 <div class="c2">+// Actual size of the window</div>
 <div class="c2">+const SCREEN_WIDTH = 80;</div>
@@ -40,7 +40,6 @@
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+function renderAll() {</div>
-<div class="c2">+    term.clear();</div>
 <div class="c2">+    term.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, Colors.YELLOW, Colors.DARK_BLUE)</div>
 <div class="c2">+    term.drawString(1, 1, &#x27;Hello world!&#x27;);</div>
 <div class="c2">+    term.drawString(1, 3, &#x27;Use arrow keys to move&#x27;);</div>

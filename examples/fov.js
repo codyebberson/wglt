@@ -2,9 +2,9 @@
 import {Colors} from '../src/colors.js';
 import {computePath} from '../src/path.js';
 import {Console} from '../src/console.js';
-import {FovMap} from '../src/fov.js';
 import {Keys} from '../src/keys.js';
 import {Terminal} from '../src/terminal.js';
+import {TileMap} from '../src/tilemap.js';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 50;
@@ -71,7 +71,7 @@ const player = {
     y: Math.floor(MAP_HEIGHT / 2)
 };
 
-const fov = new FovMap(MAP_WIDTH, MAP_HEIGHT, isBlocked);
+const fov = new TileMap(MAP_WIDTH, MAP_HEIGHT, isBlocked);
 fov.computeFov(player.x, player.y, VIEW_DISTANCE);
 
 function movePlayer(dx, dy) {

@@ -1,4 +1,6 @@
 
+import {Console} from './console.js';
+
 /**
  * Creates a "prim" level.
  *
@@ -7,14 +9,13 @@
  *
  * There are a fixed number of health potions and bombs randomly scattered.
  */
-function createPrimLevel(width, height, wallTile, emptyTile) {
+export function createPrimLevel(width, height, wallTile, emptyTile) {
     var frontiers = [[1, 1, 1, 1]];
     var lastX = 0;
     var lastY = 0;
 
     let result = new Console(width, height);
-    result.brush = wallTile;
-    result.fillRect(0, 0, width, height);
+    result.fillRect(0, 0, width, height, wallTile);
 
     while (frontiers.length > 0) {
         var r = Math.floor(Math.random() * frontiers.length);
