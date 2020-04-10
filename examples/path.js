@@ -1,6 +1,5 @@
 
 import {Colors} from '../src/colors.js';
-import {Font} from '../src/font.js';
 import {Keys} from '../src/keys.js';
 import {Terminal} from '../src/terminal.js';
 

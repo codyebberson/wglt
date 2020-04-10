@@ -4,7 +4,7 @@ import {computePath} from '../src/path.js';
 import {Console} from '../src/console.js';
 import {Keys} from '../src/keys.js';
 import {Terminal} from '../src/terminal.js';
-import {TileMap} from '../src/tilemap.js';
+import {TileMap, FovOctants, getFovQuadrant, FovQuadrants} from '../src/tilemap.js';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 50;
@@ -68,11 +68,16 @@ const game = new Console(MAP_WIDTH, MAP_HEIGHT);
 
 const player = {
     x: Math.floor(MAP_WIDTH / 2),
-    y: Math.floor(MAP_HEIGHT / 2)
+    y: Math.floor(MAP_HEIGHT / 2),
+    direction: FovQuadrants.QUADRANT_NORTH,
+    remember: false
 };
 
 const fov = new TileMap(MAP_WIDTH, MAP_HEIGHT, isBlocked);
-fov.computeFov(player.x, player.y, VIEW_DISTANCE);
+
+function computeFov() {
+    fov.computeFov(player.x, player.y, VIEW_DISTANCE, player.remember, player.direction);
+}
 
 function movePlayer(dx, dy) {
     const x = player.x + dx;
@@ -82,7 +87,8 @@ function movePlayer(dx, dy) {
     }
     player.x = x;
     player.y = y;
-    fov.computeFov(player.x, player.y, VIEW_DISTANCE);
+    player.direction = getFovQuadrant(dx, dy);
+    computeFov();
 }
 
 term.update = function () {
@@ -97,6 +103,9 @@ term.update = function () {
     }
     if (term.isKeyPressed(Keys.VK_DOWN)) {
         movePlayer(0, 1);
+    }
+    if (term.isKeyPressed(Keys.VK_R)) {
+        player.remember = !player.remember;
     }
 
     term.clear();
@@ -121,6 +130,9 @@ term.update = function () {
 
     term.drawString(1, 1, 'Hello world!');
     term.drawString(1, 3, 'Use arrow keys to move');
+    term.drawString(1, 5, 'Press "R" to toggle remember');
     game.drawString(player.x, player.y, '@');
     term.drawConsole(15, 8, game, 0, 0, MAP_WIDTH, MAP_HEIGHT);
 };
+
+computeFov();

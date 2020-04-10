@@ -2,6 +2,7 @@
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
 const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
+let pathId = 0;
 
 /**
  * Calculates Dijkstra's algorithm.
@@ -12,15 +13,18 @@ const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
  * @return {?Array} Array of steps if destination found; null otherwise.
  */
 export function computePath(map, source, dest, maxDist) {
-  clearDijkstra(map, dest);
+  pathId++;
 
   const sourceCell = map.grid[source.y][source.x];
+  sourceCell.pathId = pathId;
   sourceCell.g = 0.0;
+  sourceCell.h = Math.min(Math.abs(source.x - dest.x), Math.abs(source.y - dest.y));
+  sourceCell.prev = null;
 
-  const q = [sourceCell];
+  const q = new SortedSet([sourceCell]);
 
-  while (q.length > 0) {
-    const u = getMinCell(q);
+  while (q.size() > 0) {
+    const u = q.pop();
 
     if (u.x === dest.x && u.y === dest.y) {
       return buildPath(u);
@@ -31,45 +35,22 @@ export function computePath(map, source, dest, maxDist) {
       const y = u.y + dys[i];
       if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
         const v = map.grid[y][x];
+        if (v.pathId !== pathId) {
+          v.pathId = pathId;
+          v.g = Infinity;
+          v.h = Math.min(Math.abs(x - dest.x), Math.abs(y - dest.y));
+          v.prev = null;
+        }
         const alt = u.g + costs[i];
-        if (alt < v.g && alt <= maxDist && !map.grid[y][x].blocked) {
+        if (alt < v.g && alt <= maxDist && (!map.grid[y][x].blocked || (x === dest.x && y === dest.y))) {
           v.g = alt;
           v.prev = u;
-          q.push(v);
+          q.insert(v);
         }
       }
     }
   }
   return null;
-}
-
-function clearDijkstra(map, dest) {
-  for (let y = 0; y < map.height; y++) {
-    for (let x = 0; x < map.width; x++) {
-      const cell = map.grid[y][x];
-      cell.g = Infinity;
-      cell.h = Math.min(Math.abs(x - dest.x), Math.abs(y - dest.y));
-      cell.prev = null;
-    }
-  }
-}
-
-function getMinCell(q) {
-  let bestCell = null;
-  let bestIndex = -1;
-  let minDist = Infinity;
-
-  for (let i = 0; i < q.length; i++) {
-    const cell = q[i];
-    if (cell.g !== Infinity && cell.g + cell.h < minDist) {
-      bestCell = cell;
-      bestIndex = i;
-      minDist = cell.g + cell.h;
-    }
-  }
-
-  q.splice(bestIndex, 1);
-  return bestCell;
 }
 
 function buildPath(cell) {
@@ -81,4 +62,35 @@ function buildPath(cell) {
   }
   result.reverse();
   return result;
+}
+
+class SortedSet {
+  constructor(initialValues) {
+    this.values = initialValues
+  }
+
+  insert(cell) {
+    const array = this.values;
+    let low = 0;
+    let high = array.length;
+
+    while (low < high) {
+      const mid = (low + high) >>> 1;
+      const midCell = array[mid];
+      if (midCell.g + midCell.h > cell.g + cell.h) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+    array.splice(low + 1, 0, cell);
+  }
+
+  pop() {
+    return this.values.pop();
+  }
+
+  size() {
+    return this.values.length;
+  }
 }

@@ -5,15 +5,17 @@ import {Chars} from './chars.js';
 
 export class Console {
 
-  constructor(width, height) {
+  constructor(width, height, opt_cellClass) {
     this.width = width;
     this.height = height;
     this.grid = new Array();
 
+    const cellClass = opt_cellClass || Cell;
+
     for (let y = 0; y < height; y++) {
       const row = new Array();
       for (let x = 0; x < width; x++) {
-        row.push(new Cell());
+        row.push(new cellClass(x, y));
       }
       this.grid.push(row);
     }
@@ -43,8 +45,7 @@ export class Console {
     return this.grid[y][x].charCode;
   }
 
-  drawChar(
-      x, y, c, fg, bg) {
+  drawChar(x, y, c, fg, bg) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].setValue(c, fg, bg);
     }
@@ -56,30 +57,23 @@ export class Console {
     }
   }
 
-  drawCenteredString(
-      x, y, str, fg, bg) {
+  drawCenteredString(x, y, str, fg, bg) {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
   }
 
-  drawHLine(
-      x, y, width, c, fg,
-      bg) {
+  drawHLine(x, y, width, c, fg, bg) {
     for (let xi = x; xi < x + width; xi++) {
       this.drawChar(xi, y, c, fg, bg);
     }
   }
 
-  drawVLine(
-      x, y, height, c, fg,
-      bg) {
+  drawVLine(x, y, height, c, fg, bg) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
-  drawRect(
-      x, y, width, height, c,
-      fg, bg) {
+  drawRect(x, y, width, height, c, fg, bg) {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
     this.drawVLine(x, y, height, c, fg, bg);
@@ -105,9 +99,7 @@ export class Console {
     this.drawChar(x + width - 1, y + height - 1, bottomRightChar);
   }
 
-  drawSingleBox(
-      x, y, width, height, fg,
-      bg) {
+  drawSingleBox(x, y, width, height, fg, bg) {
     this.drawBox(
         x, y, width, height, Chars.BOX_SINGLE_HORIZONTAL,
         Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_HORIZONTAL,
@@ -117,9 +109,7 @@ export class Console {
         Chars.BOX_SINGLE_UP_AND_SINGLE_RIGHT, fg, bg);
   }
 
-  drawDoubleBox(
-      x, y, width, height, fg,
-      bg) {
+  drawDoubleBox(x, y, width, height, fg, bg) {
     this.drawBox(
         x, y, width, height, Chars.BOX_DOUBLE_HORIZONTAL,
         Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_HORIZONTAL,
@@ -129,9 +119,7 @@ export class Console {
         Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT, fg, bg);
   }
 
-  fillRect(
-      x, y, width, height, c,
-      fg, bg) {
+  fillRect(x, y, width, height, c, fg, bg) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
     }

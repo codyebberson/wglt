@@ -1,18 +1,9 @@
+import { Input } from "./input.js";
 
 /**
  * Number of keys to track.
  */
 const KEY_COUNT = 256;
-
-/**
- * Creates a new key instance.
- */
-export class Key {
-  constructor() {
-    this.down = false;
-    this.downCount = 0;
-  }
-}
 
 export class Keyboard {
 
@@ -24,7 +15,7 @@ export class Keyboard {
   constructor(el) {
     this.keys = new Array(KEY_COUNT);
     for (let i = 0; i < KEY_COUNT; i++) {
-      this.keys[i] = new Key();
+      this.keys[i] = new Input();
     }
 
     el.addEventListener('keydown', e => this.setKey(e, true));
@@ -33,9 +24,13 @@ export class Keyboard {
 
 
   setKey(e, state) {
+    const keyCode = e.keyCode;
+    if (keyCode === Keys.VK_F11) {
+      // Allow fullscreen requests to go through
+      return;
+    }
     e.stopPropagation();
     e.preventDefault();
-    const keyCode = e.keyCode;
     if (keyCode >= 0 && keyCode < KEY_COUNT) {
       this.keys[keyCode].down = state;
     }
@@ -43,11 +38,7 @@ export class Keyboard {
 
   updateKeys() {
     for (let i = 0; i < KEY_COUNT; i++) {
-      if (this.keys[i].down) {
-        this.keys[i].downCount++;
-      } else {
-        this.keys[i].downCount = 0;
-      }
+      this.keys[i].update();
     }
   }
 

@@ -481,10 +481,10 @@ function handleKeys() {
     }
 
     if (targetFunction) {
-        if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0]) {
+        if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
             endTargeting(targetCursor.x, targetCursor.y);
         }
-        if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2]) {
+        if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
             cancelTargeting();
         }
         if (term.isKeyPressed(Keys.VK_UP)) {

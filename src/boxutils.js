@@ -47,9 +47,20 @@ const BOX_CHAR_DETAILS = [
   [0, 1, 1, 0], // 0xDA
 ];
 
-function isBoxCell(console, x, y) {
-  const charCode = console.getCell(x, y).charCode;
+function isBoxCell(con, x, y) {
+  const charCode = con.getCell(x, y).charCode;
   return charCode >= 0xB3 && charCode <= 0xDA;
+}
+
+function getBoxCount(con, x, y, index) {
+  if (x < 0 || y < 0 || x >= con.width || y >= con.height) {
+    return 0;
+  }
+  const charCode = con.getCell(x, y).charCode;
+  if (charCode < 0xB3 || charCode > 0xDA) {
+    return 0;
+  }
+  return BOX_CHAR_DETAILS[charCode - 0xB3][index];
 }
 
 function getBoxCell(up, right, down, left) {
@@ -62,35 +73,42 @@ function getBoxCell(up, right, down, left) {
   return 0;
 }
 
-export function fixBoxCells(console) {
-  for (let y = 0; y < console.height; y++) {
-    for (let x = 0; x < console.width; x++) {
-      if (isBoxCell(console, x, y)) {
-        let up = y > 0 && isBoxCell(console, x, y - 1);
-        let right = x < console.width - 1 && isBoxCell(console, x + 1, y);
-        let down = y < console.height - 1 && isBoxCell(console, x, y + 1);
-        let left = x > 0 && isBoxCell(console, x - 1, y);
+export function fixBoxCells(con) {
+  for (let y = 0; y < con.height; y++) {
+    for (let x = 0; x < con.width; x++) {
+      if (isBoxCell(con, x, y)) {
+        let up = getBoxCount(con, x, y - 1, 2);
+        let right = getBoxCount(con, x + 1, y, 3);
+        let down = getBoxCount(con, x, y + 1, 0);
+        let left = getBoxCount(con, x - 1, y, 1);
 
-        if (up && !right && !down && !left) {
-          down = true;
-        }
-        if (!up && right && !down && !left) {
-          left = true;
-        }
-        if (!up && !right && down && !left) {
-          up = true;
-        }
-        if (!up && !right && !down && left) {
-          right = true;
+        // There are no single-direction stubs.
+        // If we need one, then we create a full vertical or horizontal pipe.
+        if (up > 0 && right === 0 && down === 0 && left === 0) {
+          down = up;
+        } else if (up === 0 && right > 0 && down === 0 && left === 0) {
+          left = right;
+        } else if (up === 0 && right === 0 && down > 0 && left === 0) {
+          up = down;
+        } else if (up === 0 && right === 0 && down === 0 && left > 0) {
+          right = left;
         }
 
-        const charCode = getBoxCell(up ? 1 : 0, right ? 1 : 0, down ? 1 : 0, left ? 1 : 0);
+        // Vertical and horizontal axis must have same width.
+        if (left > 0 && right > 0) {
+          left = right = Math.max(left, right);
+        }
+        if (up > 0 && down > 0) {
+          up = down = Math.max(up, down);
+        }
+
+        const charCode = getBoxCell(up, right, down, left);
 
         if ((up || right || down || left) && !(charCode >= 0xB3 && charCode <= 0xDA)) {
-          throw new Error('invalid char code!');
+          throw new Error('invalid char code! (up=' + up + ', right=' + right + ', down=' + down + ', left=' + left + ')');
         }
 
-        console.getCell(x, y).setCharCode(charCode);
+        con.getCell(x, y).setCharCode(charCode);
       }
     }
   }

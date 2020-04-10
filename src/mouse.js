@@ -1,5 +1,6 @@
 
 import {Rect} from './rect.js';
+import { Input } from './input.js';
 
 export class Mouse {
 
@@ -14,7 +15,7 @@ export class Mouse {
     this.y = 0;
     this.dx = 0;
     this.dy = 0;
-    this.buttons = [false, false, false];
+    this.buttons = [new Input(), new Input(), new Input()];
 
     const el = this.el;
     el.addEventListener('mousedown', e => this.handleEvent(e));
@@ -40,9 +41,9 @@ export class Mouse {
     if (e.touches.length > 0) {
       const touch = e.touches[0];
       this.updatePosition(touch.clientX, touch.clientY);
-      this.buttons[0] = true;
+      this.buttons[0].down = true;
     } else {
-      this.buttons[0] = false;
+      this.buttons[0].down = false;
     }
   }
 
@@ -53,7 +54,7 @@ export class Mouse {
     this.updatePosition(e.clientX, e.clientY);
 
     if (e.type === 'mousedown') {
-      this.buttons[e.button] = true;
+      this.buttons[e.button].down = true;
 
       this.el.focus();
 
@@ -63,7 +64,7 @@ export class Mouse {
     }
 
     if (e.type === 'mouseup') {
-      this.buttons[e.button] = false;
+      this.buttons[e.button].down = false;
     }
   }
 
@@ -109,5 +110,9 @@ export class Mouse {
     this.dy = this.y - this.prevY;
     this.prevX = this.x;
     this.prevY = this.y;
+
+    for (let i = 0; i < this.buttons.length; i++) {
+      this.buttons[i].update();
+    }
   }
 }

@@ -17,4 +17,8 @@ export class Rect {
   intersects(other) {
     return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 && this.y2 >= other.y;
   }
+
+  contains(point) {
+    return point.x >= this.x && point.y < this.x2 && point.y >= this.y && point.y < this.y2;
+  }
 }

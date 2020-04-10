@@ -22,10 +22,7 @@ const DEFAULT_OPTIONS = {
 };
 
 export class Terminal extends Console {
-
-  constructor(
-      canvas, width, height,
-      options) {
+  constructor(canvas, width, height, options) {
     super(width, height);
 
     options = options || DEFAULT_OPTIONS;
@@ -42,6 +39,8 @@ export class Terminal extends Console {
     canvas.style.imageRendering = 'pixelated';
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
+    this.handleResize();
+    window.addEventListener('resize', () => this.handleResize());
 
     this.keys = new Keyboard(canvas);
     this.mouse = new Mouse(this, options);
@@ -62,10 +61,8 @@ export class Terminal extends Console {
     this.gl = gl;
     this.program = program;
 
-    gl.attachShader(
-        program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
-    gl.attachShader(
-        program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
+    gl.attachShader(program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
+    gl.attachShader(program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
     gl.linkProgram(program);
     gl.useProgram(program);
 
@@ -136,7 +133,17 @@ export class Terminal extends Console {
 
     this.texture = this.loadTexture(this.font.url);
 
+    this.frameDelay = options.frameDelay || 0;
+    this.frameIndex = 0;
+
     this.renderLoop();
+  }
+
+  handleResize() {
+    const width = this.canvas.parentElement.offsetWidth;
+    const height = width * this.pixelHeight / this.pixelWidth;
+    this.canvas.style.width = width + 'px';
+    this.canvas.style.height = height + 'px';
   }
 
   getAttribLocation(name) {
@@ -192,8 +199,7 @@ export class Terminal extends Console {
 
   isKeyPressed(keyCode) {
     const key = this.keys.getKey(keyCode);
-    const count = key ? key.downCount : 0;
-    return count === 1 || (count > 30 && count % 3 === 0);
+    return key && key.isPressed();
   }
 
   getKeyDownCount(keyCode) {
@@ -349,13 +355,17 @@ export class Terminal extends Console {
   }
 
   renderLoop() {
-    this.keys.updateKeys();
-    this.mouse.update();
-    if (this.update) {
-      this.update();
+    this.frameIndex++;
+    if (this.frameIndex >= this.frameDelay) {
+      this.keys.updateKeys();
+      this.mouse.update();
+      if (this.update) {
+        this.update();
+      }
+      this.flush();
+      this.render();
+      this.frameIndex = 0;
     }
-    this.flush();
-    this.render();
     requestAnimationFrame(this.renderLoop.bind(this));
   }
 }
