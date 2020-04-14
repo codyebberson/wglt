@@ -118,6 +118,12 @@ export class TileMap extends Console {
     }
   }
 
+  setBlockSight(x, y, blockSight) {
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      this.grid[y][x].blockSight = blockSight;
+    }
+  }
+
   isVisible(x, y) {
     if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
       return false;
@@ -162,15 +168,15 @@ export class TileMap extends Console {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.grid[y - deltaY][x].visible &&
-                !this.grid[y - deltaY][x].blocked) &&
+                !this.grid[y - deltaY][x].blockSight) &&
               !(this.grid[y - deltaY][x - deltaX].visible &&
-                !this.grid[y - deltaY][x - deltaX].blocked)) {
+                !this.grid[y - deltaY][x - deltaX].blockSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
                   endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blocked) {
+                if (!this.grid[y][x].blockSight) {
                   if (centreSlope > startSlopes[idx] &&
                       centreSlope < endSlopes[idx]) {
                     visible = false;
@@ -193,7 +199,7 @@ export class TileMap extends Console {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          if (this.grid[y][x].blocked) {
+          if (this.grid[y][x].blockSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
@@ -243,15 +249,15 @@ export class TileMap extends Console {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.grid[y][x - deltaX].visible &&
-                !this.grid[y][x - deltaX].blocked) &&
+                !this.grid[y][x - deltaX].blockSight) &&
               !(this.grid[y - deltaY][x - deltaX].visible &&
-                !this.grid[y - deltaY][x - deltaX].blocked)) {
+                !this.grid[y - deltaY][x - deltaX].blockSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
                   endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blocked) {
+                if (!this.grid[y][x].blockSight) {
                   if (centreSlope > startSlopes[idx] &&
                       centreSlope < endSlopes[idx]) {
                     visible = false;
@@ -274,7 +280,7 @@ export class TileMap extends Console {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          if (this.grid[y][x].blocked) {
+          if (this.grid[y][x].blockSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {

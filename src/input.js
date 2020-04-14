@@ -3,13 +3,13 @@
  * The delay in frames before input repeating.
  * Assume 60 FPS.
  */
-const INPUT_REPEAT_DELAY = 30;
+const INPUT_REPEAT_DELAY = 6;
 
 /**
  * The delay between subsequent repeat firing.
  * Assume 60 FPS.
  */
-const INPUT_REPEAT_RATE = 3;
+const INPUT_REPEAT_RATE = 1;
 
 /**
  * The Input class represents a pysical input.

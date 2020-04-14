@@ -52,8 +52,12 @@ export class Console {
   }
 
   drawString(x, y, str, fg, bg) {
-    for (let i = 0; i < str.length; i++) {
-      this.drawChar(x + i, y, str.charCodeAt(i), fg, bg);
+    const lines = str.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      for (let j = 0; j < line.length; j++) {
+        this.drawChar(x + j, y + i, line.charCodeAt(j), fg, bg);
+      }
     }
   }
 
