@@ -1,0 +1,8 @@
+
+export const EntityTypes = {
+    ENTITY_TYPE_PLAYER: 1,
+    ENTITY_TYPE_GUARD: 2,
+    ENTITY_TYPE_CAMERA: 3,
+    ENTITY_TYPE_STAFF: 4,
+    ENTITY_TYPE_HEALTHKIT: 5,
+};

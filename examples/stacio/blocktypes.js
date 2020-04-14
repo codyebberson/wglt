@@ -1,0 +1,9 @@
+
+
+export const BlockTypes = {
+    BLOCK_TYPE_MEGA_BUILDING: 1,
+    BLOCK_TYPE_NORMAL_BLOCK: 2,
+    BLOCK_TYPE_PARK: 3,
+    BLOCK_TYPE_PRISON: 4,
+    BLOCK_TYPE_TRASH: 5,
+};
