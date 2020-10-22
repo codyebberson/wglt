@@ -140,8 +140,11 @@ export class Terminal extends Console {
   }
 
   handleResize() {
-    const width = this.canvas.parentElement.offsetWidth;
-    const height = width * this.pixelHeight / this.pixelWidth;
+    const widthFactor = this.canvas.parentElement.offsetWidth / this.pixelWidth;
+    const heightFactor = this.canvas.parentElement.offsetHeight / this.pixelHeight;
+    const factor = Math.min(widthFactor, heightFactor);
+    const width = factor * this.pixelWidth;
+    const height = factor * this.pixelHeight;
     this.canvas.style.width = width + 'px';
     this.canvas.style.height = height + 'px';
   }
@@ -361,6 +364,9 @@ export class Terminal extends Console {
       this.mouse.update();
       if (this.update) {
         this.update();
+      }
+      if (this.state) {
+        this.state.update();
       }
       this.flush();
       this.render();

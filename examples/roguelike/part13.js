@@ -990,7 +990,7 @@ function mainMenu() {
     gui.draw();
 }
 
-const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT, {frameDelay: 5});
 const gui = new GUI(term);
 let rng = null;
 let player = null;
