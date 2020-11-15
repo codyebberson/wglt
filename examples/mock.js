@@ -15,7 +15,7 @@ const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 // Starcraft
 // game.drawDoubleBox(0, 30, 15, 15, Colors.LIGHT_GREEN, Colors.DARK_GREEN);
-// game.drawDoubleBox(15, 35, 50, 10, Colors.LIGHT_GREEN, Colors.DARK_GREEN);
+// game.drawDoubleBox(15, 35, 45, 10, Colors.LIGHT_GREEN, Colors.DARK_GREEN);
 // game.drawDoubleBox(65, 30, 15, 15, Colors.LIGHT_GREEN, Colors.DARK_GREEN);
 
 game.drawDoubleBox(0, 0, 16, 45, Colors.LIGHT_GREEN, Colors.DARK_GREEN);

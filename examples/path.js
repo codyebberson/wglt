@@ -4,7 +4,7 @@ import {Keys} from '../src/keys.js';
 import {Terminal} from '../src/terminal.js';
 
 const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
+const SCREEN_HEIGHT = 45;
 
 const MAP = new Array(SCREEN_HEIGHT);
 for (let y = 0; y < SCREEN_HEIGHT; y++) {

@@ -6,7 +6,7 @@ import {RNG} from '../src/rng.js';
 import {Terminal} from '../src/terminal.js';
 
 const WIDTH = 80;
-const HEIGHT = 50;
+const HEIGHT = 45;
 
 const WAVE_WARMUP_TIME = 180;
 const WAVE_GAP_TIME = 10;
@@ -118,9 +118,9 @@ term.update = function () {
         } else {
             // The group is 20x20 pixels
             // Assume 5 pixel buffer on the side
-            // 80 - 20 - 5 - 5 = 50
+            // 80 - 20 - 5 - 5 = 45
             const time2 = Math.round((time % 800) / 8);
-            const centerX = (time2 < 50) ? (5 + time2) : (5 + 100 - time2);
+            const centerX = (time2 < 45) ? (5 + time2) : (5 + 100 - time2);
             const offsetX = enemy.id % 5;
             const offsetY = (enemy.id / 5) | 0;
             const spacing = 5;

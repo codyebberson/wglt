@@ -3,23 +3,23 @@ import {Terminal} from '../src/terminal.js';
 import {Colors} from '../src/colors.js';
 import {Keys} from '../src/keys.js';
 
-const term = new Terminal(document.querySelector('canvas'), 80, 50);
-term.fillRect(0, 0, 80, 50, 0, Colors.YELLOW, Colors.DARK_BLUE);
+const term = new Terminal(document.querySelector('canvas'), 80, 45);
+term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
 
 term.update = function () {
-    if (term.isKeyDown(Keys.VK_UP)) {
+    if (term.isKeyPressed(Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyDown(Keys.VK_LEFT)) {
+    if (term.isKeyPressed(Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyDown(Keys.VK_RIGHT)) {
+    if (term.isKeyPressed(Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyDown(Keys.VK_DOWN)) {
+    if (term.isKeyPressed(Keys.VK_DOWN)) {
         y++;
     }
 

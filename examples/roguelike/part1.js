@@ -5,7 +5,7 @@ import {Terminal} from '../../src/terminal.js';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
+const SCREEN_HEIGHT = 45;
 
 function handleKeys() {
     if (term.isKeyPressed(Keys.VK_UP)) {

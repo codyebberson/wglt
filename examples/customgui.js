@@ -50,7 +50,7 @@ function CustomRenderer() {
     }
 }
 
-const term = new Terminal(document.querySelector('canvas'), 80, 50);
+const term = new Terminal(document.querySelector('canvas'), 80, 45);
 
 const gui = new GUI(term, new CustomRenderer());
 
@@ -89,7 +89,7 @@ term.update = function () {
     }
 
     term.clear();
-    term.fillRect(0, 0, 80, 50, 0, Colors.LIGHT_GREEN, Colors.BLACK);
+    term.fillRect(0, 0, 80, 45, 0, Colors.LIGHT_GREEN, Colors.BLACK);
     term.drawString(1, 1, 'Hello world!');
     term.drawString(1, 3, 'Use arrow keys to move');
     term.drawString(1, 5, 'Press "h" to open a MessageDialog');

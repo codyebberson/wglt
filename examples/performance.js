@@ -4,7 +4,7 @@ import {RNG} from '../src/rng.js';
 import {fromRgb} from '../src/color.js';
 
 const WIDTH = 80;
-const HEIGHT = 50;
+const HEIGHT = 45;
 
 const term = new Terminal(document.querySelector('canvas'), WIDTH, HEIGHT);
 const rng = new RNG();

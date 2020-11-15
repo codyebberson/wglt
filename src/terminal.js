@@ -133,18 +133,19 @@ export class Terminal extends Console {
 
     this.texture = this.loadTexture(this.font.url);
 
-    this.frameDelay = options.frameDelay || 0;
-    this.frameIndex = 0;
+    // this.frameDelay = options.frameDelay || 0;
+    // this.frameIndex = 0;
 
-    this.renderLoop();
+    // this.renderLoop();
+    window.setInterval(() => this.renderLoop(), 1000 / 30);
   }
 
   handleResize() {
     const widthFactor = this.canvas.parentElement.offsetWidth / this.pixelWidth;
     const heightFactor = this.canvas.parentElement.offsetHeight / this.pixelHeight;
     const factor = Math.min(widthFactor, heightFactor);
-    const width = factor * this.pixelWidth;
-    const height = factor * this.pixelHeight;
+    const width = (factor * this.pixelWidth) | 0;
+    const height = (factor * this.pixelHeight) | 0;
     this.canvas.style.width = width + 'px';
     this.canvas.style.height = height + 'px';
   }
@@ -358,8 +359,8 @@ export class Terminal extends Console {
   }
 
   renderLoop() {
-    this.frameIndex++;
-    if (this.frameIndex >= this.frameDelay) {
+    // this.frameIndex++;
+    // if (this.frameIndex >= this.frameDelay) {
       this.keys.updateKeys();
       this.mouse.update();
       if (this.update) {
@@ -370,8 +371,8 @@ export class Terminal extends Console {
       }
       this.flush();
       this.render();
-      this.frameIndex = 0;
-    }
-    requestAnimationFrame(this.renderLoop.bind(this));
+    //   this.frameIndex = 0;
+    // }
+    // requestAnimationFrame(this.renderLoop.bind(this));
   }
 }

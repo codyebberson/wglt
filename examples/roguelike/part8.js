@@ -12,7 +12,7 @@ import {TileMap} from '../../src/tilemap.js';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
+const SCREEN_HEIGHT = 45;
 
 // Size of the map
 const MAP_WIDTH = 80;

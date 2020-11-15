@@ -82,7 +82,7 @@ term.update = function () {
         lights[0].y = term.mouse.y;
     }
 
-    term.fillRect(0, 0, 80, 50, 0, Colors.BLACK, Colors.BLACK);
+    term.fillRect(0, 0, 80, 45, 0, Colors.BLACK, Colors.BLACK);
 
     for (let i = 0; i < rain.length; i++) {
         const raindrop = rain[i];

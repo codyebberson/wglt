@@ -3,7 +3,7 @@ import {fromHsv} from '../src/color.js';
 import {Terminal} from '../src/terminal.js';
 
 const WIDTH = 80;
-const HEIGHT = 50;
+const HEIGHT = 45;
 
 const term = new Terminal(document.querySelector('canvas'), WIDTH, HEIGHT);
 let hue = 0;

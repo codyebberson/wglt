@@ -1,16 +1,17 @@
+
 * {
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
-    font-family: monospace;
 }
 
 body {
-    background: black;
+    background: rgb(23, 23, 23);
     color: white;
+    font-family: Segoe UI,SegoeUI,Helvetica Neue,Helvetica,Arial,sans-serif;
     margin: 40px auto;
-    max-width: 700px;
+    max-width: 1000px;
     line-height: 1.6;
-    padding: 0 10px;
+    padding: 0;
 }
 
 h1, h2, h3 {
@@ -32,10 +33,17 @@ pre {
 }
 
 a {
-    color: #00f;
+    color: rgb(77, 178, 255);
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(0, 145, 255);
+    text-decoration: underline;
 }
 
 .diff {
+    font-family: Consolas, monospace;
     border-top: 1px solid #aaa;
     padding-top: 10px;
 }

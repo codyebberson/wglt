@@ -5,7 +5,7 @@ import {RNG} from '../src/rng.js';
 import {Terminal} from '../src/terminal.js';
 
 const w = 80;
-const h = 50;
+const h = 45;
 
 const rain = new Array(h);
 for (let y = 0; y < h; y++) {

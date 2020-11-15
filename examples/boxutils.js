@@ -6,7 +6,7 @@ import {Terminal} from '../src/terminal.js';
 import { Chars } from '../src/chars.js';
 
 const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 50;
+const SCREEN_HEIGHT = 45;
 
 const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
 

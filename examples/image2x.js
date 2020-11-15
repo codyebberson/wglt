@@ -4,8 +4,8 @@ import {loadImage2x} from '../src/image.js';
 import {Keys} from '../src/keys.js';
 import {Terminal} from '../src/terminal.js';
 
-const term = new Terminal(document.querySelector('canvas'), 80, 50);
-term.fillRect(0, 0, 80, 50, 0, Colors.YELLOW, Colors.DARK_BLUE);
+const term = new Terminal(document.querySelector('canvas'), 80, 45);
+term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
@@ -32,7 +32,7 @@ term.update = function () {
     term.clear();
 
     if (img) {
-        term.drawConsole(0, 0, img, 0, 0, 80, 50);
+        term.drawConsole(0, 0, img, 0, 0, 80, 45);
     }
 
     term.drawString(1, 1, 'Hello world!', Colors.WHITE);

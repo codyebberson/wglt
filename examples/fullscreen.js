@@ -4,10 +4,10 @@ import {Keys} from '../src/keys.js';
 
 const term = new Terminal(
     document.querySelector('canvas'),
-    80, 50,
+    80, 45,
     {requestFullscreen: true});
 
-term.fillRect(0, 0, 80, 50, 0, Colors.LIGHT_GREEN, Colors.BLACK);
+term.fillRect(0, 0, 80, 45, 0, Colors.LIGHT_GREEN, Colors.BLACK);
 
 let x = 10;
 let y = 10;
