@@ -106,7 +106,7 @@ export class TileMap extends Console {
     if (blockedFunc) {
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          this.grid[y][x].blocked = blockedFunc(x, y);
+          this.grid[y][x].blocked = this.grid[y][x].blockSight = blockedFunc(x, y);
         }
       }
     }
