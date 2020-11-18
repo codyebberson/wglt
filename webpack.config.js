@@ -44,9 +44,7 @@ module.exports = entries.map(entry => ({
           inline: 2
         },
         mangle: {
-          properties: {
-            keep_quoted: true
-          }
+          properties: false
         },
         output: {
           ecma: 6,
