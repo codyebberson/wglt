@@ -1,7 +1,7 @@
 
 import {Console} from './console.js';
 import {DEFAULT_FONT} from './font.js';
-import {Keyboard, Keys} from './keys.js';
+import {Keyboard} from './keys.js';
 import {Mouse} from './mouse.js';
 import {FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE} from './shaders.js';
 
@@ -18,7 +18,7 @@ function interpolate(i, max) {
 
 const DEFAULT_OPTIONS = {
   font: DEFAULT_FONT,
-  requestFullscreen: false
+  requestFullscreen: false,
 };
 
 export class Terminal extends Console {
@@ -133,11 +133,8 @@ export class Terminal extends Console {
 
     this.texture = this.loadTexture(this.font.url);
 
-    // this.frameDelay = options.frameDelay || 0;
-    // this.frameIndex = 0;
-
-    // this.renderLoop();
-    window.setInterval(() => this.renderLoop(), 1000 / 30);
+    const frameRate = options.frameRate || 15;
+    window.setInterval(() => this.renderLoop(), 1000 / frameRate);
   }
 
   handleResize() {
@@ -359,20 +356,15 @@ export class Terminal extends Console {
   }
 
   renderLoop() {
-    // this.frameIndex++;
-    // if (this.frameIndex >= this.frameDelay) {
-      this.keys.updateKeys();
-      this.mouse.update();
-      if (this.update) {
-        this.update();
-      }
-      if (this.state) {
-        this.state.update();
-      }
-      this.flush();
-      this.render();
-    //   this.frameIndex = 0;
-    // }
-    // requestAnimationFrame(this.renderLoop.bind(this));
+    this.keys.updateKeys();
+    this.mouse.update();
+    if (this.update) {
+      this.update();
+    }
+    if (this.state) {
+      this.state.update();
+    }
+    this.flush();
+    this.render();
   }
 }
