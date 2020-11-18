@@ -1,6 +1,6 @@
 {
   "name": "wglt",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "webpack --mode development --watch",
