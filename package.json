@@ -9,9 +9,9 @@
   "author": "Cody Ebberson",
   "license": "MIT",
   "devDependencies": {
-    "terser-webpack-plugin": "^2.3.8",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "terser-webpack-plugin": "^5.0.3",
+    "webpack": "^5.5.0",
+    "webpack-cli": "^4.2.0"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,6 @@
   "files": [
     "dist"
   ],
+  "main": "dist/wglt.js",
   "dependencies": {}
 }

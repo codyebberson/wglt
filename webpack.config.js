@@ -21,6 +21,9 @@ function getOutputPath(entry) {
 }
 
 function getOutputFilename(entry) {
+  if (entry === './src/index.js') {
+    return 'wglt.js';
+  }
   return path.basename(entry).replace('.js', '.min.js');
 }
 
@@ -29,6 +32,7 @@ module.exports = entries.map(entry => ({
   output: {
     path: getOutputPath(entry),
     filename: getOutputFilename(entry),
+    library: 'wglt',
     libraryTarget: 'umd'
   },
   optimization: {
