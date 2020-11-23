@@ -1,3 +1,4 @@
+import { Console } from './console';
 
 /**
  * Details about box characters.
