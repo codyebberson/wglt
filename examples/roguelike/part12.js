@@ -1,118 +1,109 @@
-
-import {Colors} from '../../src/colors.js';
-import {fromRgb} from '../../src/color.js';
-import {GUI} from '../../src/gui.js';
-import {Keys} from '../../src/keys.js';
-import {loadImage2x} from '../../src/image.js';
-import {MessageDialog} from '../../src/gui/messagedialog.js';
-import {Rect} from '../../src/rect.js';
-import {RNG} from '../../src/rng.js';
-import {SelectDialog} from '../../src/gui/selectdialog.js';
-import {Terminal} from '../../src/terminal.js';
-import {TileMap} from '../../src/tilemap.js';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = require("../../src/colors");
+var console_1 = require("../../src/console");
+var color_1 = require("../../src/color");
+var gui_1 = require("../../src/gui");
+var keys_1 = require("../../src/keys");
+var image_1 = require("../../src/image");
+var messagedialog_1 = require("../../src/gui/messagedialog");
+var rect_1 = require("../../src/rect");
+var rng_1 = require("../../src/rng");
+var selectdialog_1 = require("../../src/gui/selectdialog");
+var terminal_1 = require("../../src/terminal");
 // Actual size of the window
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 45;
-
+var SCREEN_WIDTH = 80;
+var SCREEN_HEIGHT = 45;
 // Size of the map
-const MAP_WIDTH = 80;
-const MAP_HEIGHT = 43;
-
+var MAP_WIDTH = 80;
+var MAP_HEIGHT = 43;
 // Sizes and coordinates relevant for the GUI
-const BAR_WIDTH = 20;
-const PANEL_HEIGHT = 7;
-const PANEL_Y = SCREEN_HEIGHT - PANEL_HEIGHT;
-const MSG_X = BAR_WIDTH + 2;
-const MSG_WIDTH = SCREEN_WIDTH - BAR_WIDTH - 2;
-const MSG_HEIGHT = PANEL_HEIGHT - 1;
-
+var BAR_WIDTH = 20;
+var PANEL_HEIGHT = 7;
+var PANEL_Y = SCREEN_HEIGHT - PANEL_HEIGHT;
+var MSG_X = BAR_WIDTH + 2;
+var MSG_WIDTH = SCREEN_WIDTH - BAR_WIDTH - 2;
+var MSG_HEIGHT = PANEL_HEIGHT - 1;
 // Parameters for dungeon generator
-const ROOM_MAX_SIZE = 10;
-const ROOM_MIN_SIZE = 6;
-const MAX_ROOMS = 30;
-const TORCH_RADIUS = 10;
-
+var ROOM_MAX_SIZE = 10;
+var ROOM_MIN_SIZE = 6;
+var MAX_ROOMS = 30;
+var TORCH_RADIUS = 10;
 // Spell values
-const HEAL_AMOUNT = 4;
-const LIGHTNING_DAMAGE = 20;
-const LIGHTNING_RANGE = 5;
-const CONFUSE_RANGE = 8;
-const CONFUSE_NUM_TURNS = 10;
-const FIREBALL_RANGE = 10;
-const FIREBALL_RADIUS = 3;
-const FIREBALL_DAMAGE = 12;
-
+var HEAL_AMOUNT = 4;
+var LIGHTNING_DAMAGE = 20;
+var LIGHTNING_RANGE = 5;
+var CONFUSE_RANGE = 8;
+var CONFUSE_NUM_TURNS = 10;
+var FIREBALL_RANGE = 10;
+var FIREBALL_RADIUS = 3;
+var FIREBALL_DAMAGE = 12;
 // Experience and level-ups
-const LEVEL_UP_BASE = 200;
-const LEVEL_UP_FACTOR = 150;
-
-const COLOR_DARK_WALL = fromRgb(0, 0, 100);
-const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);
-const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
-const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);
-
-class Entity {
-    constructor(x, y, char, name, color, blocks, components) {
+var LEVEL_UP_BASE = 200;
+var LEVEL_UP_FACTOR = 150;
+var COLOR_DARK_WALL = color_1.fromRgb(0, 0, 100);
+var COLOR_LIGHT_WALL = color_1.fromRgb(130, 110, 50);
+var COLOR_DARK_GROUND = color_1.fromRgb(50, 50, 150);
+var COLOR_LIGHT_GROUND = color_1.fromRgb(200, 180, 50);
+var Entity = /** @class */ (function () {
+    function Entity(x, y, char, name, color, blocks, components) {
         this.x = x;
         this.y = y;
         this.char = char;
         this.name = name;
         this.color = color;
         this.blocks = !!blocks;
-
         if (components) {
-            for (var property in components) {
-                if (components.hasOwnProperty(property)) {
-                    this[property] = components[property];
-                    this[property].owner = this;
-                }
+            if ('fighter' in components) {
+                this.fighter = components.fighter;
+                this.fighter.owner = this;
+            }
+            if ('ai' in components) {
+                this.ai = components.ai;
+                this.ai.owner = this;
+            }
+            if ('item' in components) {
+                this.item = components.item;
+                this.item.owner = this;
             }
         }
     }
-
-    move(dx, dy) {
+    Entity.prototype.move = function (dx, dy) {
         if (isBlocked(this.x + dx, this.y + dy)) {
             return;
         }
         this.x += dx;
         this.y += dy;
-    }
-
-    moveToward(targetX, targetY) {
-        const dx = targetX - this.x;
-        const dy = targetY - this.y;
-        const distance = Math.hypot(dx, dy);
+    };
+    Entity.prototype.moveToward = function (targetX, targetY) {
+        var dx = targetX - this.x;
+        var dy = targetY - this.y;
+        var distance = Math.hypot(dx, dy);
         this.move(Math.round(dx / distance), Math.round(dy / distance));
-    }
-
-    distanceTo(other) {
+    };
+    Entity.prototype.distanceTo = function (other) {
         return Math.hypot(other.x - this.x, other.y - this.y);
-    }
-
-    distance(x, y) {
+    };
+    Entity.prototype.distance = function (x, y) {
         return Math.hypot(x - this.x, y - this.y);
-    }
-
-    sendToBack() {
+    };
+    Entity.prototype.sendToBack = function () {
         this.remove();
         entities.unshift(this);
-    }
-
-    remove() {
+    };
+    Entity.prototype.remove = function () {
         entities.splice(entities.indexOf(this), 1);
-    }
-
-    draw() {
+    };
+    Entity.prototype.draw = function () {
         if (map.isVisible(this.x, this.y)) {
             term.drawString(this.x, this.y, this.char, this.color);
         }
-    }
-}
-
-class Fighter {
-    constructor(hp, defense, power, xp, deathFunction) {
-        this.owner = null;
+    };
+    return Entity;
+}());
+var Fighter = /** @class */ (function () {
+    function Fighter(hp, defense, power, xp, deathFunction) {
+        this.owner = undefined;
         this.maxHp = hp;
         this.defense = defense;
         this.power = power;
@@ -120,21 +111,24 @@ class Fighter {
         this.xp = xp;
         this.deathFunction = deathFunction || null;
     }
-
-    attack(target) {
-        const damage = this.power - target.fighter.defense;
-
+    Fighter.prototype.attack = function (target) {
+        if (!this.owner || !target.fighter) {
+            return;
+        }
+        var damage = this.power - target.fighter.defense;
         if (damage > 0) {
             addMessage(capitalize(this.owner.name) + ' attacks ' + target.name + ' for ' + damage + ' hit points.');
             target.fighter.takeDamage(damage);
-        } else {
+        }
+        else {
             addMessage(capitalize(this.owner.name) + ' attacks ' + target.name + ' but it has no effect!');
         }
-    }
-
-    takeDamage(damage) {
+    };
+    Fighter.prototype.takeDamage = function (damage) {
+        if (!this.owner) {
+            return;
+        }
         this.hp -= damage;
-
         // Check for death. if there's a death function, call it
         if (this.hp <= 0) {
             this.hp = 0;
@@ -146,402 +140,365 @@ class Fighter {
                 checkLevelUp();
             }
         }
-    }
-
-    heal(amount) {
+    };
+    Fighter.prototype.heal = function (amount) {
         this.hp = Math.min(this.hp + amount, this.maxHp);
+    };
+    return Fighter;
+}());
+var BasicMonster = /** @class */ (function () {
+    function BasicMonster() {
+        this.owner = undefined;
     }
-}
-
-class BasicMonster {
-    constructor() {
-        this.owner = null;
-    }
-
-    takeTurn() {
-        const monster = this.owner;
-
+    BasicMonster.prototype.takeTurn = function () {
+        if (!player.fighter) {
+            return;
+        }
+        var monster = this.owner;
+        if (!monster || !monster.fighter) {
+            return;
+        }
         // A basic monster takes its turn. if you can see it, it can see you
         if (map.isVisible(monster.x, monster.y)) {
-
             if (monster.distanceTo(player) >= 2) {
                 // Move towards player if far away
                 monster.moveToward(player.x, player.y);
-
-            } else if (player.fighter.hp > 0) {
+            }
+            else if (player.fighter.hp > 0) {
                 // Close enough, attack! (if the player is still alive.)
                 monster.fighter.attack(player);
             }
         }
-    }
-}
-
-class ConfusedMonster {
-    constructor(oldAi) {
-        this.owner = null;
+    };
+    return BasicMonster;
+}());
+var ConfusedMonster = /** @class */ (function () {
+    function ConfusedMonster(oldAi) {
+        this.owner = undefined;
         this.oldAi = oldAi;
         this.numTurns = CONFUSE_NUM_TURNS;
     }
-
-    takeTurn() {
+    ConfusedMonster.prototype.takeTurn = function () {
+        if (!this.owner) {
+            return;
+        }
         if (this.numTurns > 0) {
             // Still confused...
             // Move in a random direction, and decrease the number of turns confused
             this.owner.move(rng.nextRange(-1, 1), rng.nextRange(-1, 1));
             this.numTurns--;
-        } else {
-            this.owner.ai = this.oldAi;
-            addMessage('The ' + this.owner.name + ' is no longer confused!', Colors.LIGHT_RED);
         }
-    }
-}
-
-class Item {
-    constructor(useFunction) {
+        else {
+            this.owner.ai = this.oldAi;
+            addMessage('The ' + this.owner.name + ' is no longer confused!', colors_1.Colors.LIGHT_RED);
+        }
+    };
+    return ConfusedMonster;
+}());
+var Item = /** @class */ (function () {
+    function Item(useFunction) {
         this.useFunction = useFunction;
     }
-
-    pickUp() {
+    Item.prototype.pickUp = function () {
+        if (!this.owner) {
+            return;
+        }
         if (inventory.length >= 26) {
-            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', Colors.LIGHT_RED);
-        } else {
+            addMessage('Your inventory is full, cannot pick up ' + this.owner.name + '.', colors_1.Colors.LIGHT_RED);
+        }
+        else {
             inventory.push(this.owner);
             this.owner.remove();
-            addMessage('You picked up a ' + this.owner.name + '!', Colors.LIGHT_GREEN);
+            addMessage('You picked up a ' + this.owner.name + '!', colors_1.Colors.LIGHT_GREEN);
         }
-    }
-
-    use() {
+    };
+    Item.prototype.use = function () {
+        if (!this.owner) {
+            return;
+        }
         if (this.useFunction) {
             this.useFunction(this);
-        } else {
+        }
+        else {
             addMessage('The ' + this.owner.name + ' cannot be used.');
         }
-    }
-
-    remove() {
+    };
+    Item.prototype.remove = function () {
+        if (!this.owner) {
+            return;
+        }
         inventory.splice(inventory.indexOf(this.owner), 1);
-    }
-}
-
+    };
+    return Item;
+}());
 function isBlocked(x, y) {
     // First test the map tile
     if (map.grid[y][x].blocked) {
         return true;
     }
-
     // Now check for any blocking objects
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.blocks && entity.x === x && entity.y === y) {
             return true;
         }
     }
-
     return false;
 }
-
 function createRoom(map, room) {
-    for (let y = room.y + 1; y < room.y2; y++) {
-        for (let x = room.x + 1; x < room.x2; x++) {
+    for (var y = room.y + 1; y < room.y2; y++) {
+        for (var x = room.x + 1; x < room.x2; x++) {
             map.grid[y][x].blocked = false;
-            map.grid[y][x].blockSight = false;
+            map.grid[y][x].blockedSight = false;
         }
     }
 }
-
 function createHTunnel(map, x1, x2, y) {
-    for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+    for (var x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
         map.grid[y][x].blocked = false;
-        map.grid[y][x].blockSight = false;
+        map.grid[y][x].blockedSight = false;
     }
 }
-
 function createVTunnel(map, y1, y2, x) {
-    for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+    for (var y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
         map.grid[y][x].blocked = false;
-        map.grid[y][x].blockSight = false;
+        map.grid[y][x].blockedSight = false;
     }
 }
-
 function createMap() {
-    const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
+    var map = new console_1.Console(MAP_WIDTH, MAP_HEIGHT);
+    for (var y = 0; y < MAP_HEIGHT; y++) {
+        for (var x = 0; x < MAP_WIDTH; x++) {
             map.grid[y][x].blocked = true;
-            map.grid[y][x].blockSight = true;
+            map.grid[y][x].blockedSight = true;
         }
     }
-
-    const rooms = [];
-
-    for (let r = 0; r < MAX_ROOMS; r++) {
+    var rooms = [];
+    for (var r = 0; r < MAX_ROOMS; r++) {
         // Random width and height
-        const w = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
-        const h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
-
+        var w = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
+        var h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
         // Random position without going out of the boundaries of the map
-        const x = rng.nextRange(0, MAP_WIDTH - w - 1);
-        const y = rng.nextRange(0, MAP_HEIGHT - h - 1);
-
+        var x = rng.nextRange(0, MAP_WIDTH - w - 1);
+        var y = rng.nextRange(0, MAP_HEIGHT - h - 1);
         // "Rect" class makes rectangles easier to work with
-        const newRoom = new Rect(x, y, w, h);
-
+        var newRoom = new rect_1.Rect(x, y, w, h);
         // Run through the other rooms and see if they intersect with this one
-        let failed = false;
-        for (let j = 0; j < rooms.length; j++) {
+        var failed = false;
+        for (var j = 0; j < rooms.length; j++) {
             if (newRoom.intersects(rooms[j])) {
                 failed = true;
                 break;
             }
         }
-
         if (!failed) {
             // This means there are no intersections, so this room is valid
-
             // "paint" it to the map's tiles
             createRoom(map, newRoom);
-
             // Center coordinates of new room, will be useful later
-            const center = newRoom.getCenter();
-
+            var center = newRoom.getCenter();
             if (rooms.length === 0) {
                 // This is the first room, where the player starts at
                 player.x = center.x;
                 player.y = center.y;
-            } else {
+            }
+            else {
                 // All rooms after the first:
                 // Connect it to the previous room with a tunnel
-
                 // Center coordinates of previous room
-                const prev = rooms[rooms.length - 1].getCenter();
-
+                var prev = rooms[rooms.length - 1].getCenter();
                 // Draw a coin (random number that is either 0 or 1)
                 if (rng.nextRange(0, 1) === 1) {
                     // First move horizontally, then vertically
                     createHTunnel(map, prev.x, center.x, prev.y);
                     createVTunnel(map, prev.y, center.y, center.x);
-                } else {
+                }
+                else {
                     // First move vertically, then horizontally
                     createVTunnel(map, prev.y, center.y, prev.x);
                     createHTunnel(map, prev.x, center.x, center.y);
                 }
             }
-
             // Add some contents to this room, such as monsters
             placeObjects(newRoom);
-
             // Finally, append the new room to the list
             rooms.push(newRoom);
         }
     }
-
     // Create stairs at the center of the last room
-    const stairsLoc = rooms[rooms.length - 1].getCenter();
-    stairs = new Entity(stairsLoc.x, stairsLoc.y, '<', 'stairs', Colors.WHITE);
+    var stairsLoc = rooms[rooms.length - 1].getCenter();
+    stairs = new Entity(stairsLoc.x, stairsLoc.y, '<', 'stairs', colors_1.Colors.WHITE);
     entities.push(stairs);
     stairs.sendToBack();
-
     return map;
 }
-
 function fromDungeonLevel(table) {
     // Returns a value that depends on level.
     // The table specifies what value occurs after each level, default is 0.
-    for (let i = 0; i < table.length; i++) {
-        const value = table[i][0];
-        const level = table[i][1];
+    for (var i = 0; i < table.length; i++) {
+        var value = table[i][0];
+        var level = table[i][1];
         if (dungeonLevel >= level) {
             return value;
         }
     }
     return 0;
 }
-
 function placeObjects(room) {
     // This is where we decide the chance of each monster or item appearing.
-
     // Maximum number of monsters per room
-    const maxMonsters = fromDungeonLevel([[2, 1], [3, 4], [5, 6]]);
-
+    var maxMonsters = fromDungeonLevel([[2, 1], [3, 4], [5, 6]]);
     // Chance of each monster
-    const monsterChances = {
-        'orc': 80, // orc always shows up, even if all other monsters have 0 chance
+    var monsterChances = {
+        'orc': 80,
         'troll': fromDungeonLevel([[15, 3], [30, 5], [60, 7]])
     };
-
     // Maximum number of items per room
-    const maxItems = fromDungeonLevel([[1, 1], [2, 4]])
-
+    var maxItems = fromDungeonLevel([[1, 1], [2, 4]]);
     // Chance of each item (by default they have a chance of 0 at level 1, which then goes up)
-    const itemChances = {
-        'heal': 35,  // healing potion always shows up, even if all other items have 0 chance
+    var itemChances = {
+        'heal': 35,
         'lightning': fromDungeonLevel([[25, 4]]),
         'fireball': fromDungeonLevel([[25, 6]]),
         'confuse': fromDungeonLevel([[10, 2]])
     };
-
     // Choose random number of monsters
-    const numMonsters = rng.nextRange(0, maxMonsters + 1);
-
-    for (let i = 0; i < numMonsters; i++) {
+    var numMonsters = rng.nextRange(0, maxMonsters + 1);
+    for (var i = 0; i < numMonsters; i++) {
         // Choose random spot for this monster
-        const x = rng.nextRange(room.x + 1, room.x2 - 1);
-        const y = rng.nextRange(room.y + 1, room.y2 - 1);
-        let monster = null;
-
-        const choice = rng.chooseKey(monsterChances);
+        var x = rng.nextRange(room.x + 1, room.x2 - 1);
+        var y = rng.nextRange(room.y + 1, room.y2 - 1);
+        var monster = null;
+        var choice = rng.chooseKey(monsterChances);
         if (choice === 'orc') {
-            const fighter = new Fighter(20, 0, 4, 35, monsterDeath);
-            const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
-
-        } else if (choice === 'troll') {
-            const fighter = new Fighter(30, 2, 8, 100, monsterDeath);
-            const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
+            var fighter = new Fighter(20, 0, 4, 35, monsterDeath);
+            var ai = new BasicMonster();
+            monster = new Entity(x, y, 'o', 'orc', colors_1.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
         }
-
+        else if (choice === 'troll') {
+            var fighter = new Fighter(30, 2, 8, 100, monsterDeath);
+            var ai = new BasicMonster();
+            monster = new Entity(x, y, 'T', 'troll', colors_1.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
+        }
         entities.push(monster);
     }
-
     // Choose random number of items
-    const numItems = rng.nextRange(0, maxItems + 1);
-
-    for (let i = 0; i < numItems; i++) {
+    var numItems = rng.nextRange(0, maxItems + 1);
+    for (var i = 0; i < numItems; i++) {
         // Choose random spot for this item
-        const x = rng.nextRange(room.x + 1, room.x2 - 1)
-        const y = rng.nextRange(room.y + 1, room.y2 - 1)
-        let item = null;
-
-        const choice = rng.chooseKey(itemChances);
+        var x = rng.nextRange(room.x + 1, room.x2 - 1);
+        var y = rng.nextRange(room.y + 1, room.y2 - 1);
+        var item = null;
+        var choice = rng.chooseKey(itemChances);
         if (choice === 'heal') {
             // Create a healing potion
-            item = new Entity(x, y, '!', 'healing potion', Colors.DARK_MAGENTA, false, { item: new Item(castHeal) });
-
-        } else if (choice === 'lightning') {
-            // Create a lightning bolt scroll
-            item = new Entity(x, y, '#', 'scroll of lightning bolt', Colors.YELLOW, false, { item: new Item(castLightning) });
-
-        } else if (choice === 'fireball') {
-            // Create a fireball scroll
-            item = new Entity(x, y, '#', 'scroll of fireball', Colors.YELLOW, false, { item: new Item(castFireball) });
-
-        } else if (choice === 'confuse') {
-            // Create a confuse scroll
-            item = new Entity(x, y, '#', 'scroll of confusion', Colors.YELLOW, false, { item: new Item(castConfuse) });
+            item = new Entity(x, y, '!', 'healing potion', colors_1.Colors.DARK_MAGENTA, false, { item: new Item(castHeal) });
         }
-
+        else if (choice === 'lightning') {
+            // Create a lightning bolt scroll
+            item = new Entity(x, y, '#', 'scroll of lightning bolt', colors_1.Colors.YELLOW, false, { item: new Item(castLightning) });
+        }
+        else if (choice === 'fireball') {
+            // Create a fireball scroll
+            item = new Entity(x, y, '#', 'scroll of fireball', colors_1.Colors.YELLOW, false, { item: new Item(castFireball) });
+        }
+        else if (choice === 'confuse') {
+            // Create a confuse scroll
+            item = new Entity(x, y, '#', 'scroll of confusion', colors_1.Colors.YELLOW, false, { item: new Item(castConfuse) });
+        }
         entities.push(item);
-        item.sendToBack();  // items appear below other objects
+        item.sendToBack(); // items appear below other objects
     }
 }
-
 function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {
     // Render a bar (HP, experience, etc). first calculate the width of the bar
-    const barWidth = Math.round(value / maximum * totalWidth);
-
+    var barWidth = Math.round(value / maximum * totalWidth);
     // Render the background first
     term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
-
     // Now render the bar on top
     if (barWidth > 0) {
         term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
     }
-
     // Finally, some centered text with the values
     // term.fillForegroundRect(x, y, totalWidth, 1, Colors.WHITE);
-    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, Colors.WHITE);
+    term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, colors_1.Colors.WHITE);
 }
-
 function getNamesUnderMouse() {
-    const x = term.mouse.x;
-    const y = term.mouse.y;
-
+    var x = term.mouse.x;
+    var y = term.mouse.y;
     if (!map.isVisible(x, y)) {
         return '';
     }
-
-    const names = [];
-
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    var names = [];
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.x === x && entity.y === y) {
             names.push(entity.name);
         }
     }
-
     return capitalize(names.join(', '));
 }
-
 function addMessage(msg, opt_color) {
     while (messages.length >= MSG_HEIGHT) {
         messages.shift();
     }
-    messages.push({ text: msg, color: (opt_color || Colors.WHITE) });
+    messages.push({ text: msg, color: (opt_color || colors_1.Colors.WHITE) });
 }
-
 function capitalize(str) {
     if (!str) {
         return str;
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
 function playerMoveOrAttack(dx, dy) {
-    const x = player.x + dx;
-    const y = player.y + dy;
-
-    let target = null;
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    var x = player.x + dx;
+    var y = player.y + dy;
+    var target = null;
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.fighter && entity.x === x && entity.y === y) {
             target = entity;
             break;
         }
     }
-
     if (target) {
         player.fighter.attack(target);
-    } else {
+    }
+    else {
         player.move(dx, dy);
         fovRecompute = true;
     }
-
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.ai) {
             entity.ai.takeTurn();
         }
     }
 }
-
 function handleKeys() {
-    if (player.fighter.hp <= 0) {
+    if (!player.fighter || player.fighter.hp <= 0) {
         return;
     }
-
     if (gui.handleInput()) {
         return;
     }
-
     if (targetFunction) {
-        if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
+        if (term.isKeyPressed(keys_1.Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
             endTargeting(targetCursor.x, targetCursor.y);
         }
-        if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
+        if (term.isKeyPressed(keys_1.Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
             cancelTargeting();
         }
-        if (term.isKeyPressed(Keys.VK_UP)) {
+        if (term.isKeyPressed(keys_1.Keys.VK_UP)) {
             targetCursor.y--;
         }
-        if (term.isKeyPressed(Keys.VK_LEFT)) {
+        if (term.isKeyPressed(keys_1.Keys.VK_LEFT)) {
             targetCursor.x--;
         }
-        if (term.isKeyPressed(Keys.VK_RIGHT)) {
+        if (term.isKeyPressed(keys_1.Keys.VK_RIGHT)) {
             targetCursor.x++;
         }
-        if (term.isKeyPressed(Keys.VK_DOWN)) {
+        if (term.isKeyPressed(keys_1.Keys.VK_DOWN)) {
             targetCursor.y++;
         }
         if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
@@ -550,112 +507,106 @@ function handleKeys() {
         }
         return;
     }
-
-    if (term.isKeyPressed(Keys.VK_ESCAPE)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_ESCAPE)) {
         saveGame();
         appState = 'menu';
     }
-    if (term.isKeyPressed(Keys.VK_UP)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
-    if (term.isKeyPressed(Keys.VK_LEFT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_LEFT)) {
         playerMoveOrAttack(-1, 0);
     }
-    if (term.isKeyPressed(Keys.VK_RIGHT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_RIGHT)) {
         playerMoveOrAttack(1, 0);
     }
-    if (term.isKeyPressed(Keys.VK_DOWN)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
-    if (term.isKeyPressed(Keys.VK_G)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_G)) {
         // Pick up an item
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
+        for (var i = 0; i < entities.length; i++) {
+            var entity = entities[i];
             if (entity.x === player.x && entity.y === player.y && entity.item) {
                 entity.item.pickUp();
             }
         }
     }
-    if (term.isKeyPressed(Keys.VK_I)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_I)) {
         if (inventory.length === 0) {
-            gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
-        } else {
-            const options = inventory.map(item => item.name);
-            gui.add(new SelectDialog('INVENTORY', options, useInventory));
+            gui.add(new messagedialog_1.MessageDialog('ALERT', 'Inventory is empty'));
+        }
+        else {
+            var options = inventory.map(function (item) { return item.name; });
+            gui.add(new selectdialog_1.SelectDialog('INVENTORY', options, useInventory));
         }
     }
-    if (term.isKeyPressed(Keys.VK_C)) {
-        const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
-        gui.add(new MessageDialog('CHARACTER',
-            'Level: ' + player.level +
+    if (term.isKeyPressed(keys_1.Keys.VK_C)) {
+        var levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
+        gui.add(new messagedialog_1.MessageDialog('CHARACTER', 'Level: ' + player.level +
             '\nExperience: ' + player.fighter.xp +
             '\nExperience to level up: ' + levelUpXp +
             '\n\nMaximum HP: ' + player.fighter.maxHp +
             '\nAttack: ' + player.fighter.power +
             '\nDefense: ' + player.fighter.defense));
     }
-    if (term.isKeyPressed(Keys.VK_COMMA)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_COMMA)) {
         if (player.x === stairs.x && player.y === stairs.y) {
             nextLevel();
         }
     }
 }
-
 function useInventory(choice) {
     if (choice >= 0) {
         inventory[choice].item.use();
     }
 }
-
 function checkLevelUp() {
     // See if the player's experience is enough to level-up
-    const levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
+    var levelUpXp = LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR;
     if (player.fighter.xp >= levelUpXp) {
         player.level++;
         player.fighter.xp -= levelUpXp;
-        addMessage('Your battle skills grow stronger! You reached level ' + player.level + '!', Colors.YELLOW);
-
-        const options = [
+        addMessage('Your battle skills grow stronger! You reached level ' + player.level + '!', colors_1.Colors.YELLOW);
+        var options = [
             'Constitution (+20 HP, from ' + player.fighter.maxHp + ')',
             'Strength (+1 attack, from ' + player.fighter.power + ')',
             'Agility (+1 defense, from ' + player.fighter.defense + ')'
         ];
-
-        gui.add(new SelectDialog('LEVEL UP', options, (choice) => {
+        gui.add(new selectdialog_1.SelectDialog('LEVEL UP', options, function (choice) {
             if (choice === 0) {
                 player.fighter.maxHp += 20;
                 player.fighter.hp += 20;
-            } else if (choice === 1) {
+            }
+            else if (choice === 1) {
                 player.fighter.power += 1;
-            } else if (choice === 2) {
+            }
+            else if (choice === 2) {
                 player.fighter.defense += 1;
             }
         }));
     }
 }
-
 function playerDeath(player) {
-    addMessage('You died!', Colors.LIGHT_RED);
+    addMessage('You died!', colors_1.Colors.LIGHT_RED);
 }
-
 function monsterDeath(monster) {
-    addMessage(capitalize(monster.name) + ' is dead! You gain ' + monster.fighter.xp + ' XP.', Colors.ORANGE);
+    addMessage(capitalize(monster.name) + ' is dead! You gain ' + monster.fighter.xp + ' XP.', colors_1.Colors.ORANGE);
     monster.char = '%';
-    monster.color = Colors.DARK_RED;
+    monster.color = colors_1.Colors.DARK_RED;
     monster.blocks = false;
-    monster.fighter = null;
-    monster.ai = null;
+    monster.fighter = undefined;
+    monster.ai = undefined;
     monster.name = 'remains of ' + monster.name;
     monster.sendToBack();
 }
-
 function getClosestMonster(x, y, range) {
-    let minDist = range + 1;
-    let result = null;
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    var minDist = range + 1;
+    var result = null;
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.fighter && entity !== player) {
-            const dist = entity.distance(x, y);
+            var dist = entity.distance(x, y);
             if (dist < minDist) {
                 minDist = dist;
                 result = entity;
@@ -664,167 +615,140 @@ function getClosestMonster(x, y, range) {
     }
     return result;
 }
-
 function getMonsterAt(x, y) {
     return getClosestMonster(x, y, 0);
 }
-
 function castHeal(item) {
-    // Heal the player
-    if (player.fighter.hp === player.fighter.maxHp) {
-        addMessage('You are already at full health.', Colors.DARK_RED);
+    if (!player.fighter) {
         return;
     }
-
-    addMessage('Your wounds start to feel better!', Colors.LIGHT_MAGENTA);
+    // Heal the player
+    if (player.fighter.hp === player.fighter.maxHp) {
+        addMessage('You are already at full health.', colors_1.Colors.DARK_RED);
+        return;
+    }
+    addMessage('Your wounds start to feel better!', colors_1.Colors.LIGHT_MAGENTA);
     player.fighter.heal(HEAL_AMOUNT);
     item.remove();
 }
-
 function castLightning(item) {
     // Find closest enemy (inside a maximum range) and damage it
-    const monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
+    var monster = getClosestMonster(player.x, player.y, LIGHTNING_RANGE);
     if (!monster) {
-        addMessage('No enemy is close enough to strike.', Colors.LIGHT_RED);
+        addMessage('No enemy is close enough to strike.', colors_1.Colors.LIGHT_RED);
         return;
     }
-
     // Zap it!
-    addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', Colors.LIGHT_BLUE);
-    addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', Colors.LIGHT_BLUE);
+    addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', colors_1.Colors.LIGHT_BLUE);
+    addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', colors_1.Colors.LIGHT_BLUE);
     monster.fighter.takeDamage(LIGHTNING_DAMAGE);
     item.remove();
 }
-
 function castFireball(item) {
     // Ask the player for a target tile to throw a fireball at
-    addMessage('Left-click to cast fireball, or right-click to cancel.', Colors.LIGHT_CYAN);
-    startTargeting((x, y) => {
+    addMessage('Left-click to cast fireball, or right-click to cancel.', colors_1.Colors.LIGHT_CYAN);
+    startTargeting(function (x, y) {
         if (player.distance(x, y) > FIREBALL_RANGE) {
-            addMessage('Target out of range.', Colors.LIGHT_GRAY);
+            addMessage('Target out of range.', colors_1.Colors.LIGHT_GRAY);
             return;
         }
-
-        addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', Colors.ORANGE);
-
-        for (let i = 0; i < entities.length; i++) {
-            const entity = entities[i];
+        addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', colors_1.Colors.ORANGE);
+        for (var i = 0; i < entities.length; i++) {
+            var entity = entities[i];
             if (entity.fighter && entity.distance(x, y) <= FIREBALL_RADIUS) {
-                addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', Colors.ORANGE);
+                addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', colors_1.Colors.ORANGE);
                 entity.fighter.takeDamage(FIREBALL_DAMAGE);
             }
         }
-
         item.remove();
     });
 }
-
 function castConfuse(item) {
     // Ask the player for a target to confuse
-    addMessage('Left-click to cast confuse, or right-click to cancel.', Colors.LIGHT_CYAN);
-    startTargeting((x, y) => {
+    addMessage('Left-click to cast confuse, or right-click to cancel.', colors_1.Colors.LIGHT_CYAN);
+    startTargeting(function (x, y) {
         if (player.distance(x, y) > CONFUSE_RANGE) {
-            addMessage('Target out of range.', Colors.LIGHT_GRAY);
+            addMessage('Target out of range.', colors_1.Colors.LIGHT_GRAY);
             return;
         }
-
-        const monster = getMonsterAt(x, y);
+        var monster = getMonsterAt(x, y);
         if (!monster) {
-            addMessage('No monster there.', Colors.LIGHT_GRAY);
+            addMessage('No monster there.', colors_1.Colors.LIGHT_GRAY);
             return;
         }
-
         monster.ai = new ConfusedMonster(monster.ai);
         monster.ai.owner = monster;
-        addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', Colors.LIGHT_GREEN);
+        addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', colors_1.Colors.LIGHT_GREEN);
         item.remove();
     });
 }
-
 function startTargeting(callback) {
     targetFunction = callback;
     targetCursor.x = player.x;
     targetCursor.y = player.y;
 }
-
 function endTargeting(x, y) {
-    targetFunction(x, y);
-    cancelTargeting();
+    if (targetFunction) {
+        targetFunction(x, y);
+        cancelTargeting();
+    }
 }
-
 function cancelTargeting() {
-    targetFunction = null;
+    targetFunction = undefined;
 }
-
 function renderAll() {
     if (fovRecompute) {
         map.computeFov(player.x, player.y, TORCH_RADIUS);
         fovRecompute = false;
     }
-
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            const visible = map.isVisible(x, y);
-            const wall = map.grid[y][x].blockSight;
-            let color = Colors.BLACK;
-
+    for (var y_1 = 0; y_1 < MAP_HEIGHT; y_1++) {
+        for (var x = 0; x < MAP_WIDTH; x++) {
+            var visible = map.isVisible(x, y_1);
+            var wall = map.grid[y_1][x].blockedSight;
+            var color = colors_1.Colors.BLACK;
             if (visible) {
                 // It's visible
                 color = wall ? COLOR_LIGHT_WALL : COLOR_LIGHT_GROUND;
-                map.grid[y][x].explored = true;
-            } else if (map.grid[y][x].explored) {
+                map.grid[y_1][x].explored = true;
+            }
+            else if (map.grid[y_1][x].explored) {
                 // It's remembered
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
-
-            term.drawChar(x, y, 0, 0, color);
+            term.drawChar(x, y_1, 0, 0, color);
         }
     }
-
-    for (let i = 0; i < entities.length; i++) {
+    for (var i = 0; i < entities.length; i++) {
         entities[i].draw();
     }
-
     // Prepare to render the GUI panel
-    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
-
+    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, colors_1.Colors.WHITE, colors_1.Colors.BLACK);
     // Print the game messages, one line at a time
-    let y = PANEL_Y + 1;
-    for (let i = 0; i < messages.length; i++) {
-        const message = messages[i];
+    var y = PANEL_Y + 1;
+    for (var i = 0; i < messages.length; i++) {
+        var message = messages[i];
         term.drawString(MSG_X, y, message.text, message.color);
         y++;
     }
-
     // Show the player's stats
-    renderBar(
-        1, PANEL_Y + 1, BAR_WIDTH,
-        'HP', player.fighter.hp, player.fighter.maxHp,
-        Colors.LIGHT_RED, Colors.DARK_RED);
-
-    renderBar(
-        1, PANEL_Y + 2, BAR_WIDTH,
-        'XP', player.fighter.xp, LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR,
-        Colors.LIGHT_MAGENTA, Colors.DARK_MAGENTA);
-
-    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + dungeonLevel, Colors.ORANGE);
-
+    renderBar(1, PANEL_Y + 1, BAR_WIDTH, 'HP', player.fighter.hp, player.fighter.maxHp, colors_1.Colors.LIGHT_RED, colors_1.Colors.DARK_RED);
+    renderBar(1, PANEL_Y + 2, BAR_WIDTH, 'XP', player.fighter.xp, LEVEL_UP_BASE + player.level * LEVEL_UP_FACTOR, colors_1.Colors.LIGHT_MAGENTA, colors_1.Colors.DARK_MAGENTA);
+    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + dungeonLevel, colors_1.Colors.ORANGE);
     // Display names of objects under the mouse
-    term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);
-
+    term.drawString(1, PANEL_Y, getNamesUnderMouse(), colors_1.Colors.LIGHT_GRAY);
     if (targetFunction) {
-        term.getCell(targetCursor.x, targetCursor.y).setBackground(Colors.WHITE);
+        var targetCell = term.getCell(targetCursor.x, targetCursor.y);
+        if (targetCell) {
+            targetCell.setBackground(colors_1.Colors.WHITE);
+        }
     }
-
     // Draw dialog boxes
     gui.draw();
 }
-
 function saveGame() {
     // TODO: JSON.stringify does not support prototypes and circular references
     // Investigate Cryo: https://github.com/hunterloftis/cryo
 }
-
 function loadGame() {
     // TODO
     if (!player) {
@@ -832,10 +756,9 @@ function loadGame() {
     }
     appState = 'game';
 }
-
 function newGame() {
-    rng = new RNG(Date.now());
-    player = new Entity(40, 25, '@', 'player', Colors.WHITE, true, { fighter: new Fighter(100, 1, 4, 0, playerDeath) });
+    rng = new rng_1.RNG(Date.now());
+    player = new Entity(40, 25, '@', 'player', colors_1.Colors.WHITE, true, { fighter: new Fighter(100, 1, 4, 0, playerDeath) });
     player.level = 1;
     entities = [player];
     messages = [];
@@ -843,75 +766,65 @@ function newGame() {
     map = createMap();
     fovRecompute = true;
     inventory = [];
-    addMessage('Welcome stranger! Prepare to perish!', Colors.DARK_RED);
+    addMessage('Welcome stranger! Prepare to perish!', colors_1.Colors.DARK_RED);
     appState = 'game';
 }
-
 function nextLevel() {
     // Advance to the next level
-    addMessage('You take a moment to rest, and recover your strength.', Colors.LIGHT_MAGENTA);
+    addMessage('You take a moment to rest, and recover your strength.', colors_1.Colors.LIGHT_MAGENTA);
     player.fighter.heal(player.fighter.maxHp / 2); // heal the player by 50%
     dungeonLevel++;
-    addMessage('After a rare moment of peace, you descend deeper...', Colors.LIGHT_RED);
+    addMessage('After a rare moment of peace, you descend deeper...', colors_1.Colors.LIGHT_RED);
     entities = [player];
     map = createMap(); // Create a fresh new level!
     fovRecompute = true;
 }
-
 function playGame() {
     handleKeys();
     renderAll();
 }
-
 function mainMenu() {
     if (gui.dialogs.length === 0) {
-        const options = ['Play a new game', 'Continue last game'];
-        gui.add(new SelectDialog('MAIN MENU', options, (choice) => {
+        var options = ['Play a new game', 'Continue last game'];
+        gui.add(new selectdialog_1.SelectDialog('MAIN MENU', options, function (choice) {
             if (choice === 0) {
                 newGame();
-            } else if (choice === 1) {
+            }
+            else if (choice === 1) {
                 loadGame();
             }
         }));
     }
-
     gui.handleInput();
-
     term.clear();
-
     if (menuBg) {
         term.drawConsole(0, 0, menuBg, 0, 0, 80, 50);
     }
-
-    term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', Colors.YELLOW);
-    term.drawCenteredString(40, 12, 'By Jotaf', Colors.YELLOW);
+    term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', colors_1.Colors.YELLOW);
+    term.drawCenteredString(40, 12, 'By Jotaf', colors_1.Colors.YELLOW);
     gui.draw();
 }
-
-const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const gui = new GUI(term);
-let rng = null;
-let player = null;
-let stairs = null;
-let entities = null;
-let messages = null;
-let dungeonLevel = 0;
-let map = null;
-let fovRecompute = true;
-let inventory = null;
-let targetFunction = null;
-let targetCursor = { x: 0, y: 0 };
-let appState = 'menu';
-let menuBg = null;
-
-loadImage2x('menu.png', (result) => { menuBg = result });
-
+var term = new terminal_1.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+var gui = new gui_1.GUI(term);
+var rng = null;
+var player = null;
+var stairs = null;
+var entities = null;
+var messages = null;
+var dungeonLevel = 0;
+var map = null;
+var fovRecompute = true;
+var inventory = null;
+var targetFunction = undefined;
+var targetCursor = { x: 0, y: 0 };
+var appState = 'menu';
+var menuBg = null;
+image_1.loadImage2x('menu.png', function (result) { menuBg = result; });
 term.update = function () {
     switch (appState) {
         case 'menu':
             mainMenu();
             break;
-
         case 'game':
             playGame();
             break;

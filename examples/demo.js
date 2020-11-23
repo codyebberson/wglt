@@ -1,9 +1,9 @@
 
-import { Terminal } from '../src/terminal.js';
-import { Colors } from '../src/colors.js';
-import { Keys } from '../src/keys.js';
-import { Point } from '../src/point.js';
-import { RNG } from '../src/rng.js';
+import { Terminal } from '../src/terminal';
+import { Colors } from '../src/colors';
+import { Keys } from '../src/keys';
+import { Point } from '../src/point';
+import { RNG } from '../src/rng';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -142,5 +142,5 @@ const rng = new RNG();
 
 const mainMenu = new MainMenu();
 
-const term = new Terminal(document.querySelector('canvas'), WIDTH, HEIGHT);
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, WIDTH, HEIGHT);
 term.state = mainMenu;

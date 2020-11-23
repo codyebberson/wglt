@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const Terser = require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
-const entries = ['./src/index.js'];
+const entries = ['./src/index.ts'];
 addDir('./examples/');
 addDir('./examples/roguelike/');
 
@@ -11,7 +11,7 @@ function addDir(dir) {
 }
 
 function addFile(dir, file) {
-  if (file.endsWith('.js') && !file.endsWith('.min.js')) {
+  if (file.endsWith('.ts')) {
     entries.push(dir + file);
   }
 }
@@ -21,10 +21,10 @@ function getOutputPath(entry) {
 }
 
 function getOutputFilename(entry) {
-  if (entry === './src/index.js') {
+  if (entry === './src/index.ts') {
     return 'wglt.js';
   }
-  return path.basename(entry).replace('.js', '.min.js');
+  return path.basename(entry).replace('.ts', '.min.js');
 }
 
 module.exports = entries.map(entry => ({
@@ -35,8 +35,20 @@ module.exports = entries.map(entry => ({
     library: 'wglt',
     libraryTarget: 'umd'
   },
+  resolve: {
+    extensions: ['.js', '.ts']
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|ts)$/,
+        exclude: '/node_modules/',
+        loader: 'babel-loader'
+      }
+    ]
+  },
   optimization: {
-    minimizer: [new Terser({
+    minimizer: [new TerserPlugin({
       terserOptions: {
         parse: {
           ecma: 8,

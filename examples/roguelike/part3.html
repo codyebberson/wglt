@@ -39,35 +39,35 @@
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function createRoom(map, room) {</div>
+<div class="c2">+function createRoom(map: Console, room: Rect) {</div>
 <div class="c2">+    for (let y = room.y + 1; y &lt; room.y2; y++) {</div>
 <div class="c2">+        for (let x = room.x + 1; x &lt; room.x2; x++) {</div>
 <div class="c2">+            map.grid[y][x].blocked = false;</div>
-<div class="c2">+            map.grid[y][x].blockSight = false;</div>
+<div class="c2">+            map.grid[y][x].blockedSight = false;</div>
 <div class="c2">+        }</div>
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function createHTunnel(map, x1, x2, y) {</div>
+<div class="c2">+function createHTunnel(map: Console, x1: number, x2: number, y: number) {</div>
 <div class="c2">+    for (let x = Math.min(x1, x2); x &lt;= Math.max(x1, x2); x++) {</div>
 <div class="c2">+        map.grid[y][x].blocked = false;</div>
-<div class="c2">+        map.grid[y][x].blockSight = false;</div>
+<div class="c2">+        map.grid[y][x].blockedSight = false;</div>
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function createVTunnel(map, y1, y2, x) {</div>
+<div class="c2">+function createVTunnel(map: Console, y1: number, y2: number, x: number) {</div>
 <div class="c2">+    for (let y = Math.min(y1, y2); y &lt;= Math.max(y1, y2); y++) {</div>
 <div class="c2">+        map.grid[y][x].blocked = false;</div>
-<div class="c2">+        map.grid[y][x].blockSight = false;</div>
+<div class="c2">+        map.grid[y][x].blockedSight = false;</div>
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+function createMap() {</div>
-<div class="c2">+    const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);</div>
+<div class="c2">+    const map = new Console(MAP_WIDTH, MAP_HEIGHT);</div>
 <div class="c2">+    for (let y = 0; y &lt; MAP_HEIGHT; y++) {</div>
 <div class="c2">+        for (let x = 0; x &lt; MAP_WIDTH; x++) {</div>
 <div class="c2">+            map.grid[y][x].blocked = true;</div>
-<div class="c2">+            map.grid[y][x].blockSight = true;</div>
+<div class="c2">+            map.grid[y][x].blockedSight = true;</div>
 <div class="c2">+        }</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
@@ -145,12 +145,12 @@
 <div class="c0"> const player = new Entity(40, 25, &#x27;@&#x27;, Colors.WHITE);</div>
 <div class="c0"> const npc = new Entity(40, 20, &#x27;@&#x27;, Colors.YELLOW);</div>
 <div class="c0"> const entities = [player, npc];</div>
-<div class="c3">-const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);</div>
+<div class="c3">-const map = new Console(MAP_WIDTH, MAP_HEIGHT);</div>
 <div class="c3">-</div>
 <div class="c3">-map.grid[22][30].blocked = true;</div>
-<div class="c3">-map.grid[22][30].blockSight = true;</div>
+<div class="c3">-map.grid[22][30].blockedSight = true;</div>
 <div class="c3">-map.grid[22][50].blocked = true;</div>
-<div class="c3">-map.grid[22][50].blockSight = true;</div>
+<div class="c3">-map.grid[22][50].blockedSight = true;</div>
 <div class="c2">+const map = createMap();</div>
 <div class="c0"> </div>
 <div class="c0"> term.update = function () {</div>

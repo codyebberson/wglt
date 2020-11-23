@@ -59,7 +59,7 @@
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {</div>
+<div class="c2">+function renderBar(x: number, y: number, totalWidth: number, name: string, value: number, maximum: number, barColor: Color, backColor: Color) {</div>
 <div class="c2">+    // Render a bar (HP, experience, etc). first calculate the width of the bar</div>
 <div class="c2">+    const barWidth = Math.round(value / maximum * totalWidth);</div>
 <div class="c2">+</div>
@@ -96,32 +96,32 @@
 <div class="c2">+    return capitalize(names.join(&#x27;, &#x27;));</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function addMessage(msg, opt_color) {</div>
+<div class="c2">+function addMessage(msg: string, opt_color?: Color) {</div>
 <div class="c2">+    while (messages.length &gt;= MSG_HEIGHT) {</div>
 <div class="c2">+        messages.shift();</div>
 <div class="c2">+    }</div>
 <div class="c2">+    messages.push({ text: msg, color: (opt_color || Colors.WHITE) });</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function capitalize(str) {</div>
+<div class="c2">+function capitalize(str: string) {</div>
 <div class="c2">+    if (!str) {</div>
 <div class="c2">+        return str;</div>
 <div class="c2">+    }</div>
 <div class="c2">+    return str.charAt(0).toUpperCase() + str.slice(1);</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function playerMoveOrAttack(dx, dy) {</div>
+<div class="c0"> function playerMoveOrAttack(dx: number, dy: number) {</div>
 <div class="c0">     const x = player.x + dx;</div>
 <div class="c0">     const y = player.y + dy;</div>
 <div class="c1">@@ -328,11 +391,11 @@</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function playerDeath(player) {</div>
+<div class="c0"> function playerDeath(player: Entity) {</div>
 <div class="c3">-    console.log(&#x27;You died!&#x27;);</div>
 <div class="c2">+    addMessage(&#x27;You died!&#x27;, Colors.LIGHT_RED);</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function monsterDeath(monster) {</div>
+<div class="c0"> function monsterDeath(monster: Entity) {</div>
 <div class="c3">-    console.log(monster.name + &#x27; is dead&#x27;);</div>
 <div class="c2">+    addMessage(capitalize(monster.name) + &#x27; is dead!&#x27;, Colors.BROWN);</div>
 <div class="c0">     monster.char = &#x27;%&#x27;;</div>
@@ -146,7 +146,7 @@
 <div class="c2">+    // Show the player&#x27;s stats</div>
 <div class="c2">+    renderBar(</div>
 <div class="c2">+        1, PANEL_Y + 1, BAR_WIDTH,</div>
-<div class="c2">+        &#x27;HP&#x27;, player.fighter.hp, player.fighter.maxHp,</div>
+<div class="c2">+        &#x27;HP&#x27;, (player.fighter as Fighter).hp, (player.fighter as Fighter).maxHp,</div>
 <div class="c2">+        Colors.LIGHT_RED, Colors.DARK_RED);</div>
 <div class="c2">+</div>
 <div class="c2">+    // Display names of objects under the mouse</div>
@@ -157,7 +157,7 @@
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c0"> const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
 <div class="c0"> const entities = [player];</div>
-<div class="c2">+const messages = [];</div>
+<div class="c2">+const messages: { text: string; color: number; }[] = [];</div>
 <div class="c0"> const map = createMap();</div>
 <div class="c0"> let fovRecompute = true;</div>
 <div class="c0"> </div>

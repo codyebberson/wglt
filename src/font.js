@@ -1,23 +1,23 @@
-
-export class Font {
-
-  constructor(
-      url, charWidth, charHeight, scale,
-      graphical) {
-    this.url = url;
-    this.charWidth = charWidth;
-    this.charHeight = charHeight;
-    this.scale = scale || 1.0;
-    this.graphical = !!graphical;
-  }
-}
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_FONT = exports.Font = void 0;
+var Font = /** @class */ (function () {
+    function Font(url, charWidth, charHeight, scale, graphical) {
+        this.url = url;
+        this.charWidth = charWidth;
+        this.charHeight = charHeight;
+        this.scale = scale || 1.0;
+        this.graphical = !!graphical;
+    }
+    return Font;
+}());
+exports.Font = Font;
 /**
  * Font image as data URL.
  * IBM terminal font.
  * See img/font.png.
  */
-const FONT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
+var FONT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
     'MAAAD58POIAAAABlBMVEUAAAD///+l2Z/dAAAEhklEQVRIx42Sv4oUQRDGC4UzadSwwMUD8' +
     'QEKlbWD4Q58B/NGpTVocKO1wXHUzMAH0AcwMTYVGg5ag0IzEXaRjdZEZKNzkKbHqtnzHypY' +
     '09M9+5uvqr7pbYCuC6ftaRhgONXs30eAh0O1rYDm4IS/eH0B8GxRW2vxo396yu/fb0ZFrW1' +
@@ -41,5 +41,4 @@ const FONT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
     '4cXOeXMWfsusSw7FOg9x655nax6BlecwpOQQ68WBwp+H2LMQTuOq2RUigzh2Q/R3CWARJIJ' +
     'G199EwOTyKBlQMznshCRGeQ5gHABAQl6M4gLEdAzVaBWMCiANdsayDCHBA/hagKYfielrJI' +
     'lipKKQIA9Nf3wBloTHT6BuAx15zRNa1nAAAAAElFTkSuQmCC';
-
-export const DEFAULT_FONT = new Font(FONT_IMAGE, 8, 8);
+exports.DEFAULT_FONT = new Font(FONT_IMAGE, 8, 8);

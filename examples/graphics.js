@@ -1,17 +1,14 @@
-
-import {fromRgb} from '../src/color.js';
-import {Font} from '../src/font.js';
-import {Keys} from '../src/keys.js';
-import {Terminal} from '../src/terminal.js';
-
-const term = new Terminal(document.querySelector('canvas'), 20, 15,
-    { font: new Font('graphics.png', 16, 16, 2.0, true) });
-
-const TILE_EMPTY = fromRgb(15, 15, 0);
-const TILE_WALL = fromRgb(1, 0, 0);
-const TILE_GROUND = fromRgb(2, 0, 0);
-
-const MAP = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = require("../src/color");
+var font_1 = require("../src/font");
+var keys_1 = require("../src/keys");
+var terminal_1 = require("../src/terminal");
+var term = new terminal_1.Terminal(document.querySelector('canvas'), 20, 15, { font: new font_1.Font('graphics.png', 16, 16, 2.0, true) });
+var TILE_EMPTY = color_1.fromRgb(15, 15, 0);
+var TILE_WALL = color_1.fromRgb(1, 0, 0);
+var TILE_GROUND = color_1.fromRgb(2, 0, 0);
+var MAP = [
     '    ########        ',
     '  ###......#        ',
     '  #........#        ',
@@ -28,41 +25,35 @@ const MAP = [
     '#####..............#',
     '    ################',
 ];
-
-let x = 4;
-let y = 4;
-
+var x = 4;
+var y = 4;
 term.update = function () {
-    if (term.isKeyPressed(Keys.VK_UP)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyPressed(Keys.VK_LEFT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyPressed(Keys.VK_RIGHT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyPressed(Keys.VK_DOWN)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_DOWN)) {
         y++;
     }
-
     term.clear();
-
-    for (let ty = 0; ty < MAP.length; ty++) {
-        for (let tx = 0; tx < MAP[ty].length; tx++) {
-            let tileChar = MAP[ty].charAt(tx);
-            let tile = TILE_EMPTY;
-
+    for (var ty = 0; ty < MAP.length; ty++) {
+        for (var tx = 0; tx < MAP[ty].length; tx++) {
+            var tileChar = MAP[ty].charAt(tx);
+            var tile = TILE_EMPTY;
             if (tileChar === '#') {
                 tile = TILE_WALL;
-            } else if (tileChar === '.') {
+            }
+            else if (tileChar === '.') {
                 tile = TILE_GROUND;
             }
-
             term.getCell(tx, ty).setBackground(tile);
         }
     }
-
     term.drawChar(10, 10, 4);
     term.drawChar(12, 10, 5);
     term.drawChar(14, 10, 6);

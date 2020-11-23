@@ -1,19 +1,17 @@
-
-import {Terminal} from '../src/terminal.js';
-import {RNG} from '../src/rng.js';
-import {fromRgb} from '../src/color.js';
-
-const WIDTH = 80;
-const HEIGHT = 45;
-
-const term = new Terminal(document.querySelector('canvas'), WIDTH, HEIGHT, {frameRate: 60});
-const rng = new RNG();
-const randomComp = () => rng.nextRange(0, 255);
-const randomColor = () => fromRgb(randomComp(), randomComp(), randomComp());
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var terminal_1 = require("../src/terminal");
+var rng_1 = require("../src/rng");
+var color_1 = require("../src/color");
+var WIDTH = 80;
+var HEIGHT = 45;
+var term = new terminal_1.Terminal(document.querySelector('canvas'), WIDTH, HEIGHT, { frameRate: 60 });
+var rng = new rng_1.RNG();
+var randomComp = function () { return rng.nextRange(0, 255); };
+var randomColor = function () { return color_1.fromRgb(randomComp(), randomComp(), randomComp()); };
 term.update = function () {
-    for (let y = 0; y < HEIGHT; y++) {
-        for (let x = 0; x < WIDTH; x++) {
+    for (var y = 0; y < HEIGHT; y++) {
+        for (var x = 0; x < WIDTH; x++) {
             term.drawChar(x, y, randomComp(), randomColor(), randomColor());
         }
     }

@@ -1,44 +1,37 @@
-
-import {Colors} from '../src/colors.js';
-import {Keys} from '../src/keys.js';
-import {Terminal} from '../src/terminal.js';
-
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 45;
-
-const MAP = new Array(SCREEN_HEIGHT);
-for (let y = 0; y < SCREEN_HEIGHT; y++) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = require("../src/colors");
+var console_1 = require("../src/console");
+var keys_1 = require("../src/keys");
+var terminal_1 = require("../src/terminal");
+var path_1 = require("../src/path");
+var SCREEN_WIDTH = 80;
+var SCREEN_HEIGHT = 45;
+var MAP = new Array(SCREEN_HEIGHT);
+for (var y = 0; y < SCREEN_HEIGHT; y++) {
     MAP[y] = new Array(SCREEN_WIDTH);
-    for (let x = 0; x < SCREEN_WIDTH; x++) {
+    for (var x = 0; x < SCREEN_WIDTH; x++) {
         MAP[y][x] = Math.random() < 0.4 ? '#' : '.';
     }
 }
-
-const VIEW_DISTANCE = 15;
-
+var VIEW_DISTANCE = 15;
 function getTile(x, y) {
     return MAP[y][x];
 }
-
 function isBlocked(x, y) {
     return getTile(x, y) !== '.';
 }
-
-const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-
-const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-const player = {
+var term = new terminal_1.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+var game = new console_1.Console(SCREEN_WIDTH, SCREEN_HEIGHT);
+var player = {
     x: Math.floor(SCREEN_WIDTH / 2),
     y: Math.floor(SCREEN_HEIGHT / 2)
 };
-
-const fov = new FovMap(SCREEN_WIDTH, SCREEN_HEIGHT, isBlocked);
+var fov = new console_1.Console(SCREEN_WIDTH, SCREEN_HEIGHT, isBlocked);
 fov.computeFov(player.x, player.y, VIEW_DISTANCE);
-
 function movePlayer(dx, dy) {
-    const x = player.x + dx;
-    const y = player.y + dy;
+    var x = player.x + dx;
+    var y = player.y + dy;
     if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT || isBlocked(x, y)) {
         return;
     }
@@ -46,42 +39,40 @@ function movePlayer(dx, dy) {
     player.y = y;
     fov.computeFov(player.x, player.y, VIEW_DISTANCE);
 }
-
 term.update = function () {
-    if (term.isKeyPressed(Keys.VK_UP)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_UP)) {
         movePlayer(0, -1);
     }
-    if (term.isKeyPressed(Keys.VK_LEFT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_LEFT)) {
         movePlayer(-1, 0);
     }
-    if (term.isKeyPressed(Keys.VK_RIGHT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_RIGHT)) {
         movePlayer(1, 0);
     }
-    if (term.isKeyPressed(Keys.VK_DOWN)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_DOWN)) {
         movePlayer(0, 1);
     }
-
     term.clear();
-    game.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, Colors.BLACK);
-
-    for (let y = 0; y < SCREEN_HEIGHT; y++) {
-        for (let x = 0; x < SCREEN_WIDTH; x++) {
-            const c = getTile(x, y);
-            const color = fov.isVisible(x, y) ? Colors.WHITE : Colors.DARK_GRAY;
+    game.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, colors_1.Colors.BLACK);
+    for (var y = 0; y < SCREEN_HEIGHT; y++) {
+        for (var x = 0; x < SCREEN_WIDTH; x++) {
+            var c = getTile(x, y);
+            var color = fov.isVisible(x, y) ? colors_1.Colors.WHITE : colors_1.Colors.DARK_GRAY;
             game.drawString(x, y, c, color);
         }
     }
-
-    const path = computePath(fov, player, term.mouse, 1000);
+    var path = path_1.computePath(fov, player, term.mouse, 1000);
     if (path) {
-        for (let i = 1; i < path.length; i++) {
-            const step = path[i];
-            game.getCell(step.x, step.y).setBackground(Colors.DARK_RED);
+        for (var i = 1; i < path.length; i++) {
+            var step = path[i];
+            var cell = game.getCell(step.x, step.y);
+            if (cell) {
+                cell.setBackground(colors_1.Colors.DARK_RED);
+            }
         }
     }
-
     game.drawString(player.x, player.y, '@');
     term.drawConsole(0, 0, game, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    term.drawString(1, 1, 'Hello world!', Colors.WHITE);
-    term.drawString(1, 3, 'Use arrow keys to move', Colors.WHITE);
+    term.drawString(1, 1, 'Hello world!', colors_1.Colors.WHITE);
+    term.drawString(1, 3, 'Use arrow keys to move', colors_1.Colors.WHITE);
 };

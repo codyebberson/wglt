@@ -42,7 +42,7 @@
 <div class="c0"> class Fighter {</div>
 <div class="c3">-    constructor(hp, defense, power, deathFunction) {</div>
 <div class="c2">+    constructor(hp, defense, power, xp, deathFunction) {</div>
-<div class="c0">         this.owner = null;</div>
+<div class="c0">         this.owner = undefined;</div>
 <div class="c0">         this.maxHp = hp;</div>
 <div class="c0">         this.defense = defense;</div>
 <div class="c0">         this.power = power;</div>
@@ -143,18 +143,18 @@
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function playerDeath(player) {</div>
+<div class="c0"> function playerDeath(player: Entity) {</div>
 <div class="c0">     addMessage(&#x27;You died!&#x27;, Colors.LIGHT_RED);</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function monsterDeath(monster) {</div>
+<div class="c0"> function monsterDeath(monster: Entity) {</div>
 <div class="c3">-    addMessage(capitalize(monster.name) + &#x27; is dead!&#x27;, Colors.BROWN);</div>
 <div class="c2">+    addMessage(capitalize(monster.name) + &#x27; is dead! You gain &#x27; + monster.fighter.xp + &#x27; XP.&#x27;, Colors.ORANGE);</div>
 <div class="c0">     monster.char = &#x27;%&#x27;;</div>
 <div class="c0">     monster.color = Colors.DARK_RED;</div>
 <div class="c0">     monster.blocks = false;</div>
 <div class="c1">@@ -715,6 +772,13 @@</div>
-<div class="c0">         &#x27;HP&#x27;, player.fighter.hp, player.fighter.maxHp,</div>
+<div class="c0">         &#x27;HP&#x27;, (player.fighter as Fighter).hp, (player.fighter as Fighter).maxHp,</div>
 <div class="c0">         Colors.LIGHT_RED, Colors.DARK_RED);</div>
 <div class="c0"> </div>
 <div class="c2">+    renderBar(</div>

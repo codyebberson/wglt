@@ -25,9 +25,16 @@
 <div class="c1">@@ -27,15 +28,17 @@</div>
 <div class="c0"> const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);</div>
 <div class="c0"> </div>
-<div class="c0"> class Entity {</div>
-<div class="c3">-    constructor(x, y, char, color) {</div>
-<div class="c2">+    constructor(x, y, char, name, color, blocks) {</div>
+<div class="c0"> class Entity {
+    x: number;
+    y: number;
+    char: string;
+    name: string;
+    color: Color;
+    blocks: boolean;
+</div>
+<div class="c3">-    constructor(x: number, y: number, char: string, color: Color) {</div>
+<div class="c2">+    constructor(x: number, y: number, char: string, name: string, color: Color, blocks: boolean) {</div>
 <div class="c0">         this.x = x;</div>
 <div class="c0">         this.y = y;</div>
 <div class="c0">         this.char = char;</div>
@@ -36,7 +43,7 @@
 <div class="c2">+        this.blocks = !!blocks;</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c0">     move(dx, dy) {</div>
+<div class="c0">     move(dx: number, dy: number) {</div>
 <div class="c3">-        if (map.grid[this.y + dy][this.x + dx].blocked) {</div>
 <div class="c2">+        if (isBlocked(this.x + dx, this.y + dy)) {</div>
 <div class="c0">             return;</div>
@@ -46,7 +53,7 @@
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function isBlocked(x, y) {</div>
+<div class="c2">+function isBlocked(x: number, y: number) {</div>
 <div class="c2">+    // First test the map tile</div>
 <div class="c2">+    if (map.grid[y][x].blocked) {</div>
 <div class="c2">+        return true;</div>
@@ -63,7 +70,7 @@
 <div class="c2">+    return false;</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function createRoom(map, room) {</div>
+<div class="c0"> function createRoom(map: Console, room: Rect) {</div>
 <div class="c0">     for (let y = room.y + 1; y &lt; room.y2; y++) {</div>
 <div class="c0">         for (let x = room.x + 1; x &lt; room.x2; x++) {</div>
 <div class="c1">@@ -136,6 +156,9 @@</div>
@@ -80,7 +87,7 @@
 <div class="c0">     return map;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function placeObjects(room) {</div>
+<div class="c2">+function placeObjects(room: Rect) {</div>
 <div class="c2">+    // Choose random number of monsters</div>
 <div class="c2">+    const numMonsters = rng.nextRange(0, MAX_ROOM_MONSTERS);</div>
 <div class="c2">+</div>
@@ -104,7 +111,7 @@
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function playerMoveOrAttack(dx, dy) {</div>
+<div class="c2">+function playerMoveOrAttack(dx: number, dy: number) {</div>
 <div class="c2">+    const x = player.x + dx;</div>
 <div class="c2">+    const y = player.y + dy;</div>
 <div class="c2">+</div>

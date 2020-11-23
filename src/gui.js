@@ -1,36 +1,33 @@
-
-import {DefaultDialogRenderer} from './gui/defaultdialogrenderer.js';
-
-export class GUI {
-
-  constructor(terminal, renderer) {
-    this.terminal = terminal;
-    this.renderer = renderer || new DefaultDialogRenderer();
-    this.dialogs = [];
-  }
-
-  add(dialog) {
-    this.dialogs.push(this.renderer.getState(this.terminal, dialog));
-  }
-
-  handleInput() {
-    if (this.dialogs.length === 0) {
-      return false;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.GUI = void 0;
+var defaultdialogrenderer_1 = require("./gui/defaultdialogrenderer");
+var GUI = /** @class */ (function () {
+    function GUI(terminal, renderer) {
+        this.terminal = terminal;
+        this.renderer = renderer || new defaultdialogrenderer_1.DefaultDialogRenderer();
+        this.dialogs = [];
     }
-
-    const activeIndex = this.dialogs.length - 1;
-    const activeState = this.dialogs[this.dialogs.length - 1];
-    const activeDialog = activeState.dialog;
-    if (activeDialog.handleInput(this.terminal, activeState.contentsOffset)) {
-      this.dialogs.splice(activeIndex, 1);
-    }
-
-    return true;
-  }
-
-  draw() {
-    for (let i = 0; i < this.dialogs.length; i++) {
-      this.renderer.draw(this.terminal, this.dialogs[i]);
-    }
-  }
-}
+    GUI.prototype.add = function (dialog) {
+        this.dialogs.push(this.renderer.getState(this.terminal, dialog));
+    };
+    GUI.prototype.handleInput = function () {
+        if (this.dialogs.length === 0) {
+            return false;
+        }
+        var activeIndex = this.dialogs.length - 1;
+        var activeState = this.dialogs[this.dialogs.length - 1];
+        var activeDialog = activeState.dialog;
+        if (activeDialog.handleInput(this.terminal, activeState.contentsOffset)) {
+            this.dialogs.splice(activeIndex, 1);
+        }
+        return true;
+    };
+    GUI.prototype.draw = function () {
+        for (var i = 0; i < this.dialogs.length; i++) {
+            this.renderer.draw(this.terminal, this.dialogs[i]);
+        }
+    };
+    return GUI;
+}());
+exports.GUI = GUI;

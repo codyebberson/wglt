@@ -1,110 +1,104 @@
-
-import {Colors} from '../../src/colors.js';
-import {fromRgb} from '../../src/color.js';
-import {Keys} from '../../src/keys.js';
-import {Rect} from '../../src/rect.js';
-import {RNG} from '../../src/rng.js';
-import {Terminal} from '../../src/terminal.js';
-import {TileMap} from '../../src/tilemap.js';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = require("../../src/colors");
+var console_1 = require("../../src/console");
+var color_1 = require("../../src/color");
+var keys_1 = require("../../src/keys");
+var rect_1 = require("../../src/rect");
+var rng_1 = require("../../src/rng");
+var terminal_1 = require("../../src/terminal");
 // Actual size of the window
-const SCREEN_WIDTH = 80;
-const SCREEN_HEIGHT = 45;
-
+var SCREEN_WIDTH = 80;
+var SCREEN_HEIGHT = 45;
 // Size of the map
-const MAP_WIDTH = 80;
-const MAP_HEIGHT = 45;
-
+var MAP_WIDTH = 80;
+var MAP_HEIGHT = 45;
 // Parameters for dungeon generator
-const ROOM_MAX_SIZE = 10;
-const ROOM_MIN_SIZE = 6;
-const MAX_ROOMS = 30;
-const MAX_ROOM_MONSTERS = 3;
-const TORCH_RADIUS = 10;
-
-const COLOR_DARK_WALL = fromRgb(0, 0, 100);
-const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);
-const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
-const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);
-
-class Entity {
-    constructor(x, y, char, name, color, blocks, components) {
+var ROOM_MAX_SIZE = 10;
+var ROOM_MIN_SIZE = 6;
+var MAX_ROOMS = 30;
+var MAX_ROOM_MONSTERS = 3;
+var TORCH_RADIUS = 10;
+var COLOR_DARK_WALL = color_1.fromRgb(0, 0, 100);
+var COLOR_LIGHT_WALL = color_1.fromRgb(130, 110, 50);
+var COLOR_DARK_GROUND = color_1.fromRgb(50, 50, 150);
+var COLOR_LIGHT_GROUND = color_1.fromRgb(200, 180, 50);
+var Entity = /** @class */ (function () {
+    function Entity(x, y, char, name, color, blocks, components) {
         this.x = x;
         this.y = y;
         this.char = char;
         this.name = name;
         this.color = color;
         this.blocks = !!blocks;
-
         if (components) {
-            for (var property in components) {
-                if (components.hasOwnProperty(property)) {
-                    this[property] = components[property];
-                    this[property].owner = this;
-                }
+            if ('fighter' in components) {
+                this.fighter = components.fighter;
+                this.fighter.owner = this;
+            }
+            if ('ai' in components) {
+                this.ai = components.ai;
+                this.ai.owner = this;
             }
         }
     }
-
-    move(dx, dy) {
+    Entity.prototype.move = function (dx, dy) {
         if (isBlocked(this.x + dx, this.y + dy)) {
             return;
         }
         this.x += dx;
         this.y += dy;
-    }
-
-    moveToward(targetX, targetY) {
-        const dx = targetX - this.x;
-        const dy = targetY - this.y;
-        const distance = Math.hypot(dx, dy);
+    };
+    Entity.prototype.moveToward = function (targetX, targetY) {
+        var dx = targetX - this.x;
+        var dy = targetY - this.y;
+        var distance = Math.hypot(dx, dy);
         this.move(Math.round(dx / distance), Math.round(dy / distance));
-    }
-
-    distanceTo(other) {
+    };
+    Entity.prototype.distanceTo = function (other) {
         return Math.hypot(other.x - this.x, other.y - this.y);
-    }
-
-    sendToBack() {
+    };
+    Entity.prototype.sendToBack = function () {
         this.remove();
         entities.unshift(this);
-    }
-
-    remove() {
+    };
+    Entity.prototype.remove = function () {
         entities.splice(entities.indexOf(this), 1);
-    }
-
-    draw() {
+    };
+    Entity.prototype.draw = function () {
         if (map.isVisible(this.x, this.y)) {
             term.drawString(this.x, this.y, this.char, this.color);
         }
-    }
-}
-
-class Fighter {
-    constructor(hp, defense, power, deathFunction) {
-        this.owner = null;
+    };
+    return Entity;
+}());
+var Fighter = /** @class */ (function () {
+    function Fighter(hp, defense, power, deathFunction) {
+        this.owner = undefined;
         this.maxHp = hp;
         this.defense = defense;
         this.power = power;
         this.hp = hp;
-        this.deathFunction = deathFunction || null;
+        this.deathFunction = deathFunction;
     }
-
-    attack(target) {
-        const damage = this.power - target.fighter.defense;
-
+    Fighter.prototype.attack = function (target) {
+        if (!this.owner || !target.fighter) {
+            return;
+        }
+        var damage = this.power - target.fighter.defense;
         if (damage > 0) {
             console.log(this.owner.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.');
             target.fighter.takeDamage(damage);
-        } else {
+        }
+        else {
             console.log(this.owner.name + ' attacks ' + target.name + ' but it has no effect!');
         }
-    }
-
-    takeDamage(damage) {
+    };
+    Fighter.prototype.takeDamage = function (damage) {
+        if (!this.owner) {
+            return;
+        }
         this.hp -= damage;
-
         // Check for death. if there's a death function, call it
         if (this.hp <= 0) {
             this.hp = 0;
@@ -112,273 +106,243 @@ class Fighter {
                 this.deathFunction(this.owner);
             }
         }
+    };
+    return Fighter;
+}());
+var BasicMonster = /** @class */ (function () {
+    function BasicMonster() {
+        this.owner = undefined;
     }
-}
-
-class BasicMonster {
-    constructor() {
-        this.owner = null;
-    }
-
-    takeTurn() {
-        const monster = this.owner;
-
+    BasicMonster.prototype.takeTurn = function () {
+        if (!player.fighter) {
+            return;
+        }
+        var monster = this.owner;
+        if (!monster || !monster.fighter) {
+            return;
+        }
         // A basic monster takes its turn. if you can see it, it can see you
         if (map.isVisible(monster.x, monster.y)) {
-
             if (monster.distanceTo(player) >= 2) {
                 // Move towards player if far away
                 monster.moveToward(player.x, player.y);
-
-            } else if (player.fighter.hp > 0) {
+            }
+            else if (player.fighter.hp > 0) {
                 // Close enough, attack! (if the player is still alive.)
                 monster.fighter.attack(player);
             }
         }
-    }
-}
-
+    };
+    return BasicMonster;
+}());
 function isBlocked(x, y) {
     // First test the map tile
     if (map.grid[y][x].blocked) {
         return true;
     }
-
     // Now check for any blocking objects
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.blocks && entity.x === x && entity.y === y) {
             return true;
         }
     }
-
     return false;
 }
-
 function createRoom(map, room) {
-    for (let y = room.y + 1; y < room.y2; y++) {
-        for (let x = room.x + 1; x < room.x2; x++) {
+    for (var y = room.y + 1; y < room.y2; y++) {
+        for (var x = room.x + 1; x < room.x2; x++) {
             map.grid[y][x].blocked = false;
-            map.grid[y][x].blockSight = false;
+            map.grid[y][x].blockedSight = false;
         }
     }
 }
-
 function createHTunnel(map, x1, x2, y) {
-    for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+    for (var x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
         map.grid[y][x].blocked = false;
-        map.grid[y][x].blockSight = false;
+        map.grid[y][x].blockedSight = false;
     }
 }
-
 function createVTunnel(map, y1, y2, x) {
-    for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+    for (var y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
         map.grid[y][x].blocked = false;
-        map.grid[y][x].blockSight = false;
+        map.grid[y][x].blockedSight = false;
     }
 }
-
 function createMap() {
-    const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
+    var map = new console_1.Console(MAP_WIDTH, MAP_HEIGHT);
+    for (var y = 0; y < MAP_HEIGHT; y++) {
+        for (var x = 0; x < MAP_WIDTH; x++) {
             map.grid[y][x].blocked = true;
-            map.grid[y][x].blockSight = true;
+            map.grid[y][x].blockedSight = true;
         }
     }
-
-    const rooms = [];
-
-    for (let r = 0; r < MAX_ROOMS; r++) {
+    var rooms = [];
+    for (var r = 0; r < MAX_ROOMS; r++) {
         // Random width and height
-        const w = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
-        const h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
-
+        var w = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
+        var h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
         // Random position without going out of the boundaries of the map
-        const x = rng.nextRange(0, MAP_WIDTH - w - 1);
-        const y = rng.nextRange(0, MAP_HEIGHT - h - 1);
-
+        var x = rng.nextRange(0, MAP_WIDTH - w - 1);
+        var y = rng.nextRange(0, MAP_HEIGHT - h - 1);
         // "Rect" class makes rectangles easier to work with
-        const newRoom = new Rect(x, y, w, h);
-
+        var newRoom = new rect_1.Rect(x, y, w, h);
         // Run through the other rooms and see if they intersect with this one
-        let failed = false;
-        for (let j = 0; j < rooms.length; j++) {
+        var failed = false;
+        for (var j = 0; j < rooms.length; j++) {
             if (newRoom.intersects(rooms[j])) {
                 failed = true;
                 break;
             }
         }
-
         if (!failed) {
             // This means there are no intersections, so this room is valid
-
             // "paint" it to the map's tiles
             createRoom(map, newRoom);
-
             // Center coordinates of new room, will be useful later
-            const center = newRoom.getCenter();
-
+            var center = newRoom.getCenter();
             if (rooms.length === 0) {
                 // This is the first room, where the player starts at
                 player.x = center.x;
                 player.y = center.y;
-            } else {
+            }
+            else {
                 // All rooms after the first:
                 // Connect it to the previous room with a tunnel
-
                 // Center coordinates of previous room
-                const prev = rooms[rooms.length - 1].getCenter();
-
+                var prev = rooms[rooms.length - 1].getCenter();
                 // Draw a coin (random number that is either 0 or 1)
                 if (rng.nextRange(0, 1) === 1) {
                     // First move horizontally, then vertically
                     createHTunnel(map, prev.x, center.x, prev.y);
                     createVTunnel(map, prev.y, center.y, center.x);
-                } else {
+                }
+                else {
                     // First move vertically, then horizontally
                     createVTunnel(map, prev.y, center.y, prev.x);
                     createHTunnel(map, prev.x, center.x, center.y);
                 }
             }
-
             // Add some contents to this room, such as monsters
             placeObjects(newRoom);
-
             // Finally, append the new room to the list
             rooms.push(newRoom);
         }
     }
-
     return map;
 }
-
 function placeObjects(room) {
     // Choose random number of monsters
-    const numMonsters = rng.nextRange(0, MAX_ROOM_MONSTERS);
-
-    for (let i = 0; i < numMonsters; i++) {
+    var numMonsters = rng.nextRange(0, MAX_ROOM_MONSTERS);
+    for (var i = 0; i < numMonsters; i++) {
         // Choose random spot for this monster
-        const x = rng.nextRange(room.x + 1, room.x2 - 1);
-        const y = rng.nextRange(room.y + 1, room.y2 - 1);
-        let monster = null;
-
+        var x = rng.nextRange(room.x + 1, room.x2 - 1);
+        var y = rng.nextRange(room.y + 1, room.y2 - 1);
+        var monster = null;
         // Only place it if the tile is not blocked
         // 80% chance of getting an orc
         if (rng.nextRange(0, 100) < 80) {
             // Create an orc
-            const fighter = new Fighter(10, 0, 3, monsterDeath);
-            const ai = new BasicMonster();
-            monster = new Entity(x, y, 'o', 'orc', Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
-        } else {
-            // Create a troll
-            const fighter = new Fighter(16, 1, 4, monsterDeath);
-            const ai = new BasicMonster();
-            monster = new Entity(x, y, 'T', 'troll', Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
+            var fighter = new Fighter(10, 0, 3, monsterDeath);
+            var ai = new BasicMonster();
+            monster = new Entity(x, y, 'o', 'orc', colors_1.Colors.LIGHT_GREEN, true, { fighter: fighter, ai: ai });
         }
-
+        else {
+            // Create a troll
+            var fighter = new Fighter(16, 1, 4, monsterDeath);
+            var ai = new BasicMonster();
+            monster = new Entity(x, y, 'T', 'troll', colors_1.Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });
+        }
         entities.push(monster);
     }
 }
-
 function playerMoveOrAttack(dx, dy) {
-    const x = player.x + dx;
-    const y = player.y + dy;
-
-    let target = null;
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    var x = player.x + dx;
+    var y = player.y + dy;
+    var target = null;
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.fighter && entity.x === x && entity.y === y) {
             target = entity;
             break;
         }
     }
-
     if (target) {
         player.fighter.attack(target);
-    } else {
+    }
+    else {
         player.move(dx, dy);
         fovRecompute = true;
     }
-
-    for (let i = 0; i < entities.length; i++) {
-        const entity = entities[i];
+    for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
         if (entity.ai) {
             entity.ai.takeTurn();
         }
     }
 }
-
 function handleKeys() {
-    if (player.fighter.hp <= 0) {
+    if (!player.fighter || player.fighter.hp <= 0) {
         return;
     }
-    if (term.isKeyPressed(Keys.VK_UP)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_UP)) {
         playerMoveOrAttack(0, -1);
     }
-    if (term.isKeyPressed(Keys.VK_LEFT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_LEFT)) {
         playerMoveOrAttack(-1, 0);
     }
-    if (term.isKeyPressed(Keys.VK_RIGHT)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_RIGHT)) {
         playerMoveOrAttack(1, 0);
     }
-    if (term.isKeyPressed(Keys.VK_DOWN)) {
+    if (term.isKeyPressed(keys_1.Keys.VK_DOWN)) {
         playerMoveOrAttack(0, 1);
     }
 }
-
 function playerDeath(player) {
     console.log('You died!');
 }
-
 function monsterDeath(monster) {
     console.log(monster.name + ' is dead');
     monster.char = '%';
-    monster.color = Colors.DARK_RED;
+    monster.color = colors_1.Colors.DARK_RED;
     monster.blocks = false;
-    monster.fighter = null;
-    monster.ai = null;
+    monster.fighter = undefined;
+    monster.ai = undefined;
     monster.name = 'remains of ' + monster.name;
     monster.sendToBack();
 }
-
 function renderAll() {
     if (fovRecompute) {
         map.computeFov(player.x, player.y, TORCH_RADIUS);
         fovRecompute = false;
     }
-
-    for (let y = 0; y < MAP_HEIGHT; y++) {
-        for (let x = 0; x < MAP_WIDTH; x++) {
-            const visible = map.isVisible(x, y);
-            const wall = map.grid[y][x].blockSight;
-            let color = Colors.BLACK;
-
+    for (var y = 0; y < MAP_HEIGHT; y++) {
+        for (var x = 0; x < MAP_WIDTH; x++) {
+            var visible = map.isVisible(x, y);
+            var wall = map.grid[y][x].blockedSight;
+            var color = colors_1.Colors.BLACK;
             if (visible) {
                 // It's visible
                 color = wall ? COLOR_LIGHT_WALL : COLOR_LIGHT_GROUND;
                 map.grid[y][x].explored = true;
-            } else if (map.grid[y][x].explored) {
+            }
+            else if (map.grid[y][x].explored) {
                 // It's remembered
                 color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
             }
-
             term.drawChar(x, y, 0, 0, color);
         }
     }
-
-    for (let i = 0; i < entities.length; i++) {
+    for (var i = 0; i < entities.length; i++) {
         entities[i].draw();
     }
 }
-
-const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
-const rng = new RNG(1);
-const player = new Entity(40, 25, '@', 'player', Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
-const entities = [player];
-const map = createMap();
-let fovRecompute = true;
-
+var term = new terminal_1.Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+var rng = new rng_1.RNG(1);
+var player = new Entity(40, 25, '@', 'player', colors_1.Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });
+var entities = [player];
+var map = createMap();
+var fovRecompute = true;
 term.update = function () {
     handleKeys();
     renderAll();

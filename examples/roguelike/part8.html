@@ -72,7 +72,7 @@
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function isBlocked(x, y) {</div>
+<div class="c0"> function isBlocked(x: number, y: number) {</div>
 <div class="c0">     // First test the map tile</div>
 <div class="c0">     if (map.grid[y][x].blocked) {</div>
 <div class="c1">@@ -291,6 +326,23 @@</div>
@@ -98,7 +98,7 @@
 <div class="c2">+    }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function renderBar(x, y, totalWidth, name, value, maximum, barColor, backColor) {</div>
+<div class="c0"> function renderBar(x: number, y: number, totalWidth: number, name: string, value: number, maximum: number, barColor: Color, backColor: Color) {</div>
 <div class="c1">@@ -376,6 +428,11 @@</div>
 <div class="c0">     if (player.fighter.hp &lt;= 0) {</div>
 <div class="c0">         return;</div>
@@ -140,7 +140,7 @@
 <div class="c2">+    }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function playerDeath(player) {</div>
+<div class="c0"> function playerDeath(player: Entity) {</div>
 <div class="c1">@@ -405,6 +485,18 @@</div>
 <div class="c0">     monster.sendToBack();</div>
 <div class="c0"> }</div>
@@ -174,10 +174,10 @@
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c0"> const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
 <div class="c0"> const entities = [player];</div>
-<div class="c0"> const messages = [];</div>
+<div class="c0"> const messages: { text: string; color: number; }[] = [];</div>
 <div class="c0"> const map = createMap();</div>
 <div class="c0"> let fovRecompute = true;</div>
-<div class="c2">+const inventory = [];</div>
+<div class="c2">+const inventory: Entity[] = [];</div>
 <div class="c0"> </div>
 <div class="c0"> addMessage(&#x27;Welcome stranger! Prepare to perish!&#x27;, Colors.DARK_RED);</div>
 <div class="c0"> </div>

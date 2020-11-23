@@ -1,35 +1,29 @@
-import {Terminal} from '../src/terminal.js';
-import {Colors} from '../src/colors.js';
-import {Keys} from '../src/keys.js';
-
-const term = new Terminal(
-    document.querySelector('canvas'),
-    80, 45,
-    {requestFullscreen: true});
-
-term.fillRect(0, 0, 80, 45, 0, Colors.LIGHT_GREEN, Colors.BLACK);
-
-let x = 10;
-let y = 10;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var terminal_1 = require("../src/terminal");
+var colors_1 = require("../src/colors");
+var keys_1 = require("../src/keys");
+var term = new terminal_1.Terminal(document.querySelector('canvas'), 80, 45, { requestFullscreen: true });
+term.fillRect(0, 0, 80, 45, 0, colors_1.Colors.LIGHT_GREEN, colors_1.Colors.BLACK);
+var x = 10;
+var y = 10;
 term.update = function () {
-    if (term.isKeyDown(Keys.VK_UP)) {
+    if (term.isKeyDown(keys_1.Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyDown(Keys.VK_LEFT)) {
+    if (term.isKeyDown(keys_1.Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyDown(Keys.VK_RIGHT)) {
+    if (term.isKeyDown(keys_1.Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyDown(Keys.VK_DOWN)) {
+    if (term.isKeyDown(keys_1.Keys.VK_DOWN)) {
         y++;
     }
     if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
         x = term.mouse.x;
         y = term.mouse.y;
     }
-
     term.clear();
     term.drawString(1, 1, 'Hello world!');
     term.drawString(1, 3, 'Use arrow keys to move');

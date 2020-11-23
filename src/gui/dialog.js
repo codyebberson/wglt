@@ -1,12 +1,11 @@
-
-export class Dialog {
-
-  constructor(contentsRect, title) {
-    this.contentsRect = contentsRect;
-    this.title = title;
-  }
-
-  drawContents(console, offset) {}
-
-  handleInput(terminal, offset) {}
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Dialog = void 0;
+var Dialog = /** @class */ (function () {
+    function Dialog(contentsRect, title) {
+        this.contentsRect = contentsRect;
+        this.title = title;
+    }
+    return Dialog;
+}());
+exports.Dialog = Dialog;

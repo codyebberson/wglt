@@ -1,4 +1,6 @@
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FRAGMENT_SHADER_SOURCE = exports.VERTEX_SHADER_SOURCE = void 0;
 /**
  * Vertex shader program.
  *
@@ -10,7 +12,7 @@
  * f = varying vec4 vFgColor;
  * g = varying vec4 vBgColor;
  */
-export const VERTEX_SHADER_SOURCE = 'attribute vec2 a;' +
+exports.VERTEX_SHADER_SOURCE = 'attribute vec2 a;' +
     'attribute vec2 b;' +
     'attribute vec3 c;' +
     'attribute vec3 d;' +
@@ -23,7 +25,6 @@ export const VERTEX_SHADER_SOURCE = 'attribute vec2 a;' +
     'f=vec4(c.r,c.g,c.b,1);' +
     'g=vec4(d.r,d.g,d.b,1);' +
     '}';
-
 /**
  * Fragment shader program.
  *
@@ -33,7 +34,7 @@ export const VERTEX_SHADER_SOURCE = 'attribute vec2 a;' +
  * h = uniform bool uGraphicalTiles;
  * s = uniform sampler2D uSampler;
  */
-export const FRAGMENT_SHADER_SOURCE = 'varying highp vec2 e;' +
+exports.FRAGMENT_SHADER_SOURCE = 'varying highp vec2 e;' +
     'varying highp vec4 f;' +
     'varying highp vec4 g;' +
     'uniform bool h;' +

@@ -1,34 +1,28 @@
-
+"use strict";
 // Based on: https://lodev.org/cgtutor/fire.html
-
-import {fromHsv} from '../src/color.js';
-import {RNG} from '../src/rng.js';
-import {Terminal} from '../src/terminal.js';
-
-const w = 80;
-const h = 45;
-
-const fire = new Array(h);
-for (let y = 0; y < h; y++) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = require("../src/color");
+var rng_1 = require("../src/rng");
+var terminal_1 = require("../src/terminal");
+var w = 80;
+var h = 45;
+var fire = new Array(h);
+for (var y = 0; y < h; y++) {
     fire[y] = new Array(w);
-    for (let x = 0; x < w; x++) {
+    for (var x = 0; x < w; x++) {
         fire[y][x] = 0;
     }
 }
-
-const term = new Terminal(document.querySelector('canvas'), w, h, { requestFullscreen: true });
-
-const rng = new RNG();
-
+var term = new terminal_1.Terminal(document.querySelector('canvas'), w, h, { requestFullscreen: true });
+var rng = new rng_1.RNG();
 term.update = function () {
     // Randomize the bottom row
-    for (let x = 0; x < w; x++) {
+    for (var x = 0; x < w; x++) {
         fire[h - 1][x] = rng.nextRange(64, 255);
     }
-
     // Do the fire calculations for every cell except bottom row
-    for (let y = 0; y < h - 1; y++) {
-        for (let x = 0; x < w; x++) {
+    for (var y = 0; y < h - 1; y++) {
+        for (var x = 0; x < w; x++) {
             fire[y][x] = Math.floor((fire[(y + 1) % h][(x - 1 + w) % w]
                 + fire[(y + 1) % h][(x) % w]
                 + fire[(y + 1) % h][(x + 1) % w]
@@ -36,12 +30,11 @@ term.update = function () {
                 * 0.24);
         }
     }
-
     // Draw the fire to the screen
-    for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-            const t = fire[y][x] / 256.0;
-            const c = fromHsv(t / 6.0, 1.0, Math.min(1.0, t * 2));
+    for (var y = 0; y < h; y++) {
+        for (var x = 0; x < w; x++) {
+            var t = fire[y][x] / 256.0;
+            var c = color_1.fromHsv(t / 6.0, 1.0, Math.min(1.0, t * 2));
             term.drawChar(x, y, 0, 0, c);
         }
     }

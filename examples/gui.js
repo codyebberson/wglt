@@ -1,51 +1,46 @@
-
-import {Colors} from '../src/colors.js';
-import {GUI} from '../src/gui.js';
-import {MessageDialog} from '../src/gui/messagedialog.js';
-import {SelectDialog} from '../src/gui/selectdialog.js';
-import {Keys} from '../src/keys.js';
-import {Terminal} from '../src/terminal.js';
-
-const term = new Terminal(document.querySelector('canvas'), 80, 45);
-
-const gui = new GUI(term);
-
-const options = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = require("../src/colors");
+var gui_1 = require("../src/gui");
+var messagedialog_1 = require("../src/gui/messagedialog");
+var selectdialog_1 = require("../src/gui/selectdialog");
+var keys_1 = require("../src/keys");
+var terminal_1 = require("../src/terminal");
+var term = new terminal_1.Terminal(document.querySelector('canvas'), 80, 45);
+var gui = new gui_1.GUI(term);
+var options = [
     'Sword',
     'Banana',
     'Magic Potion',
     'Red Stapler'
 ];
-
-let x = 10;
-let y = 10;
-
+var x = 10;
+var y = 10;
 term.update = function () {
-    if (!gui.handleInput(term)) {
-        if (term.isKeyDown(Keys.VK_UP)) {
+    if (!gui.handleInput()) {
+        if (term.isKeyDown(keys_1.Keys.VK_UP)) {
             y--;
         }
-        if (term.isKeyDown(Keys.VK_LEFT)) {
+        if (term.isKeyDown(keys_1.Keys.VK_LEFT)) {
             x--;
         }
-        if (term.isKeyDown(Keys.VK_RIGHT)) {
+        if (term.isKeyDown(keys_1.Keys.VK_RIGHT)) {
             x++;
         }
-        if (term.isKeyDown(Keys.VK_DOWN)) {
+        if (term.isKeyDown(keys_1.Keys.VK_DOWN)) {
             y++;
         }
-        if (term.isKeyPressed(Keys.VK_H)) {
-            gui.add(new MessageDialog('ALERT', 'Hello World'));
+        if (term.isKeyPressed(keys_1.Keys.VK_H)) {
+            gui.add(new messagedialog_1.MessageDialog('ALERT', 'Hello World'));
         }
-        if (term.isKeyPressed(Keys.VK_I)) {
-            gui.add(new SelectDialog('INVENTORY', options, (choice) => {
-                gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
+        if (term.isKeyPressed(keys_1.Keys.VK_I)) {
+            gui.add(new selectdialog_1.SelectDialog('INVENTORY', options, function (choice) {
+                gui.add(new messagedialog_1.MessageDialog('ALERT', 'You chose: ' + options[choice]));
             }));
         }
     }
-
     term.clear();
-    term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
+    term.fillRect(0, 0, 80, 45, 0, colors_1.Colors.YELLOW, colors_1.Colors.DARK_BLUE);
     term.drawString(1, 1, 'Hello world!');
     term.drawString(1, 3, 'Use arrow keys to move');
     term.drawString(1, 5, 'Press "h" to open a MessageDialog');

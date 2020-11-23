@@ -1,100 +1,25 @@
-import { Cell } from "./cell.js";
-import {Console} from './console.js';
 
-// MRPAS
-// Mingos' Restrictive Precise Angle Shadowcasting
-// https://bitbucket.org/mingos/mrpas/overview
+import {BlendMode} from './blendmode';
+import {Cell} from './cell';
+import {Chars} from './chars';
+import { Color } from './color';
 
+export class Console {
+  readonly width: number;
+  readonly height: number;
+  readonly grid: Cell[][];
+  originX: number;
+  originY: number;
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  radius: number;
 
-/**
- * The FovOctants constants provide bitmasks for various directions.
- *
- *     \ 4 | 3 /
- *      \  |  /
- *    5  \ | /  2
- *        \|/
- *   ------+-------
- *        /|\
- *    6  / | \  1
- *      /  |  \
- *     / 7 | 0 \
- *
- */
-export const FovOctants = {
-  OCTANT_SOUTH_SOUTHEAST: 0x001,
-  OCTANT_EAST_SOUTHEAST: 0x002,
-  OCTANT_EAST_NORTHTHEAST: 0x004,
-  OCTANT_NORTH_NORTHEAST: 0x008,
-  OCTANT_NORTH_NORTHWEST: 0x010,
-  OCTANT_WEST_NORTHEAST: 0x020,
-  OCTANT_WEST_SOUTHWEST: 0x040,
-  OCTANT_SOUTH_SOUTHWEST: 0x080
-};
-
-export const FovQuadrants = {
-  QUADRANT_SOUTHEAST: 0x001 + 0x002,
-  QUADRANT_EAST: 0x002 + 0x004,
-  QUADRANT_NORTHEAST: 0x004 + 0x008,
-  QUADRANT_NORTH: 0x008 + 0x010,
-  QUADRANT_NORTHWEST: 0x010 + 0x020,
-  QUADRANT_WEST: 0x020 + 0x040,
-  QUADRANT_SOUTHWEST: 0x040 + 0x080,
-  QUADRANT_SOUTH: 0x080 + 0x001,
-};
-
-export function getFovQuadrant(dx, dy) {
-  if (dx > 0) {
-    if (dy > 0) {
-      return FovQuadrants.QUADRANT_SOUTHEAST;
-    } else if (dy === 0) {
-      return FovQuadrants.QUADRANT_EAST;
-    } else {
-      return FovQuadrants.QUADRANT_NORTHEAST;
-    }
-  } else if (dx < 0) {
-    if (dy > 0) {
-      return FovQuadrants.QUADRANT_SOUTHWEST;
-    } else if (dy === 0) {
-      return FovQuadrants.QUADRANT_WEST;
-    } else {
-      return FovQuadrants.QUADRANT_NORTHWEST;
-    }
-  } else {
-    if (dy > 0) {
-      return FovQuadrants.QUADRANT_SOUTH;
-    } else {
-      return FovQuadrants.QUADRANT_NORTH;
-    }
-  }
-}
-
-export class Tile extends Cell {
-
-  constructor(x, y) {
-    super();
-    this.x = x;
-    this.y = y;
-    this.blocked = false;
-    this.blockSight = false;
-    this.explored = false;
-    this.visible = false;
-    this.pathId = -1;
-    this.g = 0.0;
-    this.h = 0.0;
-    this.prev = null;
-  }
-}
-
-export class TileMap extends Console {
-
-  /**
-   * Creates a new FOV map.
-   * @param width
-   * @param height
-   * @param blockedFunc
-   */
-  constructor(width, height, blockedFunc) {
-    super(width, height, Tile);
+  constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean) {
+    this.width = width;
+    this.height = height;
+    this.grid = new Array();
     this.originX = 0;
     this.originY = 0;
     this.minX = 0;
@@ -103,28 +28,173 @@ export class TileMap extends Console {
     this.maxY = 0;
     this.radius = 0;
 
+    for (let y = 0; y < height; y++) {
+      const row = new Array();
+      for (let x = 0; x < width; x++) {
+        row.push(new Cell(x, y));
+      }
+      this.grid.push(row);
+    }
+
+    this.clear();
+
     if (blockedFunc) {
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          this.grid[y][x].blocked = this.grid[y][x].blockSight = blockedFunc(x, y);
+          this.grid[y][x].blocked = this.grid[y][x].blockedSight = blockedFunc(x, y);
         }
       }
     }
   }
 
-  setBlocked(x, y, blocked) {
+  clear() {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        this.drawChar(x, y, 0);
+      }
+    }
+  }
+
+  getCell(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
+      return undefined;
+    }
+    return this.grid[y][x];
+  }
+
+  getCharCode(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
+      return undefined;
+    }
+    return this.grid[y][x].charCode;
+  }
+
+  drawChar(x: number, y: number, c: string|number, fg?: Color, bg?: Color) {
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      // if (!this.grid[y]) {
+      //   console.log('wtf2');
+      // }
+      // if (!this.grid[y][x]) {
+      //   console.log('wtf');
+      // }
+      this.grid[y | 0][x | 0].setValue(c, fg, bg);
+    }
+  }
+
+  drawString(x: number, y: number, str: string, fg?: Color, bg?: Color) {
+    const lines = str.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      for (let j = 0; j < line.length; j++) {
+        this.drawChar(x + j, y + i, line.charCodeAt(j), fg, bg);
+      }
+    }
+  }
+
+  drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color) {
+    this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
+  }
+
+  drawHLine(x: number, y: number, width: number, c: string|number, fg?: Color, bg?: Color) {
+    for (let xi = x; xi < x + width; xi++) {
+      this.drawChar(xi, y, c, fg, bg);
+    }
+  }
+
+  drawVLine(x: number, y: number, height: number, c: string|number, fg?: Color, bg?: Color) {
+    for (let yi = y; yi < y + height; yi++) {
+      this.drawChar(x, yi, c, fg, bg);
+    }
+  }
+
+  drawRect(x: number, y: number, width: number, height: number, c: string|number, fg?: Color, bg?: Color) {
+    this.drawHLine(x, y, width, c, fg, bg);
+    this.drawHLine(x, y + height - 1, width, c, fg, bg);
+    this.drawVLine(x, y, height, c, fg, bg);
+    this.drawVLine(x + width - 1, y, height, c, fg, bg);
+  }
+
+  drawBox(
+      x: number, y: number, width: number, height: number,
+      topChar: number, rightChar: number, bottomChar: number, leftChar: number,
+      topLeftChar: number, topRightChar: number, bottomRightChar: number, bottomLeftChar: number,
+      fg?: Color, bg?: Color) {
+    this.fillRect(x, y, width, height, 0, fg, bg);
+
+    this.drawHLine(x, y, width, topChar);
+    this.drawHLine(x, y + height - 1, width, bottomChar);
+
+    this.drawVLine(x, y, height, leftChar);
+    this.drawVLine(x + width - 1, y, height, rightChar);
+
+    this.drawChar(x, y, topLeftChar);
+    this.drawChar(x + width - 1, y, topRightChar);
+    this.drawChar(x, y + height - 1, bottomLeftChar);
+    this.drawChar(x + width - 1, y + height - 1, bottomRightChar);
+  }
+
+  drawSingleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color) {
+    this.drawBox(
+        x, y, width, height, Chars.BOX_SINGLE_HORIZONTAL,
+        Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_HORIZONTAL,
+        Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_DOWN_AND_SINGLE_RIGHT,
+        Chars.BOX_SINGLE_DOWN_AND_SINGLE_LEFT,
+        Chars.BOX_SINGLE_UP_AND_SINGLE_LEFT,
+        Chars.BOX_SINGLE_UP_AND_SINGLE_RIGHT, fg, bg);
+  }
+
+  drawDoubleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color) {
+    this.drawBox(
+        x, y, width, height, Chars.BOX_DOUBLE_HORIZONTAL,
+        Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_HORIZONTAL,
+        Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_RIGHT,
+        Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT,
+        Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT,
+        Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT, fg, bg);
+  }
+
+  fillRect(x: number, y: number, width: number, height: number, c: string|number, fg?: Color, bg?: Color) {
+    for (let yi = y; yi < y + height; yi++) {
+      this.drawHLine(x, yi, width, c, fg, bg);
+    }
+  }
+
+  drawConsole(
+      dstX: number, dstY: number,
+      srcConsole: Console,
+      srcX: number, srcY: number, srcWidth: number, srcHeight: number,
+      blendMode?: BlendMode) {
+    blendMode = blendMode || BlendMode.None;
+
+    for (let y = 0; y < srcHeight; y++) {
+      for (let x = 0; x < srcWidth; x++) {
+        const cell = srcConsole.getCell(srcX + x, srcY + y);
+        if (cell) {
+          this.drawCell(dstX + x, dstY + y, cell, blendMode);
+        }
+      }
+    }
+  }
+
+  drawCell(x: number, y: number, cell: Cell, blendMode?: BlendMode) {
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      this.grid[y][x].drawCell(cell, blendMode);
+    }
+  }
+
+  setBlocked(x: number, y: number, blocked: boolean) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].blocked = blocked;
     }
   }
 
-  setBlockSight(x, y, blockSight) {
+  setblockedSight(x: number, y: number, blockedSight: boolean) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-      this.grid[y][x].blockSight = blockSight;
+      this.grid[y][x].blockedSight = blockedSight;
     }
   }
 
-  isVisible(x, y) {
+  isVisible(x: number, y: number) {
     if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
       return false;
     }
@@ -134,9 +204,9 @@ export class TileMap extends Console {
   /**
    * Compute the FOV in an octant adjacent to the Y axis
    */
-  computeOctantY(deltaX, deltaY) {
-    const startSlopes = [];
-    const endSlopes = [];
+  computeOctantY(deltaX: number, deltaY: number) {
+    const startSlopes: number[] = [];
+    const endSlopes: number[] = [];
     let iteration = 1;
     let totalObstacles = 0;
     let obstaclesInLastLine = 0;
@@ -168,15 +238,15 @@ export class TileMap extends Console {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.grid[y - deltaY][x].visible &&
-                !this.grid[y - deltaY][x].blockSight) &&
+                !this.grid[y - deltaY][x].blockedSight) &&
               !(this.grid[y - deltaY][x - deltaX].visible &&
-                !this.grid[y - deltaY][x - deltaX].blockSight)) {
+                !this.grid[y - deltaY][x - deltaX].blockedSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
                   endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blockSight) {
+                if (!this.grid[y][x].blockedSight) {
                   if (centreSlope > startSlopes[idx] &&
                       centreSlope < endSlopes[idx]) {
                     visible = false;
@@ -199,7 +269,7 @@ export class TileMap extends Console {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          if (this.grid[y][x].blockSight) {
+          if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
@@ -215,9 +285,9 @@ export class TileMap extends Console {
   /**
    * Compute the FOV in an octant adjacent to the X axis
    */
-  computeOctantX(deltaX, deltaY) {
-    const startSlopes = [];
-    const endSlopes = [];
+  computeOctantX(deltaX: number, deltaY: number) {
+    const startSlopes: number[] = [];
+    const endSlopes: number[] = [];
     let iteration = 1;
     let totalObstacles = 0;
     let obstaclesInLastLine = 0;
@@ -249,15 +319,15 @@ export class TileMap extends Console {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.grid[y][x - deltaX].visible &&
-                !this.grid[y][x - deltaX].blockSight) &&
+                !this.grid[y][x - deltaX].blockedSight) &&
               !(this.grid[y - deltaY][x - deltaX].visible &&
-                !this.grid[y - deltaY][x - deltaX].blockSight)) {
+                !this.grid[y - deltaY][x - deltaX].blockedSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
                   endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blockSight) {
+                if (!this.grid[y][x].blockedSight) {
                   if (centreSlope > startSlopes[idx] &&
                       centreSlope < endSlopes[idx]) {
                     visible = false;
@@ -280,7 +350,7 @@ export class TileMap extends Console {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          if (this.grid[y][x].blockSight) {
+          if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
             } else if (!extended) {
@@ -293,7 +363,7 @@ export class TileMap extends Console {
     }
   }
 
-  computeFov(originX, originY, radius, opt_noClear, opt_octants) {
+  computeFov(originX: number, originY: number, radius: number, opt_noClear?: boolean, opt_octants?: number) {
     this.originX = originX;
     this.originY = originY;
     this.radius = radius;
@@ -379,7 +449,7 @@ export class TileMap extends Console {
     for (let y = this.minY; y <= this.maxY; y++) {
       for (let x = this.minX; x <= this.maxX; x++) {
         const tile = this.grid[y][x];
-        tile.explored |= tile.visible;
+        tile.explored = tile.explored || tile.visible;
       }
     }
   }

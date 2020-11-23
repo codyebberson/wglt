@@ -44,7 +44,7 @@
 <div class="c1">@@ -113,14 +113,26 @@</div>
 <div class="c0"> class Fighter {</div>
 <div class="c0">     constructor(hp, defense, power, xp, deathFunction) {</div>
-<div class="c0">         this.owner = null;</div>
+<div class="c0">         this.owner = undefined;</div>
 <div class="c3">-        this.maxHp = hp;</div>
 <div class="c3">-        this.defense = defense;</div>
 <div class="c3">-        this.power = power;</div>
@@ -68,7 +68,7 @@
 <div class="c2">+        return this.basePower + getAllEquipped(this.owner).reduce((acc, item) =&gt; acc + item.powerBonus, 0);</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
-<div class="c0">     attack(target) {</div>
+<div class="c0">     attack(target: Entity) {</div>
 <div class="c0">         const damage = this.power - target.fighter.defense;</div>
 <div class="c0"> </div>
 <div class="c1">@@ -214,6 +226,8 @@</div>
@@ -141,7 +141,7 @@
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function isBlocked(x, y) {</div>
+<div class="c0"> function isBlocked(x: number, y: number) {</div>
 <div class="c0">     // First test the map tile</div>
 <div class="c0">     if (map.grid[y][x].blocked) {</div>
 <div class="c1">@@ -378,7 +449,9 @@</div>

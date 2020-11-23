@@ -1,9 +1,10 @@
-
-const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
-const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
-const costs = [1.4, 1, 1.4, 1, 1, 1.4, 1, 1.4];
-let pathId = 0;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.computePath = void 0;
+var dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
+var dys = [-1, -1, -1, 0, 0, 1, 1, 1];
+var costs = [1.4, 1, 1.4, 1, 1, 1.4, 1, 1.4];
+var pathId = 0;
 /**
  * Calculates Dijkstra's algorithm.
  *
@@ -12,91 +13,83 @@ let pathId = 0;
  * @param {!number=} opt_maxDist Optional maximum distance to examine.
  * @return {?Array} Array of steps if destination found; null otherwise.
  */
-export function computePath(map, source, dest, maxDist) {
-  pathId++;
-
-  const sourceCell = map.grid[source.y][source.x];
-  sourceCell.pathId = pathId;
-  sourceCell.g = 0.0;
-  sourceCell.h = Math.hypot(source.x - dest.x, source.y - dest.y);
-  sourceCell.prev = null;
-
-  const q = new SortedSet([sourceCell]);
-
-  while (q.size() > 0) {
-    const u = q.pop();
-
-    if (u.x === dest.x && u.y === dest.y) {
-      return buildPath(u);
+function computePath(map, source, dest, maxDist) {
+    pathId++;
+    var sourceCell = map.grid[source.y][source.x];
+    sourceCell.pathId = pathId;
+    sourceCell.g = 0.0;
+    sourceCell.h = Math.hypot(source.x - dest.x, source.y - dest.y);
+    sourceCell.prev = null;
+    var q = new SortedSet([sourceCell]);
+    while (q.size() > 0) {
+        var u = q.pop();
+        if (u.x === dest.x && u.y === dest.y) {
+            return buildPath(u);
+        }
+        for (var i = 0; i < dxs.length; i++) {
+            var x = u.x + dxs[i];
+            var y = u.y + dys[i];
+            if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
+                var v = map.grid[y][x];
+                if (v.blocked && v.explored && (x !== dest.x || y !== dest.y)) {
+                    continue;
+                }
+                if (v.pathId !== pathId) {
+                    v.pathId = pathId;
+                    v.g = Infinity;
+                    v.h = Math.hypot(x - dest.x, y - dest.y);
+                    v.prev = null;
+                }
+                var alt = u.g + costs[i];
+                if (alt < v.g && alt <= maxDist) {
+                    v.g = alt;
+                    v.prev = u;
+                    q.insert(v);
+                }
+            }
+        }
     }
-
-    for (let i = 0; i < dxs.length; i++) {
-      const x = u.x + dxs[i];
-      const y = u.y + dys[i];
-      if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
-        const v = map.grid[y][x];
-        if (v.blocked && v.explored && (x !== dest.x || y !== dest.y)) {
-          continue;
-        }
-        if (v.pathId !== pathId) {
-          v.pathId = pathId;
-          v.g = Infinity;
-          v.h = Math.hypot(x - dest.x, y - dest.y);
-          v.prev = null;
-        }
-        const alt = u.g + costs[i];
-        if (alt < v.g && alt <= maxDist) {
-          v.g = alt;
-          v.prev = u;
-          q.insert(v);
-        }
-      }
-    }
-  }
-  return null;
+    return null;
 }
-
+exports.computePath = computePath;
 function buildPath(cell) {
-  const result = [];
-  let curr = cell;
-  while (curr) {
-    result.push(curr);
-    curr = curr.prev;
-  }
-  result.reverse();
-  return result;
-}
-
-class SortedSet {
-  constructor(initialValues) {
-    this.values = initialValues
-  }
-
-  insert(cell) {
-    const array = this.values;
-    let low = 0;
-    let high = array.length;
-    let index = 0;
-
-    while (low < high) {
-      const mid = (low + high) >>> 1;
-      const midCell = array[mid];
-      if (midCell.g + midCell.h > cell.g + cell.h) {
-        low = mid + 1;
-        index = low;
-      } else {
-        high = mid;
-        index = high;
-      }
+    var result = [];
+    var curr = cell;
+    while (curr) {
+        result.push(curr);
+        curr = curr.prev;
     }
-    array.splice(index, 0, cell);
-  }
-
-  pop() {
-    return this.values.pop();
-  }
-
-  size() {
-    return this.values.length;
-  }
+    result.reverse();
+    return result;
 }
+var SortedSet = /** @class */ (function () {
+    function SortedSet(initialValues) {
+        this.values = initialValues;
+    }
+    SortedSet.prototype.insert = function (cell) {
+        var array = this.values;
+        var low = 0;
+        var high = array.length;
+        var index = 0;
+        while (low < high) {
+            var mid = (low + high) >>> 1;
+            var midCell = array[mid];
+            if (midCell.g + midCell.h > cell.g + cell.h) {
+                low = mid + 1;
+                index = low;
+            }
+            else {
+                high = mid;
+                index = high;
+            }
+        }
+        array.splice(index, 0, cell);
+    };
+    SortedSet.prototype.pop = function () {
+        return this.values.pop();
+    };
+    SortedSet.prototype.size = function () {
+        return this.values.length;
+    };
+    return SortedSet;
+}());

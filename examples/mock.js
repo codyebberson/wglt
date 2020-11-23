@@ -1,15 +1,15 @@
 
-import {fixBoxCells} from '../src/boxutils.js';
-import {Colors} from '../src/colors.js';
-import {Console} from '../src/console.js';
-import {Terminal} from '../src/terminal.js';
-import { Chars } from '../src/chars.js';
-import {Keys} from '../src/keys.js';
+import {fixBoxCells} from '../src/boxutils';
+import {Colors} from '../src/colors';
+import {Console} from '../src/console';
+import {Terminal} from '../src/terminal';
+import { Chars } from '../src/chars';
+import {Keys} from '../src/keys';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
 
-const term = new Terminal(document.querySelector('canvas'), SCREEN_WIDTH, SCREEN_HEIGHT);
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
 

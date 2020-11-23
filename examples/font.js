@@ -1,31 +1,26 @@
-
-import {Colors} from '../src/colors.js';
-import {Font} from '../src/font.js';
-import {Keys} from '../src/keys.js';
-import {Terminal} from '../src/terminal.js';
-
-const term = new Terminal(document.querySelector('canvas'), 80, 25,
-    {font: new Font('terminal8x14_gs_ro.png', 8, 14)});
-
-term.fillRect(0, 0, 80, 25, 0, Colors.YELLOW, Colors.DARK_BLUE);
-
-let x = 10;
-let y = 10;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var colors_1 = require("../src/colors");
+var font_1 = require("../src/font");
+var keys_1 = require("../src/keys");
+var terminal_1 = require("../src/terminal");
+var term = new terminal_1.Terminal(document.querySelector('canvas'), 80, 25, { font: new font_1.Font('terminal8x14_gs_ro.png', 8, 14) });
+term.fillRect(0, 0, 80, 25, 0, colors_1.Colors.YELLOW, colors_1.Colors.DARK_BLUE);
+var x = 10;
+var y = 10;
 term.update = function () {
-    if (term.isKeyDown(Keys.VK_UP)) {
+    if (term.isKeyDown(keys_1.Keys.VK_UP)) {
         y--;
     }
-    if (term.isKeyDown(Keys.VK_LEFT)) {
+    if (term.isKeyDown(keys_1.Keys.VK_LEFT)) {
         x--;
     }
-    if (term.isKeyDown(Keys.VK_RIGHT)) {
+    if (term.isKeyDown(keys_1.Keys.VK_RIGHT)) {
         x++;
     }
-    if (term.isKeyDown(Keys.VK_DOWN)) {
+    if (term.isKeyDown(keys_1.Keys.VK_DOWN)) {
         y++;
     }
-
     term.clear();
     term.drawString(1, 1, 'Hello world!');
     term.drawString(1, 3, 'Use arrow keys to move');
