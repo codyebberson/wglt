@@ -4,7 +4,7 @@
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production && tsc --declaration --emitDeclarationOnly src/index.ts --out dist/wglt.d.ts",
+    "build": "webpack --mode production && tsc --declaration --emitDeclarationOnly src/wglt.ts --out dist/wglt.d.ts",
     "test": "jest"
   },
   "author": "Cody Ebberson",

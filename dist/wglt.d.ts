@@ -694,7 +694,7 @@ declare module "rng" {
         chooseKey(chancesMap: any): any;
     }
 }
-declare module "index" {
+declare module "wglt" {
     export * from "blendmode";
     export * from "boxutils";
     export * from "cell";

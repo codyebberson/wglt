@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const entries = ['./src/index.ts'];
+const entries = ['./src/wglt.ts'];
 addDir('./examples/');
 addDir('./examples/roguelike/');
 
@@ -21,7 +21,7 @@ function getOutputPath(entry) {
 }
 
 function getOutputFilename(entry) {
-  if (entry === './src/index.ts') {
+  if (entry === './src/wglt.ts') {
     return 'wglt.js';
   }
   return path.basename(entry).replace('.ts', '.min.js');
