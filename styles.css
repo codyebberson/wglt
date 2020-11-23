@@ -17,6 +17,7 @@ body {
     max-width: 1000px;
     line-height: 1.6;
     padding: 0;
+    overflow-x: hidden;
 }
 
 body.example {
@@ -71,9 +72,9 @@ a:hover {
 }
 
 .c2 {
-    color: #0a0;
+    color: #6e6;
 }
 
 .c3 {
-    color: #a00;
+    color: #f44;
 }

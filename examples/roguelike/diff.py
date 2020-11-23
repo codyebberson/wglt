@@ -3,7 +3,7 @@ import html
 import subprocess
 
 def diff(old_file, new_file):
-    cmd = ['diff', '-u', old_file.replace('part0.js', '/dev/null'), new_file]
+    cmd = ['diff', '-u', old_file.replace('part0.ts', '/dev/null'), new_file]
     return subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8')
 
 def diff2html(diff):
@@ -35,5 +35,5 @@ if __name__ == '__main__':
     for i in range(1, 14):
         prev = 'part' + str(i - 1)
         curr = 'part' + str(i)
-        update_diff(curr + '.html', prev + '.js', curr + '.js')
+        update_diff(curr + '.html', prev + '.ts', curr + '.ts')
 

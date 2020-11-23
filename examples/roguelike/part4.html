@@ -7,14 +7,14 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
 	<canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_4">Part 4: Field-of-view and exploration</a></p>
 	<p>Display the player's field-of-view (FOV) and explore the dungeon gradually (also known as fog-of-war).</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part3.js	2019-12-15 15:46:58.722957400 -0800</div>
-<div class="c2">+++ part4.js	2019-12-15 15:47:20.146711400 -0800</div>
-<div class="c1">@@ -19,9 +19,12 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part3.ts	2020-11-23 12:55:11.020101900 -0800</div>
+<div class="c2">+++ part4.ts	2020-11-23 12:55:18.570934300 -0800</div>
+<div class="c1">@@ -21,9 +21,12 @@</div>
 <div class="c0"> const ROOM_MAX_SIZE = 10;</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
@@ -25,16 +25,9 @@
 <div class="c0"> const COLOR_DARK_GROUND = fromRgb(50, 50, 150);</div>
 <div class="c2">+const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);</div>
 <div class="c0"> </div>
-<div class="c0"> class Entity {
-    x: number;
-    y: number;
-    char: string;
-    name: string;
-    color: Color;
-    blocks: boolean;
-</div>
-<div class="c0">     constructor(x: number, y: number, char: string, color: Color) {</div>
-<div class="c1">@@ -40,7 +43,9 @@</div>
+<div class="c0"> class Entity {</div>
+<div class="c0">     x: number;</div>
+<div class="c1">@@ -47,7 +50,9 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
 <div class="c0">     draw() {</div>
@@ -45,7 +38,7 @@
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -142,27 +147,44 @@</div>
+<div class="c1">@@ -149,27 +154,44 @@</div>
 <div class="c0"> function handleKeys() {</div>
 <div class="c0">     if (term.isKeyPressed(Keys.VK_UP)) {</div>
 <div class="c0">         player.move(0, -1);</div>
@@ -95,7 +88,7 @@
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -177,6 +199,7 @@</div>
+<div class="c1">@@ -184,6 +206,7 @@</div>
 <div class="c0"> const npc = new Entity(40, 20, &#x27;@&#x27;, Colors.YELLOW);</div>
 <div class="c0"> const entities = [player, npc];</div>
 <div class="c0"> const map = createMap();</div>

@@ -7,14 +7,22 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
 	<canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_5">Part 5: Preparing for combat</a></p>
 	<p>Place some orcs and trolls around the dungeon (they won't stay there for long!). Also, deal with blocking objects and game states, which are important before coding the next part.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part4.js	2019-12-15 15:47:20.146711400 -0800</div>
-<div class="c2">+++ part5.js	2019-12-15 15:47:33.879076800 -0800</div>
-<div class="c1">@@ -19,6 +19,7 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part4.ts	2020-11-23 12:55:18.570934300 -0800</div>
+<div class="c2">+++ part5.ts	2020-11-23 12:54:32.381932100 -0800</div>
+<div class="c1">@@ -8,7 +8,6 @@</div>
+<div class="c0"> import { RNG } from &#x27;../../src/rng&#x27;;</div>
+<div class="c0"> import { Terminal } from &#x27;../../src/terminal&#x27;;</div>
+<div class="c0"> </div>
+<div class="c3">-</div>
+<div class="c0"> // Actual size of the window</div>
+<div class="c0"> const SCREEN_WIDTH = 80;</div>
+<div class="c0"> const SCREEN_HEIGHT = 45;</div>
+<div class="c1">@@ -21,6 +20,7 @@</div>
 <div class="c0"> const ROOM_MAX_SIZE = 10;</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
@@ -22,17 +30,14 @@
 <div class="c0"> const TORCH_RADIUS = 10;</div>
 <div class="c0"> </div>
 <div class="c0"> const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
-<div class="c1">@@ -27,15 +28,17 @@</div>
-<div class="c0"> const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);</div>
+<div class="c1">@@ -32,17 +32,21 @@</div>
+<div class="c0">     x: number;</div>
+<div class="c0">     y: number;</div>
+<div class="c0">     char: string;</div>
+<div class="c2">+    name: string;</div>
+<div class="c0">     color: Color;</div>
+<div class="c2">+    blocks: boolean;</div>
 <div class="c0"> </div>
-<div class="c0"> class Entity {
-    x: number;
-    y: number;
-    char: string;
-    name: string;
-    color: Color;
-    blocks: boolean;
-</div>
 <div class="c3">-    constructor(x: number, y: number, char: string, color: Color) {</div>
 <div class="c2">+    constructor(x: number, y: number, char: string, name: string, color: Color, blocks: boolean) {</div>
 <div class="c0">         this.x = x;</div>
@@ -49,7 +54,7 @@
 <div class="c0">             return;</div>
 <div class="c0">         }</div>
 <div class="c0">         this.x += dx;</div>
-<div class="c1">@@ -49,6 +52,23 @@</div>
+<div class="c1">@@ -56,6 +60,23 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -73,7 +78,7 @@
 <div class="c0"> function createRoom(map: Console, room: Rect) {</div>
 <div class="c0">     for (let y = room.y + 1; y &lt; room.y2; y++) {</div>
 <div class="c0">         for (let x = room.x + 1; x &lt; room.x2; x++) {</div>
-<div class="c1">@@ -136,6 +156,9 @@</div>
+<div class="c1">@@ -143,6 +164,9 @@</div>
 <div class="c0">                 }</div>
 <div class="c0">             }</div>
 <div class="c0"> </div>
@@ -83,7 +88,7 @@
 <div class="c0">             // Finally, append the new room to the list</div>
 <div class="c0">             rooms.push(newRoom);</div>
 <div class="c0">         }</div>
-<div class="c1">@@ -144,22 +167,63 @@</div>
+<div class="c1">@@ -151,22 +175,63 @@</div>
 <div class="c0">     return map;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -155,9 +160,9 @@
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -195,9 +259,8 @@</div>
+<div class="c1">@@ -202,9 +267,8 @@</div>
 <div class="c0"> </div>
-<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;) as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);</div>
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c3">-const player = new Entity(40, 25, &#x27;@&#x27;, Colors.WHITE);</div>
 <div class="c3">-const npc = new Entity(40, 20, &#x27;@&#x27;, Colors.YELLOW);</div>

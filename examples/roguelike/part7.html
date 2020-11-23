@@ -7,14 +7,14 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
     <canvas></canvas>
     <p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_7">Part 7: The GUI</a></p>
     <p>A juicy Graphical User Interface with status bars and a colored message log for maximum eye-candy. Also, the infamous "look" command, with a twist: you can use the mouse.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part6.js	2019-12-15 15:47:44.565746000 -0800</div>
-<div class="c2">+++ part7.js	2019-12-15 15:47:56.810494100 -0800</div>
-<div class="c1">@@ -13,7 +13,15 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part6.ts	2020-11-23 12:54:29.720619700 -0800</div>
+<div class="c2">+++ part7.ts	2020-11-23 12:54:27.323316900 -0800</div>
+<div class="c1">@@ -15,7 +15,15 @@</div>
 <div class="c0"> </div>
 <div class="c0"> // Size of the map</div>
 <div class="c0"> const MAP_WIDTH = 80;</div>
@@ -31,7 +31,7 @@
 <div class="c0"> </div>
 <div class="c0"> // Parameters for dungeon generator</div>
 <div class="c0"> const ROOM_MAX_SIZE = 10;</div>
-<div class="c1">@@ -95,10 +103,10 @@</div>
+<div class="c1">@@ -119,10 +127,10 @@</div>
 <div class="c0">         const damage = this.power - target.fighter.defense;</div>
 <div class="c0"> </div>
 <div class="c0">         if (damage &gt; 0) {</div>
@@ -44,18 +44,18 @@
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -113,6 +121,10 @@</div>
+<div class="c1">@@ -141,6 +149,10 @@</div>
 <div class="c0">             }</div>
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c2">+</div>
-<div class="c2">+    heal(amount) {</div>
+<div class="c2">+    heal(amount: number) {</div>
 <div class="c2">+        this.hp = Math.min(this.hp + amount, this.maxHp);</div>
 <div class="c2">+    }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> class BasicMonster {</div>
-<div class="c1">@@ -281,6 +293,57 @@</div>
+<div class="c1">@@ -318,6 +330,57 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -113,7 +113,7 @@
 <div class="c0"> function playerMoveOrAttack(dx: number, dy: number) {</div>
 <div class="c0">     const x = player.x + dx;</div>
 <div class="c0">     const y = player.y + dy;</div>
-<div class="c1">@@ -328,11 +391,11 @@</div>
+<div class="c1">@@ -365,11 +428,11 @@</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function playerDeath(player: Entity) {</div>
@@ -127,7 +127,7 @@
 <div class="c0">     monster.char = &#x27;%&#x27;;</div>
 <div class="c0">     monster.color = Colors.DARK_RED;</div>
 <div class="c0">     monster.blocks = false;</div>
-<div class="c1">@@ -370,15 +433,38 @@</div>
+<div class="c1">@@ -407,15 +470,38 @@</div>
 <div class="c0">     for (let i = 0; i &lt; entities.length; i++) {</div>
 <div class="c0">         entities[i].draw();</div>
 <div class="c0">     }</div>
@@ -153,7 +153,7 @@
 <div class="c2">+    term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;) as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);</div>
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c0"> const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>
 <div class="c0"> const entities = [player];</div>

@@ -7,18 +7,18 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
     <canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_1">Part 1: Graphics</a></p>
 	<p>Start your game right away by setting up the screen, printing the stereotypical @ character and moving it around with the arrow keys.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- /dev/null	2019-12-16 11:26:25.000000000 -0800</div>
-<div class="c2">+++ part1.js	2019-12-15 15:45:59.811441100 -0800</div>
+        <!--STARTDIFF--><div class="c3">--- /dev/null	2020-11-23 13:37:45.000000000 -0800</div>
+<div class="c2">+++ part1.ts	2020-11-23 12:54:54.123738100 -0800</div>
 <div class="c1">@@ -0,0 +1,40 @@</div>
 <div class="c2">+</div>
-<div class="c2">+import {Colors} from &#x27;../../src/colors.js&#x27;;</div>
-<div class="c2">+import {Keys} from &#x27;../../src/keys.js&#x27;;</div>
-<div class="c2">+import {Terminal} from &#x27;../../src/terminal.js&#x27;;</div>
+<div class="c2">+import { Colors } from &#x27;../../src/colors&#x27;;</div>
+<div class="c2">+import { Keys } from &#x27;../../src/keys&#x27;;</div>
+<div class="c2">+import { Terminal } from &#x27;../../src/terminal&#x27;;</div>
 <div class="c2">+</div>
 <div class="c2">+// Actual size of the window</div>
 <div class="c2">+const SCREEN_WIDTH = 80;</div>
@@ -46,7 +46,7 @@
 <div class="c2">+    term.drawString(x, y, &#x27;@&#x27;);</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+const term = new Terminal(document.querySelector(&#x27;canvas&#x27;), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c2">+const term = new Terminal(document.querySelector(&#x27;canvas&#x27;) as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);</div>
 <div class="c2">+</div>
 <div class="c2">+let x = 10;</div>
 <div class="c2">+let y = 10;</div>

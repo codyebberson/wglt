@@ -7,14 +7,14 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
 	<canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_9">Part 9: Spells and ranged combat</a></p>
 	<p>The player's strategic choices increase exponentially as we add a few magic scrolls to the mix. Covers damage and mind spells, as well as ranged combat.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part8.js	2019-12-15 15:48:07.690883100 -0800</div>
-<div class="c2">+++ part9.js	2019-12-15 15:52:01.461141200 -0800</div>
-<div class="c1">@@ -36,6 +36,13 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part8.ts	2020-11-23 12:54:25.015765100 -0800</div>
+<div class="c2">+++ part9.ts	2020-11-23 12:54:22.760264400 -0800</div>
+<div class="c1">@@ -38,12 +38,24 @@</div>
 <div class="c0"> </div>
 <div class="c0"> // Spell values</div>
 <div class="c0"> const HEAL_AMOUNT = 4;</div>
@@ -28,7 +28,35 @@
 <div class="c0"> </div>
 <div class="c0"> const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
 <div class="c0"> const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);</div>
-<div class="c1">@@ -80,6 +87,10 @@</div>
+<div class="c0"> const COLOR_DARK_GROUND = fromRgb(50, 50, 150);</div>
+<div class="c0"> const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);</div>
+<div class="c0"> </div>
+<div class="c2">+interface AI {</div>
+<div class="c2">+    owner?: Entity;</div>
+<div class="c2">+    takeTurn(): void;</div>
+<div class="c2">+}</div>
+<div class="c2">+</div>
+<div class="c0"> class Entity {</div>
+<div class="c0">     x: number;</div>
+<div class="c0">     y: number;</div>
+<div class="c1">@@ -52,7 +64,7 @@</div>
+<div class="c0">     color: Color;</div>
+<div class="c0">     blocks: boolean;</div>
+<div class="c0">     fighter?: Fighter;</div>
+<div class="c3">-    ai?: BasicMonster;</div>
+<div class="c2">+    ai?: AI;</div>
+<div class="c0">     item?: Item;</div>
+<div class="c0"> </div>
+<div class="c0">     constructor(x: number, y: number, char: string, name: string, color: Color, blocks: boolean, components?: any) {</div>
+<div class="c1">@@ -63,6 +75,7 @@</div>
+<div class="c0">         this.color = color;</div>
+<div class="c0">         this.blocks = !!blocks;</div>
+<div class="c0"> </div>
+<div class="c2">+</div>
+<div class="c0">         if (components) {</div>
+<div class="c0">             if (&#x27;fighter&#x27; in components) {</div>
+<div class="c0">                 this.fighter = components.fighter;</div>
+<div class="c1">@@ -98,6 +111,10 @@</div>
 <div class="c0">         return Math.hypot(other.x - this.x, other.y - this.y);</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
@@ -39,11 +67,15 @@
 <div class="c0">     sendToBack() {</div>
 <div class="c0">         this.remove();</div>
 <div class="c0">         entities.unshift(this);</div>
-<div class="c1">@@ -157,6 +168,26 @@</div>
+<div class="c1">@@ -199,6 +216,33 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c2">+class ConfusedMonster {</div>
+<div class="c2">+    owner?: Entity;</div>
+<div class="c2">+    oldAi: AI;</div>
+<div class="c2">+    numTurns: number;</div>
+<div class="c2">+</div>
 <div class="c2">+    constructor(oldAi: AI) {</div>
 <div class="c2">+        this.owner = undefined;</div>
 <div class="c2">+        this.oldAi = oldAi;</div>
@@ -51,6 +83,9 @@
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    takeTurn() {</div>
+<div class="c2">+        if (!this.owner) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
 <div class="c2">+        if (this.numTurns &gt; 0) {</div>
 <div class="c2">+            // Still confused...</div>
 <div class="c2">+            // Move in a random direction, and decrease the number of turns confused</div>
@@ -64,9 +99,9 @@
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c0"> class Item {</div>
-<div class="c0">     constructor(useFunction) {</div>
-<div class="c0">         this.useFunction = useFunction;</div>
-<div class="c1">@@ -335,10 +366,25 @@</div>
+<div class="c0">     owner?: Entity;</div>
+<div class="c0">     useFunction: (item: Item) =&gt; void;</div>
+<div class="c1">@@ -389,10 +433,25 @@</div>
 <div class="c0">         const x = rng.nextRange(room.x + 1, room.x2 - 1)</div>
 <div class="c0">         const y = rng.nextRange(room.y + 1, room.y2 - 1)</div>
 <div class="c0"> </div>
@@ -95,15 +130,15 @@
 <div class="c0"> </div>
 <div class="c0">         entities.push(item);</div>
 <div class="c0">         item.sendToBack();  // items appear below other objects</div>
-<div class="c1">@@ -433,6 +479,32 @@</div>
+<div class="c1">@@ -487,6 +546,32 @@</div>
 <div class="c0">         return;</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
 <div class="c2">+    if (targetFunction) {</div>
-<div class="c2">+        if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0]) {</div>
+<div class="c2">+        if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {</div>
 <div class="c2">+            endTargeting(targetCursor.x, targetCursor.y);</div>
 <div class="c2">+        }</div>
-<div class="c2">+        if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2]) {</div>
+<div class="c2">+        if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {</div>
 <div class="c2">+            cancelTargeting();</div>
 <div class="c2">+        }</div>
 <div class="c2">+        if (term.isKeyPressed(Keys.VK_UP)) {</div>
@@ -128,7 +163,7 @@
 <div class="c0">     if (term.isKeyPressed(Keys.VK_UP)) {</div>
 <div class="c0">         playerMoveOrAttack(0, -1);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -485,6 +557,26 @@</div>
+<div class="c1">@@ -539,6 +624,26 @@</div>
 <div class="c0">     monster.sendToBack();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -152,10 +187,10 @@
 <div class="c2">+    return getClosestMonster(x, y, 0);</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c0"> function castHeal(item) {</div>
-<div class="c0">     // Heal the player</div>
-<div class="c0">     if (player.fighter.hp === player.fighter.maxHp) {</div>
-<div class="c1">@@ -497,6 +589,81 @@</div>
+<div class="c0"> function castHeal(item: Item) {</div>
+<div class="c0">     if (!player.fighter) {</div>
+<div class="c0">         return;</div>
+<div class="c1">@@ -555,6 +660,83 @@</div>
 <div class="c0">     item.remove();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -219,40 +254,45 @@
 <div class="c2">+    });</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function startTargeting(callback: (x: number, y: number) => void) {</div>
+<div class="c2">+function startTargeting(callback: (x: number, y: number) =&gt; void) {</div>
 <div class="c2">+    targetFunction = callback;</div>
 <div class="c2">+    targetCursor.x = player.x;</div>
 <div class="c2">+    targetCursor.y = player.y;</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+function endTargeting(x: number, y: number) {</div>
-<div class="c2">+    targetFunction(x, y);</div>
-<div class="c2">+    cancelTargeting();</div>
+<div class="c2">+    if (targetFunction) {</div>
+<div class="c2">+        targetFunction(x, y);</div>
+<div class="c2">+        cancelTargeting();</div>
+<div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+function cancelTargeting() {</div>
-<div class="c2">+    targetFunction = null;</div>
+<div class="c2">+    targetFunction = undefined;</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c0"> function renderAll() {</div>
 <div class="c0">     if (fovRecompute) {</div>
 <div class="c0">         map.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -546,6 +713,10 @@</div>
+<div class="c1">@@ -604,6 +786,13 @@</div>
 <div class="c0">     // Display names of objects under the mouse</div>
 <div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);</div>
 <div class="c0"> </div>
 <div class="c2">+    if (targetFunction) {</div>
-<div class="c2">+        term.getCell(targetCursor.x, targetCursor.y).setBackground(Colors.WHITE);</div>
+<div class="c2">+        const targetCell = term.getCell(targetCursor.x, targetCursor.y);</div>
+<div class="c2">+        if (targetCell) {</div>
+<div class="c2">+            targetCell.setBackground(Colors.WHITE);</div>
+<div class="c2">+        }</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c0">     // Draw dialog boxes</div>
 <div class="c0">     gui.draw();</div>
 <div class="c0"> }</div>
-<div class="c1">@@ -559,6 +730,8 @@</div>
+<div class="c1">@@ -617,6 +806,8 @@</div>
 <div class="c0"> const map = createMap();</div>
 <div class="c0"> let fovRecompute = true;</div>
 <div class="c0"> const inventory: Entity[] = [];</div>
-<div class="c2">+let targetFunction = undefined as undefined | ((x: number, y: number) => void);</div>
+<div class="c2">+let targetFunction = undefined as undefined | ((x: number, y: number) =&gt; void);</div>
 <div class="c2">+let targetCursor = { x: 0, y: 0 };</div>
 <div class="c0"> </div>
 <div class="c0"> addMessage(&#x27;Welcome stranger! Prepare to perish!&#x27;, Colors.DARK_RED);</div>

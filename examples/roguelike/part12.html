@@ -7,14 +7,14 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
 	<canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_12">Part 12: Monster and item progression</a></p>
 	<p>Deeper dungeon levels become increasingly more difficult! Here we create tools for dealing with chances and making them vary with level.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part11.js	2019-12-15 15:52:17.999912600 -0800</div>
-<div class="c2">+++ part12.js	2019-12-15 15:53:01.274357700 -0800</div>
-<div class="c1">@@ -31,19 +31,17 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part11.ts	2020-11-23 12:54:18.049172200 -0800</div>
+<div class="c2">+++ part12.ts	2020-11-23 12:54:15.662841300 -0800</div>
+<div class="c1">@@ -33,19 +33,17 @@</div>
 <div class="c0"> const ROOM_MAX_SIZE = 10;</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
@@ -37,7 +37,7 @@
 <div class="c0"> </div>
 <div class="c0"> // Experience and level-ups</div>
 <div class="c0"> const LEVEL_UP_BASE = 200;</div>
-<div class="c1">@@ -347,9 +345,44 @@</div>
+<div class="c1">@@ -407,9 +405,44 @@</div>
 <div class="c0">     return map;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -83,7 +83,7 @@
 <div class="c0"> </div>
 <div class="c0">     for (let i = 0; i &lt; numMonsters; i++) {</div>
 <div class="c0">         // Choose random spot for this monster</div>
-<div class="c1">@@ -357,16 +390,14 @@</div>
+<div class="c1">@@ -417,16 +450,14 @@</div>
 <div class="c0">         const y = rng.nextRange(room.y + 1, room.y2 - 1);</div>
 <div class="c0">         let monster = null;</div>
 <div class="c0"> </div>
@@ -106,7 +106,7 @@
 <div class="c0">             const ai = new BasicMonster();</div>
 <div class="c0">             monster = new Entity(x, y, &#x27;T&#x27;, &#x27;troll&#x27;, Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });</div>
 <div class="c0">         }</div>
-<div class="c1">@@ -375,30 +406,29 @@</div>
+<div class="c1">@@ -435,30 +466,29 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
 <div class="c0">     // Choose random number of items</div>
@@ -147,7 +147,7 @@
 <div class="c0">             item = new Entity(x, y, &#x27;#&#x27;, &#x27;scroll of confusion&#x27;, Colors.YELLOW, false, { item: new Item(castConfuse) });</div>
 <div class="c0">         }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -805,7 +835,7 @@</div>
+<div class="c1">@@ -874,7 +904,7 @@</div>
 <div class="c0"> </div>
 <div class="c0"> function newGame() {</div>
 <div class="c0">     rng = new RNG(Date.now());</div>

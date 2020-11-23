@@ -7,24 +7,28 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
     <canvas></canvas>
     <p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_6">Part 6: Going Berserk!</a></p>
     <p>Stalking monsters, fights, splatter -- need we say more?</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part5.js	2019-12-15 15:47:33.879076800 -0800</div>
-<div class="c2">+++ part6.js	2019-12-15 15:47:44.565746000 -0800</div>
-<div class="c1">@@ -28,13 +28,22 @@</div>
-<div class="c0"> const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);</div>
+        <!--STARTDIFF--><div class="c3">--- part5.ts	2020-11-23 12:54:32.381932100 -0800</div>
+<div class="c2">+++ part6.ts	2020-11-23 12:54:29.720619700 -0800</div>
+<div class="c1">@@ -8,6 +8,7 @@</div>
+<div class="c0"> import { RNG } from &#x27;../../src/rng&#x27;;</div>
+<div class="c0"> import { Terminal } from &#x27;../../src/terminal&#x27;;</div>
 <div class="c0"> </div>
-<div class="c0"> class Entity {
-    x: number;
-    y: number;
-    char: string;
-    name: string;
-    color: Color;
-    blocks: boolean;
-</div>
+<div class="c2">+</div>
+<div class="c0"> // Actual size of the window</div>
+<div class="c0"> const SCREEN_WIDTH = 80;</div>
+<div class="c0"> const SCREEN_HEIGHT = 45;</div>
+<div class="c1">@@ -35,14 +36,27 @@</div>
+<div class="c0">     name: string;</div>
+<div class="c0">     color: Color;</div>
+<div class="c0">     blocks: boolean;</div>
+<div class="c2">+    fighter?: Fighter;</div>
+<div class="c2">+    ai?: BasicMonster;</div>
+<div class="c0"> </div>
 <div class="c3">-    constructor(x: number, y: number, char: string, name: string, color: Color, blocks: boolean) {</div>
 <div class="c2">+    constructor(x: number, y: number, char: string, name: string, color: Color, blocks: boolean, components?: any) {</div>
 <div class="c0">         this.x = x;</div>
@@ -35,17 +39,19 @@
 <div class="c0">         this.blocks = !!blocks;</div>
 <div class="c2">+</div>
 <div class="c2">+        if (components) {</div>
-<div class="c2">+            for (var property in components) {</div>
-<div class="c2">+                if (components.hasOwnProperty(property)) {</div>
-<div class="c2">+                    this[property] = components[property];</div>
-<div class="c2">+                    this[property].owner = this;</div>
-<div class="c2">+                }</div>
+<div class="c2">+            if (&#x27;fighter&#x27; in components) {</div>
+<div class="c2">+                this.fighter = components.fighter;</div>
+<div class="c2">+                (this.fighter as Fighter).owner = this;</div>
+<div class="c2">+            }</div>
+<div class="c2">+            if (&#x27;ai&#x27; in components) {</div>
+<div class="c2">+                this.ai = components.ai;</div>
+<div class="c2">+                (this.ai as BasicMonster).owner = this;</div>
 <div class="c2">+            }</div>
 <div class="c2">+        }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
 <div class="c0">     move(dx: number, dy: number) {</div>
-<div class="c1">@@ -45,6 +54,26 @@</div>
+<div class="c1">@@ -53,6 +67,26 @@</div>
 <div class="c0">         this.y += dy;</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
@@ -72,21 +78,32 @@
 <div class="c0">     draw() {</div>
 <div class="c0">         if (map.isVisible(this.x, this.y)) {</div>
 <div class="c0">             term.drawString(this.x, this.y, this.char, this.color);</div>
-<div class="c1">@@ -52,6 +81,63 @@</div>
+<div class="c1">@@ -60,6 +94,87 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c2">+class Fighter {</div>
-<div class="c2">+    constructor(hp, defense, power, deathFunction) {</div>
+<div class="c2">+    owner?: Entity;</div>
+<div class="c2">+    maxHp: number;</div>
+<div class="c2">+    defense: number;</div>
+<div class="c2">+    power: number;</div>
+<div class="c2">+    hp: number;</div>
+<div class="c2">+    deathFunction?: (e: Entity) =&gt; void;</div>
+<div class="c2">+</div>
+<div class="c2">+    constructor(hp: number, defense: number, power: number, deathFunction?: (e: Entity) =&gt; void) {</div>
 <div class="c2">+        this.owner = undefined;</div>
 <div class="c2">+        this.maxHp = hp;</div>
 <div class="c2">+        this.defense = defense;</div>
 <div class="c2">+        this.power = power;</div>
 <div class="c2">+        this.hp = hp;</div>
-<div class="c2">+        this.deathFunction = deathFunction || null;</div>
+<div class="c2">+        this.deathFunction = deathFunction;</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    attack(target: Entity) {</div>
+<div class="c2">+        if (!this.owner || !target.fighter) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
+<div class="c2">+</div>
 <div class="c2">+        const damage = this.power - target.fighter.defense;</div>
 <div class="c2">+</div>
 <div class="c2">+        if (damage &gt; 0) {</div>
@@ -98,6 +115,10 @@
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    takeDamage(damage: number) {</div>
+<div class="c2">+        if (!this.owner) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
+<div class="c2">+</div>
 <div class="c2">+        this.hp -= damage;</div>
 <div class="c2">+</div>
 <div class="c2">+        // Check for death. if there&#x27;s a death function, call it</div>
@@ -111,12 +132,21 @@
 <div class="c2">+}</div>
 <div class="c2">+</div>
 <div class="c2">+class BasicMonster {</div>
+<div class="c2">+    owner?: Entity;</div>
+<div class="c2">+</div>
 <div class="c2">+    constructor() {</div>
 <div class="c2">+        this.owner = undefined;</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    takeTurn() {</div>
+<div class="c2">+        if (!player.fighter) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
+<div class="c2">+</div>
 <div class="c2">+        const monster = this.owner;</div>
+<div class="c2">+        if (!monster || !monster.fighter) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
 <div class="c2">+</div>
 <div class="c2">+        // A basic monster takes its turn. if you can see it, it can see you</div>
 <div class="c2">+        if (map.isVisible(monster.x, monster.y)) {</div>
@@ -136,7 +166,7 @@
 <div class="c0"> function isBlocked(x: number, y: number) {</div>
 <div class="c0">     // First test the map tile</div>
 <div class="c0">     if (map.grid[y][x].blocked) {</div>
-<div class="c1">@@ -181,10 +267,14 @@</div>
+<div class="c1">@@ -189,10 +304,14 @@</div>
 <div class="c0">         // 80% chance of getting an orc</div>
 <div class="c0">         if (rng.nextRange(0, 100) &lt; 80) {</div>
 <div class="c0">             // Create an orc</div>
@@ -153,7 +183,7 @@
 <div class="c0">         }</div>
 <div class="c0"> </div>
 <div class="c0">         entities.push(monster);</div>
-<div class="c1">@@ -198,21 +288,31 @@</div>
+<div class="c1">@@ -206,21 +325,31 @@</div>
 <div class="c0">     let target = null;</div>
 <div class="c0">     for (let i = 0; i &lt; entities.length; i++) {</div>
 <div class="c0">         const entity = entities[i];</div>
@@ -181,13 +211,13 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function handleKeys() {</div>
-<div class="c2">+    if (player.fighter.hp &lt;= 0) {</div>
+<div class="c2">+    if (!player.fighter || player.fighter.hp &lt;= 0) {</div>
 <div class="c2">+        return;</div>
 <div class="c2">+    }</div>
 <div class="c0">     if (term.isKeyPressed(Keys.VK_UP)) {</div>
 <div class="c0">         playerMoveOrAttack(0, -1);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -227,6 +327,21 @@</div>
+<div class="c1">@@ -235,6 +364,21 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -200,8 +230,8 @@
 <div class="c2">+    monster.char = &#x27;%&#x27;;</div>
 <div class="c2">+    monster.color = Colors.DARK_RED;</div>
 <div class="c2">+    monster.blocks = false;</div>
-<div class="c2">+    monster.fighter = null;</div>
-<div class="c2">+    monster.ai = null;</div>
+<div class="c2">+    monster.fighter = undefined;</div>
+<div class="c2">+    monster.ai = undefined;</div>
 <div class="c2">+    monster.name = &#x27;remains of &#x27; + monster.name;</div>
 <div class="c2">+    monster.sendToBack();</div>
 <div class="c2">+}</div>
@@ -209,9 +239,9 @@
 <div class="c0"> function renderAll() {</div>
 <div class="c0">     if (fovRecompute) {</div>
 <div class="c0">         map.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -259,7 +374,7 @@</div>
+<div class="c1">@@ -267,7 +411,7 @@</div>
 <div class="c0"> </div>
-<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;) as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);</div>
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c3">-const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true);</div>
 <div class="c2">+const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>

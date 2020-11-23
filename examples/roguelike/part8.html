@@ -7,27 +7,27 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
 	<canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_8">Part 8: Items and Inventory</a></p>
 	<p>The player gets to collect ("borrow") items from the dungeon and use them, with a neat inventory screen. More items added in the next part.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part7.js	2019-12-15 15:47:56.810494100 -0800</div>
-<div class="c2">+++ part8.js	2019-12-15 15:48:07.690883100 -0800</div>
-<div class="c1">@@ -1,9 +1,12 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part7.ts	2020-11-23 12:54:27.323316900 -0800</div>
+<div class="c2">+++ part8.ts	2020-11-23 12:54:25.015765100 -0800</div>
+<div class="c1">@@ -3,9 +3,12 @@</div>
+<div class="c0"> import { Colors } from &#x27;../../src/colors&#x27;;</div>
+<div class="c0"> import { Console } from &#x27;../../src/console&#x27;;</div>
+<div class="c0"> import { fromRgb } from &#x27;../../src/color&#x27;;</div>
+<div class="c2">+import { GUI } from &#x27;../../src/gui&#x27;;</div>
+<div class="c0"> import { Keys } from &#x27;../../src/keys&#x27;;</div>
+<div class="c2">+import { MessageDialog } from &#x27;../../src/gui/messagedialog&#x27;;</div>
+<div class="c0"> import { Rect } from &#x27;../../src/rect&#x27;;</div>
+<div class="c0"> import { RNG } from &#x27;../../src/rng&#x27;;</div>
+<div class="c2">+import { SelectDialog } from &#x27;../../src/gui/selectdialog&#x27;;</div>
+<div class="c0"> import { Terminal } from &#x27;../../src/terminal&#x27;;</div>
 <div class="c0"> </div>
-<div class="c0"> import {Colors} from &#x27;../../src/colors.js&#x27;;</div>
-<div class="c0"> import {fromRgb} from &#x27;../../src/color.js&#x27;;</div>
-<div class="c2">+import {GUI} from &#x27;../../src/gui.js&#x27;;</div>
-<div class="c0"> import {Keys} from &#x27;../../src/keys.js&#x27;;</div>
-<div class="c2">+import {MessageDialog} from &#x27;../../src/gui/messagedialog.js&#x27;;</div>
-<div class="c0"> import {Rect} from &#x27;../../src/rect.js&#x27;;</div>
-<div class="c0"> import {RNG} from &#x27;../../src/rng.js&#x27;;</div>
-<div class="c2">+import {SelectDialog} from &#x27;../../src/gui/selectdialog.js&#x27;;</div>
-<div class="c0"> import {Terminal} from &#x27;../../src/terminal.js&#x27;;</div>
-<div class="c0"> import {TileMap} from &#x27;../../src/tilemap.js&#x27;;</div>
 <div class="c0"> </div>
-<div class="c1">@@ -28,8 +31,12 @@</div>
+<div class="c1">@@ -30,8 +33,12 @@</div>
 <div class="c0"> const ROOM_MIN_SIZE = 6;</div>
 <div class="c0"> const MAX_ROOMS = 30;</div>
 <div class="c0"> const MAX_ROOM_MONSTERS = 3;</div>
@@ -40,16 +40,41 @@
 <div class="c0"> const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
 <div class="c0"> const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);</div>
 <div class="c0"> const COLOR_DARK_GROUND = fromRgb(50, 50, 150);</div>
-<div class="c1">@@ -150,6 +157,34 @@</div>
+<div class="c1">@@ -46,6 +53,7 @@</div>
+<div class="c0">     blocks: boolean;</div>
+<div class="c0">     fighter?: Fighter;</div>
+<div class="c0">     ai?: BasicMonster;</div>
+<div class="c2">+    item?: Item;</div>
+<div class="c0"> </div>
+<div class="c0">     constructor(x: number, y: number, char: string, name: string, color: Color, blocks: boolean, components?: any) {</div>
+<div class="c0">         this.x = x;</div>
+<div class="c1">@@ -64,6 +72,10 @@</div>
+<div class="c0">                 this.ai = components.ai;</div>
+<div class="c0">                 (this.ai as BasicMonster).owner = this;</div>
+<div class="c0">             }</div>
+<div class="c2">+            if (&#x27;item&#x27; in components) {</div>
+<div class="c2">+                this.item = components.item;</div>
+<div class="c2">+                (this.item as Item).owner = this;</div>
+<div class="c2">+            }</div>
+<div class="c0">         }</div>
+<div class="c0">     }</div>
+<div class="c0"> </div>
+<div class="c1">@@ -187,6 +199,46 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c2">+class Item {</div>
-<div class="c2">+    constructor(useFunction) {</div>
+<div class="c2">+    owner?: Entity;</div>
+<div class="c2">+    useFunction: (item: Item) =&gt; void;</div>
+<div class="c2">+</div>
+<div class="c2">+    constructor(useFunction: (item: Item) =&gt; void) {</div>
 <div class="c2">+        this.useFunction = useFunction;</div>
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    pickUp() {</div>
+<div class="c2">+        if (!this.owner) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
 <div class="c2">+        if (inventory.length &gt;= 26) {</div>
 <div class="c2">+            addMessage(&#x27;Your inventory is full, cannot pick up &#x27; + this.owner.name + &#x27;.&#x27;, Colors.LIGHT_RED);</div>
 <div class="c2">+        } else {</div>
@@ -60,6 +85,9 @@
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    use() {</div>
+<div class="c2">+        if (!this.owner) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
 <div class="c2">+        if (this.useFunction) {</div>
 <div class="c2">+            this.useFunction(this);</div>
 <div class="c2">+        } else {</div>
@@ -68,6 +96,9 @@
 <div class="c2">+    }</div>
 <div class="c2">+</div>
 <div class="c2">+    remove() {</div>
+<div class="c2">+        if (!this.owner) {</div>
+<div class="c2">+            return;</div>
+<div class="c2">+        }</div>
 <div class="c2">+        inventory.splice(inventory.indexOf(this.owner), 1);</div>
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
@@ -75,7 +106,7 @@
 <div class="c0"> function isBlocked(x: number, y: number) {</div>
 <div class="c0">     // First test the map tile</div>
 <div class="c0">     if (map.grid[y][x].blocked) {</div>
-<div class="c1">@@ -291,6 +326,23 @@</div>
+<div class="c1">@@ -328,6 +380,23 @@</div>
 <div class="c0"> </div>
 <div class="c0">         entities.push(monster);</div>
 <div class="c0">     }</div>
@@ -99,8 +130,8 @@
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function renderBar(x: number, y: number, totalWidth: number, name: string, value: number, maximum: number, barColor: Color, backColor: Color) {</div>
-<div class="c1">@@ -376,6 +428,11 @@</div>
-<div class="c0">     if (player.fighter.hp &lt;= 0) {</div>
+<div class="c1">@@ -413,6 +482,11 @@</div>
+<div class="c0">     if (!player.fighter || player.fighter.hp &lt;= 0) {</div>
 <div class="c0">         return;</div>
 <div class="c0">     }</div>
 <div class="c2">+</div>
@@ -111,7 +142,7 @@
 <div class="c0">     if (term.isKeyPressed(Keys.VK_UP)) {</div>
 <div class="c0">         playerMoveOrAttack(0, -1);</div>
 <div class="c0">     }</div>
-<div class="c1">@@ -388,6 +445,29 @@</div>
+<div class="c1">@@ -425,6 +499,29 @@</div>
 <div class="c0">     if (term.isKeyPressed(Keys.VK_DOWN)) {</div>
 <div class="c0">         playerMoveOrAttack(0, 1);</div>
 <div class="c0">     }</div>
@@ -134,18 +165,22 @@
 <div class="c2">+    }</div>
 <div class="c2">+}</div>
 <div class="c2">+</div>
-<div class="c2">+function useInventory(choice) {</div>
+<div class="c2">+function useInventory(choice: number) {</div>
 <div class="c2">+    if (choice &gt;= 0) {</div>
-<div class="c2">+        inventory[choice].item.use();</div>
+<div class="c2">+        (inventory[choice].item as Item).use();</div>
 <div class="c2">+    }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> function playerDeath(player: Entity) {</div>
-<div class="c1">@@ -405,6 +485,18 @@</div>
+<div class="c1">@@ -442,6 +539,22 @@</div>
 <div class="c0">     monster.sendToBack();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c2">+function castHeal(item) {</div>
+<div class="c2">+function castHeal(item: Item) {</div>
+<div class="c2">+    if (!player.fighter) {</div>
+<div class="c2">+        return;</div>
+<div class="c2">+    }</div>
+<div class="c2">+</div>
 <div class="c2">+    // Heal the player</div>
 <div class="c2">+    if (player.fighter.hp === player.fighter.maxHp) {</div>
 <div class="c2">+        addMessage(&#x27;You are already at full health.&#x27;, Colors.DARK_RED);</div>
@@ -160,7 +195,7 @@
 <div class="c0"> function renderAll() {</div>
 <div class="c0">     if (fovRecompute) {</div>
 <div class="c0">         map.computeFov(player.x, player.y, TORCH_RADIUS);</div>
-<div class="c1">@@ -453,15 +545,20 @@</div>
+<div class="c1">@@ -490,15 +603,20 @@</div>
 <div class="c0"> </div>
 <div class="c0">     // Display names of objects under the mouse</div>
 <div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);</div>
@@ -169,7 +204,7 @@
 <div class="c2">+    gui.draw();</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;) as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);</div>
 <div class="c2">+const gui = new GUI(term);</div>
 <div class="c0"> const rng = new RNG(1);</div>
 <div class="c0"> const player = new Entity(40, 25, &#x27;@&#x27;, &#x27;player&#x27;, Colors.WHITE, true, { fighter: new Fighter(20, 2, 5, playerDeath) });</div>

@@ -62,8 +62,6 @@ export class Terminal extends Console {
 
     canvas.width = this.pixelWidth;
     canvas.height = this.pixelHeight;
-    canvas.style.width = (this.font.scale * this.pixelWidth) + 'px';
-    canvas.style.height = (this.font.scale * this.pixelHeight) + 'px';
     canvas.style.imageRendering = 'pixelated';
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;

@@ -7,21 +7,23 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
     <canvas></canvas>
     <p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_2">Part 2: The object and the map</a></p>
     <p>This introduces two new concepts: the generic object system that will be the basis for the whole game, and a general map object that you'll use to hold your dungeon.</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part1.js	2019-12-15 15:45:59.811441100 -0800</div>
-<div class="c2">+++ part2.js	2019-12-15 15:46:23.992039700 -0800</div>
-<div class="c1">@@ -1,38 +1,84 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part1.ts	2020-11-23 12:54:54.123738100 -0800</div>
+<div class="c2">+++ part2.ts	2020-11-23 12:55:01.931669400 -0800</div>
+<div class="c1">@@ -1,38 +1,90 @@</div>
+<div class="c3">-</div>
+<div class="c2">+import { Color } from &#x27;../../src/color&#x27;;</div>
+<div class="c0"> import { Colors } from &#x27;../../src/colors&#x27;;</div>
+<div class="c2">+import { Console } from &#x27;../../src/console&#x27;;</div>
+<div class="c2">+import { fromRgb } from &#x27;../../src/color&#x27;;</div>
+<div class="c0"> import { Keys } from &#x27;../../src/keys&#x27;;</div>
+<div class="c0"> import { Terminal } from &#x27;../../src/terminal&#x27;;</div>
 <div class="c0"> </div>
-<div class="c0"> import {Colors} from &#x27;../../src/colors.js&#x27;;</div>
-<div class="c2">+import {fromRgb} from &#x27;../../src/color.js&#x27;;</div>
-<div class="c0"> import {Keys} from &#x27;../../src/keys.js&#x27;;</div>
-<div class="c0"> import {Terminal} from &#x27;../../src/terminal.js&#x27;;</div>
-<div class="c2">+import {TileMap} from &#x27;../../src/tilemap.js&#x27;;</div>
-<div class="c0"> </div>
+<div class="c2">+</div>
 <div class="c0"> // Actual size of the window</div>
 <div class="c0"> const SCREEN_WIDTH = 80;</div>
 <div class="c0"> const SCREEN_HEIGHT = 45;</div>
@@ -33,14 +35,12 @@
 <div class="c2">+const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
 <div class="c2">+const COLOR_DARK_GROUND = fromRgb(50, 50, 150);</div>
 <div class="c2">+</div>
-<div class="c2">+class Entity {
-    x: number;
-    y: number;
-    char: string;
-    name: string;
-    color: Color;
-    blocks: boolean;
-</div>
+<div class="c2">+class Entity {</div>
+<div class="c2">+    x: number;</div>
+<div class="c2">+    y: number;</div>
+<div class="c2">+    char: string;</div>
+<div class="c2">+    color: Color;</div>
+<div class="c2">+</div>
 <div class="c2">+    constructor(x: number, y: number, char: string, color: Color) {</div>
 <div class="c2">+        this.x = x;</div>
 <div class="c2">+        this.y = y;</div>
@@ -101,7 +101,7 @@
 <div class="c2">+    }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;), SCREEN_WIDTH, SCREEN_HEIGHT);</div>
+<div class="c0"> const term = new Terminal(document.querySelector(&#x27;canvas&#x27;) as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);</div>
 <div class="c3">-</div>
 <div class="c3">-let x = 10;</div>
 <div class="c3">-let y = 10;</div>

@@ -7,14 +7,14 @@
     <link href="../../styles.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="example">
 	<canvas></canvas>
 	<p><a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod,_part_11">Part 11: Dungeon levels and character progression</a></p>
 	<p>Let the player venture deeper into the dungeon and grow stronger, including experience gain, levels and raising stats!</p>
     <div class="diff">
-        <!--STARTDIFF--><div class="c3">--- part10.js	2019-12-15 15:52:11.884940100 -0800</div>
-<div class="c2">+++ part11.js	2019-12-15 15:52:17.999912600 -0800</div>
-<div class="c1">@@ -36,14 +36,18 @@</div>
+        <!--STARTDIFF--><div class="c3">--- part10.ts	2020-11-23 12:54:20.462634300 -0800</div>
+<div class="c2">+++ part11.ts	2020-11-23 12:54:18.049172200 -0800</div>
+<div class="c1">@@ -38,14 +38,18 @@</div>
 <div class="c0"> const TORCH_RADIUS = 10;</div>
 <div class="c0"> </div>
 <div class="c0"> // Spell values</div>
@@ -36,22 +36,31 @@
 <div class="c0"> </div>
 <div class="c0"> const COLOR_DARK_WALL = fromRgb(0, 0, 100);</div>
 <div class="c0"> const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);</div>
-<div class="c1">@@ -109,12 +113,13 @@</div>
+<div class="c1">@@ -133,20 +137,14 @@</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
 <div class="c0"> class Fighter {</div>
-<div class="c3">-    constructor(hp, defense, power, deathFunction) {</div>
+<div class="c3">-    owner?: Entity;</div>
+<div class="c3">-    maxHp: number;</div>
+<div class="c3">-    defense: number;</div>
+<div class="c3">-    power: number;</div>
+<div class="c3">-    hp: number;</div>
+<div class="c3">-    deathFunction?: (e: Entity) =&gt; void;</div>
+<div class="c3">-</div>
+<div class="c3">-    constructor(hp: number, defense: number, power: number, deathFunction?: (e: Entity) =&gt; void) {</div>
 <div class="c2">+    constructor(hp, defense, power, xp, deathFunction) {</div>
 <div class="c0">         this.owner = undefined;</div>
 <div class="c0">         this.maxHp = hp;</div>
 <div class="c0">         this.defense = defense;</div>
 <div class="c0">         this.power = power;</div>
 <div class="c0">         this.hp = hp;</div>
+<div class="c3">-        this.deathFunction = deathFunction;</div>
 <div class="c2">+        this.xp = xp;</div>
-<div class="c0">         this.deathFunction = deathFunction || null;</div>
+<div class="c2">+        this.deathFunction = deathFunction || null;</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -138,6 +143,10 @@</div>
+<div class="c0">     attack(target: Entity) {</div>
+<div class="c1">@@ -177,6 +175,10 @@</div>
 <div class="c0">             if (this.deathFunction) {</div>
 <div class="c0">                 this.deathFunction(this.owner);</div>
 <div class="c0">             }</div>
@@ -62,7 +71,7 @@
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -329,6 +338,12 @@</div>
+<div class="c1">@@ -396,6 +398,12 @@</div>
 <div class="c0">         }</div>
 <div class="c0">     }</div>
 <div class="c0"> </div>
@@ -75,7 +84,7 @@
 <div class="c0">     return map;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c1">@@ -346,12 +361,12 @@</div>
+<div class="c1">@@ -413,12 +421,12 @@</div>
 <div class="c0">         // 80% chance of getting an orc</div>
 <div class="c0">         if (rng.nextRange(0, 100) &lt; 80) {</div>
 <div class="c0">             // Create an orc</div>
@@ -90,7 +99,7 @@
 <div class="c0">             const ai = new BasicMonster();</div>
 <div class="c0">             monster = new Entity(x, y, &#x27;T&#x27;, &#x27;troll&#x27;, Colors.DARK_GREEN, true, { fighter: fighter, ai: ai });</div>
 <div class="c0">         }</div>
-<div class="c1">@@ -539,6 +554,21 @@</div>
+<div class="c1">@@ -606,6 +614,21 @@</div>
 <div class="c0">             gui.add(new SelectDialog(&#x27;INVENTORY&#x27;, options, useInventory));</div>
 <div class="c0">         }</div>
 <div class="c0">     }</div>
@@ -111,8 +120,8 @@
 <div class="c2">+    }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
-<div class="c0"> function useInventory(choice) {</div>
-<div class="c1">@@ -547,12 +577,39 @@</div>
+<div class="c0"> function useInventory(choice: number) {</div>
+<div class="c1">@@ -614,12 +637,39 @@</div>
 <div class="c0">     }</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -153,7 +162,7 @@
 <div class="c0">     monster.char = &#x27;%&#x27;;</div>
 <div class="c0">     monster.color = Colors.DARK_RED;</div>
 <div class="c0">     monster.blocks = false;</div>
-<div class="c1">@@ -715,6 +772,13 @@</div>
+<div class="c1">@@ -788,6 +838,13 @@</div>
 <div class="c0">         &#x27;HP&#x27;, (player.fighter as Fighter).hp, (player.fighter as Fighter).maxHp,</div>
 <div class="c0">         Colors.LIGHT_RED, Colors.DARK_RED);</div>
 <div class="c0"> </div>
@@ -167,7 +176,7 @@
 <div class="c0">     // Display names of objects under the mouse</div>
 <div class="c0">     term.drawString(1, PANEL_Y, getNamesUnderMouse(), Colors.LIGHT_GRAY);</div>
 <div class="c0"> </div>
-<div class="c1">@@ -741,9 +805,11 @@</div>
+<div class="c1">@@ -817,9 +874,11 @@</div>
 <div class="c0"> </div>
 <div class="c0"> function newGame() {</div>
 <div class="c0">     rng = new RNG(Date.now());</div>
@@ -180,7 +189,7 @@
 <div class="c0">     map = createMap();</div>
 <div class="c0">     fovRecompute = true;</div>
 <div class="c0">     inventory = [];</div>
-<div class="c1">@@ -751,6 +817,17 @@</div>
+<div class="c1">@@ -827,6 +886,17 @@</div>
 <div class="c0">     appState = &#x27;game&#x27;;</div>
 <div class="c0"> }</div>
 <div class="c0"> </div>
@@ -198,7 +207,7 @@
 <div class="c0"> function playGame() {</div>
 <div class="c0">     handleKeys();</div>
 <div class="c0">     renderAll();</div>
-<div class="c1">@@ -785,8 +862,10 @@</div>
+<div class="c1">@@ -861,8 +931,10 @@</div>
 <div class="c0"> const gui = new GUI(term);</div>
 <div class="c0"> let rng = null;</div>
 <div class="c0"> let player = null;</div>
