@@ -11,23 +11,6 @@ function convertCharCode(charCode: string | number): number {
   }
 }
 
-// export class Tile extends Cell {
-
-//   constructor(x, y) {
-//     super();
-//     this.x = x;
-//     this.y = y;
-//     this.blocked = false;
-//     this.blockedSight = false;
-//     this.explored = false;
-//     this.visible = false;
-//     this.pathId = -1;
-//     this.g = 0.0;
-//     this.h = 0.0;
-//     this.prev = null;
-//   }
-// }
-
 export class Cell {
   readonly x: number;
   readonly y: number;

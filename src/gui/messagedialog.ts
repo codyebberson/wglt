@@ -1,10 +1,10 @@
 
-import {Keys} from '../keys';
-import {Rect} from '../rect';
-import {Dialog} from './dialog';
-import {Console} from '../console';
-import {Terminal} from '../terminal';
-import {Point} from '../point';
+import { Keys } from '../keys';
+import { Rect } from '../rect';
+import { Dialog } from './dialog';
+import { Console } from '../console';
+import { Terminal } from '../terminal';
+import { Point } from '../point';
 
 export class MessageDialog extends Dialog {
   readonly lines: string[];

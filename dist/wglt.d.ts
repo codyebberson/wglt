@@ -174,8 +174,10 @@ declare module "console" {
         drawConsole(dstX: number, dstY: number, srcConsole: Console, srcX: number, srcY: number, srcWidth: number, srcHeight: number, blendMode?: BlendMode): void;
         drawCell(x: number, y: number, cell: Cell, blendMode?: BlendMode): void;
         setBlocked(x: number, y: number, blocked: boolean): void;
-        setblockedSight(x: number, y: number, blockedSight: boolean): void;
+        setBlockedSight(x: number, y: number, blockedSight: boolean): void;
         isVisible(x: number, y: number): boolean;
+        isBlocked(x: number, y: number): boolean;
+        isBlockedSight(x: number, y: number): boolean;
         /**
          * Compute the FOV in an octant adjacent to the Y axis
          */
@@ -192,7 +194,8 @@ declare module "console" {
     }
 }
 declare module "boxutils" {
-    export function fixBoxCells(con: any): void;
+    import { Console } from "console";
+    export function fixBoxCells(con: Console): void;
 }
 declare module "font" {
     export class Font {

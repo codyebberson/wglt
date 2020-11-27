@@ -1,7 +1,7 @@
 
-import {Terminal} from '../terminal';
-import {DialogState} from './dialogstate';
-import {Dialog} from './dialog';
+import { Terminal } from '../terminal';
+import { DialogState } from './dialogstate';
+import { Dialog } from './dialog';
 
 export interface DialogRenderer {
 

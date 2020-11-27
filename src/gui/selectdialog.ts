@@ -1,17 +1,17 @@
 
-import {Keys} from '../keys';
-import {Rect} from '../rect';
-import {Dialog} from './dialog';
-import {Point} from '../point';
-import {Console} from '../console';
-import {Terminal} from '../terminal';
+import { Keys } from '../keys';
+import { Rect } from '../rect';
+import { Dialog } from './dialog';
+import { Point } from '../point';
+import { Console } from '../console';
+import { Terminal } from '../terminal';
 
 export class SelectDialog extends Dialog {
   readonly options: string[];
   readonly callback: (i: number) => void;
 
   constructor(
-      title: string, options: string[], callback: (i: number) => void) {
+    title: string, options: string[], callback: (i: number) => void) {
     let width = title.length;
     for (let i = 0; i < options.length; i++) {
       width = Math.max(width, options[i].length + 4);

@@ -1,5 +1,5 @@
 
-import {fromRgb} from './color';
+import { fromRgb } from './color';
 
 export const Colors = {
   BLACK: fromRgb(0, 0, 0),

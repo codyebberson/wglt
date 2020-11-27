@@ -1,7 +1,7 @@
 
-import {BlendMode} from './blendmode';
-import {Cell} from './cell';
-import {Chars} from './chars';
+import { BlendMode } from './blendmode';
+import { Cell } from './cell';
+import { Chars } from './chars';
 import { Color } from './color';
 
 export class Console {
@@ -69,14 +69,8 @@ export class Console {
     return this.grid[y][x].charCode;
   }
 
-  drawChar(x: number, y: number, c: string|number, fg?: Color, bg?: Color) {
+  drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-      // if (!this.grid[y]) {
-      //   console.log('wtf2');
-      // }
-      // if (!this.grid[y][x]) {
-      //   console.log('wtf');
-      // }
       this.grid[y | 0][x | 0].setValue(c, fg, bg);
     }
   }
@@ -95,19 +89,19 @@ export class Console {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
   }
 
-  drawHLine(x: number, y: number, width: number, c: string|number, fg?: Color, bg?: Color) {
+  drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color) {
     for (let xi = x; xi < x + width; xi++) {
       this.drawChar(xi, y, c, fg, bg);
     }
   }
 
-  drawVLine(x: number, y: number, height: number, c: string|number, fg?: Color, bg?: Color) {
+  drawVLine(x: number, y: number, height: number, c: string | number, fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
-  drawRect(x: number, y: number, width: number, height: number, c: string|number, fg?: Color, bg?: Color) {
+  drawRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color) {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
     this.drawVLine(x, y, height, c, fg, bg);
@@ -115,10 +109,10 @@ export class Console {
   }
 
   drawBox(
-      x: number, y: number, width: number, height: number,
-      topChar: number, rightChar: number, bottomChar: number, leftChar: number,
-      topLeftChar: number, topRightChar: number, bottomRightChar: number, bottomLeftChar: number,
-      fg?: Color, bg?: Color) {
+    x: number, y: number, width: number, height: number,
+    topChar: number, rightChar: number, bottomChar: number, leftChar: number,
+    topLeftChar: number, topRightChar: number, bottomRightChar: number, bottomLeftChar: number,
+    fg?: Color, bg?: Color) {
     this.fillRect(x, y, width, height, 0, fg, bg);
 
     this.drawHLine(x, y, width, topChar);
@@ -135,35 +129,35 @@ export class Console {
 
   drawSingleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color) {
     this.drawBox(
-        x, y, width, height, Chars.BOX_SINGLE_HORIZONTAL,
-        Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_HORIZONTAL,
-        Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_DOWN_AND_SINGLE_RIGHT,
-        Chars.BOX_SINGLE_DOWN_AND_SINGLE_LEFT,
-        Chars.BOX_SINGLE_UP_AND_SINGLE_LEFT,
-        Chars.BOX_SINGLE_UP_AND_SINGLE_RIGHT, fg, bg);
+      x, y, width, height, Chars.BOX_SINGLE_HORIZONTAL,
+      Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_HORIZONTAL,
+      Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_DOWN_AND_SINGLE_RIGHT,
+      Chars.BOX_SINGLE_DOWN_AND_SINGLE_LEFT,
+      Chars.BOX_SINGLE_UP_AND_SINGLE_LEFT,
+      Chars.BOX_SINGLE_UP_AND_SINGLE_RIGHT, fg, bg);
   }
 
   drawDoubleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color) {
     this.drawBox(
-        x, y, width, height, Chars.BOX_DOUBLE_HORIZONTAL,
-        Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_HORIZONTAL,
-        Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_RIGHT,
-        Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT,
-        Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT,
-        Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT, fg, bg);
+      x, y, width, height, Chars.BOX_DOUBLE_HORIZONTAL,
+      Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_HORIZONTAL,
+      Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_RIGHT,
+      Chars.BOX_DOUBLE_DOWN_AND_DOUBLE_LEFT,
+      Chars.BOX_DOUBLE_UP_AND_DOUBLE_LEFT,
+      Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT, fg, bg);
   }
 
-  fillRect(x: number, y: number, width: number, height: number, c: string|number, fg?: Color, bg?: Color) {
+  fillRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color) {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
     }
   }
 
   drawConsole(
-      dstX: number, dstY: number,
-      srcConsole: Console,
-      srcX: number, srcY: number, srcWidth: number, srcHeight: number,
-      blendMode?: BlendMode) {
+    dstX: number, dstY: number,
+    srcConsole: Console,
+    srcX: number, srcY: number, srcWidth: number, srcHeight: number,
+    blendMode?: BlendMode) {
     blendMode = blendMode || BlendMode.None;
 
     for (let y = 0; y < srcHeight; y++) {
@@ -188,7 +182,7 @@ export class Console {
     }
   }
 
-  setblockedSight(x: number, y: number, blockedSight: boolean) {
+  setBlockedSight(x: number, y: number, blockedSight: boolean) {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].blockedSight = blockedSight;
     }
@@ -199,6 +193,20 @@ export class Console {
       return false;
     }
     return this.grid[y][x].visible;
+  }
+
+  isBlocked(x: number, y: number) {
+    if (x < 0 || x > this.width || y < 0 || y > this.height) {
+      return true;
+    }
+    return this.grid[y][x].blocked;
+  }
+
+  isBlockedSight(x: number, y: number) {
+    if (x < 0 || x > this.width || y < 0 || y > this.height) {
+      return true;
+    }
+    return this.grid[y][x].blockedSight;
   }
 
   /**
@@ -223,13 +231,13 @@ export class Console {
     let previousEndSlope;
 
     for (y = this.originY + deltaY; y >= this.minY && y <= this.maxY;
-         y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
+      y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (processedCell = Math.floor(minSlope * iteration + 0.5),
-          x = this.originX + (processedCell * deltaX);
-           processedCell <= iteration && x >= this.minX && x <= this.maxX;
-           x += deltaX, ++processedCell, previousEndSlope = endSlope) {
+        x = this.originX + (processedCell * deltaX);
+        processedCell <= iteration && x >= this.minX && x <= this.maxX;
+        x += deltaX, ++processedCell, previousEndSlope = endSlope) {
         visible = true;
         extended = false;
         centreSlope = processedCell / iteration;
@@ -238,23 +246,23 @@ export class Console {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.grid[y - deltaY][x].visible &&
-                !this.grid[y - deltaY][x].blockedSight) &&
-              !(this.grid[y - deltaY][x - deltaX].visible &&
-                !this.grid[y - deltaY][x - deltaX].blockedSight)) {
+            !this.grid[y - deltaY][x].blockedSight) &&
+            !(this.grid[y - deltaY][x - deltaX].visible &&
+              !this.grid[y - deltaY][x - deltaX].blockedSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
-                  endSlope >= startSlopes[idx]) {
+                endSlope >= startSlopes[idx]) {
                 if (!this.grid[y][x].blockedSight) {
                   if (centreSlope > startSlopes[idx] &&
-                      centreSlope < endSlopes[idx]) {
+                    centreSlope < endSlopes[idx]) {
                     visible = false;
                     break;
                   }
                 } else {
                   if (startSlope >= startSlopes[idx] &&
-                      endSlope <= endSlopes[idx]) {
+                    endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
                   } else {
@@ -304,13 +312,13 @@ export class Console {
     let previousEndSlope;
 
     for (x = this.originX + deltaX; x >= this.minX && x <= this.maxX;
-         x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
+      x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (processedCell = Math.floor(minSlope * iteration + 0.5),
-          y = this.originY + (processedCell * deltaY);
-           processedCell <= iteration && y >= this.minY && y <= this.maxY;
-           y += deltaY, ++processedCell, previousEndSlope = endSlope) {
+        y = this.originY + (processedCell * deltaY);
+        processedCell <= iteration && y >= this.minY && y <= this.maxY;
+        y += deltaY, ++processedCell, previousEndSlope = endSlope) {
         visible = true;
         extended = false;
         centreSlope = processedCell / iteration;
@@ -319,23 +327,23 @@ export class Console {
 
         if (obstaclesInLastLine > 0) {
           if (!(this.grid[y][x - deltaX].visible &&
-                !this.grid[y][x - deltaX].blockedSight) &&
-              !(this.grid[y - deltaY][x - deltaX].visible &&
-                !this.grid[y - deltaY][x - deltaX].blockedSight)) {
+            !this.grid[y][x - deltaX].blockedSight) &&
+            !(this.grid[y - deltaY][x - deltaX].visible &&
+              !this.grid[y - deltaY][x - deltaX].blockedSight)) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] &&
-                  endSlope >= startSlopes[idx]) {
+                endSlope >= startSlopes[idx]) {
                 if (!this.grid[y][x].blockedSight) {
                   if (centreSlope > startSlopes[idx] &&
-                      centreSlope < endSlopes[idx]) {
+                    centreSlope < endSlopes[idx]) {
                     visible = false;
                     break;
                   }
                 } else {
                   if (startSlope >= startSlopes[idx] &&
-                      endSlope <= endSlopes[idx]) {
+                    endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
                   } else {
@@ -390,14 +398,14 @@ export class Console {
     this.grid[originY][originX].visible = true;
 
     if (opt_octants === undefined) {
-        this.computeOctantY(1, 1);
-        this.computeOctantX(1, 1);
-        this.computeOctantX(1, -1);
-        this.computeOctantY(1, -1);
-        this.computeOctantY(-1, -1);
-        this.computeOctantX(-1, -1);
-        this.computeOctantX(-1, 1);
-        this.computeOctantY(-1, 1);
+      this.computeOctantY(1, 1);
+      this.computeOctantX(1, 1);
+      this.computeOctantX(1, -1);
+      this.computeOctantY(1, -1);
+      this.computeOctantY(-1, -1);
+      this.computeOctantX(-1, -1);
+      this.computeOctantX(-1, 1);
+      this.computeOctantY(-1, 1);
     } else {
       //   \ 4 | 3 /
       //    \  |  /

@@ -1,5 +1,5 @@
 
-import {RNG} from './rng';
+import { RNG } from './rng';
 
 test('nextFloat with seed', () => {
   // When providing a seed, should always get the same value
@@ -41,8 +41,8 @@ test('chooseIndex with different chances', () => {
 
 test('chooseKey', () => {
   const rng = new RNG(1);
-  const chancesMap = {'foo': 3, 'bar': 1};
-  const counts: {[key: string]: number} = {'foo': 0, 'bar': 0};
+  const chancesMap = { 'foo': 3, 'bar': 1 };
+  const counts: { [key: string]: number } = { 'foo': 0, 'bar': 0 };
 
   for (let i = 0; i < 1000; i++) {
     counts[rng.chooseKey(chancesMap)]++;
