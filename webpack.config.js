@@ -35,6 +35,7 @@ module.exports = entries.map(entry => ({
     library: 'wglt',
     libraryTarget: 'umd'
   },
+  devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.ts']
   },
