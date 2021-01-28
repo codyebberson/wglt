@@ -391,9 +391,6 @@ export class Terminal extends Console {
     if (this.update) {
       this.update();
     }
-    // if (this.state) {
-    //   this.state.update();
-    // }
     this.flush();
     this.render();
   }

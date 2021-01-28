@@ -17,7 +17,6 @@ export class Cell {
   charCode: number;
   fg: Color;
   bg: Color;
-  meta?: any;
   dirty: boolean;
   blocked: boolean;
   blockedSight: boolean;
@@ -28,7 +27,7 @@ export class Cell {
   h: number;
   prev: Cell | null;
 
-  constructor(x: number, y: number, charCode?: string | number, fg?: Color, bg?: Color, meta?: any) {
+  constructor(x: number, y: number, charCode?: string | number, fg?: Color, bg?: Color) {
     this.x = x;
     this.y = y;
 
@@ -50,10 +49,6 @@ export class Cell {
       this.bg = Colors.BLACK;
     }
 
-    if (meta !== undefined) {
-      this.meta = meta;
-    }
-
     this.dirty = true;
     this.blocked = false;
     this.blockedSight = false;
@@ -65,36 +60,28 @@ export class Cell {
     this.prev = null;
   }
 
-  setCharCode(charCode: number) {
+  setCharCode(charCode: number): void {
     if (this.charCode !== charCode) {
       this.charCode = charCode;
       this.dirty = true;
     }
   }
 
-  setForeground(fg: Color) {
+  setForeground(fg: Color): void {
     if (fg !== undefined && fg !== null && fg !== this.fg) {
       this.fg = fg;
       this.dirty = true;
     }
   }
 
-  setBackground(bg: Color) {
+  setBackground(bg: Color): void {
     if (bg !== undefined && bg !== null && bg !== this.bg) {
       this.bg = bg;
       this.dirty = true;
     }
   }
 
-  setMeta(meta?: any) {
-    if (meta !== undefined) {
-      this.meta = meta;
-      this.dirty = true;
-    }
-  }
-
-  setValue(
-    charCode: string | number, fg?: Color, bg?: Color, meta?: any) {
+  setValue(charCode: string | number, fg?: Color, bg?: Color, meta?: any): boolean {
     if (typeof charCode === 'string') {
       charCode = charCode.charCodeAt(0);
     }
@@ -107,7 +94,6 @@ export class Cell {
       if (bg !== undefined) {
         this.setBackground(bg);
       }
-      this.setMeta(meta);
     } else {
       this.drawCell(charCode, BlendMode.None);
     }
@@ -129,8 +115,6 @@ export class Cell {
     } else if (alpha > 0) {
       this.setBackground(this.blendColors(this.bg, otherCell.bg, blendMode));
     }
-
-    this.setMeta(otherCell.meta);
   }
 
   private blendColors(c1: Color, c2: Color, blendMode?: BlendMode) {

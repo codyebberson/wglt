@@ -15,11 +15,16 @@ export class GUI {
     this.dialogs = [];
   }
 
-  add(dialog: Dialog) {
+  add(dialog: Dialog): void {
     this.dialogs.push(this.renderer.getState(this.terminal, dialog));
   }
 
-  handleInput() {
+  /**
+   * Handles input for currently active dialog.
+   * Returns true if the input was handled.
+   * Returns false otherwise.
+   */
+  handleInput(): boolean {
     if (this.dialogs.length === 0) {
       return false;
     }
@@ -34,7 +39,7 @@ export class GUI {
     return true;
   }
 
-  draw() {
+  draw(): void {
     for (let i = 0; i < this.dialogs.length; i++) {
       this.renderer.draw(this.terminal, this.dialogs[i]);
     }

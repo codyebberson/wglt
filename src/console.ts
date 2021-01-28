@@ -47,7 +47,7 @@ export class Console {
     }
   }
 
-  clear() {
+  clear(): void {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         this.drawChar(x, y, 0);
@@ -55,27 +55,27 @@ export class Console {
     }
   }
 
-  getCell(x: number, y: number) {
+  getCell(x: number, y: number): Cell|undefined {
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
       return undefined;
     }
     return this.grid[y][x];
   }
 
-  getCharCode(x: number, y: number) {
+  getCharCode(x: number, y: number): number|undefined {
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
       return undefined;
     }
     return this.grid[y][x].charCode;
   }
 
-  drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color) {
+  drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color): void {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y | 0][x | 0].setValue(c, fg, bg);
     }
   }
 
-  drawString(x: number, y: number, str: string, fg?: Color, bg?: Color) {
+  drawString(x: number, y: number, str: string, fg?: Color, bg?: Color): void {
     const lines = str.split('\n');
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -85,23 +85,23 @@ export class Console {
     }
   }
 
-  drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color) {
+  drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color): void {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
   }
 
-  drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color) {
+  drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color): void {
     for (let xi = x; xi < x + width; xi++) {
       this.drawChar(xi, y, c, fg, bg);
     }
   }
 
-  drawVLine(x: number, y: number, height: number, c: string | number, fg?: Color, bg?: Color) {
+  drawVLine(x: number, y: number, height: number, c: string | number, fg?: Color, bg?: Color): void {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
-  drawRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color) {
+  drawRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color): void {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
     this.drawVLine(x, y, height, c, fg, bg);
@@ -112,7 +112,7 @@ export class Console {
     x: number, y: number, width: number, height: number,
     topChar: number, rightChar: number, bottomChar: number, leftChar: number,
     topLeftChar: number, topRightChar: number, bottomRightChar: number, bottomLeftChar: number,
-    fg?: Color, bg?: Color) {
+    fg?: Color, bg?: Color): void {
     this.fillRect(x, y, width, height, 0, fg, bg);
 
     this.drawHLine(x, y, width, topChar);
@@ -127,7 +127,7 @@ export class Console {
     this.drawChar(x + width - 1, y + height - 1, bottomRightChar);
   }
 
-  drawSingleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color) {
+  drawSingleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color): void {
     this.drawBox(
       x, y, width, height, Chars.BOX_SINGLE_HORIZONTAL,
       Chars.BOX_SINGLE_VERTICAL, Chars.BOX_SINGLE_HORIZONTAL,
@@ -137,7 +137,7 @@ export class Console {
       Chars.BOX_SINGLE_UP_AND_SINGLE_RIGHT, fg, bg);
   }
 
-  drawDoubleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color) {
+  drawDoubleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color): void {
     this.drawBox(
       x, y, width, height, Chars.BOX_DOUBLE_HORIZONTAL,
       Chars.BOX_DOUBLE_VERTICAL, Chars.BOX_DOUBLE_HORIZONTAL,
@@ -147,7 +147,7 @@ export class Console {
       Chars.BOX_DOUBLE_UP_AND_DOUBLE_RIGHT, fg, bg);
   }
 
-  fillRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color) {
+  fillRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color): void {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
     }
@@ -157,7 +157,8 @@ export class Console {
     dstX: number, dstY: number,
     srcConsole: Console,
     srcX: number, srcY: number, srcWidth: number, srcHeight: number,
-    blendMode?: BlendMode) {
+    blendMode?: BlendMode): void {
+
     blendMode = blendMode || BlendMode.None;
 
     for (let y = 0; y < srcHeight; y++) {
@@ -170,39 +171,39 @@ export class Console {
     }
   }
 
-  drawCell(x: number, y: number, cell: Cell, blendMode?: BlendMode) {
+  drawCell(x: number, y: number, cell: Cell, blendMode?: BlendMode): void {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].drawCell(cell, blendMode);
     }
   }
 
-  setBlocked(x: number, y: number, blocked: boolean) {
+  setBlocked(x: number, y: number, blocked: boolean): void {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].blocked = blocked;
     }
   }
 
-  setBlockedSight(x: number, y: number, blockedSight: boolean) {
+  setBlockedSight(x: number, y: number, blockedSight: boolean): void {
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y][x].blockedSight = blockedSight;
     }
   }
 
-  isVisible(x: number, y: number) {
+  isVisible(x: number, y: number): boolean {
     if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
       return false;
     }
     return this.grid[y][x].visible;
   }
 
-  isBlocked(x: number, y: number) {
+  isBlocked(x: number, y: number): boolean {
     if (x < 0 || x > this.width || y < 0 || y > this.height) {
       return true;
     }
     return this.grid[y][x].blocked;
   }
 
-  isBlockedSight(x: number, y: number) {
+  isBlockedSight(x: number, y: number): boolean {
     if (x < 0 || x > this.width || y < 0 || y > this.height) {
       return true;
     }
@@ -212,7 +213,7 @@ export class Console {
   /**
    * Compute the FOV in an octant adjacent to the Y axis
    */
-  computeOctantY(deltaX: number, deltaY: number) {
+  private computeOctantY(deltaX: number, deltaY: number): void {
     const startSlopes: number[] = [];
     const endSlopes: number[] = [];
     let iteration = 1;
@@ -293,7 +294,7 @@ export class Console {
   /**
    * Compute the FOV in an octant adjacent to the X axis
    */
-  computeOctantX(deltaX: number, deltaY: number) {
+  private computeOctantX(deltaX: number, deltaY: number): void {
     const startSlopes: number[] = [];
     const endSlopes: number[] = [];
     let iteration = 1;
@@ -371,7 +372,7 @@ export class Console {
     }
   }
 
-  computeFov(originX: number, originY: number, radius: number, opt_noClear?: boolean, opt_octants?: number) {
+  computeFov(originX: number, originY: number, radius: number, opt_noClear?: boolean, opt_octants?: number): void {
     this.originX = originX;
     this.originY = originY;
     this.radius = radius;

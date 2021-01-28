@@ -15,7 +15,7 @@ let pathId = 0;
  * @param {!number=} opt_maxDist Optional maximum distance to examine.
  * @return {?Array} Array of steps if destination found; null otherwise.
  */
-export function computePath(map: Console, source: Point, dest: Point, maxDist: number) {
+export function computePath(map: Console, source: Point, dest: Point, maxDist: number): Cell[] | undefined {
   pathId++;
 
   const sourceCell = map.grid[source.y][source.x];
@@ -56,10 +56,10 @@ export function computePath(map: Console, source: Point, dest: Point, maxDist: n
       }
     }
   }
-  return null;
+  return undefined;
 }
 
-function buildPath(cell: Cell) {
+function buildPath(cell: Cell): Cell[] {
   const result = [];
   let curr: Cell | null = cell;
   while (curr) {
@@ -77,7 +77,7 @@ class SortedSet {
     this.values = initialValues
   }
 
-  insert(cell: Cell) {
+  insert(cell: Cell): void {
     const array = this.values;
     let low = 0;
     let high = array.length;
@@ -97,11 +97,11 @@ class SortedSet {
     array.splice(index, 0, cell);
   }
 
-  pop() {
+  pop(): Cell | undefined {
     return this.values.pop();
   }
 
-  size() {
+  size(): number {
     return this.values.length;
   }
 }

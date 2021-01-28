@@ -74,7 +74,7 @@ function getBoxCell(up: number, right: number, down: number, left: number) {
   return 0;
 }
 
-export function fixBoxCells(con: Console) {
+export function fixBoxCells(con: Console): void {
   for (let y = 0; y < con.height; y++) {
     for (let x = 0; x < con.width; x++) {
       if (isBoxCell(con, x, y)) {

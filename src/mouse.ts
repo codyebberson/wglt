@@ -42,7 +42,7 @@ export class Mouse {
     el.addEventListener('touchmove', touchEventHandler);
   }
 
-  handleTouchEvent(e: TouchEvent) {
+  private handleTouchEvent(e: TouchEvent): void {
     e.stopPropagation();
     e.preventDefault();
 
@@ -59,7 +59,7 @@ export class Mouse {
     }
   }
 
-  handleEvent(e: MouseEvent) {
+  private handleEvent(e: MouseEvent): void {
     e.stopPropagation();
     e.preventDefault();
 
@@ -80,7 +80,7 @@ export class Mouse {
     }
   }
 
-  updatePosition(clientX: number, clientY: number) {
+  private updatePosition(clientX: number, clientY: number): void {
     let rect: Rect | DOMRect = this.el.getBoundingClientRect();
 
     // If the client rect is not the same aspect ratio as canvas,
@@ -106,7 +106,7 @@ export class Mouse {
     this.y = (this.height * (clientY - rect.top) / rect.height) | 0;
   }
 
-  requestFullscreen() {
+  private requestFullscreen(): void {
     const canvas = this.el;
     if (canvas.requestFullscreen) {
       canvas.requestFullscreen();
