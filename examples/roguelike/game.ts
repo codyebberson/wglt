@@ -6,9 +6,11 @@ import { SelectDialog } from '../../src/gui/selectdialog';
 import { Keys } from '../../src/keys';
 import { Rect } from '../../src/rect';
 import { RNG } from '../../src/rng';
+import { Actor } from './actor';
 import { AI, BasicMonster, ConfusedMonster } from './ai';
 import { App, AppState } from './app';
 import { Entity } from './entity';
+import { Item } from './item';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
@@ -52,7 +54,7 @@ const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);
 export class Game implements AppState {
   readonly app: App;
   readonly rng: RNG;
-  readonly player: Entity;
+  readonly player: Actor;
   readonly messages: { text: string, color: Color }[];
   stairs?: Entity;
   entities: Entity[];
@@ -65,7 +67,7 @@ export class Game implements AppState {
   constructor(app: App) {
     this.app = app;
     this.rng = new RNG(Date.now());
-    this.player = new Entity(this, 40, 25, '@', 'player', Colors.WHITE, true);
+    this.player = new Actor(this, 40, 25, '@', 'player', Colors.WHITE);
     this.player.level = 1;
     this.player.hp = 100;
     this.player.baseMaxHp = 100;
@@ -80,7 +82,7 @@ export class Game implements AppState {
     this.addMessage('Welcome stranger! Prepare to perish!', Colors.DARK_RED);
 
     // Initial equipment: a dagger
-    const dagger = new Entity(this, 0, 0, '-', 'dagger', Colors.LIGHT_CYAN, false);
+    const dagger = new Item(this, 0, 0, '-', 'dagger', Colors.LIGHT_CYAN);
     dagger.slot = 'right hand';
     dagger.powerBonus = 2;
     this.player.inventory.push(dagger);
@@ -258,9 +260,7 @@ export class Game implements AppState {
 
       const choice = this.rng.chooseKey(monsterChances);
       if (choice === 'orc') {
-        // const fighter = new Fighter(20, 0, 4, 35, (e: Entity) => this.monsterDeath(e));
-        // const ai = new BasicMonster();
-        monster = new Entity(this, x, y, 'o', 'orc', Colors.LIGHT_GREEN, true);
+        monster = new Actor(this, x, y, 'o', 'orc', Colors.LIGHT_GREEN);
         monster.hp = 20;
         monster.baseDefense = 0;
         monster.basePower = 4;
@@ -268,9 +268,7 @@ export class Game implements AppState {
         monster.setAi(new BasicMonster());
 
       } else if (choice === 'troll') {
-        // const fighter = new Fighter(30, 2, 8, 100, (e: Entity) => this.monsterDeath(e));
-        // const ai = new BasicMonster();
-        monster = new Entity(this, x, y, 'T', 'troll', Colors.DARK_GREEN, true); //, { fighter: fighter, ai: ai });
+        monster = new Actor(this, x, y, 'T', 'troll', Colors.DARK_GREEN);
         monster.hp = 30;
         monster.baseDefense = 2;
         monster.basePower = 8;
@@ -295,31 +293,33 @@ export class Game implements AppState {
       const choice = this.rng.chooseKey(itemChances);
       if (choice === 'heal') {
         // Create a healing potion
-        item = new Entity(this, x, y, '!', 'healing potion', Colors.DARK_MAGENTA, false);
+        item = new Item(this, x, y, '!', 'healing potion', Colors.DARK_MAGENTA);
         item.useFunction = (item) => this.castHeal(item);
 
       } else if (choice === 'lightning') {
         // Create a lightning bolt scroll
-        item = new Entity(this, x, y, '#', 'scroll of lightning bolt', Colors.YELLOW, false);
+        item = new Item(this, x, y, '#', 'scroll of lightning bolt', Colors.YELLOW);
         item.useFunction = (item) => this.castLightning(item);
 
       } else if (choice === 'fireball') {
         // Create a fireball scroll
-        item = new Entity(this, x, y, '#', 'scroll of fireball', Colors.YELLOW, false);
+        item = new Item(this, x, y, '#', 'scroll of fireball', Colors.YELLOW);
         item.useFunction = (item) => this.castFireball(item);
 
       } else if (choice === 'confuse') {
         // Create a confuse scroll
-        item = new Entity(this, x, y, '#', 'scroll of confusion', Colors.YELLOW, false);
+        item = new Item(this, x, y, '#', 'scroll of confusion', Colors.YELLOW);
         item.useFunction = (item) => this.castConfuse(item);
 
       } else if (choice === 'sword') {
         // Create a sword
-        item = new Entity(this, x, y, '/', 'sword', Colors.LIGHT_CYAN, false);
+        item = new Item(this, x, y, '/', 'sword', Colors.LIGHT_CYAN);
+        item.useFunction = (item) => this.player.equip(item);
 
       } else if (choice === 'shield') {
         // Create a shield
-        item = new Entity(this, x, y, '[', 'shield', Colors.BROWN, false);
+        item = new Item(this, x, y, '[', 'shield', Colors.BROWN);
+        item.useFunction = (item) => this.player.equip(item);
       }
 
       if (item) {
@@ -376,10 +376,10 @@ export class Game implements AppState {
     const x = this.player.x + dx;
     const y = this.player.y + dy;
 
-    let target = null;
+    let target: Actor | null = null;
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      if (entity.x === x && entity.y === y) {
+      if (entity instanceof Actor && entity.x === x && entity.y === y) {
         target = entity;
         break;
       }
@@ -394,7 +394,7 @@ export class Game implements AppState {
 
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      if (entity.ai) {
+      if (entity instanceof Actor && entity.ai) {
         entity.ai.takeTurn();
       }
     }
@@ -451,7 +451,7 @@ export class Game implements AppState {
       // Pick up an item
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
-        if (entity !== this.player && entity.x === this.player.x && entity.y === this.player.y) {
+        if (entity instanceof Item && entity.x === this.player.x && entity.y === this.player.y) {
           this.player.pickUp(entity);
         }
       }
@@ -520,12 +520,12 @@ export class Game implements AppState {
     }
   }
 
-  getClosestMonster(x: number, y: number, range: number): Entity | null {
+  getClosestMonster(x: number, y: number, range: number): Actor | null {
     let minDist = range + 1;
     let result = null;
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      if (entity !== this.player) {
+      if (entity instanceof Actor && entity !== this.player) {
         const dist = entity.distance(x, y);
         if (dist < minDist) {
           minDist = dist;
@@ -536,11 +536,11 @@ export class Game implements AppState {
     return result;
   }
 
-  getMonsterAt(x: number, y: number): Entity | null {
+  getMonsterAt(x: number, y: number): Actor | null {
     return this.getClosestMonster(x, y, 0);
   }
 
-  castHeal(item: Entity): void {
+  castHeal(item: Item): void {
     // Heal the player
     if (this.player.hp === this.player.maxHp) {
       this.addMessage('You are already at full health.', Colors.DARK_RED);
@@ -552,7 +552,7 @@ export class Game implements AppState {
     this.player.removeItem(item);
   }
 
-  castLightning(item: Entity): void {
+  castLightning(item: Item): void {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = this.getClosestMonster(this.player.x, this.player.y, LIGHTNING_RANGE);
     if (!monster) {
@@ -567,7 +567,7 @@ export class Game implements AppState {
     this.player.removeItem(item);
   }
 
-  castFireball(item: Entity): void {
+  castFireball(item: Item): void {
     // Ask the player for a target tile to throw a fireball at
     this.addMessage('Left-click to cast fireball, or right-click to cancel.', Colors.LIGHT_CYAN);
     this.startTargeting((x, y) => {
@@ -580,7 +580,7 @@ export class Game implements AppState {
 
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
-        if (entity.distance(x, y) <= FIREBALL_RADIUS) {
+        if (entity instanceof Actor && entity.hp > 0 && entity.distance(x, y) <= FIREBALL_RADIUS) {
           this.addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', Colors.ORANGE);
           entity.takeDamage(FIREBALL_DAMAGE);
         }
@@ -590,7 +590,7 @@ export class Game implements AppState {
     });
   }
 
-  castConfuse(item: Entity): void {
+  castConfuse(item: Item): void {
     // Ask the player for a target to confuse
     this.addMessage('Left-click to cast confuse, or right-click to cancel.', Colors.LIGHT_CYAN);
     this.startTargeting((x, y) => {
