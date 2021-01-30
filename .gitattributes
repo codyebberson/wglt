@@ -26,4 +26,6 @@ dist/**/* -diff
 dist/**/* linguist-generated=true
 *.min.js -diff
 *.min.js linguist-generated=true
+*.min.js.map -diff
+*.min.js.map linguist-generated=true
 
