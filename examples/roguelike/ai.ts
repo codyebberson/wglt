@@ -1,5 +1,5 @@
-import { Entity } from './entity';
 import { Colors } from '../../src/colors';
+import { Entity } from './entity';
 
 const CONFUSE_NUM_TURNS = 10;
 

@@ -1,16 +1,14 @@
-import { RNG } from '../../src/rng';
 import { Color, fromRgb } from '../../src/color';
 import { Colors } from '../../src/colors';
 import { Console } from '../../src/console';
-import { GUI } from '../../src/gui';
-import { Keys } from '../../src/keys';
-import { Rect } from '../../src/rect';
-import { Terminal } from '../../src/terminal';
 import { MessageDialog } from '../../src/gui/messagedialog';
 import { SelectDialog } from '../../src/gui/selectdialog';
-
-import { Entity } from './entity';
+import { Keys } from '../../src/keys';
+import { Rect } from '../../src/rect';
+import { RNG } from '../../src/rng';
 import { AI, BasicMonster, ConfusedMonster } from './ai';
+import { App, AppState } from './app';
+import { Entity } from './entity';
 
 // Actual size of the window
 const SCREEN_WIDTH = 80;
@@ -51,23 +49,21 @@ const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);
 const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
 const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);
 
-export class Game {
-  term: Terminal;
-  gui: GUI;
-  rng: RNG;
-  player: Entity;
+export class Game implements AppState {
+  readonly app: App;
+  readonly rng: RNG;
+  readonly player: Entity;
+  readonly messages: { text: string, color: Color }[];
   stairs?: Entity;
   entities: Entity[];
-  messages: { text: string, color: Color }[];
   level: number;
   map: Console;
   fovRecompute: boolean;
   targetCursor: { x: number, y: number };
   targetFunction: ((x: number, y: number) => void) | undefined;
 
-  constructor(term: Terminal, gui: GUI) {
-    this.term = term;
-    this.gui = gui;
+  constructor(app: App) {
+    this.app = app;
     this.rng = new RNG(Date.now());
     this.player = new Entity(this, 40, 25, '@', 'player', Colors.WHITE, true);
     this.player.level = 1;
@@ -195,8 +191,10 @@ export class Game {
           }
         }
 
-        // Add some contents to this room, such as monsters
-        this.placeObjects(newRoom);
+        if (r > 0) {
+          // Add some contents to this room, such as monsters
+          this.placeObjects(newRoom);
+        }
 
         // Finally, append the new room to the list
         rooms.push(newRoom);
@@ -228,7 +226,7 @@ export class Game {
     // This is where we decide the chance of each monster or item appearing.
 
     // Maximum number of monsters per room
-    const maxMonsters = this.fromDungeonLevel([[2, 1], [3, 4], [5, 6]]);
+    const maxMonsters = this.fromDungeonLevel([[1, 1], [2, 2], [3, 4], [5, 6]]);
 
     // Chance of each monster
     const monsterChances = {
@@ -336,20 +334,20 @@ export class Game {
     const barWidth = Math.round(value / maximum * totalWidth);
 
     // Render the background first
-    this.term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
+    this.app.term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
 
     // Now render the bar on top
     if (barWidth > 0) {
-      this.term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
+      this.app.term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
     }
 
     // Finally, some centered text with the values
-    this.term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, Colors.WHITE);
+    this.app.term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, Colors.WHITE);
   }
 
   getNamesUnderMouse(): string {
-    const x = this.term.mouse.x;
-    const y = this.term.mouse.y;
+    const x = this.app.term.mouse.x;
+    const y = this.app.term.mouse.y;
 
     if (!this.map.isVisible(x, y)) {
       return '';
@@ -407,49 +405,49 @@ export class Game {
       return;
     }
 
-    if (this.gui.handleInput()) {
+    if (this.app.gui.handleInput()) {
       return;
     }
 
     if (this.targetFunction) {
-      if (this.term.isKeyPressed(Keys.VK_ENTER) || this.term.mouse.buttons[0].isClicked()) {
+      if (this.app.term.isKeyPressed(Keys.VK_ENTER) || this.app.term.mouse.buttons[0].isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (this.term.isKeyPressed(Keys.VK_ESCAPE) || this.term.mouse.buttons[2].isClicked()) {
+      if (this.app.term.isKeyPressed(Keys.VK_ESCAPE) || this.app.term.mouse.buttons[2].isClicked()) {
         this.cancelTargeting();
       }
-      if (this.term.isKeyPressed(Keys.VK_UP)) {
+      if (this.app.term.isKeyPressed(Keys.VK_UP)) {
         this.targetCursor.y--;
       }
-      if (this.term.isKeyPressed(Keys.VK_LEFT)) {
+      if (this.app.term.isKeyPressed(Keys.VK_LEFT)) {
         this.targetCursor.x--;
       }
-      if (this.term.isKeyPressed(Keys.VK_RIGHT)) {
+      if (this.app.term.isKeyPressed(Keys.VK_RIGHT)) {
         this.targetCursor.x++;
       }
-      if (this.term.isKeyPressed(Keys.VK_DOWN)) {
+      if (this.app.term.isKeyPressed(Keys.VK_DOWN)) {
         this.targetCursor.y++;
       }
-      if (this.term.mouse.dx !== 0 || this.term.mouse.dy !== 0) {
-        this.targetCursor.x = this.term.mouse.x;
-        this.targetCursor.y = this.term.mouse.y;
+      if (this.app.term.mouse.dx !== 0 || this.app.term.mouse.dy !== 0) {
+        this.targetCursor.x = this.app.term.mouse.x;
+        this.targetCursor.y = this.app.term.mouse.y;
       }
       return;
     }
 
-    if (this.term.isKeyPressed(Keys.VK_UP)) {
+    if (this.app.term.isKeyPressed(Keys.VK_UP)) {
       this.playerMoveOrAttack(0, -1);
     }
-    if (this.term.isKeyPressed(Keys.VK_LEFT)) {
+    if (this.app.term.isKeyPressed(Keys.VK_LEFT)) {
       this.playerMoveOrAttack(-1, 0);
     }
-    if (this.term.isKeyPressed(Keys.VK_RIGHT)) {
+    if (this.app.term.isKeyPressed(Keys.VK_RIGHT)) {
       this.playerMoveOrAttack(1, 0);
     }
-    if (this.term.isKeyPressed(Keys.VK_DOWN)) {
+    if (this.app.term.isKeyPressed(Keys.VK_DOWN)) {
       this.playerMoveOrAttack(0, 1);
     }
-    if (this.term.isKeyPressed(Keys.VK_G)) {
+    if (this.app.term.isKeyPressed(Keys.VK_G)) {
       // Pick up an item
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
@@ -458,9 +456,9 @@ export class Game {
         }
       }
     }
-    if (this.term.isKeyPressed(Keys.VK_I)) {
+    if (this.app.term.isKeyPressed(Keys.VK_I)) {
       if (this.player.inventory.length === 0) {
-        this.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
+        this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
       } else {
         const options = this.player.inventory.map(item => {
           if (item.equipped) {
@@ -469,12 +467,12 @@ export class Game {
             return item.name;
           }
         });
-        this.gui.add(new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice)));
+        this.app.gui.add(new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice)));
       }
     }
-    if (this.term.isKeyPressed(Keys.VK_C)) {
+    if (this.app.term.isKeyPressed(Keys.VK_C)) {
       const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
-      this.gui.add(new MessageDialog('CHARACTER',
+      this.app.gui.add(new MessageDialog('CHARACTER',
         'Level: ' + this.player.level +
         '\nExperience: ' + this.player.xp +
         '\nExperience to level up: ' + levelUpXp +
@@ -482,7 +480,7 @@ export class Game {
         '\nAttack: ' + this.player.power +
         '\nDefense: ' + this.player.defense));
     }
-    if (this.term.isKeyPressed(Keys.VK_COMMA)) {
+    if (this.app.term.isKeyPressed(Keys.VK_COMMA)) {
       if (this.player.x === this.stairs?.x && this.player.y === this.stairs?.y) {
         this.nextLevel();
       }
@@ -509,7 +507,7 @@ export class Game {
         'Agility (+1 defense, from ' + this.player.defense + ')'
       ];
 
-      this.gui.add(new SelectDialog('LEVEL UP', options, (choice) => {
+      this.app.gui.add(new SelectDialog('LEVEL UP', options, (choice) => {
         if (choice === 0) {
           this.player.baseMaxHp += 20;
           this.player.hp += 20;
@@ -651,7 +649,7 @@ export class Game {
           color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
         }
 
-        this.term.drawChar(x, y, 0, 0, color);
+        this.app.term.drawChar(x, y, 0, 0, color);
       }
     }
 
@@ -660,13 +658,13 @@ export class Game {
     }
 
     // Prepare to render the GUI panel
-    this.term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
+    this.app.term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
 
     // Print the game this.messages, one line at a time
     let y = PANEL_Y + 1;
     for (let i = 0; i < this.messages.length; i++) {
       const message = this.messages[i];
-      this.term.drawString(MSG_X, y, message.text, message.color);
+      this.app.term.drawString(MSG_X, y, message.text, message.color);
       y++;
     }
 
@@ -681,20 +679,20 @@ export class Game {
       'XP', this.player.xp, LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR,
       Colors.LIGHT_MAGENTA, Colors.DARK_MAGENTA);
 
-    this.term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + this.level, Colors.ORANGE);
+    this.app.term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + this.level, Colors.ORANGE);
 
     // Display names of objects under the mouse
-    this.term.drawString(1, PANEL_Y, this.getNamesUnderMouse(), Colors.LIGHT_GRAY);
+    this.app.term.drawString(1, PANEL_Y, this.getNamesUnderMouse(), Colors.LIGHT_GRAY);
 
     if (this.targetFunction) {
-      const targetCell = this.term.getCell(this.targetCursor.x, this.targetCursor.y);
+      const targetCell = this.app.term.getCell(this.targetCursor.x, this.targetCursor.y);
       if (targetCell) {
         targetCell.setBackground(Colors.WHITE);
       }
     }
 
     // Draw dialog boxes
-    this.gui.draw();
+    this.app.gui.draw();
   }
 
   nextLevel(): void {
@@ -708,7 +706,7 @@ export class Game {
     this.fovRecompute = true;
   }
 
-  playGame(): void {
+  update(): void {
     this.handleKeys();
     this.renderAll();
   }
