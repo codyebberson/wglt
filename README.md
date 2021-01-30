@@ -30,7 +30,7 @@ import * as wglt from 'wglt';
 Or, simply use the prebuilt:
 
 ```html
-<script src="https://unpkg.com/wglt@0.0.8/dist/wglt.js"></script>
+<script src="https://unpkg.com/wglt@0.2.3/dist/wglt.js"></script>
 ```
 
 Use it:
