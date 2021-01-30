@@ -81,7 +81,7 @@ export class Cell {
     }
   }
 
-  setValue(charCode: string | number, fg?: Color, bg?: Color, meta?: any): boolean {
+  setValue(charCode: string | number, fg?: Color, bg?: Color): boolean {
     if (typeof charCode === 'string') {
       charCode = charCode.charCodeAt(0);
     }
@@ -100,7 +100,7 @@ export class Cell {
     return this.dirty;
   }
 
-  drawCell(otherCell: Cell, blendMode?: BlendMode) {
+  drawCell(otherCell: Cell, blendMode?: BlendMode): void {
     const alpha = otherCell.bg & 0xFF;
 
     if (blendMode === BlendMode.None || otherCell.charCode > 0) {
@@ -117,7 +117,7 @@ export class Cell {
     }
   }
 
-  private blendColors(c1: Color, c2: Color, blendMode?: BlendMode) {
+  private blendColors(c1: Color, c2: Color, blendMode?: BlendMode): Color {
     const alpha = c2 & 0xFF;
     const w1 = (255 - alpha) / 255.0;
     const w2 = 1.0 - w1;
@@ -144,7 +144,7 @@ export class Cell {
     }
   }
 
-  private clamp(x: number) {
+  private clamp(x: number): number {
     return Math.min(255, x);
   }
 }

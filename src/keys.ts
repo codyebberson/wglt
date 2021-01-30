@@ -24,7 +24,7 @@ export class Keyboard {
   }
 
 
-  setKey(e: KeyboardEvent, state: boolean) {
+  setKey(e: KeyboardEvent, state: boolean): void {
     const keyCode = e.keyCode;
     if (keyCode === Keys.VK_F11) {
       // Allow fullscreen requests to go through
@@ -37,13 +37,13 @@ export class Keyboard {
     }
   }
 
-  updateKeys() {
+  updateKeys(): void {
     for (let i = 0; i < KEY_COUNT; i++) {
       this.keys[i].update();
     }
   }
 
-  getKey(keyCode: number) {
+  getKey(keyCode: number): Input | null {
     return keyCode >= 0 && keyCode < KEY_COUNT ? this.keys[keyCode] : null;
   }
 }
@@ -202,4 +202,4 @@ export enum Keys {
   VK_PRINT = 42,
   VK_EXECUTE = 43,
   VK_SLEEP = 95,
-};
+}

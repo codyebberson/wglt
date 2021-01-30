@@ -69,7 +69,7 @@ export class Terminal extends Console {
     window.addEventListener('resize', () => this.handleResize());
 
     this.keys = new Keyboard(canvas);
-    this.mouse = new Mouse(this, options);
+    this.mouse = new Mouse(this);
 
     // Get the WebGL context from the canvas
     const gl = canvas.getContext('webgl', { antialias: false });

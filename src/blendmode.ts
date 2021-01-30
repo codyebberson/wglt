@@ -25,4 +25,4 @@ export enum BlendMode {
    * dstA = dstA
    */
   Add = 2
-};
+}

@@ -7,7 +7,6 @@ export class Mouse {
   readonly el: HTMLCanvasElement;
   readonly width: number;
   readonly height: number;
-  readonly options: any;
   private prevX: number;
   private prevY: number;
   x: number;
@@ -16,11 +15,10 @@ export class Mouse {
   dy: number;
   readonly buttons: Input[];
 
-  constructor(terminal: Terminal, options: any) {
+  constructor(terminal: Terminal) {
     this.el = terminal.canvas;
     this.width = terminal.width;
     this.height = terminal.height;
-    this.options = options;
     this.prevX = 0;
     this.prevY = 0;
     this.x = 0;
@@ -46,10 +44,6 @@ export class Mouse {
     e.stopPropagation();
     e.preventDefault();
 
-    if (e.type === 'touchend' && this.options.requestFullscreen) {
-      this.requestFullscreen();
-    }
-
     if (e.touches.length > 0) {
       const touch = e.touches[0];
       this.updatePosition(touch.clientX, touch.clientY);
@@ -69,10 +63,6 @@ export class Mouse {
       this.buttons[e.button].down = true;
 
       this.el.focus();
-
-      if (this.options.requestFullscreen) {
-        this.requestFullscreen();
-      }
     }
 
     if (e.type === 'mouseup') {
@@ -106,14 +96,7 @@ export class Mouse {
     this.y = (this.height * (clientY - rect.top) / rect.height) | 0;
   }
 
-  private requestFullscreen(): void {
-    const canvas = this.el;
-    if (canvas.requestFullscreen) {
-      canvas.requestFullscreen();
-    }
-  }
-
-  update() {
+  update(): void {
     this.dx = this.x - this.prevX;
     this.dy = this.y - this.prevY;
     this.prevX = this.x;

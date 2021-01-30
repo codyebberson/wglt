@@ -12,7 +12,7 @@ const PATTERNS = [
   { charCode: Chars.BLOCK_RIGHT_HALF, active: [0, 1, 0, 1] },
 ];
 
-export function loadImage(url: string, callback: (img: Console) => void) {
+export function loadImage(url: string, callback: (img: Console) => void): void {
   const img = new Image();
   img.onload = () => {
     const w = img.width;
@@ -33,7 +33,7 @@ export function loadImage(url: string, callback: (img: Console) => void) {
   img.src = url;
 }
 
-export function loadImage2x(url: string, callback: (img: Console) => void) {
+export function loadImage2x(url: string, callback: (img: Console) => void): void {
   const img = new Image();
   img.onload = () => {
     const w = img.width;

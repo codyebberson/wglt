@@ -22,13 +22,13 @@ export class MessageDialog extends Dialog {
     this.lines = lines;
   }
 
-  drawContents(console: Console, offset: Point) {
+  drawContents(console: Console, offset: Point): void {
     for (let i = 0; i < this.lines.length; i++) {
       console.drawString(offset.x, offset.y + i, this.lines[i]);
     }
   }
 
-  handleInput(terminal: Terminal, offset: Point) {
+  handleInput(terminal: Terminal, offset: Point): boolean {
     return terminal.isKeyPressed(Keys.VK_ESCAPE);
   }
 }

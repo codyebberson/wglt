@@ -19,7 +19,7 @@ export class Console {
   constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean) {
     this.width = width;
     this.height = height;
-    this.grid = new Array();
+    this.grid = [];
     this.originX = 0;
     this.originY = 0;
     this.minX = 0;
@@ -29,7 +29,7 @@ export class Console {
     this.radius = 0;
 
     for (let y = 0; y < height; y++) {
-      const row = new Array();
+      const row = [];
       for (let x = 0; x < width; x++) {
         row.push(new Cell(x, y));
       }
@@ -454,7 +454,7 @@ export class Console {
   /**
    * All visible tiles are marked as explored.
    */
-  updateExplored() {
+  updateExplored(): void {
     for (let y = this.minY; y <= this.maxY; y++) {
       for (let x = this.minX; x <= this.maxX; x++) {
         const tile = this.grid[y][x];

@@ -24,14 +24,14 @@ export class SelectDialog extends Dialog {
     this.callback = callback;
   }
 
-  drawContents(console: Console, offset: Point) {
+  drawContents(console: Console, offset: Point): void {
     for (let i = 0; i < this.options.length; i++) {
       const str = String.fromCharCode(65 + i) + ' - ' + this.options[i];
       console.drawString(offset.x, offset.y + i, str);
     }
   }
 
-  handleInput(terminal: Terminal, offset: Point) {
+  handleInput(terminal: Terminal, offset: Point): boolean {
     for (let i = 0; i < this.options.length; i++) {
       if (terminal.isKeyPressed(Keys.VK_A + i)) {
         this.callback(i);

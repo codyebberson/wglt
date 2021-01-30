@@ -19,15 +19,15 @@ export class Rect {
     this.y2 = y + height;
   }
 
-  getCenter() {
+  getCenter(): Point {
     return new Point(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
   }
 
-  intersects(other: Rect) {
+  intersects(other: Rect): boolean {
     return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 && this.y2 >= other.y;
   }
 
-  contains(point: Rect) {
+  contains(point: Rect): boolean {
     return point.x >= this.x && point.y < this.x2 && point.y >= this.y && point.y < this.y2;
   }
 }

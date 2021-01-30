@@ -26,7 +26,7 @@ export class Input {
         this.upCount = 0;
     }
 
-    update() {
+    update(): void {
         if (this.down) {
             this.downCount++;
             this.upCount = 0;
@@ -41,7 +41,7 @@ export class Input {
      * Pressed is a one time event when the input first goes down.
      * It then repeats on repeat delay.
      */
-    isPressed() {
+    isPressed(): boolean {
         const count = this.downCount;
         return count === 1 || (count > INPUT_REPEAT_DELAY && count % INPUT_REPEAT_RATE === 0);
     }
@@ -50,7 +50,7 @@ export class Input {
      * Returns true if the input is "clicked".
      * Clicked is a one time event when the input first goes up.
      */
-    isClicked() {
+    isClicked(): boolean {
         return this.upCount === 1;
     }
 }

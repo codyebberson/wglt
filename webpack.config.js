@@ -2,51 +2,36 @@ const fs = require('fs');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
+const addDir = (dir) => fs.readdirSync(dir).forEach((file) => addFile(dir, file));
+const addFile = (dir, file) => file.endsWith('.ts') && entries.push(dir + file);
+const outputPath = (entry) => path.resolve(__dirname, path.dirname(entry).replace('/src', '/dist'));
+const outputFilename = (entry) => entry === './src/wglt.ts' ?
+    'wglt.js' : path.basename(entry).replace('.ts', '.min.js');
+
 const entries = ['./src/wglt.ts'];
 addDir('./examples/');
 addDir('./examples/roguelike/');
 
-function addDir(dir) {
-  fs.readdirSync(dir).forEach(file => addFile(dir, file));
-}
-
-function addFile(dir, file) {
-  if (file.endsWith('.ts')) {
-    entries.push(dir + file);
-  }
-}
-
-function getOutputPath(entry) {
-  return path.resolve(__dirname, path.dirname(entry).replace('/src', '/dist'));
-}
-
-function getOutputFilename(entry) {
-  if (entry === './src/wglt.ts') {
-    return 'wglt.js';
-  }
-  return path.basename(entry).replace('.ts', '.min.js');
-}
-
-module.exports = entries.map(entry => ({
+module.exports = entries.map((entry) => ({
   entry: entry,
   output: {
-    path: getOutputPath(entry),
-    filename: getOutputFilename(entry),
+    path: outputPath(entry),
+    filename: outputFilename(entry),
     library: 'wglt',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
   devtool: 'source-map',
   resolve: {
-    extensions: ['.js', '.ts']
+    extensions: ['.js', '.ts'],
   },
   module: {
     rules: [
       {
         test: /\.(js|ts)$/,
         exclude: '/node_modules/',
-        loader: 'babel-loader'
-      }
-    ]
+        loader: 'babel-loader',
+      },
+    ],
   },
   optimization: {
     minimizer: [new TerserPlugin({
@@ -58,17 +43,17 @@ module.exports = entries.map(entry => ({
           ecma: 6,
           warnings: false,
           comparisons: false,
-          inline: 2
+          inline: 2,
         },
         mangle: {
-          properties: false
+          properties: false,
         },
         output: {
           ecma: 6,
           comments: false,
-          ascii_only: true
-        }
-      }
-    })]
-  }
+          ascii_only: true,
+        },
+      },
+    })],
+  },
 }));

@@ -24,7 +24,7 @@ export class RNG {
     this.state = seed || 1;
   }
 
-  nextInt() {
+  nextInt(): number {
     this.state = (this.a * this.state + this.c) % this.m;
     return this.state;
   }
@@ -32,7 +32,7 @@ export class RNG {
   /**
    * Returns a floating point number between 0.0 and 1.0.
    */
-  nextFloat() {
+  nextFloat(): number {
     // returns in range [0,1]
     return this.nextInt() / (this.m - 1);
   }
@@ -42,7 +42,7 @@ export class RNG {
    * @param start Lower bound, inclusive.
    * @param end Upper bound, exclusive.
    */
-  nextRange(start: number, end: number) {
+  nextRange(start: number, end: number): number {
     // returns in range [start, end): including start, excluding end
     // can't modulu nextInt because of weak randomness in lower bits
     const rangeSize = end - start;
