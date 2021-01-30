@@ -10,21 +10,21 @@ let x = 10;
 let y = 10;
 
 term.update = function () {
-    if (term.isKeyPressed(Keys.VK_UP)) {
-        y--;
-    }
-    if (term.isKeyPressed(Keys.VK_LEFT)) {
-        x--;
-    }
-    if (term.isKeyPressed(Keys.VK_RIGHT)) {
-        x++;
-    }
-    if (term.isKeyPressed(Keys.VK_DOWN)) {
-        y++;
-    }
+  if (term.isKeyPressed(Keys.VK_UP)) {
+    y--;
+  }
+  if (term.isKeyPressed(Keys.VK_LEFT)) {
+    x--;
+  }
+  if (term.isKeyPressed(Keys.VK_RIGHT)) {
+    x++;
+  }
+  if (term.isKeyPressed(Keys.VK_DOWN)) {
+    y++;
+  }
 
-    term.clear();
-    term.drawString(1, 1, 'Hello world!');
-    term.drawString(1, 3, 'Use arrow keys to move');
-    term.drawString(x, y, '@');
+  term.clear();
+  term.drawString(1, 1, 'Hello world!');
+  term.drawString(1, 3, 'Use arrow keys to move');
+  term.drawString(x, y, '@');
 };

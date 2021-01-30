@@ -79,7 +79,6 @@ declare module "cell" {
         charCode: number;
         fg: Color;
         bg: Color;
-        meta?: any;
         dirty: boolean;
         blocked: boolean;
         blockedSight: boolean;
@@ -89,12 +88,11 @@ declare module "cell" {
         g: number;
         h: number;
         prev: Cell | null;
-        constructor(x: number, y: number, charCode?: string | number, fg?: Color, bg?: Color, meta?: any);
+        constructor(x: number, y: number, charCode?: string | number, fg?: Color, bg?: Color);
         setCharCode(charCode: number): void;
         setForeground(fg: Color): void;
         setBackground(bg: Color): void;
-        setMeta(meta?: any): void;
-        setValue(charCode: string | number, fg?: Color, bg?: Color, meta?: any): boolean;
+        setValue(charCode: string | number, fg?: Color, bg?: Color): boolean;
         drawCell(otherCell: Cell, blendMode?: BlendMode): void;
         private blendColors;
         private clamp;
@@ -159,8 +157,8 @@ declare module "console" {
         radius: number;
         constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean);
         clear(): void;
-        getCell(x: number, y: number): Cell;
-        getCharCode(x: number, y: number): number;
+        getCell(x: number, y: number): Cell | undefined;
+        getCharCode(x: number, y: number): number | undefined;
         drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color): void;
         drawString(x: number, y: number, str: string, fg?: Color, bg?: Color): void;
         drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color): void;
@@ -181,11 +179,11 @@ declare module "console" {
         /**
          * Compute the FOV in an octant adjacent to the Y axis
          */
-        computeOctantY(deltaX: number, deltaY: number): void;
+        private computeOctantY;
         /**
          * Compute the FOV in an octant adjacent to the X axis
          */
-        computeOctantX(deltaX: number, deltaY: number): void;
+        private computeOctantX;
         computeFov(originX: number, originY: number, radius: number, opt_noClear?: boolean, opt_octants?: number): void;
         /**
          * All visible tiles are marked as explored.
@@ -223,27 +221,27 @@ declare module "fov" {
      *     / 7 | 0 \
      *
      */
-    export const FovOctants: {
-        OCTANT_SOUTH_SOUTHEAST: number;
-        OCTANT_EAST_SOUTHEAST: number;
-        OCTANT_EAST_NORTHTHEAST: number;
-        OCTANT_NORTH_NORTHEAST: number;
-        OCTANT_NORTH_NORTHWEST: number;
-        OCTANT_WEST_NORTHEAST: number;
-        OCTANT_WEST_SOUTHWEST: number;
-        OCTANT_SOUTH_SOUTHWEST: number;
-    };
-    export const FovQuadrants: {
-        QUADRANT_SOUTHEAST: number;
-        QUADRANT_EAST: number;
-        QUADRANT_NORTHEAST: number;
-        QUADRANT_NORTH: number;
-        QUADRANT_NORTHWEST: number;
-        QUADRANT_WEST: number;
-        QUADRANT_SOUTHWEST: number;
-        QUADRANT_SOUTH: number;
-    };
-    export function getFovQuadrant(dx: number, dy: number): number;
+    export enum FovOctants {
+        OCTANT_SOUTH_SOUTHEAST = 1,
+        OCTANT_EAST_SOUTHEAST = 2,
+        OCTANT_EAST_NORTHTHEAST = 4,
+        OCTANT_NORTH_NORTHEAST = 8,
+        OCTANT_NORTH_NORTHWEST = 16,
+        OCTANT_WEST_NORTHEAST = 32,
+        OCTANT_WEST_SOUTHWEST = 64,
+        OCTANT_SOUTH_SOUTHWEST = 128
+    }
+    export enum FovQuadrants {
+        QUADRANT_SOUTHEAST = 3,
+        QUADRANT_EAST = 6,
+        QUADRANT_NORTHEAST = 12,
+        QUADRANT_NORTH = 24,
+        QUADRANT_NORTHWEST = 48,
+        QUADRANT_WEST = 96,
+        QUADRANT_SOUTHWEST = 192,
+        QUADRANT_SOUTH = 129
+    }
+    export function getFovQuadrant(dx: number, dy: number): FovQuadrants;
 }
 declare module "point" {
     export class Point {
@@ -305,7 +303,7 @@ declare module "keys" {
         constructor(el: HTMLElement);
         setKey(e: KeyboardEvent, state: boolean): void;
         updateKeys(): void;
-        getKey(keyCode: number): Input;
+        getKey(keyCode: number): Input | null;
     }
     export enum Keys {
         VK_CANCEL = 3,
@@ -470,7 +468,6 @@ declare module "mouse" {
         readonly el: HTMLCanvasElement;
         readonly width: number;
         readonly height: number;
-        readonly options: any;
         private prevX;
         private prevY;
         x: number;
@@ -478,11 +475,10 @@ declare module "mouse" {
         dx: number;
         dy: number;
         readonly buttons: Input[];
-        constructor(terminal: Terminal, options: any);
-        handleTouchEvent(e: TouchEvent): void;
-        handleEvent(e: MouseEvent): void;
-        updatePosition(clientX: number, clientY: number): void;
-        requestFullscreen(): void;
+        constructor(terminal: Terminal);
+        private handleTouchEvent;
+        private handleEvent;
+        private updatePosition;
         update(): void;
     }
 }
@@ -617,6 +613,11 @@ declare module "gui" {
         readonly dialogs: DialogState[];
         constructor(terminal: Terminal, renderer?: DialogRenderer);
         add(dialog: Dialog): void;
+        /**
+         * Handles input for currently active dialog.
+         * Returns true if the input was handled.
+         * Returns false otherwise.
+         */
         handleInput(): boolean;
         draw(): void;
     }
@@ -653,6 +654,7 @@ declare module "image" {
 }
 declare module "path" {
     import { Console } from "console";
+    import { Cell } from "cell";
     import { Point } from "point";
     /**
      * Calculates Dijkstra's algorithm.
@@ -662,7 +664,7 @@ declare module "path" {
      * @param {!number=} opt_maxDist Optional maximum distance to examine.
      * @return {?Array} Array of steps if destination found; null otherwise.
      */
-    export function computePath(map: Console, source: Point, dest: Point, maxDist: number): any[];
+    export function computePath(map: Console, source: Point, dest: Point, maxDist: number): Cell[] | undefined;
 }
 declare module "rng" {
     /**

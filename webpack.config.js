@@ -10,7 +10,7 @@ const outputFilename = (entry) => entry === './src/wglt.ts' ?
 
 const entries = ['./src/wglt.ts'];
 addDir('./examples/');
-addDir('./examples/roguelike/');
+addFile('./examples/roguelike/', 'index.ts');
 
 module.exports = entries.map((entry) => ({
   entry: entry,
