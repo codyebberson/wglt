@@ -264,7 +264,7 @@ declare module "rect" {
         constructor(x: number, y: number, width: number, height: number);
         getCenter(): Point;
         intersects(other: Rect): boolean;
-        contains(point: Rect): boolean;
+        contains(point: Point | Rect): boolean;
     }
 }
 declare module "input" {
@@ -635,16 +635,18 @@ declare module "gui/messagedialog" {
     }
 }
 declare module "gui/selectdialog" {
-    import { Dialog } from "gui/dialog";
-    import { Point } from "point";
     import { Console } from "console";
+    import { Point } from "point";
     import { Terminal } from "terminal";
+    import { Dialog } from "gui/dialog";
     export class SelectDialog extends Dialog {
         readonly options: string[];
         readonly callback: (i: number) => void;
+        private hoverIndex;
         constructor(title: string, options: string[], callback: (i: number) => void);
         drawContents(console: Console, offset: Point): void;
         handleInput(terminal: Terminal, offset: Point): boolean;
+        private isMouseOverOption;
     }
 }
 declare module "image" {

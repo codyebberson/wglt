@@ -1,9 +1,11 @@
+import { Cell } from '../../src/cell';
 import { Color, fromRgb } from '../../src/color';
 import { Colors } from '../../src/colors';
 import { Console } from '../../src/console';
 import { MessageDialog } from '../../src/gui/messagedialog';
 import { SelectDialog } from '../../src/gui/selectdialog';
 import { Keys } from '../../src/keys';
+import { computePath } from '../../src/path';
 import { Rect } from '../../src/rect';
 import { RNG } from '../../src/rng';
 import { Actor } from './actor';
@@ -63,6 +65,9 @@ export class Game implements AppState {
   fovRecompute: boolean;
   targetCursor: { x: number, y: number };
   targetFunction: ((x: number, y: number) => void) | undefined;
+  path?: Cell[];
+  pathIndex: number;
+  pathWalking: boolean;
 
   constructor(app: App) {
     this.app = app;
@@ -79,6 +84,8 @@ export class Game implements AppState {
     this.map = this.createMap();
     this.fovRecompute = true;
     this.targetCursor = { x: 0, y: 0 };
+    this.pathIndex = 0;
+    this.pathWalking = false;
     this.addMessage('Welcome stranger! Prepare to perish!', Colors.DARK_RED);
 
     // Initial equipment: a dagger
@@ -409,45 +416,47 @@ export class Game implements AppState {
       return;
     }
 
+    const term = this.app.term;
+
     if (this.targetFunction) {
-      if (this.app.term.isKeyPressed(Keys.VK_ENTER) || this.app.term.mouse.buttons[0].isClicked()) {
+      if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (this.app.term.isKeyPressed(Keys.VK_ESCAPE) || this.app.term.mouse.buttons[2].isClicked()) {
+      if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
         this.cancelTargeting();
       }
-      if (this.app.term.isKeyPressed(Keys.VK_UP)) {
+      if (term.isKeyPressed(Keys.VK_UP)) {
         this.targetCursor.y--;
       }
-      if (this.app.term.isKeyPressed(Keys.VK_LEFT)) {
+      if (term.isKeyPressed(Keys.VK_LEFT)) {
         this.targetCursor.x--;
       }
-      if (this.app.term.isKeyPressed(Keys.VK_RIGHT)) {
+      if (term.isKeyPressed(Keys.VK_RIGHT)) {
         this.targetCursor.x++;
       }
-      if (this.app.term.isKeyPressed(Keys.VK_DOWN)) {
+      if (term.isKeyPressed(Keys.VK_DOWN)) {
         this.targetCursor.y++;
       }
-      if (this.app.term.mouse.dx !== 0 || this.app.term.mouse.dy !== 0) {
-        this.targetCursor.x = this.app.term.mouse.x;
-        this.targetCursor.y = this.app.term.mouse.y;
+      if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
+        this.targetCursor.x = term.mouse.x;
+        this.targetCursor.y = term.mouse.y;
       }
       return;
     }
 
-    if (this.app.term.isKeyPressed(Keys.VK_UP)) {
+    if (term.isKeyPressed(Keys.VK_UP)) {
       this.playerMoveOrAttack(0, -1);
     }
-    if (this.app.term.isKeyPressed(Keys.VK_LEFT)) {
+    if (term.isKeyPressed(Keys.VK_LEFT)) {
       this.playerMoveOrAttack(-1, 0);
     }
-    if (this.app.term.isKeyPressed(Keys.VK_RIGHT)) {
+    if (term.isKeyPressed(Keys.VK_RIGHT)) {
       this.playerMoveOrAttack(1, 0);
     }
-    if (this.app.term.isKeyPressed(Keys.VK_DOWN)) {
+    if (term.isKeyPressed(Keys.VK_DOWN)) {
       this.playerMoveOrAttack(0, 1);
     }
-    if (this.app.term.isKeyPressed(Keys.VK_G)) {
+    if (term.isKeyPressed(Keys.VK_G)) {
       // Pick up an item
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
@@ -456,7 +465,7 @@ export class Game implements AppState {
         }
       }
     }
-    if (this.app.term.isKeyPressed(Keys.VK_I)) {
+    if (term.isKeyPressed(Keys.VK_I)) {
       if (this.player.inventory.length === 0) {
         this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
       } else {
@@ -470,7 +479,7 @@ export class Game implements AppState {
         this.app.gui.add(new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice)));
       }
     }
-    if (this.app.term.isKeyPressed(Keys.VK_C)) {
+    if (term.isKeyPressed(Keys.VK_C)) {
       const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
       this.app.gui.add(new MessageDialog('CHARACTER',
         'Level: ' + this.player.level +
@@ -480,9 +489,48 @@ export class Game implements AppState {
         '\nAttack: ' + this.player.power +
         '\nDefense: ' + this.player.defense));
     }
-    if (this.app.term.isKeyPressed(Keys.VK_COMMA)) {
+    if (term.isKeyPressed(Keys.VK_COMMA)) {
       if (this.player.x === this.stairs?.x && this.player.y === this.stairs?.y) {
         this.nextLevel();
+      }
+    }
+
+    // If the mouse is hovering over the play area,
+    // then draw the path from the player to the cursor
+    if (!this.pathWalking &&
+      term.mouse.x >= 0 &&
+      term.mouse.x < MAP_WIDTH &&
+      term.mouse.y >= 0 &&
+      term.mouse.y < MAP_HEIGHT) {
+      this.path = computePath(this.map, this.player, term.mouse, 100);
+    }
+    if (!this.pathWalking && this.path && term.mouse.buttons[0].upCount === 1) {
+      this.pathWalking = true;
+      this.pathIndex = 0;
+    }
+    if (this.pathWalking && this.path && this.pathIndex >= 0) {
+      // Advance to the player's current position
+      while (this.pathIndex < this.path.length &&
+        this.player.x === this.path[this.pathIndex].x &&
+        this.player.y === this.path[this.pathIndex].y) {
+        this.pathIndex++;
+      }
+      // If there are still remaining steps...
+      if (this.pathIndex < this.path.length) {
+        // Try to move to the next step
+        const next = this.path[this.pathIndex];
+        this.playerMoveOrAttack(next.x - this.player.x, next.y - this.player.y);
+        if (this.player.x !== next.x || this.player.y !== next.y) {
+          // If it fails, then cancel autowalking
+          this.pathWalking = false;
+          this.pathIndex = -1;
+          this.path = undefined;
+        }
+      } else {
+        // Otherwise player reached the end of the path
+        this.pathWalking = false;
+        this.pathIndex = -1;
+        this.path = undefined;
       }
     }
   }
@@ -629,6 +677,8 @@ export class Game implements AppState {
   }
 
   renderAll(): void {
+    const term = this.app.term;
+
     if (this.fovRecompute) {
       this.map.computeFov(this.player.x, this.player.y, TORCH_RADIUS);
       this.fovRecompute = false;
@@ -649,22 +699,31 @@ export class Game implements AppState {
           color = wall ? COLOR_DARK_WALL : COLOR_DARK_GROUND;
         }
 
-        this.app.term.drawChar(x, y, 0, 0, color);
+        term.drawChar(x, y, 0, 0, color);
       }
     }
 
+    // If the mouse is hovering over the play area,
+    // then draw the path from the player to the cursor
+    if (!this.pathWalking && this.path) {
+      for (let i = 1; i < this.path.length; i++) {
+        term.drawChar(this.path[i].x, this.path[i].y, 0, 0, Colors.WHITE);
+      }
+    }
+
+    // Draw entities
     for (let i = 0; i < this.entities.length; i++) {
       this.entities[i].draw();
     }
 
     // Prepare to render the GUI panel
-    this.app.term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
+    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
 
     // Print the game this.messages, one line at a time
     let y = PANEL_Y + 1;
     for (let i = 0; i < this.messages.length; i++) {
       const message = this.messages[i];
-      this.app.term.drawString(MSG_X, y, message.text, message.color);
+      term.drawString(MSG_X, y, message.text, message.color);
       y++;
     }
 
@@ -679,13 +738,13 @@ export class Game implements AppState {
       'XP', this.player.xp, LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR,
       Colors.LIGHT_MAGENTA, Colors.DARK_MAGENTA);
 
-    this.app.term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + this.level, Colors.ORANGE);
+    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + this.level, Colors.ORANGE);
 
     // Display names of objects under the mouse
-    this.app.term.drawString(1, PANEL_Y, this.getNamesUnderMouse(), Colors.LIGHT_GRAY);
+    term.drawString(1, PANEL_Y, this.getNamesUnderMouse(), Colors.LIGHT_GRAY);
 
     if (this.targetFunction) {
-      const targetCell = this.app.term.getCell(this.targetCursor.x, this.targetCursor.y);
+      const targetCell = term.getCell(this.targetCursor.x, this.targetCursor.y);
       if (targetCell) {
         targetCell.setBackground(Colors.WHITE);
       }

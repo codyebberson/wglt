@@ -1,14 +1,16 @@
 
-import { Keys } from '../keys';
-import { Rect } from '../rect';
-import { Dialog } from './dialog';
-import { Point } from '../point';
+import { Colors } from '../colors';
 import { Console } from '../console';
+import { Keys } from '../keys';
+import { Point } from '../point';
+import { Rect } from '../rect';
 import { Terminal } from '../terminal';
+import { Dialog } from './dialog';
 
 export class SelectDialog extends Dialog {
   readonly options: string[];
   readonly callback: (i: number) => void;
+  private hoverIndex: number;
 
   constructor(
     title: string, options: string[], callback: (i: number) => void) {
@@ -22,16 +24,32 @@ export class SelectDialog extends Dialog {
     super(rect, title);
     this.options = options;
     this.callback = callback;
+    this.hoverIndex = -1;
   }
 
   drawContents(console: Console, offset: Point): void {
     for (let i = 0; i < this.options.length; i++) {
       const str = String.fromCharCode(65 + i) + ' - ' + this.options[i];
-      console.drawString(offset.x, offset.y + i, str);
+      if (i === this.hoverIndex) {
+        console.drawString(offset.x, offset.y + i, str, Colors.BLACK, Colors.WHITE);
+      } else {
+        console.drawString(offset.x, offset.y + i, str, Colors.WHITE, Colors.BLACK);
+      }
     }
   }
 
   handleInput(terminal: Terminal, offset: Point): boolean {
+    this.hoverIndex = -1;
+    if (terminal.mouse.x >= offset.x &&
+      terminal.mouse.x < offset.x + this.contentsRect.width &&
+      terminal.mouse.y >= offset.y &&
+      terminal.mouse.y < offset.y + this.contentsRect.height) {
+      this.hoverIndex = terminal.mouse.y - offset.y;
+      if (terminal.mouse.buttons[0].upCount === 1) {
+        this.callback(this.hoverIndex);
+        return true;
+      }
+    }
     for (let i = 0; i < this.options.length; i++) {
       if (terminal.isKeyPressed(Keys.VK_A + i)) {
         this.callback(i);
@@ -39,5 +57,11 @@ export class SelectDialog extends Dialog {
       }
     }
     return terminal.isKeyPressed(Keys.VK_ESCAPE);
+  }
+
+  private isMouseOverOption(terminal: Terminal, offset: Point, index: number): boolean {
+    return terminal.mouse.x >= offset.x &&
+      terminal.mouse.x < offset.x + this.contentsRect.width &&
+      terminal.mouse.y === offset.y + index;
   }
 }
