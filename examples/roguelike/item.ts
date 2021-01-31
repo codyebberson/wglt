@@ -1,6 +1,6 @@
-import { Color } from "../../src/color";
-import { Game } from "./game";
+import { Color } from '../../src/color';
 import { Entity } from './entity';
+import { Game } from './game';
 
 export class Item extends Entity {
   powerBonus: number;

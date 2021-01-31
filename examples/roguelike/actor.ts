@@ -1,9 +1,9 @@
-import { Color } from "../../src/color";
+import { Color } from '../../src/color';
 import { Colors } from '../../src/colors';
-import { AI } from "./ai";
-import { Game } from "./game";
+import { AI } from './ai';
 import { Entity } from './entity';
-import { Item } from "./item";
+import { Game } from './game';
+import { Item } from './item';
 
 export class Actor extends Entity {
   level: number;
