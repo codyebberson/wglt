@@ -111,12 +111,16 @@ export class Actor extends Entity {
   }
 
   death(): void {
-    this.game.addMessage(this.name + ' is dead!', Colors.ORANGE);
+    if (this === this.game.player) {
+      this.game.addMessage('You died!', Colors.DARK_RED);
+    } else {
+      this.game.addMessage(this.name + ' is dead!', Colors.ORANGE);
+    }
     this.char = '%';
     this.color = Colors.DARK_RED;
     this.blocks = false;
     this.ai = undefined;
-    this.name = 'remains of ' + this.name;
+    this.name = 'Remains of ' + this.name;
     this.sendToBack();
   }
 

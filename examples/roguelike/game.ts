@@ -72,7 +72,7 @@ export class Game implements AppState {
   constructor(app: App) {
     this.app = app;
     this.rng = new RNG(Date.now());
-    this.player = new Actor(this, 40, 25, '@', 'player', Colors.WHITE);
+    this.player = new Actor(this, 40, 25, '@', 'Player', Colors.WHITE);
     this.player.level = 1;
     this.player.hp = 100;
     this.player.baseMaxHp = 100;
@@ -89,7 +89,7 @@ export class Game implements AppState {
     this.addMessage('Welcome stranger! Prepare to perish!', Colors.DARK_RED);
 
     // Initial equipment: a dagger
-    const dagger = new Item(this, 0, 0, '-', 'dagger', Colors.LIGHT_CYAN);
+    const dagger = new Item(this, 0, 0, '-', 'Dagger', Colors.LIGHT_CYAN);
     dagger.slot = 'right hand';
     dagger.powerBonus = 2;
     this.player.inventory.push(dagger);
@@ -212,7 +212,7 @@ export class Game implements AppState {
 
     // Create stairs at the center of the last room
     const stairsLoc = rooms[rooms.length - 1].getCenter();
-    this.stairs = new Entity(this, stairsLoc.x, stairsLoc.y, '<', 'stairs', Colors.WHITE);
+    this.stairs = new Entity(this, stairsLoc.x, stairsLoc.y, '<', 'Stairs', Colors.WHITE);
     this.entities.push(this.stairs);
     this.stairs.sendToBack();
     return map;
@@ -267,7 +267,7 @@ export class Game implements AppState {
 
       const choice = this.rng.chooseKey(monsterChances);
       if (choice === 'orc') {
-        monster = new Actor(this, x, y, 'o', 'orc', Colors.LIGHT_GREEN);
+        monster = new Actor(this, x, y, 'o', 'Orc', Colors.LIGHT_GREEN);
         monster.hp = 20;
         monster.baseDefense = 0;
         monster.basePower = 4;
@@ -275,7 +275,7 @@ export class Game implements AppState {
         monster.setAi(new BasicMonster());
 
       } else if (choice === 'troll') {
-        monster = new Actor(this, x, y, 'T', 'troll', Colors.DARK_GREEN);
+        monster = new Actor(this, x, y, 'T', 'Troll', Colors.DARK_GREEN);
         monster.hp = 30;
         monster.baseDefense = 2;
         monster.basePower = 8;
@@ -300,32 +300,32 @@ export class Game implements AppState {
       const choice = this.rng.chooseKey(itemChances);
       if (choice === 'heal') {
         // Create a healing potion
-        item = new Item(this, x, y, '!', 'healing potion', Colors.DARK_MAGENTA);
+        item = new Item(this, x, y, '!', 'Healing Potion', Colors.DARK_MAGENTA);
         item.useFunction = (item) => this.castHeal(item);
 
       } else if (choice === 'lightning') {
         // Create a lightning bolt scroll
-        item = new Item(this, x, y, '#', 'scroll of lightning bolt', Colors.YELLOW);
+        item = new Item(this, x, y, '#', 'Scroll of Lightning Bolt', Colors.YELLOW);
         item.useFunction = (item) => this.castLightning(item);
 
       } else if (choice === 'fireball') {
         // Create a fireball scroll
-        item = new Item(this, x, y, '#', 'scroll of fireball', Colors.YELLOW);
+        item = new Item(this, x, y, '#', 'Scroll of Fireball', Colors.YELLOW);
         item.useFunction = (item) => this.castFireball(item);
 
       } else if (choice === 'confuse') {
         // Create a confuse scroll
-        item = new Item(this, x, y, '#', 'scroll of confusion', Colors.YELLOW);
+        item = new Item(this, x, y, '#', 'Scroll of Confusion', Colors.YELLOW);
         item.useFunction = (item) => this.castConfuse(item);
 
       } else if (choice === 'sword') {
         // Create a sword
-        item = new Item(this, x, y, '/', 'sword', Colors.LIGHT_CYAN);
+        item = new Item(this, x, y, '/', 'Sword', Colors.LIGHT_CYAN);
         item.useFunction = (item) => this.player.equip(item);
 
       } else if (choice === 'shield') {
         // Create a shield
-        item = new Item(this, x, y, '[', 'shield', Colors.BROWN);
+        item = new Item(this, x, y, '[', 'Shield', Colors.BROWN);
         item.useFunction = (item) => this.player.equip(item);
       }
 
@@ -480,12 +480,15 @@ export class Game implements AppState {
 
     // If the mouse is hovering over the play area,
     // then draw the path from the player to the cursor
-    if (!this.pathWalking &&
-      term.mouse.x >= 0 &&
-      term.mouse.x < MAP_WIDTH &&
-      term.mouse.y >= 0 &&
-      term.mouse.y < MAP_HEIGHT) {
-      this.path = computePath(this.map, this.player, term.mouse, 100);
+    if (!this.pathWalking) {
+      if (term.mouse.x >= 0 &&
+        term.mouse.x < MAP_WIDTH &&
+        term.mouse.y >= 0 &&
+        term.mouse.y < MAP_HEIGHT) {
+        this.path = computePath(this.map, this.player, term.mouse, 100);
+      } else {
+        this.path = undefined;
+      }
     }
     if (!this.pathWalking && this.path && term.mouse.buttons[0].upCount === 1) {
       this.pathWalking = true;

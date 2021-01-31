@@ -41,10 +41,10 @@ export class Input {
   }
 
   update(time: number): void {
+    this.repeat = false;
     if (this.down) {
       this.downCount++;
       this.upCount = 0;
-      this.repeat = false;
       if (time - this.downTime >= INPUT_REPEAT_DELAY && time - this.repeatTime >= INPUT_REPEAT_RATE) {
         this.repeat = true;
         this.repeatTime = time;
