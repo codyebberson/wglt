@@ -274,10 +274,14 @@ declare module "input" {
      */
     export class Input {
         down: boolean;
+        downTime: number;
+        repeat: boolean;
+        repeatTime: number;
         downCount: number;
         upCount: number;
         constructor();
-        update(): void;
+        setDown(down: boolean): void;
+        update(time: number): void;
         /**
          * Returns true if the input is "pressed".
          * Pressed is a one time event when the input first goes down.
@@ -302,7 +306,7 @@ declare module "keys" {
          */
         constructor(el: HTMLElement);
         setKey(e: KeyboardEvent, state: boolean): void;
-        updateKeys(): void;
+        updateKeys(time: number): void;
         getKey(keyCode: number): Input | null;
     }
     export enum Keys {
@@ -479,7 +483,7 @@ declare module "mouse" {
         private handleTouchEvent;
         private handleEvent;
         private updatePosition;
-        update(): void;
+        update(time: number): void;
     }
 }
 declare module "shaders" {
@@ -511,6 +515,10 @@ declare module "terminal" {
     import { Font } from "font";
     import { Keyboard } from "keys";
     import { Mouse } from "mouse";
+    import { Point } from "point";
+    interface TerminalOptions {
+        font?: Font;
+    }
     export class Terminal extends Console {
         readonly canvas: HTMLCanvasElement;
         readonly font: Font;
@@ -537,14 +545,30 @@ declare module "terminal" {
         readonly foregroundBuffer: WebGLBuffer;
         readonly backgroundBuffer: WebGLBuffer;
         readonly texture: WebGLTexture;
+        private lastRenderTime;
+        private renderDelta;
+        fps: number;
+        averageFps: number;
         update?: () => void;
-        constructor(canvas: HTMLCanvasElement, width: number, height: number, options?: any);
+        constructor(canvas: HTMLCanvasElement, width: number, height: number, options?: TerminalOptions);
         private handleResize;
         private getAttribLocation;
         private flush;
         isKeyDown(keyCode: number): boolean;
         isKeyPressed(keyCode: number): boolean;
         getKeyDownCount(keyCode: number): number;
+        /**
+         * Returns a standard roguelike movement key if pressed.
+         * Implemented control systems:
+         * 1) Numpad arrows
+         * 2) VIM keys
+         * 3) Normal arrows (4 directions only)
+         * 4) Numpad 5 and '.' (period) for "wait"
+         * If a key is pressed, returns the movement delta.
+         * If no key is pressed, returns undefined.
+         * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
+         */
+        getMovementKey(): Point | undefined;
         private buildShader;
         /**
          * Initialize a texture and load an image.
@@ -553,6 +577,7 @@ declare module "terminal" {
          */
         private loadTexture;
         private render;
+        private requestAnimationFrame;
         private renderLoop;
     }
 }
