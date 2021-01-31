@@ -1,15 +1,15 @@
 import { Colors } from '../../src/colors';
-import { Entity } from './entity';
+import { Actor } from './actor';
 
 const CONFUSE_NUM_TURNS = 10;
 
 export interface AI {
-  owner?: Entity;
+  owner?: Actor;
   takeTurn(): void;
 }
 
 export class BasicMonster implements AI {
-  owner?: Entity;
+  owner?: Actor;
 
   constructor() {
     this.owner = undefined;
@@ -40,7 +40,7 @@ export class BasicMonster implements AI {
 }
 
 export class ConfusedMonster implements AI {
-  owner?: Entity;
+  owner?: Actor;
   oldAi: AI;
   numTurns: number;
 
