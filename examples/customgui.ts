@@ -1,16 +1,16 @@
 
 import { Colors } from '../src/colors';
 import { Console } from '../src/console';
-import { DialogState } from '../src/gui/dialogstate';
 import { GUI } from '../src/gui';
+import { Dialog } from '../src/gui/dialog';
+import { DialogRenderer } from '../src/gui/dialogrenderer';
+import { DialogState } from '../src/gui/dialogstate';
 import { MessageDialog } from '../src/gui/messagedialog';
 import { SelectDialog } from '../src/gui/selectdialog';
 import { Keys } from '../src/keys';
 import { Point } from '../src/point';
 import { Rect } from '../src/rect';
 import { Terminal } from '../src/terminal';
-import { DialogRenderer } from '../src/gui/dialogrenderer';
-import { Dialog } from '../src/gui/dialog';
 
 class CustomRenderer implements DialogRenderer {
 
@@ -73,19 +73,12 @@ let y = 10;
 
 term.update = function () {
   if (!gui.handleInput()) {
-    if (term.isKeyDown(Keys.VK_UP)) {
-      y--;
+    const moveKey = term.getMovementKey();
+    if (moveKey) {
+      x += moveKey.x;
+      y += moveKey.y;
     }
-    if (term.isKeyDown(Keys.VK_LEFT)) {
-      x--;
-    }
-    if (term.isKeyDown(Keys.VK_RIGHT)) {
-      x++;
-    }
-    if (term.isKeyDown(Keys.VK_DOWN)) {
-      y++;
-    }
-    if (term.isKeyPressed(Keys.VK_H)) {
+    if (term.isKeyPressed(Keys.VK_M)) {
       gui.add(new MessageDialog('ALERT', 'Hello World'));
     }
     if (term.isKeyPressed(Keys.VK_I)) {
@@ -99,7 +92,7 @@ term.update = function () {
   term.fillRect(0, 0, 80, 45, 0, Colors.LIGHT_GREEN, Colors.BLACK);
   term.drawString(1, 1, 'Hello world!');
   term.drawString(1, 3, 'Use arrow keys to move');
-  term.drawString(1, 5, 'Press "h" to open a MessageDialog');
+  term.drawString(1, 5, 'Press "m" to open a MessageDialog');
   term.drawString(1, 7, 'Press "i" to open a SelectDialog');
   term.drawString(x, y, '@');
   gui.draw();

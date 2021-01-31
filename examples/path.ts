@@ -1,9 +1,9 @@
 
+import { Cell } from '../src/cell';
 import { Colors } from '../src/colors';
 import { Console } from '../src/console';
-import { Keys } from '../src/keys';
-import { Terminal } from '../src/terminal';
 import { computePath } from '../src/path';
+import { Terminal } from '../src/terminal';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -32,7 +32,9 @@ const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const player = {
   x: Math.floor(SCREEN_WIDTH / 2),
-  y: Math.floor(SCREEN_HEIGHT / 2)
+  y: Math.floor(SCREEN_HEIGHT / 2),
+  path: null as Cell[] | null,
+  pathIndex: 0
 };
 
 const fov = new Console(SCREEN_WIDTH, SCREEN_HEIGHT, isBlocked);
@@ -50,17 +52,22 @@ function movePlayer(dx: number, dy: number) {
 }
 
 term.update = function () {
-  if (term.isKeyPressed(Keys.VK_UP)) {
-    movePlayer(0, -1);
+  const moveKey = term.getMovementKey();
+  if (moveKey) {
+    movePlayer(moveKey.x, moveKey.y);
   }
-  if (term.isKeyPressed(Keys.VK_LEFT)) {
-    movePlayer(-1, 0);
-  }
-  if (term.isKeyPressed(Keys.VK_RIGHT)) {
-    movePlayer(1, 0);
-  }
-  if (term.isKeyPressed(Keys.VK_DOWN)) {
-    movePlayer(0, 1);
+
+  if (player.path) {
+    while (player.pathIndex < player.path.length &&
+      player.x === player.path[player.pathIndex].x &&
+      player.y === player.path[player.pathIndex].y) {
+      player.pathIndex++;
+    }
+    if (player.pathIndex < player.path.length) {
+      movePlayer(
+        player.path[player.pathIndex].x - player.x,
+        player.path[player.pathIndex].y - player.y);
+    }
   }
 
   term.clear();
@@ -82,6 +89,11 @@ term.update = function () {
       if (cell) {
         cell.setBackground(Colors.DARK_RED);
       }
+    }
+
+    if (term.mouse.buttons[0].upCount === 1) {
+      player.path = path;
+      player.pathIndex = 0;
     }
   }
 

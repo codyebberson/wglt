@@ -386,7 +386,7 @@ export class Game implements AppState {
     let target: Actor | null = null;
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      if (entity instanceof Actor && entity.x === x && entity.y === y) {
+      if (entity instanceof Actor && entity != this.player && entity.x === x && entity.y === y) {
         target = entity;
         break;
       }
@@ -417,6 +417,7 @@ export class Game implements AppState {
     }
 
     const term = this.app.term;
+    const movementKey = term.getMovementKey();
 
     if (this.targetFunction) {
       if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
@@ -425,17 +426,9 @@ export class Game implements AppState {
       if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
         this.cancelTargeting();
       }
-      if (term.isKeyPressed(Keys.VK_UP)) {
-        this.targetCursor.y--;
-      }
-      if (term.isKeyPressed(Keys.VK_LEFT)) {
-        this.targetCursor.x--;
-      }
-      if (term.isKeyPressed(Keys.VK_RIGHT)) {
-        this.targetCursor.x++;
-      }
-      if (term.isKeyPressed(Keys.VK_DOWN)) {
-        this.targetCursor.y++;
+      if (movementKey) {
+        this.targetCursor.x += movementKey.x;
+        this.targetCursor.y += movementKey.y;
       }
       if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
         this.targetCursor.x = term.mouse.x;
@@ -443,18 +436,8 @@ export class Game implements AppState {
       }
       return;
     }
-
-    if (term.isKeyPressed(Keys.VK_UP)) {
-      this.playerMoveOrAttack(0, -1);
-    }
-    if (term.isKeyPressed(Keys.VK_LEFT)) {
-      this.playerMoveOrAttack(-1, 0);
-    }
-    if (term.isKeyPressed(Keys.VK_RIGHT)) {
-      this.playerMoveOrAttack(1, 0);
-    }
-    if (term.isKeyPressed(Keys.VK_DOWN)) {
-      this.playerMoveOrAttack(0, 1);
+    if (movementKey) {
+      this.playerMoveOrAttack(movementKey.x, movementKey.y);
     }
     if (term.isKeyPressed(Keys.VK_G)) {
       // Pick up an item

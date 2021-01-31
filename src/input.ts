@@ -3,7 +3,7 @@
  * The delay in frames before input repeating.
  * Time in milliseconds.
  */
-const INPUT_REPEAT_DELAY = 1000.0 / 2.0;
+const INPUT_REPEAT_DELAY = 200.0;
 
 /**
  * The delay between subsequent repeat firing.

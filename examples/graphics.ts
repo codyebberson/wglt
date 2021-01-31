@@ -1,7 +1,6 @@
 
 import { fromRgb } from '../src/color';
 import { Font } from '../src/font';
-import { Keys } from '../src/keys';
 import { Terminal } from '../src/terminal';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 20, 15,
@@ -33,17 +32,10 @@ let x = 4;
 let y = 4;
 
 term.update = function () {
-  if (term.isKeyPressed(Keys.VK_UP)) {
-    y--;
-  }
-  if (term.isKeyPressed(Keys.VK_LEFT)) {
-    x--;
-  }
-  if (term.isKeyPressed(Keys.VK_RIGHT)) {
-    x++;
-  }
-  if (term.isKeyPressed(Keys.VK_DOWN)) {
-    y++;
+  const moveKey = term.getMovementKey();
+  if (moveKey) {
+    x += moveKey.x;
+    y += moveKey.y;
   }
 
   term.clear();

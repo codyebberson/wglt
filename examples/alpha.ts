@@ -1,9 +1,8 @@
 
 import { BlendMode } from '../src/blendmode';
+import { fromHsv } from '../src/color';
 import { Colors } from '../src/colors';
 import { Console } from '../src/console';
-import { fromHsv } from '../src/color';
-import { Keys } from '../src/keys';
 import { RNG } from '../src/rng';
 import { Terminal } from '../src/terminal';
 
@@ -70,17 +69,10 @@ for (let i = 0; i < 500; i++) {
 }
 
 term.update = function () {
-  if (term.isKeyPressed(Keys.VK_UP)) {
-    lights[0].y--;
-  }
-  if (term.isKeyPressed(Keys.VK_LEFT)) {
-    lights[0].x--;
-  }
-  if (term.isKeyPressed(Keys.VK_RIGHT)) {
-    lights[0].x++;
-  }
-  if (term.isKeyPressed(Keys.VK_DOWN)) {
-    lights[0].y++;
+  const moveKey = term.getMovementKey();
+  if (moveKey) {
+    lights[0].x += moveKey.x;
+    lights[0].y += moveKey.y;
   }
   if (term.mouse.dx !== 0 || term.mouse.dy !== 0) {
     lights[0].x = term.mouse.x;

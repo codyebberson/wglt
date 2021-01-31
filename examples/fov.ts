@@ -1,10 +1,9 @@
 import { Cell } from '../src/cell';
 import { Colors } from '../src/colors';
-import { computePath } from '../src/path';
 import { Console } from '../src/console';
-import { Keys } from '../src/keys';
+import { FovQuadrants, getFovQuadrant } from '../src/fov';
+import { computePath } from '../src/path';
 import { Terminal } from '../src/terminal';
-import { getFovQuadrant, FovQuadrants } from '../src/fov';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -100,17 +99,9 @@ function movePlayer(dx: number, dy: number) {
 }
 
 term.update = function () {
-  if (term.isKeyPressed(Keys.VK_UP)) {
-    movePlayer(0, -1);
-  }
-  if (term.isKeyPressed(Keys.VK_LEFT)) {
-    movePlayer(-1, 0);
-  }
-  if (term.isKeyPressed(Keys.VK_RIGHT)) {
-    movePlayer(1, 0);
-  }
-  if (term.isKeyPressed(Keys.VK_DOWN)) {
-    movePlayer(0, 1);
+  const moveKey = term.getMovementKey();
+  if (moveKey) {
+    movePlayer(moveKey.x, moveKey.y);
   }
 
   if (player.path) {
