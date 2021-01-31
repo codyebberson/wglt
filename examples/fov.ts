@@ -69,8 +69,6 @@ const term = new Terminal(
   SCREEN_WIDTH,
   SCREEN_HEIGHT);
 
-const game = new Console(MAP_WIDTH, MAP_HEIGHT);
-
 const player = {
   x: Math.floor(MAP_WIDTH / 2),
   y: Math.floor(MAP_HEIGHT / 2),
@@ -118,14 +116,14 @@ term.update = function () {
   }
 
   term.clear();
-  game.fillRect(0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, Colors.BLACK);
+  tileMap.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
 
   for (let y = 0; y < MAP_HEIGHT; y++) {
     for (let x = 0; x < MAP_WIDTH; x++) {
       const c = tileMap.getCell(x, y);
       if (c && c.explored) {
         const color = tileMap.isVisible(x, y) ? Colors.WHITE : Colors.DARK_GRAY;
-        game.drawString(x, y, getTile(x, y), color);
+        tileMap.drawString(x, y, getTile(x, y), color);
       }
     }
   }
@@ -135,7 +133,7 @@ term.update = function () {
   if (path) {
     for (let i = 1; i < path.length; i++) {
       const step = path[i];
-      const cell = game.getCell(step.x, step.y);
+      const cell = tileMap.getCell(step.x, step.y);
       if (cell) {
         cell.setBackground(Colors.DARK_RED);
       }
@@ -147,10 +145,10 @@ term.update = function () {
     }
   }
 
-  term.drawString(1, 1, 'Hello world!');
-  term.drawString(1, 3, 'Use arrow keys to move');
-  game.drawString(player.x, player.y, '@');
-  term.drawConsole(OFFSET_X, OFFSET_Y, game, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+  term.drawConsole(OFFSET_X, OFFSET_Y, tileMap, 0, 0, MAP_WIDTH, MAP_HEIGHT);
+  term.drawString(OFFSET_X + player.x, OFFSET_Y + player.y, '@');
+  term.drawString(1, 1, 'Hello world!', Colors.WHITE);
+  term.drawString(1, 3, 'Use arrow keys to move', Colors.WHITE);
 };
 
 computeFov();

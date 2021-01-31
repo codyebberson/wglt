@@ -28,8 +28,6 @@ function isBlocked(x: number, y: number) {
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
-
 const player = {
   x: Math.floor(SCREEN_WIDTH / 2),
   y: Math.floor(SCREEN_HEIGHT / 2),
@@ -37,8 +35,18 @@ const player = {
   pathIndex: 0
 };
 
-const fov = new Console(SCREEN_WIDTH, SCREEN_HEIGHT, isBlocked);
-fov.computeFov(player.x, player.y, VIEW_DISTANCE);
+function computeFov() {
+  tileMap.computeFov(player.x, player.y, VIEW_DISTANCE);
+  tileMap.updateExplored();
+}
+
+const tileMap = new Console(SCREEN_WIDTH, SCREEN_HEIGHT, isBlocked);
+for (let y = 0; y < SCREEN_HEIGHT; y++) {
+  for (let x = 0; x < SCREEN_WIDTH; x++) {
+    (tileMap.getCell(x, y) as Cell).explored = true;
+  }
+}
+computeFov();
 
 function movePlayer(dx: number, dy: number) {
   const x = player.x + dx;
@@ -48,7 +56,7 @@ function movePlayer(dx: number, dy: number) {
   }
   player.x = x;
   player.y = y;
-  fov.computeFov(player.x, player.y, VIEW_DISTANCE);
+  computeFov();
 }
 
 term.update = function () {
@@ -71,21 +79,21 @@ term.update = function () {
   }
 
   term.clear();
-  game.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, Colors.BLACK);
+  tileMap.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
 
   for (let y = 0; y < SCREEN_HEIGHT; y++) {
     for (let x = 0; x < SCREEN_WIDTH; x++) {
       const c = getTile(x, y);
-      const color = fov.isVisible(x, y) ? Colors.WHITE : Colors.DARK_GRAY;
-      game.drawString(x, y, c, color);
+      const color = tileMap.isVisible(x, y) ? Colors.WHITE : Colors.DARK_GRAY;
+      tileMap.drawString(x, y, c, color);
     }
   }
 
-  const path = computePath(fov, player, term.mouse, 1000);
+  const path = computePath(tileMap, player, term.mouse, 1000);
   if (path) {
     for (let i = 1; i < path.length; i++) {
       const step = path[i];
-      const cell = game.getCell(step.x, step.y);
+      const cell = tileMap.getCell(step.x, step.y);
       if (cell) {
         cell.setBackground(Colors.DARK_RED);
       }
@@ -97,8 +105,8 @@ term.update = function () {
     }
   }
 
-  game.drawString(player.x, player.y, '@');
-  term.drawConsole(0, 0, game, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  term.drawConsole(0, 0, tileMap, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  term.drawString(player.x, player.y, '@');
   term.drawString(1, 1, 'Hello world!', Colors.WHITE);
   term.drawString(1, 3, 'Use arrow keys to move', Colors.WHITE);
 };

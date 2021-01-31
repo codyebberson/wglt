@@ -29,7 +29,7 @@ export class Input {
     this.repeat = false;
     this.repeatTime = 0;
     this.downCount = 0;
-    this.upCount = 0;
+    this.upCount = 100;
   }
 
   setDown(down: boolean): void {
