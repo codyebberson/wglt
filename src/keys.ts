@@ -33,13 +33,13 @@ export class Keyboard {
     e.stopPropagation();
     e.preventDefault();
     if (keyCode >= 0 && keyCode < KEY_COUNT) {
-      this.keys[keyCode].down = state;
+      this.keys[keyCode].setDown(state);
     }
   }
 
-  updateKeys(): void {
+  updateKeys(time: number): void {
     for (let i = 0; i < KEY_COUNT; i++) {
-      this.keys[i].update();
+      this.keys[i].update(time);
     }
   }
 

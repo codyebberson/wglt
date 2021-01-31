@@ -18,7 +18,7 @@ export class App {
   game?: Game;
 
   constructor() {
-    this.term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT, { frameDelay: 5 });
+    this.term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);
     this.gui = new GUI(this.term);
     this.mainMenu = new MainMenu(this);
     this.state = this.mainMenu;

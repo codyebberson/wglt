@@ -35,8 +35,7 @@ function createLightConsole(h: number, s: number, v: number) {
 const term = new Terminal(
   document.querySelector('canvas') as HTMLCanvasElement,
   SCREEN_WIDTH,
-  SCREEN_HEIGHT,
-  { requestFullscreen: true });
+  SCREEN_HEIGHT);
 
 const rng = new RNG();
 

@@ -47,9 +47,9 @@ export class Mouse {
     if (e.touches.length > 0) {
       const touch = e.touches[0];
       this.updatePosition(touch.clientX, touch.clientY);
-      this.buttons[0].down = true;
+      this.buttons[0].setDown(true);
     } else {
-      this.buttons[0].down = false;
+      this.buttons[0].setDown(false);
     }
   }
 
@@ -60,13 +60,12 @@ export class Mouse {
     this.updatePosition(e.clientX, e.clientY);
 
     if (e.type === 'mousedown') {
-      this.buttons[e.button].down = true;
-
+      this.buttons[e.button].setDown(true);
       this.el.focus();
     }
 
     if (e.type === 'mouseup') {
-      this.buttons[e.button].down = false;
+      this.buttons[e.button].setDown(false);
     }
   }
 
@@ -96,14 +95,14 @@ export class Mouse {
     this.y = (this.height * (clientY - rect.top) / rect.height) | 0;
   }
 
-  update(): void {
+  update(time: number): void {
     this.dx = this.x - this.prevX;
     this.dy = this.y - this.prevY;
     this.prevX = this.x;
     this.prevY = this.y;
 
     for (let i = 0; i < this.buttons.length; i++) {
-      this.buttons[i].update();
+      this.buttons[i].update(time);
     }
   }
 }

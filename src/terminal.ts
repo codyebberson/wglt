@@ -17,9 +17,12 @@ function interpolate(i: number, max: number) {
   return -1.0 + 2.0 * (i / max);
 }
 
+interface TerminalOptions {
+  font?: Font,
+}
+
 const DEFAULT_OPTIONS = {
   font: DEFAULT_FONT,
-  requestFullscreen: false,
 };
 
 export class Terminal extends Console {
@@ -48,9 +51,13 @@ export class Terminal extends Console {
   readonly foregroundBuffer: WebGLBuffer;
   readonly backgroundBuffer: WebGLBuffer;
   readonly texture: WebGLTexture;
+  private lastRenderTime: number;
+  private renderDelta: number;
+  fps: number;
+  averageFps: number;
   update?: () => void;
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number, options?: any) {
+  constructor(canvas: HTMLCanvasElement, width: number, height: number, options?: TerminalOptions) {
     super(width, height);
 
     options = options || DEFAULT_OPTIONS;
@@ -159,8 +166,12 @@ export class Terminal extends Console {
 
     this.texture = this.loadTexture(this.font.url);
 
-    const frameRate = options.frameRate || 15;
-    window.setInterval(() => this.renderLoop(), 1000 / frameRate);
+    this.lastRenderTime = 0;
+    this.renderDelta = 0;
+    this.fps = 0;
+    this.averageFps = 0;
+
+    this.requestAnimationFrame();
   }
 
   private handleResize() {
@@ -385,13 +396,28 @@ export class Terminal extends Console {
     }
   }
 
-  private renderLoop() {
-    this.keys.updateKeys();
-    this.mouse.update();
+  private requestAnimationFrame() {
+    window.requestAnimationFrame(t => this.renderLoop(t));
+  }
+
+  private renderLoop(time: number) {
+    if (this.lastRenderTime === 0) {
+      this.lastRenderTime = time;
+      this.fps = 0;
+    } else {
+      this.renderDelta = time - this.lastRenderTime;
+      this.lastRenderTime = time;
+      this.fps = 1000.0 / this.renderDelta;
+      this.averageFps = 0.95 * this.averageFps + 0.05 * this.fps;
+    }
+
+    this.keys.updateKeys(time);
+    this.mouse.update(time);
     if (this.update) {
       this.update();
     }
     this.flush();
     this.render();
+    this.requestAnimationFrame();
   }
 }

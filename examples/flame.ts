@@ -16,7 +16,7 @@ for (let y = 0; y < h; y++) {
   }
 }
 
-const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, w, h, { requestFullscreen: true });
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, w, h);
 
 const rng = new RNG();
 

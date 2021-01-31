@@ -1,6 +1,7 @@
 
 import { fromHsv } from '../src/color';
 import { Terminal } from '../src/terminal';
+import { Colors } from '../src/wglt';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -17,4 +18,7 @@ term.update = function () {
     }
   }
   hue += 0.001;
+
+  term.drawString(0, 0, 'FPS: ' + term.fps.toFixed(0), Colors.WHITE, Colors.BLACK);
+  term.drawString(0, 1, 'Avg: ' + term.averageFps.toFixed(0), Colors.WHITE, Colors.BLACK);
 };
