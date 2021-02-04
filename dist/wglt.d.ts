@@ -722,8 +722,8 @@ declare module "rng" {
          * @param end Upper bound, exclusive.
          */
         nextRange(start: number, end: number): number;
-        chooseIndex(chances: any[]): number;
-        chooseKey(chancesMap: any): any;
+        chooseIndex(chances: number[]): number;
+        chooseKey(chancesMap: Record<string, number>): string;
     }
 }
 declare module "wglt" {
