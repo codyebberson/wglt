@@ -28,6 +28,6 @@ export class Rect {
   }
 
   contains(point: Point | Rect): boolean {
-    return point.x >= this.x && point.y < this.x2 && point.y >= this.y && point.y < this.y2;
+    return point.x >= this.x && point.x < this.x2 && point.y >= this.y && point.y < this.y2;
   }
 }
