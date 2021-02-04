@@ -54,7 +54,7 @@ export class RNG {
     return result;
   }
 
-  chooseIndex(chances: any[]) {
+  chooseIndex(chances: number[]): number {
     const total = chances.reduce((a, b) => a + b);
     const roll = this.nextRange(1, total + 1);
     let runningTotal = 0;
@@ -69,17 +69,9 @@ export class RNG {
     return chances.length - 1;
   }
 
-  chooseKey(chancesMap: any) {
-    const values = [];
-    const chances = [];
-
-    for (const property in chancesMap) {
-      if (chancesMap.hasOwnProperty(property)) {
-        values.push(property);
-        chances.push(chancesMap[property]);
-      }
-    }
-
+  chooseKey(chancesMap: Record<string, number>): string {
+    const values = Object.keys(chancesMap);
+    const chances = values.map(value => chancesMap[value]);
     return values[this.chooseIndex(chances)];
   }
 }
