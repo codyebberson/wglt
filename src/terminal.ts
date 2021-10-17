@@ -283,7 +283,7 @@ export class Terminal extends Console {
     if (this.isKeyPressed(Keys.VK_NUMPAD7) || this.isKeyPressed(Keys.VK_Y)) {
       return new Point(-1, -1);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD8) || this.isKeyPressed(Keys.VK_K) || this.isKeyPressed(Keys.VK_DOWN)) {
+    if (this.isKeyPressed(Keys.VK_NUMPAD8) || this.isKeyPressed(Keys.VK_K) || this.isKeyPressed(Keys.VK_UP)) {
       return new Point(0, -1);
     }
     if (this.isKeyPressed(Keys.VK_NUMPAD9) || this.isKeyPressed(Keys.VK_U)) {
