@@ -41,5 +41,9 @@
   "dependencies": {},
   "browserslist": [
     "last 1 Chrome versions"
-  ]
+  ],
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
+  }
 }

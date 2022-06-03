@@ -507,6 +507,7 @@ declare module "shaders" {
      * g = varying vec4 vBgColor;
      * h = uniform bool uGraphicalTiles;
      * s = uniform sampler2D uSampler;
+     * o = out vec4 oColor;
      */
     export const FRAGMENT_SHADER_SOURCE: string;
 }
