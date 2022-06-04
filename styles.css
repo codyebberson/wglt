@@ -25,6 +25,7 @@ body.example {
     padding: 0;
     max-width: none;
     max-height: none;
+    overflow: hidden;
 }
 
 h1, h2, h3 {
