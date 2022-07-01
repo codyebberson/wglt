@@ -1,10 +1,10 @@
 {
   "name": "wglt",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production && tsc --declaration --emitDeclarationOnly src/wglt.ts --out dist/wglt.d.ts",
+    "build": "webpack --mode production && rollup -c ./rollup.config.ts",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "fix": "eslint --fix . --ext .ts"
@@ -23,6 +23,8 @@
     "babel-loader": "^8.2.5",
     "eslint": "^8.18.0",
     "jest": "^28.1.1",
+    "rollup": "^2.75.7",
+    "rollup-plugin-dts": "^4.2.2",
     "terser-webpack-plugin": "^5.3.3",
     "typescript": "^4.7.4",
     "webpack": "^5.73.0",
@@ -38,7 +40,6 @@
   ],
   "main": "dist/wglt.js",
   "types": "dist/wglt.d.ts",
-  "dependencies": {},
   "browserslist": [
     "last 1 Chrome versions"
   ],
