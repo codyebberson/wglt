@@ -1,4 +1,3 @@
-
 export * from './blendmode';
 export * from './boxutils';
 export * from './cell';
@@ -11,6 +10,7 @@ export * from './fov';
 export * from './gui';
 export * from './gui/defaultdialogrenderer';
 export * from './gui/dialog';
+export * from './gui/dialogrenderer';
 export * from './gui/dialogstate';
 export * from './gui/messagedialog';
 export * from './gui/selectdialog';

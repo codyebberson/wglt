@@ -1,9 +1,4 @@
-
-import { Cell } from '../src/cell';
-import { Colors } from '../src/colors';
-import { Console } from '../src/console';
-import { computePath } from '../src/path';
-import { Terminal } from '../src/terminal';
+import { Cell, Colors, computePath, Console, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -32,7 +27,7 @@ const player = {
   x: Math.floor(SCREEN_WIDTH / 2),
   y: Math.floor(SCREEN_HEIGHT / 2),
   path: null as Cell[] | null,
-  pathIndex: 0
+  pathIndex: 0,
 };
 
 function computeFov() {
@@ -66,15 +61,15 @@ term.update = function () {
   }
 
   if (player.path) {
-    while (player.pathIndex < player.path.length &&
+    while (
+      player.pathIndex < player.path.length &&
       player.x === player.path[player.pathIndex].x &&
-      player.y === player.path[player.pathIndex].y) {
+      player.y === player.path[player.pathIndex].y
+    ) {
       player.pathIndex++;
     }
     if (player.pathIndex < player.path.length) {
-      movePlayer(
-        player.path[player.pathIndex].x - player.x,
-        player.path[player.pathIndex].y - player.y);
+      movePlayer(player.path[player.pathIndex].x - player.x, player.path[player.pathIndex].y - player.y);
     }
   }
 

@@ -1,14 +1,8 @@
+import { Colors, Font, Keys, Terminal } from '../src/';
 
-import { Colors } from '../src/colors';
-import { Font } from '../src/font';
-import { Keys } from '../src/keys';
-import { Terminal } from '../src/terminal';
-
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  80,
-  25,
-  { font: new Font('terminal8x14_gs_ro.png', 8, 14) });
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 25, {
+  font: new Font('../terminal8x14_gs_ro.png', 8, 14),
+});
 
 term.fillRect(0, 0, 80, 25, 0, Colors.YELLOW, Colors.DARK_BLUE);
 

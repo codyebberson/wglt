@@ -1,10 +1,4 @@
-
-import { BlendMode } from '../src/blendmode';
-import { fromHsv } from '../src/color';
-import { Colors } from '../src/colors';
-import { Console } from '../src/console';
-import { RNG } from '../src/rng';
-import { Terminal } from '../src/terminal';
+import { BlendMode, Colors, Console, fromHsv, RNG, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -31,31 +25,30 @@ function createLightConsole(h: number, s: number, v: number) {
   return c;
 }
 
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT);
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const rng = new RNG();
 
-const lights = [{
-  x: 10,
-  y: 10,
-  console: createLightConsole(0.0, 0.0, 1.0)
-}];
+const lights = [
+  {
+    x: 10,
+    y: 10,
+    console: createLightConsole(0.0, 0.0, 1.0),
+  },
+];
 
 for (let i = 0; i < 6; i++) {
   lights.push({
     x: 15 + i * 10,
     y: 22,
-    console: createLightConsole(i / 6.0, 1.0, 1.0)
+    console: createLightConsole(i / 6.0, 1.0, 1.0),
   });
 }
 
 interface Raindrop {
-  x: number,
-  y: number,
-  speed: number
+  x: number;
+  y: number;
+  speed: number;
 }
 
 const rain: Raindrop[] = [];
@@ -64,7 +57,7 @@ for (let i = 0; i < 500; i++) {
   rain.push({
     x: rng.nextRange(0, SCREEN_WIDTH * 2),
     y: rng.nextRange(-SCREEN_HEIGHT, SCREEN_HEIGHT),
-    speed: rng.nextRange(5, 10) / 5.0
+    speed: rng.nextRange(5, 10) / 5.0,
   });
 }
 
@@ -94,15 +87,7 @@ term.update = function () {
 
   for (let i = lights.length - 1; i >= 0; i--) {
     const light = lights[i];
-    term.drawConsole(
-      light.x - RADIUS,
-      light.y - RADIUS,
-      light.console,
-      0,
-      0,
-      SIZE,
-      SIZE,
-      BlendMode.Add);
+    term.drawConsole(light.x - RADIUS, light.y - RADIUS, light.console, 0, 0, SIZE, SIZE, BlendMode.Add);
   }
 
   term.drawString(1, 1, 'Hello world!', Colors.YELLOW);

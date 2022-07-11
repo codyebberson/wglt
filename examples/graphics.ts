@@ -1,10 +1,8 @@
+import { Font, fromRgb, Terminal } from '../src/';
 
-import { fromRgb } from '../src/color';
-import { Font } from '../src/font';
-import { Terminal } from '../src/terminal';
-
-const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 20, 15,
-  { font: new Font('graphics.png', 16, 16, 2.0, true) });
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 20, 15, {
+  font: new Font('../graphics.png', 16, 16, 2.0, true),
+});
 
 const TILE_EMPTY = fromRgb(15, 15, 0);
 const TILE_WALL = fromRgb(1, 0, 0);

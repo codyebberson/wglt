@@ -1,8 +1,4 @@
-
-import { fromRgb } from '../src/color';
-import { RNG } from '../src/rng';
-import { Terminal } from '../src/terminal';
-import { Colors } from '../src/wglt';
+import { Colors, fromRgb, RNG, Terminal } from '../src/';
 
 const WIDTH = 80;
 const HEIGHT = 45;

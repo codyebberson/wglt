@@ -6,7 +6,9 @@ import { App, AppState } from './app';
 
 let menuBg: Console | null = null;
 
-loadImage2x('menu.png', (result) => { menuBg = result });
+loadImage2x('../../menu.png', (result) => {
+  menuBg = result;
+});
 
 export class MainMenu implements AppState {
   private readonly app: App;
@@ -21,21 +23,23 @@ export class MainMenu implements AppState {
 
     if (gui.dialogs.length === 0) {
       const options = ['Play a new game', 'Continue last game'];
-      gui.add(new SelectDialog('MAIN MENU', options, (choice) => {
-        if (choice === 0) {
-          this.app.newGame();
-        } else if (choice === 1) {
-          this.app.continueGame();
-        }
-        switch (choice) {
-          case 0:
+      gui.add(
+        new SelectDialog('MAIN MENU', options, (choice) => {
+          if (choice === 0) {
             this.app.newGame();
-            break;
-          case 1:
+          } else if (choice === 1) {
             this.app.continueGame();
-            break;
-        }
-      }));
+          }
+          switch (choice) {
+            case 0:
+              this.app.newGame();
+              break;
+            case 1:
+              this.app.continueGame();
+              break;
+          }
+        })
+      );
     }
 
     gui.handleInput();
