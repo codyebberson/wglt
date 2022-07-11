@@ -1,7 +1,4 @@
-
-import { Terminal } from '../src/terminal';
-import { Colors } from '../src/colors';
-import { Keys } from '../src/keys';
+import { Colors, Terminal } from '../src/';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
 term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);

@@ -1,12 +1,31 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "strict": true,
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "dist/types",
+    "newLine": "lf",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "types": ["vitest/globals"],
+    "allowJs": true,
+    "alwaysStrict": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "declaration": true
-  }
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true
+  },
+  "include": ["src/**/*.ts", "examples/**/*.ts"],
+  "exclude": ["node_modules"]
 }

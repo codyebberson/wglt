@@ -1,9 +1,6 @@
-
 // Based on: https://lodev.org/cgtutor/fire.html
 
-import { fromHsv } from '../src/color';
-import { RNG } from '../src/rng';
-import { Terminal } from '../src/terminal';
+import { fromHsv, RNG, Terminal } from '../src/';
 
 const w = 80;
 const h = 45;
@@ -29,11 +26,13 @@ term.update = function () {
   // Do the fire calculations for every cell except bottom row
   for (let y = 0; y < h - 1; y++) {
     for (let x = 0; x < w; x++) {
-      fire[y][x] = Math.floor((fire[(y + 1) % h][(x - 1 + w) % w]
-        + fire[(y + 1) % h][(x) % w]
-        + fire[(y + 1) % h][(x + 1) % w]
-        + fire[(y + 2) % h][(x) % w])
-        * 0.24);
+      fire[y][x] = Math.floor(
+        (fire[(y + 1) % h][(x - 1 + w) % w] +
+          fire[(y + 1) % h][x % w] +
+          fire[(y + 1) % h][(x + 1) % w] +
+          fire[(y + 2) % h][x % w]) *
+          0.24
+      );
     }
   }
 

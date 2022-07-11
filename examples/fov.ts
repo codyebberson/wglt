@@ -1,9 +1,4 @@
-import { Cell } from '../src/cell';
-import { Colors } from '../src/colors';
-import { Console } from '../src/console';
-import { FovQuadrants, getFovQuadrant } from '../src/fov';
-import { computePath } from '../src/path';
-import { Terminal } from '../src/terminal';
+import { Cell, Colors, computePath, Console, FovQuadrants, getFovQuadrant, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -64,17 +59,14 @@ function isBlocked(x: number, y: number) {
   return getTile(x, y) !== '.';
 }
 
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT);
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const player = {
   x: Math.floor(MAP_WIDTH / 2),
   y: Math.floor(MAP_HEIGHT / 2),
   direction: FovQuadrants.QUADRANT_NORTH,
   path: null as Cell[] | null,
-  pathIndex: 0
+  pathIndex: 0,
 };
 
 const tileMap = new Console(MAP_WIDTH, MAP_HEIGHT, isBlocked);
@@ -103,15 +95,15 @@ term.update = function () {
   }
 
   if (player.path) {
-    while (player.pathIndex < player.path.length &&
+    while (
+      player.pathIndex < player.path.length &&
       player.x === player.path[player.pathIndex].x &&
-      player.y === player.path[player.pathIndex].y) {
+      player.y === player.path[player.pathIndex].y
+    ) {
       player.pathIndex++;
     }
     if (player.pathIndex < player.path.length) {
-      movePlayer(
-        player.path[player.pathIndex].x - player.x,
-        player.path[player.pathIndex].y - player.y);
+      movePlayer(player.path[player.pathIndex].x - player.x, player.path[player.pathIndex].y - player.y);
     }
   }
 

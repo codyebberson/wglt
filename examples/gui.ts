@@ -1,21 +1,10 @@
-
-import { Colors } from '../src/colors';
-import { GUI } from '../src/gui';
-import { MessageDialog } from '../src/gui/messagedialog';
-import { SelectDialog } from '../src/gui/selectdialog';
-import { Keys } from '../src/keys';
-import { Terminal } from '../src/terminal';
+import { Colors, GUI, Keys, MessageDialog, SelectDialog, Terminal } from '../src/';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
 
 const gui = new GUI(term);
 
-const options = [
-  'Sword',
-  'Banana',
-  'Magic Potion',
-  'Red Stapler'
-];
+const options = ['Sword', 'Banana', 'Magic Potion', 'Red Stapler'];
 
 let x = 10;
 let y = 10;
@@ -38,9 +27,11 @@ term.update = function () {
       gui.add(new MessageDialog('ALERT', 'Hello World'));
     }
     if (term.isKeyPressed(Keys.VK_I)) {
-      gui.add(new SelectDialog('INVENTORY', options, (choice) => {
-        gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
-      }));
+      gui.add(
+        new SelectDialog('INVENTORY', options, (choice) => {
+          gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
+        })
+      );
     }
   }
 

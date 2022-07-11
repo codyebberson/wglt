@@ -1,8 +1,4 @@
-import { Console } from '../src/console';
-import { Colors } from '../src/colors';
-import { loadImage2x } from '../src/image';
-import { Keys } from '../src/keys';
-import { Terminal } from '../src/terminal';
+import { Colors, Console, Keys, loadImage2x, Terminal } from '../src/';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
 term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
@@ -11,7 +7,7 @@ let x = 10;
 let y = 10;
 
 let img = null as Console | null;
-loadImage2x('starry2x.png', result => img = result);
+loadImage2x('starry2x.png', (result) => (img = result));
 
 term.update = function () {
   if (term.isKeyDown(Keys.VK_UP)) {

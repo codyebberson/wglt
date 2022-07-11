@@ -1,10 +1,4 @@
-
-import { fixBoxCells } from '../src/boxutils';
-import { Colors } from '../src/colors';
-import { Console } from '../src/console';
-import { Terminal } from '../src/terminal';
-import { Chars } from '../src/chars';
-import { Cell } from '../src/cell';
+import { Cell, Chars, Colors, Console, fixBoxCells, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -15,9 +9,10 @@ const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
 for (let y = 0; y < SCREEN_HEIGHT; y++) {
   for (let x = 0; x < SCREEN_WIDTH; x++) {
     if (Math.random() < 0.5) {
-      const c = Math.random() < 0.5 ?
-        Chars.BOX_SINGLE_VERTICAL_AND_SINGLE_HORIZONTAL :
-        Chars.BOX_DOUBLE_VERTICAL_AND_DOUBLE_HORIZONTAL;
+      const c =
+        Math.random() < 0.5
+          ? Chars.BOX_SINGLE_VERTICAL_AND_SINGLE_HORIZONTAL
+          : Chars.BOX_DOUBLE_VERTICAL_AND_DOUBLE_HORIZONTAL;
       (game.getCell(x, y) as Cell).setValue(c, Colors.WHITE, Colors.DARK_BLUE);
     }
   }

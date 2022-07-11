@@ -1,4 +1,3 @@
-
 import { Colors } from '../colors';
 import { Console } from '../console';
 import { Keys } from '../keys';
@@ -12,8 +11,7 @@ export class SelectDialog extends Dialog {
   readonly callback: (i: number) => void;
   private hoverIndex: number;
 
-  constructor(
-    title: string, options: string[], callback: (i: number) => void) {
+  constructor(title: string, options: string[], callback: (i: number) => void) {
     let width = title.length;
     for (let i = 0; i < options.length; i++) {
       width = Math.max(width, options[i].length + 4);
@@ -40,10 +38,12 @@ export class SelectDialog extends Dialog {
 
   handleInput(terminal: Terminal, offset: Point): boolean {
     this.hoverIndex = -1;
-    if (terminal.mouse.x >= offset.x &&
+    if (
+      terminal.mouse.x >= offset.x &&
       terminal.mouse.x < offset.x + this.contentsRect.width &&
       terminal.mouse.y >= offset.y &&
-      terminal.mouse.y < offset.y + this.contentsRect.height) {
+      terminal.mouse.y < offset.y + this.contentsRect.height
+    ) {
       this.hoverIndex = terminal.mouse.y - offset.y;
       if (terminal.mouse.buttons[0].upCount === 1) {
         this.callback(this.hoverIndex);
@@ -59,9 +59,11 @@ export class SelectDialog extends Dialog {
     return terminal.isKeyPressed(Keys.VK_ESCAPE);
   }
 
-  private isMouseOverOption(terminal: Terminal, offset: Point, index: number): boolean {
-    return terminal.mouse.x >= offset.x &&
+  isMouseOverOption(terminal: Terminal, offset: Point, index: number): boolean {
+    return (
+      terminal.mouse.x >= offset.x &&
       terminal.mouse.x < offset.x + this.contentsRect.width &&
-      terminal.mouse.y === offset.y + index;
+      terminal.mouse.y === offset.y + index
+    );
   }
 }

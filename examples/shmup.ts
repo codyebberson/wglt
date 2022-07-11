@@ -1,9 +1,4 @@
-
-import { Colors } from '../src/colors';
-import { fromRgb } from '../src/color';
-import { Keys } from '../src/keys';
-import { RNG } from '../src/rng';
-import { Terminal } from '../src/terminal';
+import { Colors, fromRgb, Keys, RNG, Terminal } from '../src/';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -11,18 +6,14 @@ const HEIGHT = 45;
 const WAVE_WARMUP_TIME = 180;
 const WAVE_GAP_TIME = 10;
 const WAVE_ENEMY_COUNT = 15;
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  WIDTH,
-  HEIGHT,
-  { frameRate: 60 });
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, WIDTH, HEIGHT);
 
 const rng = new RNG();
 
 const player = {
   x: WIDTH / 2,
   y: HEIGHT - 5,
-  cooldown: 0
+  cooldown: 0,
 };
 
 const bullets: any[] = [];
@@ -34,7 +25,7 @@ for (let i = 0; i < 100; i++) {
     x: rng.nextRange(0, WIDTH),
     y: rng.nextRange(0, HEIGHT),
     color: fromRgb(b, b, b),
-    dy: rng.nextRange(1, 4)
+    dy: rng.nextRange(1, 4),
   });
 }
 
@@ -55,7 +46,7 @@ const explosions: any[] = [];
 const wave = {
   count: 0,
   startTime: 0,
-  endTime: 0
+  endTime: 0,
 };
 
 let time = 0;
@@ -89,7 +80,7 @@ term.update = function () {
   if (player.cooldown === 0 && term.isKeyDown(Keys.VK_Z)) {
     bullets.push({
       x: player.x,
-      y: player.y
+      y: player.y,
     });
     player.cooldown = 15;
   }
@@ -114,17 +105,15 @@ term.update = function () {
     if (enemy.state < 0) {
       waypointX = player.x;
       waypointY = player.y;
-
     } else if (enemy.state < waypoints.length) {
       waypointX = waypoints[enemy.state].x;
       waypointY = waypoints[enemy.state].y;
-
     } else {
       // The group is 20x20 pixels
       // Assume 5 pixel buffer on the side
       // 80 - 20 - 5 - 5 = 45
       const time2 = Math.round((time % 800) / 8);
-      const centerX = (time2 < 45) ? (5 + time2) : (5 + 100 - time2);
+      const centerX = time2 < 45 ? 5 + time2 : 5 + 100 - time2;
       const offsetX = enemy.id % 5;
       const offsetY = (enemy.id / 5) | 0;
       const spacing = 5;
@@ -168,7 +157,7 @@ term.update = function () {
             y: enemy.y,
             dx: rng.nextRange(-5, 5) / 10.0,
             dy: rng.nextRange(-5, 5) / 10.0,
-            state: rng.nextRange(10, 20)
+            state: rng.nextRange(10, 20),
           });
         }
         if (enemies.length === 0) {

@@ -1,28 +1,25 @@
-
-import { Colors } from '../src/colors';
-import { Console } from '../src/console';
-import { GUI } from '../src/gui';
-import { Dialog } from '../src/gui/dialog';
-import { DialogRenderer } from '../src/gui/dialogrenderer';
-import { DialogState } from '../src/gui/dialogstate';
-import { MessageDialog } from '../src/gui/messagedialog';
-import { SelectDialog } from '../src/gui/selectdialog';
-import { Keys } from '../src/keys';
-import { Point } from '../src/point';
-import { Rect } from '../src/rect';
-import { Terminal } from '../src/terminal';
+import {
+  Colors,
+  Console,
+  Dialog,
+  DialogRenderer,
+  DialogState,
+  GUI,
+  Keys,
+  MessageDialog,
+  Point,
+  Rect,
+  SelectDialog,
+  Terminal,
+} from '../src/';
 
 class CustomRenderer implements DialogRenderer {
-
   getState(terminal: Terminal, dialog: Dialog) {
     const width = dialog.contentsRect.width + 4;
     const height = dialog.contentsRect.height + 4;
     const x = ((terminal.width - width) / 2) | 0;
     const y = ((terminal.height - height) / 2) | 0;
-    const state = new DialogState(
-      dialog,
-      new Rect(x, y, width, height),
-      new Point(2, 2));
+    const state = new DialogState(dialog, new Rect(x, y, width, height), new Point(2, 2));
     state.buffer = new Console(width, height);
     return state;
   }
@@ -61,12 +58,7 @@ const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement,
 
 const gui = new GUI(term, new CustomRenderer());
 
-const options = [
-  'Sword',
-  'Banana',
-  'Magic Potion',
-  'Red Stapler'
-];
+const options = ['Sword', 'Banana', 'Magic Potion', 'Red Stapler'];
 
 let x = 10;
 let y = 10;
@@ -82,9 +74,11 @@ term.update = function () {
       gui.add(new MessageDialog('ALERT', 'Hello World'));
     }
     if (term.isKeyPressed(Keys.VK_I)) {
-      gui.add(new SelectDialog('INVENTORY', options, (choice) => {
-        gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
-      }));
+      gui.add(
+        new SelectDialog('INVENTORY', options, (choice) => {
+          gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
+        })
+      );
     }
   }
 

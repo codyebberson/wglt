@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WGLT - WebGL Terminal</title>
-    <link href="styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
 </head>
 
 <body>
@@ -21,7 +21,7 @@
     <div style="width:960px; height:540px;">
         <canvas></canvas>
     </div>
-    <script src="examples/hello.min.js"></script>
+    <script type="module" src="./examples/hello.ts"></script>
 
     <h2>What is it?</h2>
     <p>WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.</p>
@@ -71,7 +71,7 @@ term.update = function () {
         <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
         <li><a href="examples/font.html">Custom Font</a> - Use custom font image with non-square size</li>
         <li><a href="examples/graphics.html">Graphical Tiles</a> - True color pixel art graphics</li>
-        <li><a href="examples/fov.html">Field of View</a> - Fast and accurate shadowcasting using <a href="https://bitbucket.org/mingos/mrpas/">MRPAS</a></a></li>
+        <li><a href="examples/fov.html">Field of View</a> - Fast and accurate shadowcasting using <a href="https://bitbucket.org/mingos/mrpas/">MRPAS</a></li>
         <li><a href="examples/path.html">Path Finding</a> - Fast and accurate routing using Dijkstra's algorithm</li>
         <li><a href="examples/alpha.html">Alpha Blending</a> - Use "additive" blending to create light effects</li>
         <li><a href="examples/flame.html">Flame</a> - Procedurally generated fire effect</li>
@@ -80,7 +80,7 @@ term.update = function () {
         <li><a href="examples/customgui.html">Custom GUI</a> - Custom dialog renderers for special effects</li>
         <li><a href="examples/image.html">Image Loading</a> - Load an image from a URL and render as ASCII</li>
         <li><a href="examples/image2x.html">Image 2x</a> - Double resolution using extended ASCII block characters</li>
-        <li><a href="examples/boxutils.html">Box Utils</a> - Utility methods for working with <a href="https://en.wikipedia.org/wiki/Box-drawing_character">box-drawing</a></a></li>
+        <li><a href="examples/boxutils.html">Box Utils</a> - Utility methods for working with <a href="https://en.wikipedia.org/wiki/Box-drawing_character">box-drawing</a></li>
         <li><a href="examples/roguelike/index.html">Roguelike</a> - Full implementation of the classic <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod">Rogue
             Basin Complete Roguelike Tutorial</a></li>
     </ul>

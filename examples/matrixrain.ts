@@ -1,8 +1,4 @@
-import { Cell } from '../src/cell';
-import { Colors } from '../src/colors';
-import { fromRgb } from '../src/color';
-import { RNG } from '../src/rng';
-import { Terminal } from '../src/terminal';
+import { Cell, Colors, fromRgb, RNG, Terminal } from '../src/';
 
 const w = 80;
 const h = 45;
@@ -47,9 +43,7 @@ term.update = function () {
   // Draw the rain to the screen
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const color = rain[y][x] === 255 ?
-        Colors.WHITE :
-        fromRgb(0, rain[y][x], 0);
+      const color = rain[y][x] === 255 ? Colors.WHITE : fromRgb(0, rain[y][x], 0);
       (term.getCell(x, y) as Cell).setForeground(color);
     }
   }
