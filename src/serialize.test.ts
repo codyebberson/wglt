@@ -17,6 +17,15 @@ test('Array', () => {
   expect(deserialize(serialize(input))).toEqual(input);
 });
 
+test('Grid', () => {
+  const input = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+  ];
+  expect(deserialize(serialize(input))).toEqual(input);
+});
+
 test('Object', () => {
   const input = { foo: 'bar' };
   expect(deserialize(serialize(input))).toEqual(input);

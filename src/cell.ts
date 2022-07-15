@@ -1,16 +1,17 @@
-
 import { BlendMode } from './blendmode';
-import { Colors } from './colors';
 import { Color, fromRgb } from './color';
+import { Colors } from './colors';
+import { serializable } from './serialize';
 
 function convertCharCode(charCode: string | number): number {
-  if ((typeof charCode === 'string') && charCode.length > 0) {
+  if (typeof charCode === 'string' && charCode.length > 0) {
     return charCode.charCodeAt(0);
   } else {
     return charCode as number;
   }
 }
 
+@serializable
 export class Cell {
   readonly x: number;
   readonly y: number;
@@ -101,7 +102,7 @@ export class Cell {
   }
 
   drawCell(otherCell: Cell, blendMode?: BlendMode): void {
-    const alpha = otherCell.bg & 0xFF;
+    const alpha = otherCell.bg & 0xff;
 
     if (blendMode === BlendMode.None || otherCell.charCode > 0) {
       this.setCharCode(otherCell.charCode);
@@ -118,26 +119,22 @@ export class Cell {
   }
 
   private blendColors(c1: Color, c2: Color, blendMode?: BlendMode): Color {
-    const alpha = c2 & 0xFF;
+    const alpha = c2 & 0xff;
     const w1 = (255 - alpha) / 255.0;
     const w2 = 1.0 - w1;
-    const r1 = (c1 >> 24) & 0xFF;
-    const g1 = (c1 >> 16) & 0xFF;
-    const b1 = (c1 >> 8) & 0xFF;
-    const r2 = (c2 >> 24) & 0xFF;
-    const g2 = (c2 >> 16) & 0xFF;
-    const b2 = (c2 >> 8) & 0xFF;
+    const r1 = (c1 >> 24) & 0xff;
+    const g1 = (c1 >> 16) & 0xff;
+    const b1 = (c1 >> 8) & 0xff;
+    const r2 = (c2 >> 24) & 0xff;
+    const g2 = (c2 >> 16) & 0xff;
+    const b2 = (c2 >> 8) & 0xff;
 
     switch (blendMode) {
       case BlendMode.Blend:
-        return fromRgb(
-          (w1 * r1 + w2 * r2) | 0, (w1 * g1 + w2 * g2) | 0,
-          (w1 * b1 + w2 * b2) | 0);
+        return fromRgb((w1 * r1 + w2 * r2) | 0, (w1 * g1 + w2 * g2) | 0, (w1 * b1 + w2 * b2) | 0);
 
       case BlendMode.Add:
-        return fromRgb(
-          this.clamp((r1 + w2 * r2) | 0), this.clamp((g1 + w2 * g2) | 0),
-          this.clamp((b1 + w2 * b2) | 0));
+        return fromRgb(this.clamp((r1 + w2 * r2) | 0), this.clamp((g1 + w2 * g2) | 0), this.clamp((b1 + w2 * b2) | 0));
 
       default:
         return c2;

@@ -107,7 +107,7 @@ export function deserialize(str: string): unknown {
   function replace(input: unknown): unknown {
     if (Array.isArray(input)) {
       return replaceArray(input);
-    } else if (typeof input === 'object') {
+    } else if (input && typeof input === 'object') {
       return replaceObject(input as Record<string, unknown>);
     } else {
       return input;
@@ -131,9 +131,7 @@ export function deserialize(str: string): unknown {
 
   function replaceObjectProperties(input: Record<string, unknown>): void {
     for (const [key, value] of Object.entries(input)) {
-      if (isRef(value)) {
-        input[key] = instances[value.$ref];
-      }
+      input[key] = replace(value);
     }
   }
 }
