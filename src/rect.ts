@@ -1,5 +1,7 @@
 import { Point } from './point';
+import { serializable } from './serialize';
 
+@serializable
 export class Rect {
   readonly x: number;
   readonly y: number;
@@ -20,7 +22,7 @@ export class Rect {
   }
 
   getCenter(): Point {
-    return new Point(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
+    return new Point((this.x + this.width / 2) | 0, (this.y + this.height / 2) | 0);
   }
 
   intersects(other: Rect): boolean {

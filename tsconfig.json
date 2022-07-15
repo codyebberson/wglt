@@ -12,6 +12,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": false,
     "inlineSources": true,

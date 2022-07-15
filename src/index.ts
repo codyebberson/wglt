@@ -21,4 +21,5 @@ export * from './path';
 export * from './point';
 export * from './rect';
 export * from './rng';
+export * from './serialize';
 export * from './terminal';

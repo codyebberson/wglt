@@ -1,6 +1,6 @@
 import glob from 'glob';
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 // Vite is used for the development server and the website.
 // Rollup is used for the published library.
@@ -17,5 +17,8 @@ export default defineConfig({
     rollupOptions: {
       input,
     },
+  },
+  test: {
+    globals: true,
   },
 });
