@@ -1,6 +1,6 @@
-import { Console } from './console';
 import { Cell } from './cell';
-import { Point } from './point';
+import { Console } from './console';
+import { PointLike } from './point';
 
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
@@ -8,14 +8,14 @@ const costs = [1.4, 1, 1.4, 1, 1, 1.4, 1, 1.4];
 let pathId = 0;
 
 /**
- * Calculates Dijkstra's algorithm.
+ * Calculates path between two points using Dijkstra's algorithm.
  *
- * @param {!Object} source Starting point, must have x and y properties.
- * @param {!Object=} opt_dest Optional destination point, must have x and y properties.
- * @param {!number=} opt_maxDist Optional maximum distance to examine.
- * @return {?Array} Array of steps if destination found; null otherwise.
+ * @param source Starting point, must have x and y properties.
+ * @param dest Destination point, must have x and y properties.
+ * @param maxDist Maximum distance to examine.
+ * @return Array of steps if destination found; undefined otherwise.
  */
-export function computePath(map: Console, source: Point, dest: Point, maxDist: number): Cell[] | undefined {
+export function computePath(map: Console, source: PointLike, dest: PointLike, maxDist: number): Cell[] | undefined {
   pathId++;
 
   const sourceCell = map.grid[source.y][source.x];
@@ -74,7 +74,7 @@ class SortedSet {
   private readonly values: Cell[];
 
   constructor(initialValues: Cell[]) {
-    this.values = initialValues
+    this.values = initialValues;
   }
 
   insert(cell: Cell): void {
