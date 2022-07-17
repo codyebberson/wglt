@@ -1,7 +1,7 @@
+import { Console } from '../console';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Dialog } from './dialog';
-import { Console } from '../console';
 
 export class DialogState {
   readonly dialog: Dialog;

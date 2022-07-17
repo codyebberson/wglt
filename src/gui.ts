@@ -1,7 +1,7 @@
-import { Dialog } from './gui/dialog';
-import { DialogState } from './gui/dialogstate';
-import { DialogRenderer } from './gui/dialogrenderer';
 import { DefaultDialogRenderer } from './gui/defaultdialogrenderer';
+import { Dialog } from './gui/dialog';
+import { DialogRenderer } from './gui/dialogrenderer';
+import { DialogState } from './gui/dialogstate';
 import { Terminal } from './terminal';
 
 export class GUI {

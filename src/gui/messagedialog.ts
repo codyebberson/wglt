@@ -1,10 +1,9 @@
-
-import { Keys } from '../keys';
-import { Rect } from '../rect';
-import { Dialog } from './dialog';
 import { Console } from '../console';
-import { Terminal } from '../terminal';
+import { Keys } from '../keys';
 import { Point } from '../point';
+import { Rect } from '../rect';
+import { Terminal } from '../terminal';
+import { Dialog } from './dialog';
 
 export class MessageDialog extends Dialog {
   readonly lines: string[];
@@ -28,7 +27,7 @@ export class MessageDialog extends Dialog {
     }
   }
 
-  handleInput(terminal: Terminal, offset: Point): boolean {
+  handleInput(terminal: Terminal): boolean {
     return terminal.isKeyPressed(Keys.VK_ESCAPE);
   }
 }

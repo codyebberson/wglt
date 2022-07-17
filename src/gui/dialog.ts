@@ -1,6 +1,6 @@
-import { Rect } from '../rect';
-import { Point } from '../point';
 import { Console } from '../console';
+import { Point } from '../point';
+import { Rect } from '../rect';
 import { Terminal } from '../terminal';
 
 export abstract class Dialog {
