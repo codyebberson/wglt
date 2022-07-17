@@ -18,6 +18,9 @@ export default defineConfig({
       input,
     },
   },
+  server: {
+    port: 3000,
+  },
   test: {
     globals: true,
   },
