@@ -2,7 +2,9 @@ import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
 import { Color } from './color';
+import { Message } from './gui/message';
 import { serializable } from './serialize';
+import { wordWrap } from './utils';
 
 @serializable
 export class Console {
@@ -79,15 +81,34 @@ export class Console {
   drawString(x: number, y: number, str: string, fg?: Color, bg?: Color): void {
     const lines = str.split('\n');
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      for (let j = 0; j < line.length; j++) {
-        this.drawChar(x + j, y + i, line.charCodeAt(j), fg, bg);
-      }
+      this.drawStringLine(x, y + i, lines[i], fg, bg);
+    }
+  }
+
+  drawStringLine(x: number, y: number, line: string, fg?: Color, bg?: Color): void {
+    for (let j = 0; j < line.length; j++) {
+      this.drawChar(x + j, y, line.charCodeAt(j), fg, bg);
     }
   }
 
   drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color): void {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
+  }
+
+  drawMessage(x: number, y: number, message: Message, maxWidth?: number): number {
+    if (message.text) {
+      const lines = wordWrap(message.text, maxWidth || this.width - x);
+      for (const line of lines) {
+        this.drawStringLine(x, y, line, message.fg, message.bg);
+        y++;
+      }
+    }
+    if (message.children) {
+      for (const child of message.children) {
+        y = this.drawMessage(x, y, child, maxWidth);
+      }
+    }
+    return y;
   }
 
   drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color): void {

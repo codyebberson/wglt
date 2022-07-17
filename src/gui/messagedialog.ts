@@ -4,26 +4,25 @@ import { Point } from '../point';
 import { Rect } from '../rect';
 import { Terminal } from '../terminal';
 import { Dialog } from './dialog';
+import { Message } from './message';
 
 export class MessageDialog extends Dialog {
-  readonly lines: string[];
-
-  constructor(title: string, message: string) {
-    const lines = message.split('\n');
-    let width = title.length;
-    for (let i = 0; i < lines.length; i++) {
-      width = Math.max(width, lines[i].length);
+  constructor(title: string, readonly message: string | Message) {
+    let rect;
+    if (message instanceof Message) {
+      rect = new Rect(0, 0, message.getWidth(), message.getHeight());
+    } else {
+      rect = new Rect(0, 0, message.length, 1);
     }
-
-    const height = lines.length;
-    const rect = new Rect(0, 0, width, height);
+    console.log('message rect', rect);
     super(rect, title);
-    this.lines = lines;
   }
 
   drawContents(console: Console, offset: Point): void {
-    for (let i = 0; i < this.lines.length; i++) {
-      console.drawString(offset.x, offset.y + i, this.lines[i]);
+    if (this.message instanceof Message) {
+      console.drawMessage(offset.x, offset.y, this.message);
+    } else {
+      console.drawString(offset.x, offset.y, this.message);
     }
   }
 
