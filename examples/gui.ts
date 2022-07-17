@@ -1,4 +1,5 @@
-import { Colors, GUI, Keys, Message, MessageDialog, SelectDialog, Terminal } from '../src/';
+import { Colors, fromRgb, GUI, Keys, Message, MessageDialog, Rect, SelectDialog, Terminal } from '../src/';
+import { ScrollableMessageDialog } from '../src/gui/scrollablemessagedialog';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
 
@@ -7,7 +8,7 @@ const gui = new GUI(term);
 const options = ['Sword', 'Banana', 'Magic Potion', 'Red Stapler'];
 
 let x = 10;
-let y = 10;
+let y = 15;
 
 term.update = function () {
   if (!gui.handleInput()) {
@@ -50,6 +51,24 @@ term.update = function () {
         )
       );
     }
+    if (term.isKeyPressed(Keys.VK_S)) {
+      const messages = [];
+      for (let i = 0; i < 100; i++) {
+        messages.push(
+          new Message(
+            'Hello World - line ' + (i + 1),
+            fromRgb(Math.random() * 255, Math.random() * 255, Math.random() * 255)
+          )
+        );
+      }
+      gui.add(
+        new ScrollableMessageDialog(
+          new Rect(4, 4, 72, 37),
+          'Message Log',
+          new Message(undefined, undefined, undefined, messages)
+        )
+      );
+    }
     if (term.isKeyPressed(Keys.VK_I)) {
       gui.add(
         new SelectDialog('INVENTORY', options, (choice) => {
@@ -65,7 +84,8 @@ term.update = function () {
   term.drawString(1, 3, 'Use arrow keys to move');
   term.drawString(1, 5, 'Press "h" to open a MessageDialog');
   term.drawString(1, 7, 'Press "f" to open a MessageDialog with formatted text');
-  term.drawString(1, 9, 'Press "i" to open a SelectDialog');
+  term.drawString(1, 9, 'Press "s" to open a ScrollableMessageDialog');
+  term.drawString(1, 11, 'Press "i" to open a SelectDialog');
   term.drawString(x, y, '@');
   gui.draw();
 };

@@ -1,6 +1,5 @@
-
-import { Rect } from './rect';
 import { Input } from './input';
+import { Rect } from './rect';
 import { Terminal } from './terminal';
 
 export class Mouse {
@@ -13,6 +12,8 @@ export class Mouse {
   y: number;
   dx: number;
   dy: number;
+  wheelDeltaX: number;
+  wheelDeltaY: number;
   readonly buttons: Input[];
 
   constructor(terminal: Terminal) {
@@ -25,19 +26,20 @@ export class Mouse {
     this.y = 0;
     this.dx = 0;
     this.dy = 0;
+    this.wheelDeltaX = 0;
+    this.wheelDeltaY = 0;
     this.buttons = [new Input(), new Input(), new Input()];
 
     const el = this.el;
-    el.addEventListener('mousedown', e => this.handleEvent(e));
-    el.addEventListener('mouseup', e => this.handleEvent(e));
-    el.addEventListener('mousemove', e => this.handleEvent(e));
-    el.addEventListener('contextmenu', e => this.handleEvent(e));
-
-    const touchEventHandler = this.handleTouchEvent.bind(this);
-    el.addEventListener('touchstart', touchEventHandler);
-    el.addEventListener('touchend', touchEventHandler);
-    el.addEventListener('touchcancel', touchEventHandler);
-    el.addEventListener('touchmove', touchEventHandler);
+    el.addEventListener('mousedown', (e) => this.handleEvent(e));
+    el.addEventListener('mouseup', (e) => this.handleEvent(e));
+    el.addEventListener('mousemove', (e) => this.handleEvent(e));
+    el.addEventListener('contextmenu', (e) => this.handleEvent(e));
+    el.addEventListener('touchstart', (e) => this.handleTouchEvent(e));
+    el.addEventListener('touchend', (e) => this.handleTouchEvent(e));
+    el.addEventListener('touchcancel', (e) => this.handleTouchEvent(e));
+    el.addEventListener('touchmove', (e) => this.handleTouchEvent(e));
+    el.addEventListener('wheel', (e) => this.handleWheelEvent(e));
   }
 
   private handleTouchEvent(e: TouchEvent): void {
@@ -69,6 +71,13 @@ export class Mouse {
     }
   }
 
+  private handleWheelEvent(e: WheelEvent): void {
+    e.stopPropagation();
+    e.preventDefault();
+    this.wheelDeltaX = e.deltaX;
+    this.wheelDeltaY = e.deltaY;
+  }
+
   private updatePosition(clientX: number, clientY: number): void {
     let rect: Rect | DOMRect = this.el.getBoundingClientRect();
 
@@ -91,8 +100,8 @@ export class Mouse {
       rect = new Rect(0, Math.floor(excess / 2), rect.width, actualHeight);
     }
 
-    this.x = (this.width * (clientX - rect.left) / rect.width) | 0;
-    this.y = (this.height * (clientY - rect.top) / rect.height) | 0;
+    this.x = ((this.width * (clientX - rect.left)) / rect.width) | 0;
+    this.y = ((this.height * (clientY - rect.top)) / rect.height) | 0;
   }
 
   update(time: number): void {

@@ -3,6 +3,7 @@ import { Cell } from './cell';
 import { Chars } from './chars';
 import { Color } from './color';
 import { Message } from './gui/message';
+import { Rect } from './rect';
 import { serializable } from './serialize';
 import { wordWrap } from './utils';
 
@@ -18,6 +19,7 @@ export class Console {
   minY: number;
   maxY: number;
   radius: number;
+  clip?: Rect;
 
   constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean) {
     this.width = width;
@@ -73,6 +75,9 @@ export class Console {
   }
 
   drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color): void {
+    if (this.clip && !this.clip.contains({ x, y })) {
+      return;
+    }
     if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
       this.grid[y | 0][x | 0].setValue(c, fg, bg);
     }

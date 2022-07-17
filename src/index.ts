@@ -14,6 +14,7 @@ export * from './gui/dialogrenderer';
 export * from './gui/dialogstate';
 export * from './gui/message';
 export * from './gui/messagedialog';
+export * from './gui/scrollablemessagedialog';
 export * from './gui/selectdialog';
 export * from './image';
 export * from './keys';
