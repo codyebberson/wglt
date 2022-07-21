@@ -1,6 +1,6 @@
 import { Colors } from '../colors';
 import { Console } from '../console';
-import { Keys } from '../keys';
+import { Key } from '../keys';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Terminal } from '../terminal';
@@ -50,13 +50,14 @@ export class SelectDialog extends Dialog {
         return true;
       }
     }
+    const startCharCode = 'A'.charCodeAt(0);
     for (let i = 0; i < this.options.length; i++) {
-      if (terminal.isKeyPressed(Keys.VK_A + i)) {
+      if (terminal.isKeyPressed(('Key' + String.fromCharCode(startCharCode + i)) as Key)) {
         this.callback(i);
         return true;
       }
     }
-    return terminal.isKeyPressed(Keys.VK_ESCAPE);
+    return terminal.isKeyPressed(Key.VK_ESCAPE);
   }
 
   isMouseOverOption(terminal: Terminal, offset: Point, index: number): boolean {

@@ -1,10 +1,10 @@
-import { Console } from './console';
 import { Cell } from './cell';
+import { Console } from './console';
 import { DEFAULT_FONT, Font } from './font';
-import { Keyboard, Keys } from './keys';
+import { Key, Keyboard } from './keys';
 import { Mouse } from './mouse';
-import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 import { Point } from './point';
+import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
@@ -232,19 +232,16 @@ export class Terminal extends Console {
     }
   }
 
-  isKeyDown(keyCode: number): boolean {
-    const key = this.keys.getKey(keyCode);
-    return !!key && key.down;
+  isKeyDown(key: Key): boolean {
+    return this.keys.getKey(key).down;
   }
 
-  isKeyPressed(keyCode: number): boolean {
-    const key = this.keys.getKey(keyCode);
-    return !!key && key.isPressed();
+  isKeyPressed(key: Key): boolean {
+    return this.keys.getKey(key).isPressed();
   }
 
-  getKeyDownCount(keyCode: number): number {
-    const key = this.keys.getKey(keyCode);
-    return key ? key.downCount : 0;
+  getKeyDownCount(key: Key): number {
+    return this.keys.getKey(key).downCount;
   }
 
   /**
@@ -259,31 +256,31 @@ export class Terminal extends Console {
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
   getMovementKey(): Point | undefined {
-    if (this.isKeyPressed(Keys.VK_NUMPAD1) || this.isKeyPressed(Keys.VK_B)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD1) || this.isKeyPressed(Key.VK_B)) {
       return new Point(-1, 1);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD2) || this.isKeyPressed(Keys.VK_J) || this.isKeyPressed(Keys.VK_DOWN)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD2) || this.isKeyPressed(Key.VK_J) || this.isKeyPressed(Key.VK_DOWN)) {
       return new Point(0, 1);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD3) || this.isKeyPressed(Keys.VK_N)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD3) || this.isKeyPressed(Key.VK_N)) {
       return new Point(1, 1);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD4) || this.isKeyPressed(Keys.VK_H) || this.isKeyPressed(Keys.VK_LEFT)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD4) || this.isKeyPressed(Key.VK_H) || this.isKeyPressed(Key.VK_LEFT)) {
       return new Point(-1, 0);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD5) || this.isKeyPressed(Keys.VK_PERIOD)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD5) || this.isKeyPressed(Key.VK_PERIOD)) {
       return new Point(0, 0);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD6) || this.isKeyPressed(Keys.VK_L) || this.isKeyPressed(Keys.VK_RIGHT)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD6) || this.isKeyPressed(Key.VK_L) || this.isKeyPressed(Key.VK_RIGHT)) {
       return new Point(1, 0);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD7) || this.isKeyPressed(Keys.VK_Y)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD7) || this.isKeyPressed(Key.VK_Y)) {
       return new Point(-1, -1);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD8) || this.isKeyPressed(Keys.VK_K) || this.isKeyPressed(Keys.VK_UP)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD8) || this.isKeyPressed(Key.VK_K) || this.isKeyPressed(Key.VK_UP)) {
       return new Point(0, -1);
     }
-    if (this.isKeyPressed(Keys.VK_NUMPAD9) || this.isKeyPressed(Keys.VK_U)) {
+    if (this.isKeyPressed(Key.VK_NUMPAD9) || this.isKeyPressed(Key.VK_U)) {
       return new Point(1, -1);
     }
     return undefined;

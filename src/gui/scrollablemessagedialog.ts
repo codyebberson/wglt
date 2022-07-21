@@ -1,6 +1,6 @@
 import { Chars } from '../chars';
 import { Console } from '../console';
-import { Keys } from '../keys';
+import { Key } from '../keys';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Terminal } from '../terminal';
@@ -40,10 +40,10 @@ export class ScrollableMessageDialog extends Dialog {
     if (moveKey) {
       this.scrollY += moveKey.y;
     }
-    if (terminal.isKeyPressed(Keys.VK_PAGE_DOWN)) {
+    if (terminal.isKeyPressed(Key.VK_PAGE_DOWN)) {
       this.scrollY += this.contentsRect.height;
     }
-    if (terminal.isKeyPressed(Keys.VK_PAGE_UP)) {
+    if (terminal.isKeyPressed(Key.VK_PAGE_UP)) {
       this.scrollY -= this.contentsRect.height;
     }
     if (terminal.mouse.wheelDeltaY !== 0) {
@@ -51,6 +51,6 @@ export class ScrollableMessageDialog extends Dialog {
       terminal.mouse.wheelDeltaY = 0;
     }
     this.scrollY = Math.max(0, Math.min(this.scrollMax, this.scrollY));
-    return terminal.isKeyPressed(Keys.VK_ESCAPE);
+    return terminal.isKeyPressed(Key.VK_ESCAPE);
   }
 }

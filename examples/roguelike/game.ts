@@ -1,10 +1,10 @@
+import { Key } from '../../src';
 import { Cell } from '../../src/cell';
 import { Color, fromRgb } from '../../src/color';
 import { Colors } from '../../src/colors';
 import { Console } from '../../src/console';
 import { MessageDialog } from '../../src/gui/messagedialog';
 import { SelectDialog } from '../../src/gui/selectdialog';
-import { Keys } from '../../src/keys';
 import { computePath } from '../../src/path';
 import { Rect } from '../../src/rect';
 import { RNG } from '../../src/rng';
@@ -57,13 +57,13 @@ export class Game implements AppState {
   readonly app: App;
   readonly rng: RNG;
   readonly player: Actor;
-  readonly messages: { text: string, color: Color }[];
+  readonly messages: { text: string; color: Color }[];
   stairs?: Entity;
   entities: Entity[];
   level: number;
   map: Console;
   fovRecompute: boolean;
-  targetCursor: { x: number, y: number };
+  targetCursor: { x: number; y: number };
   targetFunction: ((x: number, y: number) => void) | undefined;
   path?: Cell[];
   pathIndex: number;
@@ -235,25 +235,37 @@ export class Game implements AppState {
     // This is where we decide the chance of each monster or item appearing.
 
     // Maximum number of monsters per room
-    const maxMonsters = this.fromDungeonLevel([[1, 1], [2, 2], [3, 4], [5, 6]]);
+    const maxMonsters = this.fromDungeonLevel([
+      [1, 1],
+      [2, 2],
+      [3, 4],
+      [5, 6],
+    ]);
 
     // Chance of each monster
     const monsterChances = {
-      'orc': 80, // orc always shows up, even if all other monsters have 0 chance
-      'troll': this.fromDungeonLevel([[15, 3], [30, 5], [60, 7]])
+      orc: 80, // orc always shows up, even if all other monsters have 0 chance
+      troll: this.fromDungeonLevel([
+        [15, 3],
+        [30, 5],
+        [60, 7],
+      ]),
     };
 
     // Maximum number of items per room
-    const maxItems = this.fromDungeonLevel([[1, 1], [2, 4]])
+    const maxItems = this.fromDungeonLevel([
+      [1, 1],
+      [2, 4],
+    ]);
 
     // Chance of each item (by default they have a chance of 0 at level 1, which then goes up)
     const itemChances = {
-      'heal': 35,  // healing potion always shows up, even if all other items have 0 chance
-      'lightning': this.fromDungeonLevel([[25, 4]]),
-      'fireball': this.fromDungeonLevel([[25, 6]]),
-      'confuse': this.fromDungeonLevel([[10, 2]]),
-      'sword': this.fromDungeonLevel([[5, 4]]),
-      'shield': this.fromDungeonLevel([[15, 8]])
+      heal: 35, // healing potion always shows up, even if all other items have 0 chance
+      lightning: this.fromDungeonLevel([[25, 4]]),
+      fireball: this.fromDungeonLevel([[25, 6]]),
+      confuse: this.fromDungeonLevel([[10, 2]]),
+      sword: this.fromDungeonLevel([[5, 4]]),
+      shield: this.fromDungeonLevel([[15, 8]]),
     };
 
     // Choose random number of monsters
@@ -273,7 +285,6 @@ export class Game implements AppState {
         monster.basePower = 4;
         monster.xp = 35;
         monster.setAi(new BasicMonster());
-
       } else if (choice === 'troll') {
         monster = new Actor(this, x, y, 'T', 'Troll', Colors.DARK_GREEN);
         monster.hp = 30;
@@ -293,8 +304,8 @@ export class Game implements AppState {
 
     for (let i = 0; i < numItems; i++) {
       // Choose random spot for this item
-      const x = this.rng.nextRange(room.x + 1, room.x2 - 1)
-      const y = this.rng.nextRange(room.y + 1, room.y2 - 1)
+      const x = this.rng.nextRange(room.x + 1, room.x2 - 1);
+      const y = this.rng.nextRange(room.y + 1, room.y2 - 1);
       let item = null;
 
       const choice = this.rng.chooseKey(itemChances);
@@ -302,27 +313,22 @@ export class Game implements AppState {
         // Create a healing potion
         item = new Item(this, x, y, '!', 'Healing Potion', Colors.DARK_MAGENTA);
         item.useFunction = (item) => this.castHeal(item);
-
       } else if (choice === 'lightning') {
         // Create a lightning bolt scroll
         item = new Item(this, x, y, '#', 'Scroll of Lightning Bolt', Colors.YELLOW);
         item.useFunction = (item) => this.castLightning(item);
-
       } else if (choice === 'fireball') {
         // Create a fireball scroll
         item = new Item(this, x, y, '#', 'Scroll of Fireball', Colors.YELLOW);
         item.useFunction = (item) => this.castFireball(item);
-
       } else if (choice === 'confuse') {
         // Create a confuse scroll
         item = new Item(this, x, y, '#', 'Scroll of Confusion', Colors.YELLOW);
         item.useFunction = (item) => this.castConfuse(item);
-
       } else if (choice === 'sword') {
         // Create a sword
         item = new Item(this, x, y, '/', 'Sword', Colors.LIGHT_CYAN);
         item.useFunction = (item) => this.player.equip(item);
-
       } else if (choice === 'shield') {
         // Create a shield
         item = new Item(this, x, y, '[', 'Shield', Colors.BROWN);
@@ -331,14 +337,23 @@ export class Game implements AppState {
 
       if (item) {
         this.entities.push(item);
-        item.sendToBack();  // items appear below other objects
+        item.sendToBack(); // items appear below other objects
       }
     }
   }
 
-  renderBar(x: number, y: number, totalWidth: number, name: string, value: number, maximum: number, barColor: Color, backColor: Color): void {
+  renderBar(
+    x: number,
+    y: number,
+    totalWidth: number,
+    name: string,
+    value: number,
+    maximum: number,
+    barColor: Color,
+    backColor: Color
+  ): void {
     // Render a bar (HP, experience, etc). first calculate the width of the bar
-    const barWidth = Math.round(value / maximum * totalWidth);
+    const barWidth = Math.round((value / maximum) * totalWidth);
 
     // Render the background first
     this.app.term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
@@ -376,7 +391,7 @@ export class Game implements AppState {
     while (this.messages.length >= MSG_HEIGHT) {
       this.messages.shift();
     }
-    this.messages.push({ text: msg, color: (opt_color || Colors.WHITE) });
+    this.messages.push({ text: msg, color: opt_color || Colors.WHITE });
   }
 
   playerMoveOrAttack(dx: number, dy: number): void {
@@ -420,10 +435,10 @@ export class Game implements AppState {
     const movementKey = term.getMovementKey();
 
     if (this.targetFunction) {
-      if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
+      if (term.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
+      if (term.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
         this.cancelTargeting();
       }
       if (movementKey) {
@@ -439,7 +454,7 @@ export class Game implements AppState {
     if (movementKey) {
       this.playerMoveOrAttack(movementKey.x, movementKey.y);
     }
-    if (term.isKeyPressed(Keys.VK_G)) {
+    if (term.isKeyPressed(Key.VK_G)) {
       // Pick up an item
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
@@ -448,11 +463,11 @@ export class Game implements AppState {
         }
       }
     }
-    if (term.isKeyPressed(Keys.VK_I)) {
+    if (term.isKeyPressed(Key.VK_I)) {
       if (this.player.inventory.length === 0) {
         this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
       } else {
-        const options = this.player.inventory.map(item => {
+        const options = this.player.inventory.map((item) => {
           if (item.equipped) {
             return item.name + ' (on ' + item.slot + ')';
           } else {
@@ -462,17 +477,27 @@ export class Game implements AppState {
         this.app.gui.add(new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice)));
       }
     }
-    if (term.isKeyPressed(Keys.VK_C)) {
+    if (term.isKeyPressed(Key.VK_C)) {
       const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
-      this.app.gui.add(new MessageDialog('CHARACTER',
-        'Level: ' + this.player.level +
-        '\nExperience: ' + this.player.xp +
-        '\nExperience to level up: ' + levelUpXp +
-        '\n\nMaximum HP: ' + this.player.maxHp +
-        '\nAttack: ' + this.player.power +
-        '\nDefense: ' + this.player.defense));
+      this.app.gui.add(
+        new MessageDialog(
+          'CHARACTER',
+          'Level: ' +
+            this.player.level +
+            '\nExperience: ' +
+            this.player.xp +
+            '\nExperience to level up: ' +
+            levelUpXp +
+            '\n\nMaximum HP: ' +
+            this.player.maxHp +
+            '\nAttack: ' +
+            this.player.power +
+            '\nDefense: ' +
+            this.player.defense
+        )
+      );
     }
-    if (term.isKeyPressed(Keys.VK_COMMA)) {
+    if (term.isKeyPressed(Key.VK_COMMA)) {
       if (this.player.x === this.stairs?.x && this.player.y === this.stairs?.y) {
         this.nextLevel();
       }
@@ -481,10 +506,7 @@ export class Game implements AppState {
     // If the mouse is hovering over the play area,
     // then draw the path from the player to the cursor
     if (!this.pathWalking) {
-      if (term.mouse.x >= 0 &&
-        term.mouse.x < MAP_WIDTH &&
-        term.mouse.y >= 0 &&
-        term.mouse.y < MAP_HEIGHT) {
+      if (term.mouse.x >= 0 && term.mouse.x < MAP_WIDTH && term.mouse.y >= 0 && term.mouse.y < MAP_HEIGHT) {
         this.path = computePath(this.map, this.player, term.mouse, 100);
       } else {
         this.path = undefined;
@@ -496,9 +518,11 @@ export class Game implements AppState {
     }
     if (this.pathWalking && this.path && this.pathIndex >= 0) {
       // Advance to the player's current position
-      while (this.pathIndex < this.path.length &&
+      while (
+        this.pathIndex < this.path.length &&
         this.player.x === this.path[this.pathIndex].x &&
-        this.player.y === this.path[this.pathIndex].y) {
+        this.player.y === this.path[this.pathIndex].y
+      ) {
         this.pathIndex++;
       }
       // If there are still remaining steps...
@@ -538,19 +562,21 @@ export class Game implements AppState {
       const options = [
         'Constitution (+20 HP, from ' + this.player.maxHp + ')',
         'Strength (+1 attack, from ' + this.player.power + ')',
-        'Agility (+1 defense, from ' + this.player.defense + ')'
+        'Agility (+1 defense, from ' + this.player.defense + ')',
       ];
 
-      this.app.gui.add(new SelectDialog('LEVEL UP', options, (choice) => {
-        if (choice === 0) {
-          this.player.baseMaxHp += 20;
-          this.player.hp += 20;
-        } else if (choice === 1) {
-          this.player.basePower += 1;
-        } else if (choice === 2) {
-          this.player.baseDefense += 1;
-        }
-      }));
+      this.app.gui.add(
+        new SelectDialog('LEVEL UP', options, (choice) => {
+          if (choice === 0) {
+            this.player.baseMaxHp += 20;
+            this.player.hp += 20;
+          } else if (choice === 1) {
+            this.player.basePower += 1;
+          } else if (choice === 2) {
+            this.player.baseDefense += 1;
+          }
+        })
+      );
     }
   }
 
@@ -715,14 +741,26 @@ export class Game implements AppState {
 
     // Show the player's stats
     this.renderBar(
-      1, PANEL_Y + 1, BAR_WIDTH,
-      'HP', this.player.hp, this.player.maxHp,
-      Colors.LIGHT_RED, Colors.DARK_RED);
+      1,
+      PANEL_Y + 1,
+      BAR_WIDTH,
+      'HP',
+      this.player.hp,
+      this.player.maxHp,
+      Colors.LIGHT_RED,
+      Colors.DARK_RED
+    );
 
     this.renderBar(
-      1, PANEL_Y + 2, BAR_WIDTH,
-      'XP', this.player.xp, LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR,
-      Colors.LIGHT_MAGENTA, Colors.DARK_MAGENTA);
+      1,
+      PANEL_Y + 2,
+      BAR_WIDTH,
+      'XP',
+      this.player.xp,
+      LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR,
+      Colors.LIGHT_MAGENTA,
+      Colors.DARK_MAGENTA
+    );
 
     term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + this.level, Colors.ORANGE);
 

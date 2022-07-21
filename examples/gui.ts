@@ -1,4 +1,4 @@
-import { Colors, fromRgb, GUI, Keys, Message, MessageDialog, Rect, SelectDialog, Terminal } from '../src/';
+import { Colors, fromRgb, GUI, Key, Message, MessageDialog, Rect, SelectDialog, Terminal } from '../src/';
 import { ScrollableMessageDialog } from '../src/gui/scrollablemessagedialog';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
@@ -12,22 +12,22 @@ let y = 15;
 
 term.update = function () {
   if (!gui.handleInput()) {
-    if (term.isKeyDown(Keys.VK_UP)) {
+    if (term.isKeyDown(Key.VK_UP)) {
       y--;
     }
-    if (term.isKeyDown(Keys.VK_LEFT)) {
+    if (term.isKeyDown(Key.VK_LEFT)) {
       x--;
     }
-    if (term.isKeyDown(Keys.VK_RIGHT)) {
+    if (term.isKeyDown(Key.VK_RIGHT)) {
       x++;
     }
-    if (term.isKeyDown(Keys.VK_DOWN)) {
+    if (term.isKeyDown(Key.VK_DOWN)) {
       y++;
     }
-    if (term.isKeyPressed(Keys.VK_H)) {
+    if (term.isKeyPressed(Key.VK_H)) {
       gui.add(new MessageDialog('ALERT', 'Hello World'));
     }
-    if (term.isKeyPressed(Keys.VK_F)) {
+    if (term.isKeyPressed(Key.VK_F)) {
       gui.add(
         new MessageDialog(
           'Formatted Text',
@@ -51,7 +51,7 @@ term.update = function () {
         )
       );
     }
-    if (term.isKeyPressed(Keys.VK_S)) {
+    if (term.isKeyPressed(Key.VK_S)) {
       const messages = [];
       for (let i = 0; i < 100; i++) {
         messages.push(
@@ -69,7 +69,7 @@ term.update = function () {
         )
       );
     }
-    if (term.isKeyPressed(Keys.VK_I)) {
+    if (term.isKeyPressed(Key.VK_I)) {
       gui.add(
         new SelectDialog('INVENTORY', options, (choice) => {
           gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));

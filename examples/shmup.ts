@@ -1,4 +1,4 @@
-import { Colors, fromRgb, Keys, RNG, Terminal } from '../src/';
+import { Colors, fromRgb, Key, RNG, Terminal } from '../src/';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -62,22 +62,17 @@ scheduleWave();
 term.update = function () {
   const waveTime = time - wave.startTime;
 
-  if (term.isKeyDown(Keys.VK_UP)) {
-    player.y = Math.max(0, player.y - 1);
+  const moveKey = term.getMovementKey();
+  if (moveKey) {
+    player.x = Math.max(0, Math.min(WIDTH - 2, player.x + moveKey.x));
+    player.y = Math.max(0, Math.min(HEIGHT - 2, player.y + moveKey.y));
   }
-  if (term.isKeyDown(Keys.VK_LEFT)) {
-    player.x = Math.max(1, player.x - 1);
-  }
-  if (term.isKeyDown(Keys.VK_RIGHT)) {
-    player.x = Math.min(WIDTH - 2, player.x + 1);
-  }
-  if (term.isKeyDown(Keys.VK_DOWN)) {
-    player.y = Math.min(HEIGHT - 2, player.y + 1);
-  }
+
   if (player.cooldown > 0) {
     player.cooldown--;
   }
-  if (player.cooldown === 0 && term.isKeyDown(Keys.VK_Z)) {
+
+  if (player.cooldown === 0 && term.isKeyDown(Key.VK_Z)) {
     bullets.push({
       x: player.x,
       y: player.y,

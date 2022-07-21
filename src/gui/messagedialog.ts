@@ -1,5 +1,5 @@
 import { Console } from '../console';
-import { Keys } from '../keys';
+import { Key } from '../keys';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Terminal } from '../terminal';
@@ -27,6 +27,6 @@ export class MessageDialog extends Dialog {
   }
 
   handleInput(terminal: Terminal): boolean {
-    return terminal.isKeyPressed(Keys.VK_ESCAPE);
+    return terminal.isKeyPressed(Key.VK_ESCAPE);
   }
 }
