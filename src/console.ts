@@ -151,18 +151,16 @@ export class Console {
     fg?: Color,
     bg?: Color
   ): void {
-    this.fillRect(x, y, width, height, 0, fg, bg);
+    this.drawHLine(x, y, width, topChar, fg, bg);
+    this.drawHLine(x, y + height - 1, width, bottomChar, fg, bg);
 
-    this.drawHLine(x, y, width, topChar);
-    this.drawHLine(x, y + height - 1, width, bottomChar);
+    this.drawVLine(x, y, height, leftChar, fg, bg);
+    this.drawVLine(x + width - 1, y, height, rightChar, fg, bg);
 
-    this.drawVLine(x, y, height, leftChar);
-    this.drawVLine(x + width - 1, y, height, rightChar);
-
-    this.drawChar(x, y, topLeftChar);
-    this.drawChar(x + width - 1, y, topRightChar);
-    this.drawChar(x, y + height - 1, bottomLeftChar);
-    this.drawChar(x + width - 1, y + height - 1, bottomRightChar);
+    this.drawChar(x, y, topLeftChar, fg, bg);
+    this.drawChar(x + width - 1, y, topRightChar, fg, bg);
+    this.drawChar(x, y + height - 1, bottomLeftChar, fg, bg);
+    this.drawChar(x + width - 1, y + height - 1, bottomRightChar, fg, bg);
   }
 
   drawSingleBox(x: number, y: number, width: number, height: number, fg?: Color, bg?: Color): void {
