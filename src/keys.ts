@@ -115,6 +115,7 @@ export enum Key {
   VK_NUMPAD7 = 'Numpad7',
   VK_NUMPAD8 = 'Numpad8',
   VK_NUMPAD9 = 'Numpad9',
+  VK_NUMPAD_ENTER = 'NumpadEnter',
   VK_MULTIPLY = 'NumpadMultiply',
   VK_ADD = 'NumpadAdd',
   VK_SEPARATOR = 'NumpadDecimal',
