@@ -37,7 +37,14 @@ export class SelectDialog extends Dialog {
   }
 
   handleInput(terminal: Terminal, offset: Point): boolean {
-    this.hoverIndex = -1;
+    const moveKey = terminal.getMovementKey();
+    if (moveKey && moveKey.y !== 0) {
+      this.hoverIndex = (this.hoverIndex + this.options.length + moveKey.y) % this.options.length;
+    }
+    if (this.hoverIndex >= 0 && (terminal.isKeyPressed(Key.VK_ENTER) || terminal.isKeyPressed(Key.VK_NUMPAD_ENTER))) {
+      this.callback(this.hoverIndex);
+      return true;
+    }
     if (
       terminal.mouse.x >= offset.x &&
       terminal.mouse.x < offset.x + this.contentsRect.width &&
