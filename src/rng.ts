@@ -1,3 +1,4 @@
+import { serializable } from './serialize';
 
 /**
  * Random number generator.
@@ -5,6 +6,7 @@
  * LCG
  * https://stackoverflow.com/a/424445/2051724
  */
+@serializable
 export class RNG {
   private m: number;
   private a: number;
@@ -18,7 +20,7 @@ export class RNG {
    */
   constructor(seed?: number) {
     // LCG using GCC's constants
-    this.m = 0x80000000;  // 2**31;
+    this.m = 0x80000000; // 2**31;
     this.a = 1103515245;
     this.c = 12345;
     this.state = seed || 1;
@@ -71,7 +73,7 @@ export class RNG {
 
   chooseKey(chancesMap: Record<string, number>): string {
     const values = Object.keys(chancesMap);
-    const chances = values.map(value => chancesMap[value]);
+    const chances = values.map((value) => chancesMap[value]);
     return values[this.chooseIndex(chances)];
   }
 }

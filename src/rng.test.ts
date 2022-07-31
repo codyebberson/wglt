@@ -1,5 +1,5 @@
-
 import { RNG } from './rng';
+import { deserialize, serialize } from './serialize';
 
 test('nextFloat with seed', () => {
   // When providing a seed, should always get the same value
@@ -41,8 +41,8 @@ test('chooseIndex with different chances', () => {
 
 test('chooseKey', () => {
   const rng = new RNG(1);
-  const chancesMap = { 'foo': 3, 'bar': 1 };
-  const counts: { [key: string]: number } = { 'foo': 0, 'bar': 0 };
+  const chancesMap = { foo: 3, bar: 1 };
+  const counts: { [key: string]: number } = { foo: 0, bar: 0 };
 
   for (let i = 0; i < 1000; i++) {
     counts[rng.chooseKey(chancesMap)]++;
@@ -50,4 +50,15 @@ test('chooseKey', () => {
 
   expect(counts['foo']).toBe(729);
   expect(counts['bar']).toBe(271);
+});
+
+test('serializable', () => {
+  const rng1 = new RNG(1);
+  const rng2 = deserialize(serialize(rng1)) as RNG;
+  expect(rng2).toEqual(rng1);
+  expect(rng2).not.toBe(rng1);
+
+  for (let i = 0; i < 1000; i++) {
+    expect(rng2.nextInt()).toBe(rng1.nextInt());
+  }
 });
