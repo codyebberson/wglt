@@ -14,7 +14,6 @@ export class MessageDialog extends Dialog {
     } else {
       rect = new Rect(0, 0, message.length, 1);
     }
-    console.log('message rect', rect);
     super(rect, title);
   }
 
