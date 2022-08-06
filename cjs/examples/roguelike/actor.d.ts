@@ -1,0 +1,34 @@
+import { Color } from '../../src/color';
+import { AI } from './ai';
+import { Entity } from './entity';
+import { Game } from './game';
+import { Item } from './item';
+export declare class Actor extends Entity {
+    level: number;
+    inventory: Item[];
+    hp: number;
+    xp: number;
+    baseMaxHp: number;
+    baseDefense: number;
+    basePower: number;
+    ai?: AI;
+    constructor(game: Game, x: number, y: number, char: string, name: string, color: Color);
+    move(dx: number, dy: number): void;
+    moveToward(targetX: number, targetY: number): void;
+    getEquippedInSlot(slot: string): Item | undefined;
+    getAllEquipped(): Item[];
+    equip(item: Item): void;
+    dequip(item: Item): void;
+    get maxHp(): number;
+    get defense(): number;
+    get power(): number;
+    attack(target: Actor): void;
+    takeXp(xp: number): void;
+    takeDamage(damage: number): void;
+    heal(amount: number): void;
+    death(): void;
+    pickUp(item: Item): void;
+    useItem(item: Item): void;
+    removeItem(item: Item): void;
+    setAi(ai: AI): void;
+}
