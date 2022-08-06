@@ -26,13 +26,13 @@ export default {
     {
       file: 'dist/cjs/index.js',
       format: 'umd',
-      name: 'wglt.core',
+      name: 'wglt',
       sourcemap: true,
     },
     {
       file: 'dist/cjs/index.min.js',
       format: 'umd',
-      name: 'wglt.core',
+      name: 'wglt',
       plugins: [terser()],
       sourcemap: true,
     },
