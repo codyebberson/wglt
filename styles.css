@@ -44,10 +44,7 @@ canvas {
 }
 
 pre {
-  font-family: Consolas, monospace;
   font-size: 12px;
-  border: 1px solid #eee;
-  padding: 12px;
 }
 
 a {
