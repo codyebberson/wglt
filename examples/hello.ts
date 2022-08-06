@@ -1,7 +1,7 @@
-import { Colors, Terminal } from '../src/';
+import * as wglt from '../src/';
 
-const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
-term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
+const term = new wglt.Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
+term.fillRect(0, 0, 80, 45, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
