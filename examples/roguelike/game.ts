@@ -1,10 +1,10 @@
 import { Key } from '../../src';
 import { Cell } from '../../src/cell';
 import { Color, fromRgb } from '../../src/color';
-import { Colors } from '../../src/colors';
 import { Console } from '../../src/console';
 import { MessageDialog } from '../../src/gui/messagedialog';
 import { SelectDialog } from '../../src/gui/selectdialog';
+import { Colors } from '../../src/palettes/colors';
 import { computePath } from '../../src/path';
 import { Rect } from '../../src/rect';
 import { RNG } from '../../src/rng';

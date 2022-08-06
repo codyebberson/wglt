@@ -1,5 +1,5 @@
 import { Color } from '../../src/color';
-import { Colors } from '../../src/colors';
+import { Colors } from '../../src/palettes/colors';
 import { AI } from './ai';
 import { Entity } from './entity';
 import { Game } from './game';
@@ -42,11 +42,11 @@ export class Actor extends Entity {
   }
 
   getEquippedInSlot(slot: string): Item | undefined {
-    return this.inventory.find(item => item.slot === slot && item.equipped);
+    return this.inventory.find((item) => item.slot === slot && item.equipped);
   }
 
   getAllEquipped(): Item[] {
-    return this.inventory.filter(item => item.equipped);
+    return this.inventory.filter((item) => item.equipped);
   }
 
   equip(item: Item): void {

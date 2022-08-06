@@ -1,6 +1,6 @@
 import { BlendMode } from './blendmode';
 import { Color, fromRgb } from './color';
-import { Colors } from './colors';
+import { Colors } from './palettes/colors';
 import { serializable } from './serialize';
 
 function convertCharCode(charCode: string | number): number {

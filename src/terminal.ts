@@ -4,7 +4,12 @@ import { DEFAULT_FONT, Font } from './font';
 import { Key, Keyboard } from './keys';
 import { Mouse } from './mouse';
 import { Point } from './point';
-import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
+import {
+  CRT_FRAGMENT_SHADER_SOURCE,
+  CRT_VERTEX_SHADER_SOURCE,
+  FRAGMENT_SHADER_SOURCE,
+  VERTEX_SHADER_SOURCE,
+} from './shaders';
 
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
@@ -19,6 +24,17 @@ function interpolate(i: number, max: number) {
 
 interface TerminalOptions {
   font?: Font;
+  crt?: CrtOptions;
+}
+
+interface CrtOptions {
+  scale: number;
+  blur: number;
+  curvature: number;
+  chroma: number;
+  vignette: number;
+  scanlineWidth: number;
+  scanlineIntensity: number;
 }
 
 const DEFAULT_OPTIONS = {
@@ -28,8 +44,10 @@ const DEFAULT_OPTIONS = {
 export class Terminal extends Console {
   readonly canvas: HTMLCanvasElement;
   readonly font: Font;
+  readonly crt?: CrtOptions;
   readonly pixelWidth: number;
   readonly pixelHeight: number;
+  readonly pixelScale: number;
   readonly keys: Keyboard;
   readonly mouse: Mouse;
   readonly gl: WebGLRenderingContext;
@@ -51,6 +69,19 @@ export class Terminal extends Console {
   readonly foregroundBuffer: WebGLBuffer;
   readonly backgroundBuffer: WebGLBuffer;
   readonly texture: WebGLTexture;
+  readonly frameBufferTexture: WebGLTexture;
+  readonly frameBuffer: WebGLFramebuffer;
+  readonly crtProgram: WebGLProgram;
+  readonly crtBlurLocation: WebGLUniformLocation;
+  readonly crtCurvatureLocation: WebGLUniformLocation;
+  readonly crtChromaLocation: WebGLUniformLocation;
+  readonly crtScanlineWidthLocation: WebGLUniformLocation;
+  readonly crtScanlineIntensityLocation: WebGLUniformLocation;
+  readonly crtVignetteLocation: WebGLUniformLocation;
+  readonly crtPositionLocation: number;
+  readonly crtTexCoordLocation: number;
+  readonly crtPositionBuffer: WebGLBuffer;
+  readonly crtTexCoordBuffer: WebGLBuffer;
   private lastRenderTime: number;
   private renderDelta: number;
   fps: number;
@@ -64,11 +95,13 @@ export class Terminal extends Console {
 
     this.canvas = canvas;
     this.font = options.font || DEFAULT_FONT;
+    this.crt = options.crt;
     this.pixelWidth = width * this.font.charWidth;
     this.pixelHeight = height * this.font.charHeight;
+    this.pixelScale = options?.crt?.scale || 1.0;
 
-    canvas.width = this.pixelWidth;
-    canvas.height = this.pixelHeight;
+    canvas.width = this.pixelWidth * this.pixelScale;
+    canvas.height = this.pixelHeight * this.pixelScale;
     canvas.style.imageRendering = 'pixelated';
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
@@ -97,9 +130,38 @@ export class Terminal extends Console {
     gl.linkProgram(program);
     gl.useProgram(program);
 
+    this.crtProgram = gl.createProgram() as WebGLProgram;
+    gl.attachShader(this.crtProgram, this.buildShader(gl.VERTEX_SHADER, CRT_VERTEX_SHADER_SOURCE));
+    gl.attachShader(this.crtProgram, this.buildShader(gl.FRAGMENT_SHADER, CRT_FRAGMENT_SHADER_SOURCE));
+    gl.linkProgram(this.crtProgram);
+    gl.useProgram(this.crtProgram);
+
+    this.crtBlurLocation = gl.getUniformLocation(this.crtProgram, 'u_blur') as WebGLUniformLocation;
+    this.crtCurvatureLocation = gl.getUniformLocation(this.crtProgram, 'u_curvature') as WebGLUniformLocation;
+    this.crtChromaLocation = gl.getUniformLocation(this.crtProgram, 'u_chroma') as WebGLUniformLocation;
+    this.crtScanlineWidthLocation = gl.getUniformLocation(this.crtProgram, 'u_scanlineWidth') as WebGLUniformLocation;
+    this.crtScanlineIntensityLocation = gl.getUniformLocation(
+      this.crtProgram,
+      'u_scanlineIntensity'
+    ) as WebGLUniformLocation;
+    this.crtVignetteLocation = gl.getUniformLocation(this.crtProgram, 'u_vignette') as WebGLUniformLocation;
+
+    this.crtPositionLocation = gl.getAttribLocation(this.crtProgram, 'a_position');
+    this.crtPositionBuffer = gl.createBuffer() as WebGLBuffer;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.crtPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(this.crtPositionLocation);
+    gl.vertexAttribPointer(this.crtPositionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    this.crtTexCoordLocation = gl.getAttribLocation(this.crtProgram, 'a_texCoord');
+    this.crtTexCoordBuffer = gl.createBuffer() as WebGLBuffer;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.crtTexCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(this.crtTexCoordLocation);
+    gl.vertexAttribPointer(this.crtTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
+
     if (this.font.graphical) {
-      // Set the flag to ignore foreground/background colors, and use texture
-      // directly
+      // Set the flag to ignore foreground/background colors, and use texture directly
       gl.uniform1i(gl.getUniformLocation(program, 'h'), 1);
     }
 
@@ -116,6 +178,20 @@ export class Terminal extends Console {
     this.foregroundDataView = new DataView(this.foregroundUint8Array.buffer);
     this.backgroundUint8Array = new Uint8Array(cellCount * 4 * 4);
     this.backgroundDataView = new DataView(this.backgroundUint8Array.buffer);
+
+    // Init the frame buffer
+    this.frameBufferTexture = gl.createTexture() as WebGLTexture;
+    gl.bindTexture(gl.TEXTURE_2D, this.frameBufferTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.pixelWidth, this.pixelHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    this.frameBuffer = gl.createFramebuffer() as WebGLFramebuffer;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.frameBufferTexture, 0);
 
     // Init the positions buffer
     let i = 0;
@@ -347,6 +423,11 @@ export class Terminal extends Console {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    if (this.crt) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+    } else {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
     gl.viewport(0, 0, this.pixelWidth, this.pixelHeight);
 
     // Tell WebGL how to pull out the positions from the position
@@ -419,6 +500,30 @@ export class Terminal extends Console {
     }
   }
 
+  private renderCrt(): void {
+    const crt = this.crt;
+    if (!crt) {
+      return;
+    }
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, this.pixelWidth * this.pixelScale, this.pixelHeight * this.pixelScale);
+    gl.useProgram(this.crtProgram);
+    gl.uniform1f(this.crtBlurLocation, crt.blur);
+    gl.uniform1f(this.crtCurvatureLocation, crt.curvature);
+    gl.uniform1f(this.crtChromaLocation, crt.chroma);
+    gl.uniform1f(this.crtVignetteLocation, crt.vignette);
+    gl.uniform1f(this.crtScanlineWidthLocation, crt.scanlineWidth);
+    gl.uniform1f(this.crtScanlineIntensityLocation, crt.scanlineIntensity);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.crtPositionBuffer);
+    gl.vertexAttribPointer(this.crtPositionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.crtTexCoordBuffer);
+    gl.vertexAttribPointer(this.crtTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.frameBufferTexture);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+
   private requestAnimationFrame() {
     window.requestAnimationFrame((t) => this.renderLoop(t));
   }
@@ -441,6 +546,9 @@ export class Terminal extends Console {
     }
     this.flush();
     this.render();
+    if (this.crt) {
+      this.renderCrt();
+    }
     this.requestAnimationFrame();
   }
 }

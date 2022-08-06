@@ -1,6 +1,10 @@
+import { fromRgb } from '../color';
 
-import { fromRgb } from './color';
-
+/**
+ * Orignal CGA palette.
+ * See: https://en.wikipedia.org/wiki/Color_Graphics_Adapter
+ * See: https://lospec.com/palette-list/color-graphics-adapter
+ */
 export const Colors = {
   BLACK: fromRgb(0, 0, 0),
   WHITE: fromRgb(0xff, 0xff, 0xff),

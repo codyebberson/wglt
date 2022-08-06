@@ -78,4 +78,33 @@ I do not have intentions to include support for formatted text (i.e., bold or un
 - [Kontra.js](https://github.com/straker/kontra)
 - [LittleJS](https://github.com/KilledByAPixel/LittleJS)
 - [Kaboom](https://kaboomjs.com/)
-- Literally thousands more: https://github.com/collections/javascript-game-engines
+
+## Fonts
+
+WGLT supports custom font images, and provides built in support for standard fonts:
+
+- [x] IBM CGA Character
+- [ ] Code page 437 (MS-DOS)
+- [ ] Commodore 64
+- [ ] ZX Spectrum
+- [ ] Amstrad CPC 464
+
+## Palettes
+
+WGLT supports full 32-bit color, and also provides constants for standard palettes:
+
+- [x] CGA
+- [x] Commodore 64
+- [x] "Colodore"
+- [x] PICO 8
+
+## CRT Filter
+
+By default, WGLT renders crisp pixels. WGLT also provides an optional CRT filter with the following effects:
+
+- [x] Scanlines
+- [x] Curvature
+- [x] Vignette (darker in the corners and around the edges)
+- [x] Chromatic aberration (RGB independent offsets)
+- [ ] Bloom
+- [ ] Interference animation

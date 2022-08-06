@@ -1,6 +1,6 @@
-import { Colors } from '../colors';
 import { Console } from '../console';
 import { Key } from '../keys';
+import { Colors } from '../palettes/colors';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Terminal } from '../terminal';
