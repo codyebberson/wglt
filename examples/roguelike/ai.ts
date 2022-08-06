@@ -1,4 +1,4 @@
-import { Colors } from '../../src/colors';
+import { Colors } from '../../src/palettes/colors';
 import { Actor } from './actor';
 
 const CONFUSE_NUM_TURNS = 10;
@@ -26,11 +26,9 @@ export class BasicMonster implements AI {
 
     // A basic monster takes its turn. if you can see it, it can see you
     if (game.map.isVisible(monster.x, monster.y)) {
-
       if (monster.distanceTo(player) >= 2) {
         // Move towards player if far away
         monster.moveToward(player.x, player.y);
-
       } else if (player.hp > 0) {
         // Close enough, attack! (if the player is still alive.)
         monster.attack(player);

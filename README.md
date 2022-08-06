@@ -78,4 +78,28 @@ I do not have intentions to include support for formatted text (i.e., bold or un
 - [Kontra.js](https://github.com/straker/kontra)
 - [LittleJS](https://github.com/KilledByAPixel/LittleJS)
 - [Kaboom](https://kaboomjs.com/)
-- Literally thousands more: https://github.com/collections/javascript-game-engines
+
+## Fonts
+
+- Original IBM CGA Character
+- MS-DOS
+- Commodore 64
+- ZX Spectrum
+- Amstrad CPC 464:
+
+mode 0 - 160x200, or 20x25 characters, with a palette of 16 colours
+mode 1 - 320x200, or 40x25 characters, with a palette of 4 colours
+mode 2 - 640x200, or 80x25 characters, with a palette of 2 colours
+
+https://fonts2u.com/amstrad-cpc464-regular.font
+https://retrocomputing.stackexchange.com/questions/11913/how-was-text-handled-on-the-amstrad-cpc-464
+https://neuro-sys.github.io/2019/10/01/amstrad-cpc-crtc.html
+
+## CRT Filter
+
+https://mrmotarius.itch.io/mrmocrt
+
+https://github.com/mattiasgustavsson/dosbox-crt
+
+MattiasCRT
+https://www.shadertoy.com/view/Ms23DR

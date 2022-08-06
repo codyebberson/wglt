@@ -1,4 +1,4 @@
-import { Colors } from '../colors';
+import { Colors } from '../palettes/colors';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Terminal } from '../terminal';

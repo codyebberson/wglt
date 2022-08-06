@@ -1,4 +1,4 @@
-import { Cell, Colors, computePath, Console, FovQuadrants, getFovQuadrant, Terminal } from '../src/';
+import { Cell, ColodorePalette as Colors, computePath, Console, FovQuadrants, getFovQuadrant, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -59,7 +59,17 @@ function isBlocked(x: number, y: number) {
   return getTile(x, y) !== '.';
 }
 
-const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT);
+const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT, {
+  crt: {
+    scale: 3,
+    blur: 0.5,
+    curvature: 0.05,
+    chroma: 0.5,
+    vignette: 0.1,
+    scanlineWidth: 0.75,
+    scanlineIntensity: 0.25,
+  },
+});
 
 const player = {
   x: Math.floor(MAP_WIDTH / 2),
@@ -127,7 +137,7 @@ term.update = function () {
       const step = path[i];
       const cell = tileMap.getCell(step.x, step.y);
       if (cell) {
-        cell.setBackground(Colors.DARK_RED);
+        cell.setBackground(Colors.RED);
       }
     }
 

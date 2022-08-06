@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WGLT - WebGL Terminal</title>
-    <link href="./styles.css" rel="stylesheet">
-</head>
+    <link href="./styles.css" rel="stylesheet" />
+  </head>
 
-<body>
-    <h1>WGLT - WebGL Terminal</h1>
-    <ul>
+  <body>
+    <main>
+      <h1>WGLT - WebGL Terminal</h1>
+      <ul>
         <li>Fast, lightweight, terminal emulator using WebGL</li>
         <li>100% TypeScript</li>
         <li>MIT license</li>
         <li>~30kb minified JS, ~10kb gzipped</li>
         <li>No external dependencies</li>
-    </ul>
+      </ul>
 
-    <div style="width:960px; height:540px;">
+      <div style="width: 960px; height: 540px">
         <canvas></canvas>
-    </div>
-    <script type="module" src="./examples/hello.ts"></script>
+      </div>
+      <script type="module" src="./examples/hello.ts"></script>
 
-    <h2>What is it?</h2>
-    <p>WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.</p>
-    <p>WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU.</p>
-    <p>WGLT is modelled after <a href="https://bitbucket.org/libtcod/libtcod">libtcod</a> and <a href="http://ondras.github.io/rot.js/hp/">rot.js</a>.</p>
+      <h2>What is it?</h2>
+      <p>WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.</p>
+      <p>WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU.</p>
+      <p>
+        WGLT is modelled after <a href="https://bitbucket.org/libtcod/libtcod">libtcod</a> and
+        <a href="http://ondras.github.io/rot.js/hp/">rot.js</a>.
+      </p>
 
-    <h2>Usage</h2>
-    <p>Add dependency:</p>
-    <pre>npm i -D wglt</pre>
-    <p>Import library:</p>
-    <pre>import * as wglt from 'wglt';</pre>
-    <p>Or, simply use the prebuilt:</p>
-    <pre>&lt;script src="https://unpkg.com/wglt@0.0.4/dist/index.js"&gt;&lt;/script&gt;</pre>
-    <p>Use it:</p>
-    <pre>const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
+      <h2>Usage</h2>
+      <p>Add dependency:</p>
+      <pre>npm i -D wglt</pre>
+      <p>Import library:</p>
+      <pre>import * as wglt from 'wglt';</pre>
+      <p>Or, simply use the prebuilt:</p>
+      <pre>&lt;script src="https://unpkg.com/wglt@0.0.4/dist/index.js"&gt;&lt;/script&gt;</pre>
+      <p>Use it:</p>
+      <pre>
+const term = new wglt.Terminal(document.querySelector('canvas'), 80, 50);
 term.fillRect(0, 0, 80, 50, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
 
 let x = 10;
@@ -61,17 +65,21 @@ term.update = function () {
     term.drawString(1, 3, 'Use arrow keys to move');
     term.drawString(x, y, '@');
 };
-    </pre>
+    </pre
+      >
 
-    <h2>Examples</h2>
-    <ul>
+      <h2>Examples</h2>
+      <ul>
         <li><a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls</li>
         <li><a href="examples/performance.html">Performance</a> - Smooth and consistent 60 fps without CPU fan</li>
         <li><a href="examples/colors.html">Colors</a> - True color palette, HSV color manipulation</li>
         <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
         <li><a href="examples/font.html">Custom Font</a> - Use custom font image with non-square size</li>
         <li><a href="examples/graphics.html">Graphical Tiles</a> - True color pixel art graphics</li>
-        <li><a href="examples/fov.html">Field of View</a> - Fast and accurate shadowcasting using <a href="https://bitbucket.org/mingos/mrpas/">MRPAS</a></li>
+        <li>
+          <a href="examples/fov.html">Field of View</a> - Fast and accurate shadowcasting using
+          <a href="https://bitbucket.org/mingos/mrpas/">MRPAS</a>
+        </li>
         <li><a href="examples/path.html">Path Finding</a> - Fast and accurate routing using Dijkstra's algorithm</li>
         <li><a href="examples/alpha.html">Alpha Blending</a> - Use "additive" blending to create light effects</li>
         <li><a href="examples/flame.html">Flame</a> - Procedurally generated fire effect</li>
@@ -80,10 +88,22 @@ term.update = function () {
         <li><a href="examples/customgui.html">Custom GUI</a> - Custom dialog renderers for special effects</li>
         <li><a href="examples/image.html">Image Loading</a> - Load an image from a URL and render as ASCII</li>
         <li><a href="examples/image2x.html">Image 2x</a> - Double resolution using extended ASCII block characters</li>
-        <li><a href="examples/boxutils.html">Box Utils</a> - Utility methods for working with <a href="https://en.wikipedia.org/wiki/Box-drawing_character">box-drawing</a></li>
-        <li><a href="examples/roguelike/index.html">Roguelike</a> - Full implementation of the classic <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod">Rogue
-            Basin Complete Roguelike Tutorial</a></li>
-    </ul>
-</body>
-
+        <li>
+          <a href="examples/boxutils.html">Box Utils</a> - Utility methods for working with
+          <a href="https://en.wikipedia.org/wiki/Box-drawing_character">box-drawing</a>
+        </li>
+        <li>
+          <a href="examples/crt.html">CRT</a> - Scanlines, vignette, chromatic aberration example on
+          <a href="https://commons.wikimedia.org/wiki/File:SMPTE_Color_Bars_16x9.svg">SMTPE test image</a>
+        </li>
+        <li>
+          <a href="examples/roguelike/index.html">Roguelike</a> - Full implementation of the classic
+          <a href="http://www.roguebasin.com/index.php?title=Complete_Roguelike_Tutorial,_using_python%2Blibtcod"
+            >Rogue Basin Complete Roguelike Tutorial</a
+          >
+        </li>
+      </ul>
+    </main>
+    <footer>&copy; Cody Ebberson 2022</footer>
+  </body>
 </html>

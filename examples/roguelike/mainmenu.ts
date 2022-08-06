@@ -1,7 +1,7 @@
-import { Colors } from '../../src/colors';
 import { Console } from '../../src/console';
 import { SelectDialog } from '../../src/gui/selectdialog';
 import { loadImage2x } from '../../src/image';
+import { Colors } from '../../src/palettes/colors';
 import { App, AppState } from './app';
 
 let menuBg: Console | null = null;
