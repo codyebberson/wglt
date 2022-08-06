@@ -81,25 +81,30 @@ I do not have intentions to include support for formatted text (i.e., bold or un
 
 ## Fonts
 
-- Original IBM CGA Character
-- MS-DOS
-- Commodore 64
-- ZX Spectrum
-- Amstrad CPC 464:
+WGLT supports custom font images, and provides built in support for standard fonts:
 
-mode 0 - 160x200, or 20x25 characters, with a palette of 16 colours
-mode 1 - 320x200, or 40x25 characters, with a palette of 4 colours
-mode 2 - 640x200, or 80x25 characters, with a palette of 2 colours
+- [x] IBM CGA Character
+- [ ] Code page 437 (MS-DOS)
+- [ ] Commodore 64
+- [ ] ZX Spectrum
+- [ ] Amstrad CPC 464
 
-https://fonts2u.com/amstrad-cpc464-regular.font
-https://retrocomputing.stackexchange.com/questions/11913/how-was-text-handled-on-the-amstrad-cpc-464
-https://neuro-sys.github.io/2019/10/01/amstrad-cpc-crtc.html
+## Palettes
+
+WGLT supports full 32-bit color, and also provides constants for standard palettes:
+
+- [x] CGA
+- [x] Commodore 64
+- [x] "Colodore"
+- [x] PICO 8
 
 ## CRT Filter
 
-https://mrmotarius.itch.io/mrmocrt
+By default, WGLT renders crisp pixels. WGLT also provides an optional CRT filter with the following effects:
 
-https://github.com/mattiasgustavsson/dosbox-crt
-
-MattiasCRT
-https://www.shadertoy.com/view/Ms23DR
+- [x] Scanlines
+- [x] Curvature
+- [x] Vignette (darker in the corners and around the edges)
+- [x] Chromatic aberration (RGB independent offsets)
+- [ ] Bloom
+- [ ] Interference animation
