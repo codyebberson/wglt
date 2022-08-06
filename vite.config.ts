@@ -14,7 +14,6 @@ const input = Object.fromEntries(htmlFiles.map((file) => [file.replace('./', '')
 
 export default defineConfig({
   build: {
-    minify: false,
     rollupOptions: {
       input,
     },
