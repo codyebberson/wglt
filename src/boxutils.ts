@@ -48,27 +48,27 @@ const BOX_CHAR_DETAILS = [
   [0, 1, 1, 0], // 0xDA
 ];
 
-function isBoxCell(con: Console, x: number, y: number) {
+function isBoxCell(con: Console, x: number, y: number): boolean {
   const charCode = con.getCharCode(x, y);
-  return charCode !== undefined && charCode >= 0xB3 && charCode <= 0xDA;
+  return charCode !== undefined && charCode >= 0xb3 && charCode <= 0xda;
 }
 
-function getBoxCount(con: Console, x: number, y: number, index: number) {
+function getBoxCount(con: Console, x: number, y: number, index: number): number {
   if (x < 0 || y < 0 || x >= con.width || y >= con.height) {
     return 0;
   }
   const charCode = con.getCharCode(x, y);
-  if (charCode === undefined || charCode < 0xB3 || charCode > 0xDA) {
+  if (charCode === undefined || charCode < 0xb3 || charCode > 0xda) {
     return 0;
   }
-  return BOX_CHAR_DETAILS[charCode - 0xB3][index];
+  return BOX_CHAR_DETAILS[charCode - 0xb3][index];
 }
 
-function getBoxCell(up: number, right: number, down: number, left: number) {
+function getBoxCell(up: number, right: number, down: number, left: number): number {
   for (let i = 0; i < BOX_CHAR_DETAILS.length; i++) {
     const row = BOX_CHAR_DETAILS[i];
     if (row[0] === up && row[1] === right && row[2] === down && row[3] === left) {
-      return 0xB3 + i;
+      return 0xb3 + i;
     }
   }
   return 0;
@@ -105,8 +105,10 @@ export function fixBoxCells(con: Console): void {
 
         const charCode = getBoxCell(up, right, down, left);
 
-        if ((up || right || down || left) && !(charCode >= 0xB3 && charCode <= 0xDA)) {
-          throw new Error('invalid char code! (up=' + up + ', right=' + right + ', down=' + down + ', left=' + left + ')');
+        if ((up || right || down || left) && !(charCode >= 0xb3 && charCode <= 0xda)) {
+          throw new Error(
+            'invalid char code! (up=' + up + ', right=' + right + ', down=' + down + ', left=' + left + ')'
+          );
         }
 
         con.drawChar(x, y, charCode);

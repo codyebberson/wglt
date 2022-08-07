@@ -1,4 +1,3 @@
-
 import { Rect } from './rect';
 import { Point } from './point';
 

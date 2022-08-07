@@ -8,7 +8,7 @@ const SIZE = 1 + 2 * RADIUS;
 const CENTER = RADIUS;
 const BRIGHTNESS = 0.35;
 
-function createLightConsole(h: number, s: number, v: number) {
+function createLightConsole(h: number, s: number, v: number): Console {
   const c = new Console(SIZE, SIZE);
 
   for (let y = 0; y < SIZE; y++) {

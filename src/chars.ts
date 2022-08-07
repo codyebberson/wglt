@@ -1,5 +1,3 @@
-
-
 // https://en.wikipedia.org/wiki/Code_page_437
 // https://en.wikipedia.org/wiki/Block_Elements
 // https://en.wikipedia.org/wiki/Box-drawing_character

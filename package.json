@@ -9,8 +9,8 @@
     "build:lib": "rollup --config rollup.config.js",
     "build:types": "tsc --project tsconfig.build.json",
     "test": "vitest --run",
-    "lint": "eslint . --ext .ts",
-    "fix": "eslint --fix . --ext .ts"
+    "lint": "eslint src examples",
+    "fix": "eslint --fix src examples"
   },
   "author": "Cody Ebberson",
   "license": "MIT",

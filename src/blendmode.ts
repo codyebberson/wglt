@@ -1,4 +1,3 @@
-
 /**
  * The BlendMode enum defines how translucent cells are rendered.
  */
@@ -24,5 +23,5 @@ export enum BlendMode {
    *
    * dstA = dstA
    */
-  Add = 2
+  Add = 2,
 }

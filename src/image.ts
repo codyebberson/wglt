@@ -1,6 +1,6 @@
 import { Cell } from './cell';
 import { Chars } from './chars';
-import { fromRgb } from './color';
+import { Color, fromRgb } from './color';
 import { Console } from './console';
 
 /**
@@ -52,7 +52,7 @@ export function loadImage2x(url: string, callback: (img: Console) => void): void
   img.src = url;
 }
 
-function getImageData(img: HTMLImageElement) {
+function getImageData(img: HTMLImageElement): Uint8ClampedArray {
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
@@ -63,8 +63,7 @@ function getImageData(img: HTMLImageElement) {
   return ctx.getImageData(0, 0, img.width, img.height).data;
 }
 
-function draw2x2(
-  con: Console, data: Uint8ClampedArray, x: number, y: number, w: number) {
+function draw2x2(con: Console, data: Uint8ClampedArray, x: number, y: number, w: number): void {
   // Top left
   const i1 = 4 * (y * w + x);
   const r1 = data[i1];
@@ -89,7 +88,12 @@ function draw2x2(
   const g4 = data[i4 + 1];
   const b4 = data[i4 + 2];
 
-  const colors = [[r1, g1, b1], [r2, g2, b2], [r3, g3, b3], [r4, g4, b4]];
+  const colors = [
+    [r1, g1, b1],
+    [r2, g2, b2],
+    [r3, g3, b3],
+    [r4, g4, b4],
+  ];
 
   // For each possible pattern, calculate the total error
   // Find the pattern with minum error
@@ -113,9 +117,15 @@ function draw2x2(
   con.drawChar(x / 2, y / 2, bestCharCode, arrayToColor(bestFg as number[]), arrayToColor(bestBg as number[]));
 }
 
-function computeColors(pattern: number[], colors: number[][]) {
-  const sum = [[0, 0, 0], [0, 0, 0]];
-  const avg = [[0, 0, 0], [0, 0, 0]];
+function computeColors(pattern: number[], colors: number[][]): { error: number; bg: number[]; fg: number[] } {
+  const sum = [
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  const avg = [
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
   const count = [0, 0];
 
   for (let i = 0; i < 4; i++) {
@@ -145,6 +155,6 @@ function computeColors(pattern: number[], colors: number[][]) {
   return { bg: avg[0], fg: avg[1], error };
 }
 
-function arrayToColor(rgb: number[]) {
+function arrayToColor(rgb: number[]): Color {
   return fromRgb(rgb[0], rgb[1], rgb[2]);
 }

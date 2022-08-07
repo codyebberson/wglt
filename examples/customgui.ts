@@ -14,7 +14,7 @@ import {
 } from '../src/';
 
 class CustomRenderer implements DialogRenderer {
-  getState(terminal: Terminal, dialog: Dialog) {
+  getState(terminal: Terminal, dialog: Dialog): DialogState {
     const width = dialog.contentsRect.width + 4;
     const height = dialog.contentsRect.height + 4;
     const x = ((terminal.width - width) / 2) | 0;
@@ -24,7 +24,7 @@ class CustomRenderer implements DialogRenderer {
     return state;
   }
 
-  draw(terminal: Terminal, dialogState: DialogState) {
+  draw(terminal: Terminal, dialogState: DialogState): void {
     const buffer = dialogState.buffer;
     if (!buffer) {
       return;
@@ -39,7 +39,7 @@ class CustomRenderer implements DialogRenderer {
     dialogState.count += 2;
   }
 
-  fadeIn(dst: Console, dstX: number, dstY: number, src: Console, count: number) {
+  fadeIn(dst: Console, dstX: number, dstY: number, src: Console, count: number): void {
     for (let y = 0; y < src.height; y++) {
       for (let x = 0; x < src.width; x++) {
         const dist = x + y;

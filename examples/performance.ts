@@ -1,12 +1,12 @@
-import { Colors, fromRgb, RNG, Terminal } from '../src/';
+import { Color, Colors, fromRgb, RNG, Terminal } from '../src/';
 
 const WIDTH = 80;
 const HEIGHT = 45;
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, WIDTH, HEIGHT);
 const rng = new RNG();
-const randomComp = () => rng.nextRange(0, 255);
-const randomColor = () => fromRgb(randomComp(), randomComp(), randomComp());
+const randomComp = (): number => rng.nextRange(0, 255);
+const randomColor = (): Color => fromRgb(randomComp(), randomComp(), randomComp());
 
 term.update = function () {
   for (let y = 0; y < HEIGHT; y++) {
