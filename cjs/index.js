@@ -80,23 +80,23 @@
     ];
     function isBoxCell(con, x, y) {
         const charCode = con.getCharCode(x, y);
-        return charCode !== undefined && charCode >= 0xB3 && charCode <= 0xDA;
+        return charCode !== undefined && charCode >= 0xb3 && charCode <= 0xda;
     }
     function getBoxCount(con, x, y, index) {
         if (x < 0 || y < 0 || x >= con.width || y >= con.height) {
             return 0;
         }
         const charCode = con.getCharCode(x, y);
-        if (charCode === undefined || charCode < 0xB3 || charCode > 0xDA) {
+        if (charCode === undefined || charCode < 0xb3 || charCode > 0xda) {
             return 0;
         }
-        return BOX_CHAR_DETAILS[charCode - 0xB3][index];
+        return BOX_CHAR_DETAILS[charCode - 0xb3][index];
     }
     function getBoxCell(up, right, down, left) {
         for (let i = 0; i < BOX_CHAR_DETAILS.length; i++) {
             const row = BOX_CHAR_DETAILS[i];
             if (row[0] === up && row[1] === right && row[2] === down && row[3] === left) {
-                return 0xB3 + i;
+                return 0xb3 + i;
             }
         }
         return 0;
@@ -131,7 +131,7 @@
                         up = down = Math.max(up, down);
                     }
                     const charCode = getBoxCell(up, right, down, left);
-                    if ((up || right || down || left) && !(charCode >= 0xB3 && charCode <= 0xDA)) {
+                    if ((up || right || down || left) && !(charCode >= 0xb3 && charCode <= 0xda)) {
                         throw new Error('invalid char code! (up=' + up + ', right=' + right + ', down=' + down + ', left=' + left + ')');
                     }
                     con.drawChar(x, y, charCode);
@@ -174,7 +174,7 @@
         if (a === undefined) {
             a = 255;
         }
-        return ((r << 24) + (g << 16) + (b << 8) + a);
+        return (r << 24) + (g << 16) + (b << 8) + a;
     }
     /**
      * Converts a color from HSV format to RGBA format.
@@ -196,22 +196,22 @@
         let r, g, b;
         switch (i % 6) {
             case 0:
-                r = v, g = t, b = p;
+                (r = v), (g = t), (b = p);
                 break;
             case 1:
-                r = q, g = v, b = p;
+                (r = q), (g = v), (b = p);
                 break;
             case 2:
-                r = p, g = v, b = t;
+                (r = p), (g = v), (b = t);
                 break;
             case 3:
-                r = p, g = q, b = v;
+                (r = p), (g = q), (b = v);
                 break;
             case 4:
-                r = t, g = p, b = v;
+                (r = t), (g = p), (b = v);
                 break;
             case 5:
-                r = v, g = p, b = q;
+                (r = v), (g = p), (b = q);
                 break;
             default:
                 r = 0;
@@ -953,12 +953,11 @@
     ], exports.Console);
 
     class Font {
-        constructor(url, charWidth, charHeight, scale, graphical) {
+        constructor(url, charWidth, charHeight, scale) {
             this.url = url;
             this.charWidth = charWidth;
             this.charHeight = charHeight;
             this.scale = scale || 1.0;
-            this.graphical = !!graphical;
         }
     }
     /**
@@ -1252,8 +1251,6 @@
          */
         isPressed() {
             return this.downCount === 1 || this.repeat;
-            // const count = this.downCount;
-            // return count === 1 || (count > INPUT_REPEAT_DELAY && count % INPUT_REPEAT_RATE === 0);
         }
         /**
          * Returns true if the input is "clicked".
@@ -1261,6 +1258,25 @@
          */
         isClicked() {
             return this.upCount === 1;
+        }
+    }
+    class InputSet {
+        constructor() {
+            this.inputs = new Map();
+        }
+        clear() {
+            this.inputs.clear();
+        }
+        get(key) {
+            let input = this.inputs.get(key);
+            if (!input) {
+                input = new Input();
+                this.inputs.set(key, input);
+            }
+            return input;
+        }
+        updateAll(time) {
+            this.inputs.forEach((input) => input.update(time));
         }
     }
 
@@ -1271,10 +1287,15 @@
          * @param el DOM el to attach listeners.
          */
         constructor(el) {
-            this.keys = new Map();
-            Object.keys(exports.Key).forEach((key) => this.keys.set(key, new Input()));
+            this.keys = new InputSet();
             el.addEventListener('keydown', (e) => this.setKey(e, true));
             el.addEventListener('keyup', (e) => this.setKey(e, false));
+        }
+        clear() {
+            this.keys.clear();
+        }
+        getKey(key) {
+            return this.keys.get(key);
         }
         setKey(e, state) {
             const key = e.code;
@@ -1284,18 +1305,10 @@
             }
             e.stopPropagation();
             e.preventDefault();
-            this.getKey(key).setDown(state);
+            this.keys.get(key).setDown(state);
         }
         updateKeys(time) {
-            this.keys.forEach((input) => input.update(time));
-        }
-        getKey(key) {
-            let input = this.keys.get(key);
-            if (!input) {
-                input = new Input();
-                this.keys.set(key, input);
-            }
-            return input;
+            this.keys.updateAll(time);
         }
     }
     exports.Key = void 0;
@@ -1517,7 +1530,8 @@
                 terminal.mouse.y >= offset.y &&
                 terminal.mouse.y < offset.y + this.contentsRect.height) {
                 this.hoverIndex = terminal.mouse.y - offset.y;
-                if (terminal.mouse.buttons[0].upCount === 1) {
+                if (terminal.mouse.buttons.get(0).isClicked()) {
+                    terminal.mouse.buttons.clear();
                     this.callback(this.hoverIndex);
                     return true;
                 }
@@ -1609,7 +1623,12 @@
         const r4 = data[i4];
         const g4 = data[i4 + 1];
         const b4 = data[i4 + 2];
-        const colors = [[r1, g1, b1], [r2, g2, b2], [r3, g3, b3], [r4, g4, b4]];
+        const colors = [
+            [r1, g1, b1],
+            [r2, g2, b2],
+            [r3, g3, b3],
+            [r4, g4, b4],
+        ];
         // For each possible pattern, calculate the total error
         // Find the pattern with minum error
         let minError = Number.MAX_VALUE;
@@ -1629,8 +1648,14 @@
         con.drawChar(x / 2, y / 2, bestCharCode, arrayToColor(bestFg), arrayToColor(bestBg));
     }
     function computeColors(pattern, colors) {
-        const sum = [[0, 0, 0], [0, 0, 0]];
-        const avg = [[0, 0, 0], [0, 0, 0]];
+        const sum = [
+            [0, 0, 0],
+            [0, 0, 0],
+        ];
+        const avg = [
+            [0, 0, 0],
+            [0, 0, 0],
+        ];
         const count = [0, 0];
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 3; j++) {
@@ -1660,6 +1685,7 @@
 
     class Mouse {
         constructor(terminal) {
+            this.buttons = new InputSet();
             this.el = terminal.canvas;
             this.width = terminal.width;
             this.height = terminal.height;
@@ -1671,7 +1697,6 @@
             this.dy = 0;
             this.wheelDeltaX = 0;
             this.wheelDeltaY = 0;
-            this.buttons = [new Input(), new Input(), new Input()];
             const el = this.el;
             el.addEventListener('mousedown', (e) => this.handleEvent(e));
             el.addEventListener('mouseup', (e) => this.handleEvent(e));
@@ -1689,10 +1714,10 @@
             if (e.touches.length > 0) {
                 const touch = e.touches[0];
                 this.updatePosition(touch.clientX, touch.clientY);
-                this.buttons[0].setDown(true);
+                this.buttons.get(0).setDown(true);
             }
             else {
-                this.buttons[0].setDown(false);
+                this.buttons.get(0).setDown(false);
             }
         }
         handleEvent(e) {
@@ -1700,11 +1725,11 @@
             e.preventDefault();
             this.updatePosition(e.clientX, e.clientY);
             if (e.type === 'mousedown') {
-                this.buttons[e.button].setDown(true);
+                this.buttons.get(e.button).setDown(true);
                 this.el.focus();
             }
             if (e.type === 'mouseup') {
-                this.buttons[e.button].setDown(false);
+                this.buttons.get(e.button).setDown(false);
             }
         }
         handleWheelEvent(e) {
@@ -1738,9 +1763,7 @@
             this.dy = this.y - this.prevY;
             this.prevX = this.x;
             this.prevY = this.y;
-            for (let i = 0; i < this.buttons.length; i++) {
-                this.buttons[i].update(time);
-            }
+            this.buttons.updateAll(time);
         }
     }
 
@@ -2008,7 +2031,6 @@
      * e = varying vec2 vTextureCoord;
      * f = varying vec4 vFgColor;
      * g = varying vec4 vBgColor;
-     * h = uniform bool uGraphicalTiles;
      * s = uniform sampler2D uSampler;
      * o = out vec4 oColor;
      */
@@ -2017,22 +2039,10 @@
         'in vec2 e;' +
         'in vec4 f;' +
         'in vec4 g;' +
-        'uniform bool h;' +
         'uniform sampler2D s;' +
         'out vec4 o;' +
         'void main(void){' +
         'o=texture(s,e);' +
-        'if(h){' +
-        // Using graphical tiles
-        'if(o.a<0.1){' +
-        // The current pixel of the foreground sprite is transparent.
-        // Draw the background tile instead.
-        // Use the background red channel for the tile X coordinate.
-        // Use the background green channel for the tile Y coordinate.
-        // Use the fractional component of the texture coord for the pixel offset.
-        'o=texture(s,g.rg*16.0+fract(e*16.0)/16.0);' +
-        '}' +
-        '}else{' +
         // Using ASCII characters
         'if(o.r<0.1) {' +
         // Black background, so use bgColor
@@ -2040,7 +2050,6 @@
         '} else {' +
         // White background, so use fgColor
         'o=f;' +
-        '}' +
         '}' +
         '}';
     const CRT_VERTEX_SHADER_SOURCE = `#version 300 es
@@ -2182,10 +2191,6 @@ void main() {
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
             gl.enableVertexAttribArray(this.crtTexCoordLocation);
             gl.vertexAttribPointer(this.crtTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
-            if (this.font.graphical) {
-                // Set the flag to ignore foreground/background colors, and use texture directly
-                gl.uniform1i(gl.getUniformLocation(program, 'h'), 1);
-            }
             this.positionAttribLocation = this.getAttribLocation('a');
             this.textureAttribLocation = this.getAttribLocation('b');
             this.fgColorAttribLocation = this.getAttribLocation('c');
@@ -2203,8 +2208,6 @@ void main() {
             gl.bindTexture(gl.TEXTURE_2D, this.frameBufferTexture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.pixelWidth, this.pixelHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             this.frameBuffer = gl.createFramebuffer();

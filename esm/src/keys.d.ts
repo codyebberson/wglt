@@ -1,15 +1,16 @@
-import { Input } from './input';
+import { Input, InputSet } from './input';
 export declare class Keyboard {
-    readonly keys: Map<Key, Input>;
+    readonly keys: InputSet<Key>;
     /**
      * Creates a new keyboard module.
      *
      * @param el DOM el to attach listeners.
      */
     constructor(el: HTMLElement);
+    clear(): void;
+    getKey(key: Key): Input;
     setKey(e: KeyboardEvent, state: boolean): void;
     updateKeys(time: number): void;
-    getKey(key: Key): Input;
 }
 export declare enum Key {
     VK_CANCEL = "Pause",

@@ -24,3 +24,9 @@ export declare class Input {
      */
     isClicked(): boolean;
 }
+export declare class InputSet<T> {
+    readonly inputs: Map<T, Input>;
+    clear(): void;
+    get(key: T): Input;
+    updateAll(time: number): void;
+}
