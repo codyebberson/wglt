@@ -51,7 +51,7 @@ const wave = {
 
 let time = 0;
 
-function scheduleWave() {
+function scheduleWave(): void {
   wave.count++;
   wave.startTime = time + WAVE_WARMUP_TIME;
   wave.endTime = wave.startTime + WAVE_ENEMY_COUNT * WAVE_GAP_TIME;

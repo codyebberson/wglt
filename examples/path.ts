@@ -13,11 +13,11 @@ for (let y = 0; y < SCREEN_HEIGHT; y++) {
 
 const VIEW_DISTANCE = 15;
 
-function getTile(x: number, y: number) {
+function getTile(x: number, y: number): string {
   return MAP[y][x];
 }
 
-function isBlocked(x: number, y: number) {
+function isBlocked(x: number, y: number): boolean {
   return getTile(x, y) !== '.';
 }
 
@@ -30,7 +30,7 @@ const player = {
   pathIndex: 0,
 };
 
-function computeFov() {
+function computeFov(): void {
   tileMap.computeFov(player.x, player.y, VIEW_DISTANCE);
   tileMap.updateExplored();
 }
@@ -43,7 +43,7 @@ for (let y = 0; y < SCREEN_HEIGHT; y++) {
 }
 computeFov();
 
-function movePlayer(dx: number, dy: number) {
+function movePlayer(dx: number, dy: number): void {
   const x = player.x + dx;
   const y = player.y + dy;
   if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT || isBlocked(x, y)) {

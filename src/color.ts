@@ -1,4 +1,3 @@
-
 export type Color = number;
 
 /**
@@ -13,9 +12,8 @@ export function fromRgb(r: number, g: number, b: number, a?: number): Color {
   if (a === undefined) {
     a = 255;
   }
-  return ((r << 24) + (g << 16) + (b << 8) + a);
+  return (r << 24) + (g << 16) + (b << 8) + a;
 }
-
 
 /**
  * Converts a color from HSV format to RGBA format.
@@ -37,22 +35,22 @@ export function fromHsv(h: number, s: number, v: number, a?: number): Color {
   let r, g, b;
   switch (i % 6) {
     case 0:
-      r = v, g = t, b = p;
+      (r = v), (g = t), (b = p);
       break;
     case 1:
-      r = q, g = v, b = p;
+      (r = q), (g = v), (b = p);
       break;
     case 2:
-      r = p, g = v, b = t;
+      (r = p), (g = v), (b = t);
       break;
     case 3:
-      r = p, g = q, b = v;
+      (r = p), (g = q), (b = v);
       break;
     case 4:
-      r = t, g = p, b = v;
+      (r = t), (g = p), (b = v);
       break;
     case 5:
-      r = v, g = p, b = q;
+      (r = v), (g = p), (b = q);
       break;
     default:
       r = 0;

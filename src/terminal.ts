@@ -18,7 +18,7 @@ import {
  * @param max The maximum value.
  * @returns The interpolated value between -1.0 and 1.0.
  */
-function interpolate(i: number, max: number) {
+function interpolate(i: number, max: number): number {
   return -1.0 + 2.0 * (i / max);
 }
 
@@ -248,7 +248,7 @@ export class Terminal extends Console {
     this.requestAnimationFrame();
   }
 
-  private handleResize() {
+  private handleResize(): void {
     const parent = this.canvas.parentElement;
     if (!parent) {
       return;
@@ -262,13 +262,13 @@ export class Terminal extends Console {
     this.canvas.style.height = height + 'px';
   }
 
-  private getAttribLocation(name: string) {
+  private getAttribLocation(name: string): number {
     const location = this.gl.getAttribLocation(this.program, name);
     this.gl.enableVertexAttribArray(location);
     return location;
   }
 
-  private flush() {
+  private flush(): void {
     let textureArrayIndex = 0;
     let colorArrayIndex = 0;
 
@@ -362,7 +362,7 @@ export class Terminal extends Console {
     return undefined;
   }
 
-  private buildShader(type: number, source: string) {
+  private buildShader(type: number, source: string): WebGLShader {
     const gl = this.gl;
     const sh = gl.createShader(type);
     if (!sh) {
@@ -381,7 +381,7 @@ export class Terminal extends Console {
    * When the image finished loading copy it into the texture.
    * @param url
    */
-  private loadTexture(url: string) {
+  private loadTexture(url: string): WebGLTexture {
     const gl = this.gl;
     const texture = gl.createTexture() as WebGLTexture;
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -418,7 +418,7 @@ export class Terminal extends Console {
   //
   // Draw the scene.
   //
-  private render() {
+  private render(): void {
     const gl = this.gl;
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
@@ -524,11 +524,11 @@ export class Terminal extends Console {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 
-  private requestAnimationFrame() {
+  private requestAnimationFrame(): void {
     window.requestAnimationFrame((t) => this.renderLoop(t));
   }
 
-  private renderLoop(time: number) {
+  private renderLoop(time: number): void {
     if (this.lastRenderTime === 0) {
       this.lastRenderTime = time;
       this.fps = 0;

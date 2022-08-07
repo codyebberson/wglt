@@ -51,11 +51,11 @@ const OFFSET_Y = ((SCREEN_HEIGHT - MAP_HEIGHT) / 2) | 0;
 
 const VIEW_DISTANCE = 15;
 
-function getTile(x: number, y: number) {
+function getTile(x: number, y: number): string {
   return MAP[y].charAt(x);
 }
 
-function isBlocked(x: number, y: number) {
+function isBlocked(x: number, y: number): boolean {
   return getTile(x, y) !== '.';
 }
 
@@ -81,12 +81,12 @@ const player = {
 
 const tileMap = new Console(MAP_WIDTH, MAP_HEIGHT, isBlocked);
 
-function computeFov() {
+function computeFov(): void {
   tileMap.computeFov(player.x, player.y, VIEW_DISTANCE, false, player.direction);
   tileMap.updateExplored();
 }
 
-function movePlayer(dx: number, dy: number) {
+function movePlayer(dx: number, dy: number): void {
   const x = player.x + dx;
   const y = player.y + dy;
   if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT || isBlocked(x, y)) {
