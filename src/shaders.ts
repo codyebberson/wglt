@@ -32,7 +32,6 @@ export const VERTEX_SHADER_SOURCE =
  * e = varying vec2 vTextureCoord;
  * f = varying vec4 vFgColor;
  * g = varying vec4 vBgColor;
- * h = uniform bool uGraphicalTiles;
  * s = uniform sampler2D uSampler;
  * o = out vec4 oColor;
  */
@@ -42,22 +41,10 @@ export const FRAGMENT_SHADER_SOURCE =
   'in vec2 e;' +
   'in vec4 f;' +
   'in vec4 g;' +
-  'uniform bool h;' +
   'uniform sampler2D s;' +
   'out vec4 o;' +
   'void main(void){' +
   'o=texture(s,e);' +
-  'if(h){' +
-  // Using graphical tiles
-  'if(o.a<0.1){' +
-  // The current pixel of the foreground sprite is transparent.
-  // Draw the background tile instead.
-  // Use the background red channel for the tile X coordinate.
-  // Use the background green channel for the tile Y coordinate.
-  // Use the fractional component of the texture coord for the pixel offset.
-  'o=texture(s,g.rg*16.0+fract(e*16.0)/16.0);' +
-  '}' +
-  '}else{' +
   // Using ASCII characters
   'if(o.r<0.1) {' +
   // Black background, so use bgColor
@@ -65,7 +52,6 @@ export const FRAGMENT_SHADER_SOURCE =
   '} else {' +
   // White background, so use fgColor
   'o=f;' +
-  '}' +
   '}' +
   '}';
 

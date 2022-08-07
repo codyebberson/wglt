@@ -1,19 +1,14 @@
-
 export class Font {
   readonly url: string;
   readonly charWidth: number;
   readonly charHeight: number;
   readonly scale: number;
-  readonly graphical: boolean;
 
-  constructor(
-    url: string, charWidth: number, charHeight: number,
-    scale?: number, graphical?: boolean) {
+  constructor(url: string, charWidth: number, charHeight: number, scale?: number) {
     this.url = url;
     this.charWidth = charWidth;
     this.charHeight = charHeight;
     this.scale = scale || 1.0;
-    this.graphical = !!graphical;
   }
 }
 
@@ -22,7 +17,8 @@ export class Font {
  * IBM terminal font.
  * See img/font.png.
  */
-const FONT_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
+const FONT_IMAGE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
   'MAAAD58POIAAAABlBMVEUAAAD///+l2Z/dAAAEhklEQVRIx42Sv4oUQRDGC4UzadSwwMUD8' +
   'QEKlbWD4Q58B/NGpTVocKO1wXHUzMAH0AcwMTYVGg5ag0IzEXaRjdZEZKNzkKbHqtnzHypY' +
   '09M9+5uvqr7pbYCuC6ftaRhgONXs30eAh0O1rYDm4IS/eH0B8GxRW2vxo396yu/fb0ZFrW1' +
