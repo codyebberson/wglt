@@ -435,10 +435,10 @@ export class Game implements AppState {
     const movementKey = term.getMovementKey();
 
     if (this.targetFunction) {
-      if (term.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons[0].isClicked()) {
+      if (term.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons.get(0).isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (term.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons[2].isClicked()) {
+      if (term.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons.get(2).isClicked()) {
         this.cancelTargeting();
       }
       if (movementKey) {
@@ -512,7 +512,7 @@ export class Game implements AppState {
         this.path = undefined;
       }
     }
-    if (!this.pathWalking && this.path && term.mouse.buttons[0].upCount === 1) {
+    if (!this.pathWalking && this.path && term.mouse.buttons.get(0).isClicked()) {
       this.pathWalking = true;
       this.pathIndex = 0;
     }

@@ -52,7 +52,8 @@ export class SelectDialog extends Dialog {
       terminal.mouse.y < offset.y + this.contentsRect.height
     ) {
       this.hoverIndex = terminal.mouse.y - offset.y;
-      if (terminal.mouse.buttons[0].upCount === 1) {
+      if (terminal.mouse.buttons.get(0).isClicked()) {
+        terminal.mouse.buttons.clear();
         this.callback(this.hoverIndex);
         return true;
       }

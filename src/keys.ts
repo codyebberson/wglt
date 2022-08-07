@@ -1,7 +1,7 @@
-import { Input } from './input';
+import { Input, InputSet } from './input';
 
 export class Keyboard {
-  readonly keys: Map<Key, Input>;
+  readonly keys = new InputSet<Key>();
 
   /**
    * Creates a new keyboard module.
@@ -9,11 +9,16 @@ export class Keyboard {
    * @param el DOM el to attach listeners.
    */
   constructor(el: HTMLElement) {
-    this.keys = new Map<Key, Input>();
-    Object.keys(Key).forEach((key) => this.keys.set(key as Key, new Input()));
-
     el.addEventListener('keydown', (e) => this.setKey(e, true));
     el.addEventListener('keyup', (e) => this.setKey(e, false));
+  }
+
+  clear(): void {
+    this.keys.clear();
+  }
+
+  getKey(key: Key): Input {
+    return this.keys.get(key);
   }
 
   setKey(e: KeyboardEvent, state: boolean): void {
@@ -24,20 +29,11 @@ export class Keyboard {
     }
     e.stopPropagation();
     e.preventDefault();
-    this.getKey(key).setDown(state);
+    this.keys.get(key).setDown(state);
   }
 
   updateKeys(time: number): void {
-    this.keys.forEach((input) => input.update(time));
-  }
-
-  getKey(key: Key): Input {
-    let input = this.keys.get(key);
-    if (!input) {
-      input = new Input();
-      this.keys.set(key, input);
-    }
-    return input;
+    this.keys.updateAll(time);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Input } from './input';
+import { InputSet } from './input';
 import { Rect } from './rect';
 import { Terminal } from './terminal';
 
@@ -6,6 +6,7 @@ export class Mouse {
   readonly el: HTMLCanvasElement;
   readonly width: number;
   readonly height: number;
+  readonly buttons = new InputSet<number>();
   private prevX: number;
   private prevY: number;
   x: number;
@@ -14,7 +15,6 @@ export class Mouse {
   dy: number;
   wheelDeltaX: number;
   wheelDeltaY: number;
-  readonly buttons: Input[];
 
   constructor(terminal: Terminal) {
     this.el = terminal.canvas;
@@ -28,7 +28,6 @@ export class Mouse {
     this.dy = 0;
     this.wheelDeltaX = 0;
     this.wheelDeltaY = 0;
-    this.buttons = [new Input(), new Input(), new Input()];
 
     const el = this.el;
     el.addEventListener('mousedown', (e) => this.handleEvent(e));
@@ -49,9 +48,9 @@ export class Mouse {
     if (e.touches.length > 0) {
       const touch = e.touches[0];
       this.updatePosition(touch.clientX, touch.clientY);
-      this.buttons[0].setDown(true);
+      this.buttons.get(0).setDown(true);
     } else {
-      this.buttons[0].setDown(false);
+      this.buttons.get(0).setDown(false);
     }
   }
 
@@ -62,12 +61,12 @@ export class Mouse {
     this.updatePosition(e.clientX, e.clientY);
 
     if (e.type === 'mousedown') {
-      this.buttons[e.button].setDown(true);
+      this.buttons.get(e.button).setDown(true);
       this.el.focus();
     }
 
     if (e.type === 'mouseup') {
-      this.buttons[e.button].setDown(false);
+      this.buttons.get(e.button).setDown(false);
     }
   }
 
@@ -109,9 +108,6 @@ export class Mouse {
     this.dy = this.y - this.prevY;
     this.prevX = this.x;
     this.prevY = this.y;
-
-    for (let i = 0; i < this.buttons.length; i++) {
-      this.buttons[i].update(time);
-    }
+    this.buttons.updateAll(time);
   }
 }

@@ -141,7 +141,7 @@ term.update = function () {
       }
     }
 
-    if (term.mouse.buttons[0].upCount === 1) {
+    if (term.mouse.buttons.get(0).isClicked()) {
       player.path = path;
       player.pathIndex = 0;
     }

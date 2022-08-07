@@ -1,4 +1,3 @@
-
 /**
  * The delay in frames before input repeating.
  * Time in milliseconds.
@@ -62,8 +61,6 @@ export class Input {
    */
   isPressed(): boolean {
     return this.downCount === 1 || this.repeat;
-    // const count = this.downCount;
-    // return count === 1 || (count > INPUT_REPEAT_DELAY && count % INPUT_REPEAT_RATE === 0);
   }
 
   /**
@@ -72,5 +69,26 @@ export class Input {
    */
   isClicked(): boolean {
     return this.upCount === 1;
+  }
+}
+
+export class InputSet<T> {
+  readonly inputs = new Map<T, Input>();
+
+  clear(): void {
+    this.inputs.clear();
+  }
+
+  get(key: T): Input {
+    let input = this.inputs.get(key);
+    if (!input) {
+      input = new Input();
+      this.inputs.set(key, input);
+    }
+    return input;
+  }
+
+  updateAll(time: number): void {
+    this.inputs.forEach((input) => input.update(time));
   }
 }
