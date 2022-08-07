@@ -34,7 +34,7 @@ import { Colors, Terminal } from 'wglt';
 Add a script tag to your HTML file:
 
 ```html
-<script src="https://unpkg.com/wglt@0.4.6/dist/cjs/index.js"></script>
+<script src="https://unpkg.com/wglt@0.5.0/dist/cjs/index.js"></script>
 ```
 
 ## Usage
