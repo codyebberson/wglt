@@ -1,6 +1,6 @@
 {
   "name": "wglt",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "vite",
