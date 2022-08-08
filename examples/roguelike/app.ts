@@ -19,6 +19,7 @@ export class App {
 
   constructor() {
     this.term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT, {
+      maxFps: 15,
       crt: {
         scale: 6,
         blur: 0.5,

@@ -25,6 +25,7 @@ function interpolate(i: number, max: number): number {
 interface TerminalOptions {
   font?: Font;
   crt?: CrtOptions;
+  maxFps?: number;
 }
 
 interface CrtOptions {
@@ -45,6 +46,7 @@ export class Terminal extends Console {
   readonly canvas: HTMLCanvasElement;
   readonly font: Font;
   readonly crt?: CrtOptions;
+  readonly maxFps?: number;
   readonly pixelWidth: number;
   readonly pixelHeight: number;
   readonly pixelScale: number;
@@ -96,9 +98,10 @@ export class Terminal extends Console {
     this.canvas = canvas;
     this.font = options.font || DEFAULT_FONT;
     this.crt = options.crt;
+    this.maxFps = options.maxFps;
     this.pixelWidth = width * this.font.charWidth;
     this.pixelHeight = height * this.font.charHeight;
-    this.pixelScale = options?.crt?.scale || 1.0;
+    this.pixelScale = options.crt?.scale || 1.0;
 
     canvas.width = this.pixelWidth * this.pixelScale;
     canvas.height = this.pixelHeight * this.pixelScale;
@@ -238,7 +241,11 @@ export class Terminal extends Console {
     this.fps = 0;
     this.averageFps = 0;
 
-    this.requestAnimationFrame();
+    if (this.maxFps === undefined) {
+      this.requestAnimationFrame();
+    } else {
+      window.setInterval(() => this.renderLoop(performance.now()), 1000 / this.maxFps);
+    }
   }
 
   private handleResize(): void {
@@ -542,6 +549,8 @@ export class Terminal extends Console {
     if (this.crt) {
       this.renderCrt();
     }
-    this.requestAnimationFrame();
+    if (this.maxFps === undefined) {
+      this.requestAnimationFrame();
+    }
   }
 }
