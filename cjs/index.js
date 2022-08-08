@@ -2141,9 +2141,10 @@ void main() {
             this.canvas = canvas;
             this.font = options.font || DEFAULT_FONT;
             this.crt = options.crt;
+            this.maxFps = options.maxFps;
             this.pixelWidth = width * this.font.charWidth;
             this.pixelHeight = height * this.font.charHeight;
-            this.pixelScale = ((_a = options === null || options === void 0 ? void 0 : options.crt) === null || _a === void 0 ? void 0 : _a.scale) || 1.0;
+            this.pixelScale = ((_a = options.crt) === null || _a === void 0 ? void 0 : _a.scale) || 1.0;
             canvas.width = this.pixelWidth * this.pixelScale;
             canvas.height = this.pixelHeight * this.pixelScale;
             canvas.style.imageRendering = 'pixelated';
@@ -2254,7 +2255,12 @@ void main() {
             this.renderDelta = 0;
             this.fps = 0;
             this.averageFps = 0;
-            this.requestAnimationFrame();
+            if (this.maxFps === undefined) {
+                this.requestAnimationFrame();
+            }
+            else {
+                window.setInterval(() => this.renderLoop(performance.now()), 1000 / this.maxFps);
+            }
         }
         handleResize() {
             const parent = this.canvas.parentElement;
@@ -2525,7 +2531,9 @@ void main() {
             if (this.crt) {
                 this.renderCrt();
             }
-            this.requestAnimationFrame();
+            if (this.maxFps === undefined) {
+                this.requestAnimationFrame();
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import { Point } from './point';
 interface TerminalOptions {
     font?: Font;
     crt?: CrtOptions;
+    maxFps?: number;
 }
 interface CrtOptions {
     scale: number;
@@ -20,6 +21,7 @@ export declare class Terminal extends Console {
     readonly canvas: HTMLCanvasElement;
     readonly font: Font;
     readonly crt?: CrtOptions;
+    readonly maxFps?: number;
     readonly pixelWidth: number;
     readonly pixelHeight: number;
     readonly pixelScale: number;
