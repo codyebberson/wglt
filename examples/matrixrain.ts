@@ -3,13 +3,7 @@ import { Cell, Colors, fromRgb, RNG, Terminal } from '../src/';
 const w = 80;
 const h = 45;
 
-const rain = new Array(h);
-for (let y = 0; y < h; y++) {
-  rain[y] = new Array(w);
-  for (let x = 0; x < w; x++) {
-    rain[y][x] = 0;
-  }
-}
+const rain = [...Array(h)].map(_ => Array(w).fill(0));
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, w, h);
 
