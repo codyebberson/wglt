@@ -89,7 +89,7 @@ function computeFov(): void {
 function movePlayer(dx: number, dy: number): void {
   const x = player.x + dx;
   const y = player.y + dy;
-  if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT || isBlocked(x, y)) {
+  if ((dx === 0 && dy === 0) || x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT || isBlocked(x, y)) {
     return;
   }
   player.x = x;
