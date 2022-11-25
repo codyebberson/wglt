@@ -11,7 +11,7 @@ const INPUT_REPEAT_DELAY = 200.0;
 const INPUT_REPEAT_RATE = 1000.0 / 15.0;
 
 /**
- * The Input class represents a pysical input.
+ * The Input class represents a physical input.
  * Example: keyboard key or mouse button.
  */
 export class Input {
