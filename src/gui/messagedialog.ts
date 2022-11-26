@@ -19,7 +19,7 @@ export class MessageDialog extends Dialog {
 
   drawContents(console: Console, offset: Point): void {
     if (this.message instanceof Message) {
-      console.drawMessage(offset.x, offset.y, this.message);
+      console.drawMessage(offset.x, offset.y, this.message, this.message.getWidth());
     } else {
       console.drawString(offset.x, offset.y, this.message);
     }
