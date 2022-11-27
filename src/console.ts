@@ -2,7 +2,7 @@ import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
 import { Color } from './color';
-import { Message } from './gui/message';
+import { Message, MessageAlign } from './gui/message';
 import { Rect } from './rect';
 import { serializable } from './serialize';
 import { wordWrap } from './utils';
@@ -100,8 +100,14 @@ export class Console {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
   }
 
-  drawMessage(x: number, y: number, message: Message, maxWidth?: number): number {
+  drawMessage(x: number, y: number, message: Message, maxWidth: number): number {
     if (message.text) {
+      if (message.align === MessageAlign.RIGHT) {
+        x += maxWidth - message.text.length;
+      } else if (message.align === MessageAlign.CENTER) {
+        x += maxWidth / 2 - message.text.length / 2;
+      }
+
       const lines = wordWrap(message.text, maxWidth || this.width - x);
       for (const line of lines) {
         this.drawStringLine(x, y, line, message.fg, message.bg);
