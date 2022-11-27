@@ -20,6 +20,7 @@ export class Console {
   maxY: number;
   radius: number;
   clip?: Rect;
+  blockedFunc?: (x: number, y: number) => boolean;
 
   constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean) {
     this.width = width;
@@ -32,6 +33,7 @@ export class Console {
     this.minY = 0;
     this.maxY = 0;
     this.radius = 0;
+    this.blockedFunc = blockedFunc;
 
     for (let y = 0; y < height; y++) {
       const row = [];
@@ -527,4 +529,22 @@ export class Console {
       }
     }
   }
+
+  /**
+   * Update the blocked flags for tiles that have become blocked since
+   * the Console initial creation, otherwise logic that rely on such flags
+   * won't address the new tiles like shadowcasting and pathfinding
+   */
+  updateBlocked(): void {
+    if (!this.blockedFunc) {
+      return;
+    }
+    for (let y = this.minY; y <= this.maxY; y++) {
+      for (let x = this.minX; x <= this.maxX; x++) {
+        const tile = this.grid[y][x];
+        tile.blocked = tile.blockedSight = this.blockedFunc(tile.x, tile.y);
+      }
+    }
+  }
+
 }
