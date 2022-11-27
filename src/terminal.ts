@@ -40,6 +40,39 @@ interface CrtOptions {
 
 const DEFAULT_OPTIONS = {
   font: DEFAULT_FONT,
+  movementKeys: {
+    // Up
+    [Key.VK_K]: new Point(0, -1),
+    [Key.VK_UP]: new Point(0, -1),
+    [Key.VK_NUMPAD8]: new Point(0, -1),
+    // Down
+    [Key.VK_J]: new Point(0, 1),
+    [Key.VK_DOWN]: new Point(0, 1),
+    [Key.VK_NUMPAD2]: new Point(0, 1),
+    // Left
+    [Key.VK_H]: new Point(-1, 0),
+    [Key.VK_LEFT]: new Point(-1, 0),
+    [Key.VK_NUMPAD4]: new Point(-1, 0),
+    // Right
+    [Key.VK_L]: new Point(1, 0),
+    [Key.VK_RIGHT]: new Point(1, 0),
+    [Key.VK_NUMPAD6]: new Point(1, 0),
+    // Top-left
+    [Key.VK_Y]: new Point(-1, -1),
+    [Key.VK_NUMPAD7]: new Point(-1, -1),
+    // Top-right
+    [Key.VK_U]: new Point(1, -1),
+    [Key.VK_NUMPAD9]: new Point(1, -1),
+    // Bottom-left
+    [Key.VK_B]: new Point(-1, 1),
+    [Key.VK_NUMPAD1]: new Point(-1, 1),
+    // Bottom-right
+    [Key.VK_N]: new Point(1, 1),
+    [Key.VK_NUMPAD3]: new Point(1, 1),
+    // Wait
+    [Key.VK_PERIOD]: new Point(0, 0),
+    [Key.VK_NUMPAD5]: new Point(0, 0)
+  }
 };
 
 export class Terminal extends Console {
@@ -338,33 +371,11 @@ export class Terminal extends Console {
    * If no key is pressed, returns undefined.
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
-  getMovementKey(): Point | undefined {
-    if (this.isKeyPressed(Key.VK_NUMPAD1) || this.isKeyPressed(Key.VK_B)) {
-      return new Point(-1, 1);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD2) || this.isKeyPressed(Key.VK_J) || this.isKeyPressed(Key.VK_DOWN)) {
-      return new Point(0, 1);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD3) || this.isKeyPressed(Key.VK_N)) {
-      return new Point(1, 1);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD4) || this.isKeyPressed(Key.VK_H) || this.isKeyPressed(Key.VK_LEFT)) {
-      return new Point(-1, 0);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD5) || this.isKeyPressed(Key.VK_PERIOD)) {
-      return new Point(0, 0);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD6) || this.isKeyPressed(Key.VK_L) || this.isKeyPressed(Key.VK_RIGHT)) {
-      return new Point(1, 0);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD7) || this.isKeyPressed(Key.VK_Y)) {
-      return new Point(-1, -1);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD8) || this.isKeyPressed(Key.VK_K) || this.isKeyPressed(Key.VK_UP)) {
-      return new Point(0, -1);
-    }
-    if (this.isKeyPressed(Key.VK_NUMPAD9) || this.isKeyPressed(Key.VK_U)) {
-      return new Point(1, -1);
+  getMovementKey(movementKeys: Partial<Record<Key, Point>> = DEFAULT_OPTIONS.movementKeys): Point | undefined {
+    for (const key in movementKeys) {
+      if (this.isKeyPressed(key as Key)) {
+        return movementKeys[key as Key];
+      }
     }
     return undefined;
   }
