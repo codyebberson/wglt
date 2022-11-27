@@ -22,7 +22,7 @@ export class ScrollableMessageDialog extends Dialog {
 
   drawContents(console: Console, offset: Point): void {
     console.clip = this.contentsRect;
-    console.drawMessage(offset.x, offset.y - this.scrollY, this.message);
+    console.drawMessage(offset.x, offset.y - this.scrollY, this.message, this.message.getWidth());
     console.clip = undefined;
 
     // Draw scrollbar

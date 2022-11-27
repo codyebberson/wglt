@@ -1,4 +1,4 @@
-import { Colors, fromRgb, GUI, Key, Message, MessageDialog, Rect, SelectDialog, Terminal } from '../src/';
+import { Colors, fromRgb, GUI, Key, Message, MessageAlign, MessageDialog, Rect, SelectDialog, Terminal } from '../src/';
 import { ScrollableMessageDialog } from '../src/gui/scrollablemessagedialog';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
@@ -36,10 +36,12 @@ term.update = function () {
             new Message('Binds when picked up', Colors.WHITE),
             new Message('Unique-Equipped', Colors.WHITE),
             new Message(' '),
+            new Message('Weapon', Colors.LIGHT_RED, undefined, undefined, MessageAlign.CENTER),
             new Message('One-Hand                              Dagger', Colors.WHITE),
             new Message('195-293 Damage                    Speed 1.70', Colors.WHITE),
             new Message('143.53 damage per second', Colors.WHITE),
             new Message('+43 Stamina', Colors.WHITE),
+            new Message('Total: 1.70', Colors.LIGHT_GRAY, undefined, undefined, MessageAlign.RIGHT),
             new Message(' '),
             new Message('Durability 75 / 75', Colors.WHITE),
             new Message('Requires Level 80', Colors.WHITE),
