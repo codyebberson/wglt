@@ -9,7 +9,7 @@ import { Dialog } from './dialog';
 export class SelectDialog extends Dialog {
   readonly options: string[];
   readonly callback: (i: number) => void;
-  private hoverIndex: number;
+  protected hoverIndex: number;
 
   constructor(title: string, options: string[], callback: (i: number) => void) {
     let width = title.length;
