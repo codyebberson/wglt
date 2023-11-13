@@ -15,7 +15,7 @@ WGLT is modelled after [libtcod](https://github.com/libtcod/libtcod) and [rot.js
 
 ## Install
 
-### Install with npm
+### Install with npm (recommended)
 
 Add dependency to your package.json:
 
@@ -34,7 +34,7 @@ import { Colors, Terminal } from 'wglt';
 Add a script tag to your HTML file:
 
 ```html
-<script src="https://unpkg.com/wglt@0.5.1/dist/cjs/index.js"></script>
+<script src="https://unpkg.com/wglt@0.6.0/dist/cjs/index.cjs"></script>
 ```
 
 ## Usage
