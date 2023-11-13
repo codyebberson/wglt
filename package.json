@@ -1,6 +1,6 @@
 {
   "name": "wglt",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "vite",
@@ -38,7 +38,7 @@
   "files": [
     "dist/cjs",
     "dist/esm",
-    "dist/types"
+    "dist/types.d.ts"
   ],
   "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.mjs",
