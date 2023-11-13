@@ -6,7 +6,7 @@ export class Keyboard {
   /**
    * Creates a new keyboard module.
    *
-   * @param el DOM el to attach listeners.
+   * @param el - DOM el to attach listeners.
    */
   constructor(el: HTMLElement) {
     el.addEventListener('keydown', (e) => this.setKey(e, true));
@@ -38,12 +38,11 @@ export class Keyboard {
 }
 
 export enum Key {
-  VK_CANCEL = 'Pause',
   VK_BACKSPACE = 'Backspace',
   VK_TAB = 'Tab',
   VK_ENTER = 'Enter',
   VK_SHIFT_LEFT = 'ShiftLeft',
-  VK_SHIFT_RIGHT = 'ShiftLeft',
+  VK_SHIFT_RIGHT = 'ShiftRight',
   VK_CONTROL_LEFT = 'ControlLeft',
   VK_CONTROL_RIGHT = 'ControlRight',
   VK_ALT_LEFT = 'AltLeft',
@@ -114,7 +113,7 @@ export enum Key {
   VK_NUMPAD_ENTER = 'NumpadEnter',
   VK_MULTIPLY = 'NumpadMultiply',
   VK_ADD = 'NumpadAdd',
-  VK_SEPARATOR = 'NumpadDecimal',
+  VK_SEPARATOR = 'NumpadSeparator',
   VK_SUBTRACT = 'NumpadSubtract',
   VK_DECIMAL = 'NumpadDecimal',
   VK_DIVIDE = 'NumpadDivide',

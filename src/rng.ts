@@ -16,7 +16,7 @@ export class RNG {
   /**
    * Creates a new random number generator.
    *
-   * @param seed The integer seed.
+   * @param seed - The integer seed.
    */
   constructor(seed?: number) {
     // LCG using GCC's constants
@@ -41,8 +41,8 @@ export class RNG {
 
   /**
    * Returns an integer in the range start (inclusive) to end (exclusive).
-   * @param start Lower bound, inclusive.
-   * @param end Upper bound, exclusive.
+   * @param start - Lower bound, inclusive.
+   * @param end - Upper bound, exclusive.
    */
   nextRange(start: number, end: number): number {
     // returns in range [start, end): including start, excluding end

@@ -16,6 +16,7 @@ export * from './gui/messagedialog';
 export * from './gui/scrollablemessagedialog';
 export * from './gui/selectdialog';
 export * from './image';
+export * from './input';
 export * from './keys';
 export * from './mouse';
 export * from './palettes/c64';

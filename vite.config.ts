@@ -1,4 +1,4 @@
-import glob from 'glob';
+import { globSync } from 'glob';
 import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
 
@@ -9,7 +9,7 @@ import { defineConfig } from 'vitest/config';
 // For more details, see:
 // https://vitejs.dev/guide/build.html#multi-page-app
 
-const htmlFiles = ['./index.html', ...glob.sync('./examples/**/*.html')];
+const htmlFiles = ['./index.html', ...globSync('./examples/**/*.html')];
 const input = Object.fromEntries(htmlFiles.map((file) => [file.replace('./', ''), resolve(__dirname, file)]));
 
 export default defineConfig({

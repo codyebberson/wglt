@@ -1,6 +1,8 @@
 /**
  * The FovOctants constants provide bitmasks for various directions.
  *
+ * @example
+ * ```
  *     \ 4 | 3 /
  *      \  |  /
  *    5  \ | /  2
@@ -10,7 +12,7 @@
  *    6  / | \  1
  *      /  |  \
  *     / 7 | 0 \
- *
+ *```
  */
 export enum FovOctants {
   OCTANT_SOUTH_SOUTHEAST = 0x001,

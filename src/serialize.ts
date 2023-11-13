@@ -15,8 +15,8 @@ const classDefinitions = new Map<string, ObjectConstructor>();
 
 /**
  * Decorates a class to make serializable.
- * Any class with the @serializable decorator will be serialized and deserialized.
- * @param value The TypeScript class to mark as serializable.
+ * Any class with the `@serializable` decorator will be serialized and deserialized.
+ * @param value - The TypeScript class to mark as serializable.
  */
 export function serializable(value: { name: string }): void {
   classDefinitions.set(value.name, value as ObjectConstructor);
@@ -25,7 +25,7 @@ export function serializable(value: { name: string }): void {
 /**
  * Serializes a value to JSON.
  * Handles circular references and class instances.
- * @param obj The root object to serialize.
+ * @param obj - The root object to serialize.
  * @returns A string representation of the object graph.
  */
 export function serialize(obj: unknown): string {
@@ -81,7 +81,7 @@ export function serialize(obj: unknown): string {
 /**
  * Deserializes a JSON string to an object graph.
  * Handles circular references and class instances.
- * @param str The JSON string to deserialize.
+ * @param str - The JSON string to deserialize.
  * @returns The deserialized object graph.
  */
 export function deserialize(str: string): unknown {

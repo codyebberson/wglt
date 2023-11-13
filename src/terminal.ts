@@ -14,21 +14,21 @@ import {
 /**
  * Linearly interpolates a number in the range 0-max to -1.0-1.0.
  *
- * @param i The value between 0 and max.
- * @param max The maximum value.
+ * @param i - The value between 0 and max.
+ * @param max - The maximum value.
  * @returns The interpolated value between -1.0 and 1.0.
  */
 function interpolate(i: number, max: number): number {
   return -1.0 + 2.0 * (i / max);
 }
 
-interface TerminalOptions {
+export interface TerminalOptions {
   font?: Font;
   crt?: CrtOptions;
   maxFps?: number;
 }
 
-interface CrtOptions {
+export interface CrtOptions {
   scale: number;
   blur: number;
   curvature: number;
@@ -71,8 +71,8 @@ const DEFAULT_OPTIONS = {
     [Key.VK_NUMPAD3]: new Point(1, 1),
     // Wait
     [Key.VK_PERIOD]: new Point(0, 0),
-    [Key.VK_NUMPAD5]: new Point(0, 0)
-  }
+    [Key.VK_NUMPAD5]: new Point(0, 0),
+  },
 };
 
 export class Terminal extends Console {
@@ -178,7 +178,7 @@ export class Terminal extends Console {
     this.crtScanlineWidthLocation = gl.getUniformLocation(this.crtProgram, 'u_scanlineWidth') as WebGLUniformLocation;
     this.crtScanlineIntensityLocation = gl.getUniformLocation(
       this.crtProgram,
-      'u_scanlineIntensity'
+      'u_scanlineIntensity',
     ) as WebGLUniformLocation;
     this.crtVignetteLocation = gl.getUniformLocation(this.crtProgram, 'u_vignette') as WebGLUniformLocation;
 
@@ -390,7 +390,7 @@ export class Terminal extends Console {
   /**
    * Initialize a texture and load an image.
    * When the image finished loading copy it into the texture.
-   * @param url
+   * @param url - The texture image URL.
    */
   private loadTexture(url: string): WebGLTexture {
     const gl = this.gl;

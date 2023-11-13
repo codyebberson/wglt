@@ -4,10 +4,10 @@
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:site && npm run build:lib && npm run build:types",
+    "build": "npm run build:lib && npm run build:types && npm run build:site",
     "build:site": "vite build",
-    "build:lib": "rollup --config rollup.config.js",
-    "build:types": "tsc --project tsconfig.build.json",
+    "build:lib": "node esbuild.mjs",
+    "build:types": "tsc --project tsconfig.build.json && api-extractor run --local",
     "test": "vitest --run",
     "lint": "eslint src examples",
     "fix": "eslint --fix src examples"
@@ -15,24 +15,21 @@
   "author": "Cody Ebberson",
   "license": "MIT",
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "13.3.0",
-    "@rollup/plugin-typescript": "8.3.4",
-    "@types/glob": "7.2.0",
-    "@typescript-eslint/eslint-plugin": "5.32.0",
-    "@typescript-eslint/parser": "5.32.0",
-    "c8": "7.12.0",
-    "eslint": "8.21.0",
-    "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "glob": "8.0.3",
-    "prettier": "2.7.1",
-    "rollup": "2.77.2",
-    "rollup-plugin-terser": "7.0.2",
+    "@microsoft/api-extractor": "7.38.3",
+    "@typescript-eslint/eslint-plugin": "6.11.0",
+    "@typescript-eslint/parser": "6.11.0",
+    "c8": "8.0.1",
+    "esbuild": "0.19.5",
+    "eslint": "8.53.0",
+    "eslint-config-prettier": "9.0.0",
+    "eslint-plugin-prettier": "5.0.1",
+    "glob": "10.3.10",
+    "prettier": "3.1.0",
     "ts-node": "10.9.1",
-    "tslib": "2.4.0",
-    "typescript": "4.7.4",
-    "vite": "3.0.4",
-    "vitest": "0.21.0"
+    "tslib": "2.6.2",
+    "typescript": "5.2.2",
+    "vite": "4.5.0",
+    "vitest": "0.34.6"
   },
   "repository": {
     "type": "git",
@@ -43,11 +40,11 @@
     "dist/esm",
     "dist/types"
   ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.mjs",
   "exports": {
-    "require": "./dist/cjs/index.js",
-    "import": "./dist/esm/index.js"
+    "require": "./dist/cjs/index.cjs",
+    "import": "./dist/esm/index.mjs"
   },
   "types": "dist/types/index.d.ts",
   "sideEffects": false,
