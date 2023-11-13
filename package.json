@@ -1,6 +1,6 @@
 {
   "name": "wglt",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "WebGL Terminal",
   "scripts": {
     "dev": "vite",
@@ -46,7 +46,7 @@
     "require": "./dist/cjs/index.cjs",
     "import": "./dist/esm/index.mjs"
   },
-  "types": "dist/types/index.d.ts",
+  "types": "dist/types.d.ts",
   "sideEffects": false,
   "browserslist": [
     "last 1 Chrome versions"
