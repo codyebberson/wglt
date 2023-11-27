@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -6,10 +6,10 @@
     <title>WGLT - WebGL Terminal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism-okaidia.min.css" />
     
-    <script type="module" crossorigin src="/assets/modulepreload-polyfill.b7f2da20.js"></script>
-    <script type="module" crossorigin src="/assets/terminal.9bf168bf.js"></script>
-    <script type="module" crossorigin src="/assets/hello.968b8957.js"></script>
-    <link rel="stylesheet" href="/assets/styles.eb5e8cab.css">
+    <script type="module" crossorigin src="/assets/modulepreload-polyfill-3cfb730f.js"></script>
+    <script type="module" crossorigin src="/assets/terminal-34f48c6a.js"></script>
+    <script type="module" crossorigin src="/assets/hello-38ff2db0.js"></script>
+    <link rel="stylesheet" href="/assets/styles-eb5e8cab.css">
   </head>
 
   <body>
@@ -46,13 +46,16 @@
         <a href="http://ondras.github.io/rot.js/hp/">rot.js</a>.
       </p>
 
-      <h2>Usage</h2>
+      <h2>Install</h2>
+      <h3>Install with npm (recommended)</h3>
       <p>Add dependency:</p>
       <pre><code class="language-bash">npm i -D wglt</code></pre>
       <p>Import library:</p>
       <pre><code class="language-javascript">import * as wglt from 'wglt';</code></pre>
+      <h3>Link directly with HTML</h3>
       <p>Or, simply use the prebuilt:</p>
-      <pre><code class="language-html">&lt;script src="https://unpkg.com/wglt@0.5.1/dist/cjs/index.js"&gt;&lt;/script&gt;</code></pre>
+      <pre><code class="language-html">&lt;script src="https://unpkg.com/wglt@0.6.3/dist/cjs/index.cjs"&gt;&lt;/script&gt;</code></pre>
+      <h2>Usage</h2>
       <p>Use it:</p>
       <pre><code class="language-javascript">const term = new wglt.Terminal(document.querySelector('canvas'), 80, 45);
 term.fillRect(0, 0, 80, 45, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
