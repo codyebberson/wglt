@@ -29,14 +29,6 @@ Import library:
 import { Colors, Terminal } from 'wglt';
 ```
 
-### Link directly with HTML
-
-Add a script tag to your HTML file:
-
-```html
-<script src="https://unpkg.com/wglt@0.6.3/dist/cjs/index.cjs"></script>
-```
-
 ## Usage
 
 Use it:

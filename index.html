@@ -43,14 +43,10 @@
       </p>
 
       <h2>Install</h2>
-      <h3>Install with npm (recommended)</h3>
       <p>Add dependency:</p>
       <pre><code class="language-bash">npm i -D wglt</code></pre>
       <p>Import library:</p>
       <pre><code class="language-javascript">import * as wglt from 'wglt';</code></pre>
-      <h3>Link directly with HTML</h3>
-      <p>Or, simply use the prebuilt:</p>
-      <pre><code class="language-html">&lt;script src="https://unpkg.com/wglt@0.6.3/dist/cjs/index.cjs"&gt;&lt;/script&gt;</code></pre>
       <h2>Usage</h2>
       <p>Use it:</p>
       <pre><code class="language-javascript">const term = new wglt.Terminal(document.querySelector('canvas'), 80, 45);
@@ -75,16 +71,7 @@ term.update = function () {
 
       <h2>Examples</h2>
       <ul>
-        <li>
-          <a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls
-          <ul>
-            <li>
-              <a href="examples/commonjs.html">CommonJS</a> - Load the WGLT library with CommonJS, without any build
-              tools
-            </li>
-            <li><a href="examples/esm.html">ESM</a> - Load the WGLT library with ESM, without any build tools</li>
-          </ul>
-        </li>
+        <li><a href="examples/hello.html">Hello world</a> - Basic setup, rendering, and keyboard controls</li>
         <li><a href="examples/performance.html">Performance</a> - Smooth and consistent 60 fps without CPU fan</li>
         <li><a href="examples/colors.html">Colors</a> - True color palette, HSV color manipulation</li>
         <li><a href="examples/shmup.html">Shmup</a> - Simple Galaga clone demonsrating realtime gameplay</li>
