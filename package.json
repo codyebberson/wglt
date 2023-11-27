@@ -2,18 +2,49 @@
   "name": "wglt",
   "version": "0.6.3",
   "description": "WebGL Terminal",
-  "scripts": {
-    "dev": "vite",
-    "build": "npm run build:lib && npm run build:types && npm run build:site",
-    "build:site": "vite build",
-    "build:lib": "node esbuild.mjs",
-    "build:types": "tsc --project tsconfig.build.json && api-extractor run --local",
-    "test": "vitest --run",
-    "lint": "eslint src examples",
-    "fix": "eslint --fix src examples"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codyebberson/wglt"
   },
-  "author": "Cody Ebberson",
   "license": "MIT",
+  "author": "Cody Ebberson <cody@ebberson.com>",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    "import": {
+      "types": "./dist/esm/index.d.ts",
+      "default": "./dist/esm/index.mjs"
+    },
+    "require": {
+      "types": "./dist/cjs/index.d.ts",
+      "default": "./dist/cjs/index.cjs"
+    }
+  },
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.mjs",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "dist/cjs",
+    "dist/esm"
+  ],
+  "scripts": {
+    "api-extractor": "api-extractor run --local && cp dist/types.d.ts dist/cjs/index.d.ts && cp dist/types.d.ts dist/esm/index.d.ts",
+    "build": "npm run build:lib && npm run build:types && npm run build:site",
+    "build:lib": "node esbuild.mjs",
+    "build:site": "vite build",
+    "build:types": "tsc --project tsconfig.build.json && npm run api-extractor",
+    "dev": "vite",
+    "fix": "eslint --fix src examples",
+    "lint": "eslint src examples",
+    "test": "vitest --run"
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ],
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
+  },
   "devDependencies": {
     "@microsoft/api-extractor": "7.38.3",
     "@typescript-eslint/eslint-plugin": "6.11.0",
@@ -30,29 +61,5 @@
     "typescript": "5.2.2",
     "vite": "4.5.0",
     "vitest": "0.34.6"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/codyebberson/wglt"
-  },
-  "files": [
-    "dist/cjs",
-    "dist/esm",
-    "dist/types.d.ts"
-  ],
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.mjs",
-  "exports": {
-    "require": "./dist/cjs/index.cjs",
-    "import": "./dist/esm/index.mjs"
-  },
-  "types": "dist/types.d.ts",
-  "sideEffects": false,
-  "browserslist": [
-    "last 1 Chrome versions"
-  ],
-  "prettier": {
-    "printWidth": 120,
-    "singleQuote": true
   }
 }
