@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
 
 // Vite is used for the development server and the website.
-// Rollup is used for the published library.
+// ESBuild is used for the published library.
 // This allows us to use the Vite "Multi-Page App" feature.
 // Each example is its own Vite entry point.
 // For more details, see:
