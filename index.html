@@ -6,7 +6,7 @@
     <title>WGLT - WebGL Terminal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism-okaidia.min.css" />
     <script type="module" crossorigin src="/assets/terminal-M0kbsYI0.js"></script>
-    <script type="module" crossorigin src="/assets/hello-TxLzpb4W.js"></script>
+    <script type="module" crossorigin src="/assets/hello-3UgUR9p7.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/terminal-_O9NRmHC.css">
   </head>
 
@@ -47,16 +47,18 @@
       <p>Add dependency:</p>
       <pre><code class="language-bash">npm i -D wglt</code></pre>
       <p>Import library:</p>
-      <pre><code class="language-javascript">import * as wglt from 'wglt';</code></pre>
+      <pre><code class="language-javascript">import { Colors, Terminal } from 'wglt';</code></pre>
       <h2>Usage</h2>
       <p>Use it:</p>
-      <pre><code class="language-javascript">const term = new wglt.Terminal(document.querySelector('canvas'), 80, 45);
-term.fillRect(0, 0, 80, 45, 0, wglt.Colors.YELLOW, wglt.Colors.DARK_BLUE);
+      <pre><code class="language-javascript">import { Colors, Terminal } from 'wglt';
+
+const term = new Terminal(document.querySelector('canvas'), 80, 45);
+term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
 
-term.update = function () {
+term.update = () => {
   const moveKey = term.getMovementKey();
   if (moveKey) {
     x += moveKey.x;
