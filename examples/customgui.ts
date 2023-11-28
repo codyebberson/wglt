@@ -5,7 +5,7 @@ import {
   DialogRenderer,
   DialogState,
   GUI,
-  Key,
+  Keys,
   MessageDialog,
   Point,
   Rect,
@@ -70,10 +70,10 @@ term.update = () => {
       x += moveKey.x;
       y += moveKey.y;
     }
-    if (term.isKeyPressed(Key.VK_M)) {
+    if (term.isKeyPressed(Keys.VK_M)) {
       gui.add(new MessageDialog('ALERT', 'Hello World'));
     }
-    if (term.isKeyPressed(Key.VK_I)) {
+    if (term.isKeyPressed(Keys.VK_I)) {
       gui.add(
         new SelectDialog('INVENTORY', options, (choice) => {
           gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));

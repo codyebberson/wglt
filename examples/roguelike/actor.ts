@@ -1,5 +1,4 @@
-import { Color } from '../../src/color';
-import { Colors } from '../../src/palettes/colors';
+import { Color, Colors } from '../../src';
 import { AI } from './ai';
 import { Entity } from './entity';
 import { Game } from './game';

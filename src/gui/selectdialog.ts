@@ -1,5 +1,5 @@
 import { Console } from '../console';
-import { Key } from '../keys';
+import { KeyCode, Keys } from '../keys';
 import { Colors } from '../palettes/colors';
 import { Point } from '../point';
 import { Rect } from '../rect';
@@ -41,7 +41,7 @@ export class SelectDialog extends Dialog {
     if (moveKey && moveKey.y !== 0) {
       this.hoverIndex = (this.hoverIndex + this.options.length + moveKey.y) % this.options.length;
     }
-    if (this.hoverIndex >= 0 && (terminal.isKeyPressed(Key.VK_ENTER) || terminal.isKeyPressed(Key.VK_NUMPAD_ENTER))) {
+    if (this.hoverIndex >= 0 && (terminal.isKeyPressed(Keys.VK_ENTER) || terminal.isKeyPressed(Keys.VK_NUMPAD_ENTER))) {
       this.callback(this.hoverIndex);
       return true;
     }
@@ -60,12 +60,12 @@ export class SelectDialog extends Dialog {
     }
     const startCharCode = 'A'.charCodeAt(0);
     for (let i = 0; i < this.options.length; i++) {
-      if (terminal.isKeyPressed('Key' + String.fromCharCode(startCharCode + i))) {
+      if (terminal.isKeyPressed(('Key' + String.fromCharCode(startCharCode + i)) as KeyCode)) {
         this.callback(i);
         return true;
       }
     }
-    return terminal.isKeyPressed(Key.VK_ESCAPE);
+    return terminal.isKeyPressed(Keys.VK_ESCAPE);
   }
 
   isMouseOverOption(terminal: Terminal, offset: Point, index: number): boolean {

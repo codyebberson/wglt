@@ -1,4 +1,4 @@
-import { Colors } from '../../src/palettes/colors';
+import { Colors } from '../../src';
 import { Actor } from './actor';
 
 const CONFUSE_NUM_TURNS = 10;

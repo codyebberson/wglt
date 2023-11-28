@@ -1,7 +1,7 @@
 import { Cell } from './cell';
 import { Console } from './console';
 import { DEFAULT_FONT, Font } from './font';
-import { Key, Keyboard } from './keys';
+import { KeyCode, Keyboard, Keys } from './keys';
 import { Mouse } from './mouse';
 import { Point } from './point';
 import {
@@ -24,6 +24,7 @@ function interpolate(i: number, max: number): number {
 
 export interface TerminalOptions {
   font?: Font;
+  movementKeys?: Partial<Record<KeyCode, Point>>;
   crt?: CrtOptions;
   maxFps?: number;
 }
@@ -38,41 +39,43 @@ export interface CrtOptions {
   scanlineIntensity: number;
 }
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_MOVEMENT_KEYS: Partial<Record<KeyCode, Point>> = {
+  // Up
+  [Keys.VK_K]: new Point(0, -1),
+  [Keys.VK_UP]: new Point(0, -1),
+  [Keys.VK_NUMPAD8]: new Point(0, -1),
+  // Down
+  [Keys.VK_J]: new Point(0, 1),
+  [Keys.VK_DOWN]: new Point(0, 1),
+  [Keys.VK_NUMPAD2]: new Point(0, 1),
+  // Left
+  [Keys.VK_H]: new Point(-1, 0),
+  [Keys.VK_LEFT]: new Point(-1, 0),
+  [Keys.VK_NUMPAD4]: new Point(-1, 0),
+  // Right
+  [Keys.VK_L]: new Point(1, 0),
+  [Keys.VK_RIGHT]: new Point(1, 0),
+  [Keys.VK_NUMPAD6]: new Point(1, 0),
+  // Top-left
+  [Keys.VK_Y]: new Point(-1, -1),
+  [Keys.VK_NUMPAD7]: new Point(-1, -1),
+  // Top-right
+  [Keys.VK_U]: new Point(1, -1),
+  [Keys.VK_NUMPAD9]: new Point(1, -1),
+  // Bottom-left
+  [Keys.VK_B]: new Point(-1, 1),
+  [Keys.VK_NUMPAD1]: new Point(-1, 1),
+  // Bottom-right
+  [Keys.VK_N]: new Point(1, 1),
+  [Keys.VK_NUMPAD3]: new Point(1, 1),
+  // Wait
+  [Keys.VK_PERIOD]: new Point(0, 0),
+  [Keys.VK_NUMPAD5]: new Point(0, 0),
+};
+
+const DEFAULT_OPTIONS: TerminalOptions = {
   font: DEFAULT_FONT,
-  movementKeys: {
-    // Up
-    [Key.VK_K]: new Point(0, -1),
-    [Key.VK_UP]: new Point(0, -1),
-    [Key.VK_NUMPAD8]: new Point(0, -1),
-    // Down
-    [Key.VK_J]: new Point(0, 1),
-    [Key.VK_DOWN]: new Point(0, 1),
-    [Key.VK_NUMPAD2]: new Point(0, 1),
-    // Left
-    [Key.VK_H]: new Point(-1, 0),
-    [Key.VK_LEFT]: new Point(-1, 0),
-    [Key.VK_NUMPAD4]: new Point(-1, 0),
-    // Right
-    [Key.VK_L]: new Point(1, 0),
-    [Key.VK_RIGHT]: new Point(1, 0),
-    [Key.VK_NUMPAD6]: new Point(1, 0),
-    // Top-left
-    [Key.VK_Y]: new Point(-1, -1),
-    [Key.VK_NUMPAD7]: new Point(-1, -1),
-    // Top-right
-    [Key.VK_U]: new Point(1, -1),
-    [Key.VK_NUMPAD9]: new Point(1, -1),
-    // Bottom-left
-    [Key.VK_B]: new Point(-1, 1),
-    [Key.VK_NUMPAD1]: new Point(-1, 1),
-    // Bottom-right
-    [Key.VK_N]: new Point(1, 1),
-    [Key.VK_NUMPAD3]: new Point(1, 1),
-    // Wait
-    [Key.VK_PERIOD]: new Point(0, 0),
-    [Key.VK_NUMPAD5]: new Point(0, 0),
-  },
+  movementKeys: DEFAULT_MOVEMENT_KEYS,
 };
 
 export class Terminal extends Console {
@@ -339,15 +342,15 @@ export class Terminal extends Console {
     }
   }
 
-  isKeyDown(key: string): boolean {
+  isKeyDown(key: KeyCode): boolean {
     return this.keys.getKey(key).down;
   }
 
-  isKeyPressed(key: string): boolean {
+  isKeyPressed(key: KeyCode): boolean {
     return this.keys.getKey(key).isPressed();
   }
 
-  getKeyDownCount(key: string): number {
+  getKeyDownCount(key: KeyCode): number {
     return this.keys.getKey(key).downCount;
   }
 
@@ -362,10 +365,10 @@ export class Terminal extends Console {
    * If no key is pressed, returns undefined.
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
-  getMovementKey(movementKeys: Partial<Record<string, Point>> = DEFAULT_OPTIONS.movementKeys): Point | undefined {
-    for (const key in movementKeys) {
+  getMovementKey(movementKeys: Partial<Record<KeyCode, Point>> = DEFAULT_MOVEMENT_KEYS): Point | undefined {
+    for (const [key, delta] of Object.entries(movementKeys) as [KeyCode, Point][]) {
       if (this.isKeyPressed(key)) {
-        return movementKeys[key];
+        return delta;
       }
     }
     return undefined;

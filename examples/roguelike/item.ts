@@ -1,4 +1,4 @@
-import { Color } from '../../src/color';
+import { Color } from '../../src';
 import { Entity } from './entity';
 import { Game } from './game';
 

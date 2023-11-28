@@ -1,7 +1,4 @@
-import { Console } from '../../src/console';
-import { SelectDialog } from '../../src/gui/selectdialog';
-import { loadImage2x } from '../../src/image';
-import { Colors } from '../../src/palettes/colors';
+import { Colors, Console, SelectDialog, loadImage2x } from '../../src';
 import { App, AppState } from './app';
 
 let menuBg: Console | null = null;
@@ -11,11 +8,7 @@ loadImage2x('../../menu.png', (result) => {
 });
 
 export class MainMenu implements AppState {
-  private readonly app: App;
-
-  constructor(app: App) {
-    this.app = app;
-  }
+  constructor(private readonly app: App) {}
 
   update(): void {
     const term = this.app.term;

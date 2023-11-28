@@ -1,4 +1,4 @@
-import { Colors, Console, Key, loadImage2x, Terminal } from '../src/';
+import { Colors, Console, Keys, loadImage2x, Terminal } from '../src/';
 
 const crt = {
   scale: 6,
@@ -18,44 +18,44 @@ let img = null as Console | null;
 loadImage2x('../smtpe.png', (result) => (img = result));
 
 term.update = () => {
-  if (term.isKeyPressed(Key.VK_Q)) {
+  if (term.isKeyPressed(Keys.VK_Q)) {
     crt.curvature += 0.01;
   }
-  if (term.isKeyPressed(Key.VK_A)) {
+  if (term.isKeyPressed(Keys.VK_A)) {
     crt.curvature -= 0.01;
   }
-  if (term.isKeyPressed(Key.VK_W)) {
+  if (term.isKeyPressed(Keys.VK_W)) {
     crt.chroma += 0.1;
   }
-  if (term.isKeyPressed(Key.VK_S)) {
+  if (term.isKeyPressed(Keys.VK_S)) {
     crt.chroma -= 0.1;
   }
-  if (term.isKeyPressed(Key.VK_E)) {
+  if (term.isKeyPressed(Keys.VK_E)) {
     crt.vignette += 0.01;
   }
-  if (term.isKeyPressed(Key.VK_D)) {
+  if (term.isKeyPressed(Keys.VK_D)) {
     crt.vignette -= 0.01;
   }
-  if (term.isKeyPressed(Key.VK_R)) {
+  if (term.isKeyPressed(Keys.VK_R)) {
     crt.scanlineWidth += 0.05;
   }
-  if (term.isKeyPressed(Key.VK_F)) {
+  if (term.isKeyPressed(Keys.VK_F)) {
     crt.scanlineWidth -= 0.05;
   }
-  if (term.isKeyPressed(Key.VK_T)) {
+  if (term.isKeyPressed(Keys.VK_T)) {
     crt.scanlineIntensity += 0.05;
   }
-  if (term.isKeyPressed(Key.VK_G)) {
+  if (term.isKeyPressed(Keys.VK_G)) {
     crt.scanlineIntensity -= 0.05;
   }
-  if (term.isKeyPressed(Key.VK_Y)) {
+  if (term.isKeyPressed(Keys.VK_Y)) {
     crt.blur += 0.1;
   }
-  if (term.isKeyPressed(Key.VK_H)) {
+  if (term.isKeyPressed(Keys.VK_H)) {
     crt.blur -= 0.1;
   }
 
-  if (term.isKeyPressed(Key.VK_0)) {
+  if (term.isKeyPressed(Keys.VK_0)) {
     crt.blur = 0;
     crt.curvature = 0;
     crt.chroma = 0;

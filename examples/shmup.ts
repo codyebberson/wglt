@@ -1,4 +1,4 @@
-import { Colors, fromRgb, Key, RNG, Terminal } from '../src/';
+import { Colors, fromRgb, Keys, RNG, Terminal } from '../src/';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -72,7 +72,7 @@ term.update = () => {
     player.cooldown--;
   }
 
-  if (player.cooldown === 0 && term.isKeyDown(Key.VK_Z)) {
+  if (player.cooldown === 0 && term.isKeyDown(Keys.VK_Z)) {
     bullets.push({
       x: player.x,
       y: player.y,

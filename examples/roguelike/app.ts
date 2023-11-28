@@ -1,5 +1,4 @@
-import { GUI } from '../../src/gui';
-import { Terminal } from '../../src/terminal';
+import { GUI, Terminal } from '../../src';
 import { Game } from './game';
 import { MainMenu } from './mainmenu';
 

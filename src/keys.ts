@@ -1,7 +1,7 @@
 import { Input, InputSet } from './input';
 
 export class Keyboard {
-  readonly keys = new InputSet<string>();
+  readonly keys = new InputSet<KeyCode>();
 
   /**
    * Creates a new keyboard module.
@@ -17,13 +17,13 @@ export class Keyboard {
     this.keys.clear();
   }
 
-  getKey(key: string): Input {
+  getKey(key: KeyCode): Input {
     return this.keys.get(key);
   }
 
   setKey(e: KeyboardEvent, state: boolean): void {
-    const key = e.code;
-    if (key === Key.VK_F11) {
+    const key = e.code as KeyCode;
+    if (key === Keys.VK_F11) {
       // Allow fullscreen requests to go through
       return;
     }
@@ -37,7 +37,7 @@ export class Keyboard {
   }
 }
 
-export const Key = {
+export const Keys = {
   VK_BACKSPACE: 'Backspace',
   VK_TAB: 'Tab',
   VK_ENTER: 'Enter',
@@ -152,4 +152,7 @@ export const Key = {
   VK_CLOSE_BRACKET: 'BracketRight',
   VK_QUOTE: 'Quote',
   VK_META: 'OSLeft',
-};
+} as const;
+
+export type Key = keyof typeof Keys;
+export type KeyCode = (typeof Keys)[Key];

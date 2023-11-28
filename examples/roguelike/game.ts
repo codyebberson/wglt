@@ -1,13 +1,16 @@
-import { Key } from '../../src';
-import { Cell } from '../../src/cell';
-import { Color, fromRgb } from '../../src/color';
-import { Console } from '../../src/console';
-import { MessageDialog } from '../../src/gui/messagedialog';
-import { SelectDialog } from '../../src/gui/selectdialog';
-import { Colors } from '../../src/palettes/colors';
-import { computePath } from '../../src/path';
-import { Rect } from '../../src/rect';
-import { RNG } from '../../src/rng';
+import {
+  Cell,
+  Color,
+  Colors,
+  Console,
+  Keys,
+  MessageDialog,
+  RNG,
+  Rect,
+  SelectDialog,
+  computePath,
+  fromRgb,
+} from '../../src';
 import { Actor } from './actor';
 import { AI, BasicMonster, ConfusedMonster } from './ai';
 import { App, AppState } from './app';
@@ -435,10 +438,10 @@ export class Game implements AppState {
     const movementKey = term.getMovementKey();
 
     if (this.targetFunction) {
-      if (term.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons.get(0).isClicked()) {
+      if (term.isKeyPressed(Keys.VK_ENTER) || term.mouse.buttons.get(0).isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (term.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons.get(2).isClicked()) {
+      if (term.isKeyPressed(Keys.VK_ESCAPE) || term.mouse.buttons.get(2).isClicked()) {
         this.cancelTargeting();
       }
       if (movementKey) {
@@ -454,7 +457,7 @@ export class Game implements AppState {
     if (movementKey) {
       this.playerMoveOrAttack(movementKey.x, movementKey.y);
     }
-    if (term.isKeyPressed(Key.VK_G)) {
+    if (term.isKeyPressed(Keys.VK_G)) {
       // Pick up an item
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
@@ -463,7 +466,7 @@ export class Game implements AppState {
         }
       }
     }
-    if (term.isKeyPressed(Key.VK_I)) {
+    if (term.isKeyPressed(Keys.VK_I)) {
       if (this.player.inventory.length === 0) {
         this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
       } else {
@@ -477,7 +480,7 @@ export class Game implements AppState {
         this.app.gui.add(new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice)));
       }
     }
-    if (term.isKeyPressed(Key.VK_C)) {
+    if (term.isKeyPressed(Keys.VK_C)) {
       const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
       this.app.gui.add(
         new MessageDialog(
@@ -497,7 +500,7 @@ export class Game implements AppState {
         )
       );
     }
-    if (term.isKeyPressed(Key.VK_COMMA)) {
+    if (term.isKeyPressed(Keys.VK_COMMA)) {
       if (this.player.x === this.stairs?.x && this.player.y === this.stairs?.y) {
         this.nextLevel();
       }
