@@ -123,18 +123,16 @@ export class Terminal extends Console {
   averageFps: number;
   update?: () => void;
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number, options?: TerminalOptions) {
+  constructor(canvas: HTMLCanvasElement, width: number, height: number, options: TerminalOptions = DEFAULT_OPTIONS) {
     super(width, height);
 
-    options = options || DEFAULT_OPTIONS;
-
     this.canvas = canvas;
-    this.font = options.font || DEFAULT_FONT;
+    this.font = options.font ?? DEFAULT_FONT;
     this.crt = options.crt;
     this.maxFps = options.maxFps;
     this.pixelWidth = width * this.font.charWidth;
     this.pixelHeight = height * this.font.charHeight;
-    this.pixelScale = options.crt?.scale || 1.0;
+    this.pixelScale = options.crt?.scale ?? 1.0;
 
     canvas.width = this.pixelWidth * this.pixelScale;
     canvas.height = this.pixelHeight * this.pixelScale;

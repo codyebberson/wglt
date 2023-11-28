@@ -3,22 +3,27 @@ import { serializable } from './serialize';
 
 @serializable
 export class Rect {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-  readonly left: number;
-  readonly top: number;
-  readonly x2: number;
-  readonly y2: number;
+  constructor(
+    readonly x: number,
+    readonly y: number,
+    readonly width: number,
+    readonly height: number
+  ) {}
 
-  constructor(x: number, y: number, width: number, height: number) {
-    this.x = this.left = x;
-    this.y = this.top = y;
-    this.width = width;
-    this.height = height;
-    this.x2 = x + width;
-    this.y2 = y + height;
+  get left(): number {
+    return this.x;
+  }
+
+  get top(): number {
+    return this.y;
+  }
+
+  get x2(): number {
+    return this.x + this.width;
+  }
+
+  get y2(): number {
+    return this.y + this.height;
   }
 
   getCenter(): Point {

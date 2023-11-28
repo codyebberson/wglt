@@ -18,12 +18,12 @@ export class RNG {
    *
    * @param seed - The integer seed.
    */
-  constructor(seed?: number) {
+  constructor(seed = 1) {
     // LCG using GCC's constants
     this.m = 0x80000000; // 2**31;
     this.a = 1103515245;
     this.c = 12345;
-    this.state = seed || 1;
+    this.state = seed;
   }
 
   nextInt(): number {

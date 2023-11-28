@@ -9,8 +9,6 @@ import { wordWrap } from './utils';
 
 @serializable
 export class Console {
-  readonly width: number;
-  readonly height: number;
   readonly grid: Cell[][];
   originX: number;
   originY: number;
@@ -21,9 +19,11 @@ export class Console {
   radius: number;
   clip?: Rect;
 
-  constructor(width: number, height: number, blockedFunc?: (x: number, y: number) => boolean) {
-    this.width = width;
-    this.height = height;
+  constructor(
+    readonly width: number,
+    readonly height: number,
+    blockedFunc?: (x: number, y: number) => boolean
+  ) {
     this.grid = [];
     this.originX = 0;
     this.originY = 0;

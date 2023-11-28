@@ -1,15 +1,10 @@
 export class Font {
-  readonly url: string;
-  readonly charWidth: number;
-  readonly charHeight: number;
-  readonly scale: number;
-
-  constructor(url: string, charWidth: number, charHeight: number, scale?: number) {
-    this.url = url;
-    this.charWidth = charWidth;
-    this.charHeight = charHeight;
-    this.scale = scale || 1.0;
-  }
+  constructor(
+    readonly url: string,
+    readonly charWidth: number,
+    readonly charHeight: number,
+    readonly scale = 1.0
+  ) {}
 }
 
 /**

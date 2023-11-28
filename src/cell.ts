@@ -13,8 +13,6 @@ function convertCharCode(charCode: string | number): number {
 
 @serializable
 export class Cell {
-  readonly x: number;
-  readonly y: number;
   charCode: number;
   fg: Color;
   bg: Color;
@@ -28,28 +26,21 @@ export class Cell {
   h: number;
   prev: Cell | null;
 
-  constructor(x: number, y: number, charCode?: string | number, fg?: Color, bg?: Color) {
-    this.x = x;
-    this.y = y;
-
+  constructor(
+    readonly x: number,
+    readonly y: number,
+    charCode?: string | number,
+    fg: Color = Colors.WHITE,
+    bg: Color = Colors.BLACK
+  ) {
     if (charCode !== undefined) {
       this.charCode = convertCharCode(charCode);
     } else {
       this.charCode = ' '.charCodeAt(0);
     }
 
-    if (fg !== undefined) {
-      this.fg = fg;
-    } else {
-      this.fg = Colors.WHITE;
-    }
-
-    if (bg !== undefined) {
-      this.bg = bg;
-    } else {
-      this.bg = Colors.BLACK;
-    }
-
+    this.fg = fg;
+    this.bg = bg;
     this.dirty = true;
     this.blocked = false;
     this.blockedSight = false;

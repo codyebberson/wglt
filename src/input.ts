@@ -15,21 +15,12 @@ const INPUT_REPEAT_RATE = 1000.0 / 15.0;
  * Example: keyboard key or mouse button.
  */
 export class Input {
-  down: boolean;
-  downTime: number;
-  repeat: boolean;
-  repeatTime: number;
-  downCount: number;
-  upCount: number;
-
-  constructor() {
-    this.down = false;
-    this.downTime = 0;
-    this.repeat = false;
-    this.repeatTime = 0;
-    this.downCount = 0;
-    this.upCount = 100;
-  }
+  down = false;
+  downTime = 0;
+  repeat = false;
+  repeatTime = 0;
+  downCount = 0;
+  upCount = 100;
 
   setDown(down: boolean): void {
     if (this.down !== down) {

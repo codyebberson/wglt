@@ -5,15 +5,11 @@ import { DialogState } from './gui/dialogstate';
 import { Terminal } from './terminal';
 
 export class GUI {
-  readonly terminal: Terminal;
-  readonly renderer: DialogRenderer;
-  readonly dialogs: DialogState[];
-
-  constructor(terminal: Terminal, renderer?: DialogRenderer) {
-    this.terminal = terminal;
-    this.renderer = renderer || new DefaultDialogRenderer();
-    this.dialogs = [];
-  }
+  constructor(
+    readonly terminal: Terminal,
+    readonly renderer: DialogRenderer = new DefaultDialogRenderer(),
+    readonly dialogs: DialogState[] = []
+  ) {}
 
   add(dialog: Dialog): void {
     this.dialogs.push(this.renderer.getState(this.terminal, dialog));
