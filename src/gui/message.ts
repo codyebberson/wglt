@@ -1,11 +1,11 @@
 import { Color } from '../color';
 import { serializable } from '../serialize';
 
-export enum MessageAlign {
-  LEFT,
-  CENTER,
-  RIGHT,
-}
+export const MessageAlign = {
+  LEFT: 'left',
+  CENTER: 'center',
+  RIGHT: 'right',
+};
 
 @serializable
 export class Message {
@@ -14,7 +14,7 @@ export class Message {
     readonly fg?: Color | undefined,
     readonly bg?: Color | undefined,
     readonly children?: Message[],
-    readonly align?: MessageAlign
+    readonly align?: string | undefined
   ) {}
 
   getWidth(): number {

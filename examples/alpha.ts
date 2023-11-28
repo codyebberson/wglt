@@ -1,4 +1,4 @@
-import { BlendMode, Colors, Console, fromHsv, RNG, Terminal } from '../src/';
+import { Colors, Console, fromHsv, RNG, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -87,7 +87,7 @@ term.update = () => {
 
   for (let i = lights.length - 1; i >= 0; i--) {
     const light = lights[i];
-    term.drawConsole(light.x - RADIUS, light.y - RADIUS, light.console, 0, 0, SIZE, SIZE, BlendMode.Add);
+    term.drawConsole(light.x - RADIUS, light.y - RADIUS, light.console, 0, 0, SIZE, SIZE, 'add');
   }
 
   term.drawString(1, 1, 'Hello world!', Colors.YELLOW);

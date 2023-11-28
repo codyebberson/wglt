@@ -60,7 +60,7 @@ export class SelectDialog extends Dialog {
     }
     const startCharCode = 'A'.charCodeAt(0);
     for (let i = 0; i < this.options.length; i++) {
-      if (terminal.isKeyPressed(('Key' + String.fromCharCode(startCharCode + i)) as Key)) {
+      if (terminal.isKeyPressed('Key' + String.fromCharCode(startCharCode + i))) {
         this.callback(i);
         return true;
       }

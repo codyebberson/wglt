@@ -223,8 +223,6 @@ export class Console {
     srcHeight: number,
     blendMode?: BlendMode
   ): void {
-    blendMode = blendMode || BlendMode.None;
-
     for (let y = 0; y < srcHeight; y++) {
       for (let x = 0; x < srcWidth; x++) {
         const cell = srcConsole.getCell(srcX + x, srcY + y);

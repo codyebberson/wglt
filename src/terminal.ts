@@ -341,15 +341,15 @@ export class Terminal extends Console {
     }
   }
 
-  isKeyDown(key: Key): boolean {
+  isKeyDown(key: string): boolean {
     return this.keys.getKey(key).down;
   }
 
-  isKeyPressed(key: Key): boolean {
+  isKeyPressed(key: string): boolean {
     return this.keys.getKey(key).isPressed();
   }
 
-  getKeyDownCount(key: Key): number {
+  getKeyDownCount(key: string): number {
     return this.keys.getKey(key).downCount;
   }
 
@@ -364,10 +364,10 @@ export class Terminal extends Console {
    * If no key is pressed, returns undefined.
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
-  getMovementKey(movementKeys: Partial<Record<Key, Point>> = DEFAULT_OPTIONS.movementKeys): Point | undefined {
+  getMovementKey(movementKeys: Partial<Record<string, Point>> = DEFAULT_OPTIONS.movementKeys): Point | undefined {
     for (const key in movementKeys) {
-      if (this.isKeyPressed(key as Key)) {
-        return movementKeys[key as Key];
+      if (this.isKeyPressed(key)) {
+        return movementKeys[key];
       }
     }
     return undefined;

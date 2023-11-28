@@ -96,7 +96,7 @@ export class Cell {
         this.setBackground(bg);
       }
     } else {
-      this.drawCell(charCode, BlendMode.None);
+      this.drawCell(charCode);
     }
     return this.dirty;
   }
@@ -104,14 +104,14 @@ export class Cell {
   drawCell(otherCell: Cell, blendMode?: BlendMode): void {
     const alpha = otherCell.bg & 0xff;
 
-    if (blendMode === BlendMode.None || otherCell.charCode > 0) {
+    if (!blendMode || otherCell.charCode > 0) {
       this.setCharCode(otherCell.charCode);
       this.setForeground(otherCell.fg);
     } else if (alpha > 0 && alpha < 255) {
       this.setForeground(this.blendColors(this.fg, otherCell.bg, blendMode));
     }
 
-    if (blendMode === BlendMode.None || alpha === 255) {
+    if (!blendMode || alpha === 255) {
       this.setBackground(otherCell.bg);
     } else if (alpha > 0) {
       this.setBackground(this.blendColors(this.bg, otherCell.bg, blendMode));
@@ -130,10 +130,10 @@ export class Cell {
     const b2 = (c2 >> 8) & 0xff;
 
     switch (blendMode) {
-      case BlendMode.Blend:
+      case 'blend':
         return fromRgb((w1 * r1 + w2 * r2) | 0, (w1 * g1 + w2 * g2) | 0, (w1 * b1 + w2 * b2) | 0);
 
-      case BlendMode.Add:
+      case 'add':
         return fromRgb(this.clamp((r1 + w2 * r2) | 0), this.clamp((g1 + w2 * g2) | 0), this.clamp((b1 + w2 * b2) | 0));
 
       default:
