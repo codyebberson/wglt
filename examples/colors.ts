@@ -6,7 +6,7 @@ const HEIGHT = 45;
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, WIDTH, HEIGHT);
 let hue = 0;
 
-term.update = function () {
+term.update = () => {
   for (let y = 0; y < HEIGHT; y++) {
     for (let x = 0; x < WIDTH; x++) {
       const sat = x / WIDTH;

@@ -9,7 +9,7 @@ let y = 10;
 let img = null as Console | null;
 loadImage('../starry.png', (result) => (img = result));
 
-term.update = function () {
+term.update = () => {
   const moveKey = term.getMovementKey();
   if (moveKey) {
     x += moveKey.x;

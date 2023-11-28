@@ -17,7 +17,7 @@ const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement,
 
 const rng = new RNG();
 
-term.update = function () {
+term.update = () => {
   // Randomize the bottom row
   for (let x = 0; x < w; x++) {
     fire[h - 1][x] = rng.nextRange(64, 255);

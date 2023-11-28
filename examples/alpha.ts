@@ -61,7 +61,7 @@ for (let i = 0; i < 500; i++) {
   });
 }
 
-term.update = function () {
+term.update = () => {
   const moveKey = term.getMovementKey();
   if (moveKey) {
     lights[0].x += moveKey.x;

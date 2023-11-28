@@ -13,7 +13,11 @@ export class ScrollableMessageDialog extends Dialog {
   readonly scrollbarHeight: number;
   scrollY = 0;
 
-  constructor(rect: Rect, title: string, readonly message: Message) {
+  constructor(
+    rect: Rect,
+    title: string,
+    readonly message: Message
+  ) {
     super(rect, title);
     this.messagesHeight = message.getHeight();
     this.scrollMax = Math.max(1, this.messagesHeight - this.contentsRect.height);

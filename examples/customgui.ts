@@ -63,7 +63,7 @@ const options = ['Sword', 'Banana', 'Magic Potion', 'Red Stapler'];
 let x = 10;
 let y = 10;
 
-term.update = function () {
+term.update = () => {
   if (!gui.handleInput()) {
     const moveKey = term.getMovementKey();
     if (moveKey) {

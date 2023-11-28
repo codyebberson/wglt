@@ -7,7 +7,10 @@ import { Dialog } from './dialog';
 import { Message } from './message';
 
 export class MessageDialog extends Dialog {
-  constructor(title: string, readonly message: string | Message) {
+  constructor(
+    title: string,
+    readonly message: string | Message
+  ) {
     let rect;
     if (message instanceof Message) {
       rect = new Rect(0, 0, message.getWidth(), message.getHeight());

@@ -9,7 +9,7 @@ term.fillRect(0, 0, 80, 25, 0, Colors.YELLOW, Colors.DARK_BLUE);
 let x = 10;
 let y = 10;
 
-term.update = function () {
+term.update = () => {
   const moveKey = term.getMovementKey();
   if (moveKey) {
     x += moveKey.x;

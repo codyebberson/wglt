@@ -54,7 +54,7 @@ function movePlayer(dx: number, dy: number): void {
   computeFov();
 }
 
-term.update = function () {
+term.update = () => {
   const moveKey = term.getMovementKey();
   if (moveKey) {
     movePlayer(moveKey.x, moveKey.y);

@@ -178,7 +178,7 @@ export class Terminal extends Console {
     this.crtScanlineWidthLocation = gl.getUniformLocation(this.crtProgram, 'u_scanlineWidth') as WebGLUniformLocation;
     this.crtScanlineIntensityLocation = gl.getUniformLocation(
       this.crtProgram,
-      'u_scanlineIntensity',
+      'u_scanlineIntensity'
     ) as WebGLUniformLocation;
     this.crtVignetteLocation = gl.getUniformLocation(this.crtProgram, 'u_vignette') as WebGLUniformLocation;
 

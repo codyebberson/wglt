@@ -4,7 +4,7 @@ import { serializable } from '../serialize';
 export enum MessageAlign {
   LEFT,
   CENTER,
-  RIGHT
+  RIGHT,
 }
 
 @serializable
@@ -15,7 +15,7 @@ export class Message {
     readonly bg?: Color | undefined,
     readonly children?: Message[],
     readonly align?: MessageAlign
-  ) { }
+  ) {}
 
   getWidth(): number {
     let width = 0;

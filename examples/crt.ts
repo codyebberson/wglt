@@ -17,7 +17,7 @@ term.fillRect(0, 0, 80, 45, 0, Colors.WHITE, Colors.BLACK);
 let img = null as Console | null;
 loadImage2x('../smtpe.png', (result) => (img = result));
 
-term.update = function () {
+term.update = () => {
   if (term.isKeyPressed(Key.VK_Q)) {
     crt.curvature += 0.01;
   }

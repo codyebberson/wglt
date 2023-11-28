@@ -10,7 +10,7 @@ const options = ['Sword', 'Banana', 'Magic Potion', 'Red Stapler'];
 let x = 10;
 let y = 15;
 
-term.update = function () {
+term.update = () => {
   if (!gui.handleInput()) {
     if (term.isKeyDown(Key.VK_UP)) {
       y--;

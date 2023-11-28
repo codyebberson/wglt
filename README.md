@@ -42,7 +42,7 @@ term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
 let x = 10;
 let y = 10;
 
-term.update = function () {
+term.update = () => {
   const moveKey = term.getMovementKey();
   if (moveKey) {
     x += moveKey.x;
@@ -76,7 +76,7 @@ I do not have intentions to include support for formatted text (i.e., bold or un
 WGLT supports custom font images, and provides built in support for standard fonts:
 
 - [x] IBM CGA Character
-- [ ] Code page 437 (MS-DOS)
+- [ ] IBM VGA 9x14 (MS-DOS)
 - [ ] Commodore 64
 - [ ] ZX Spectrum
 - [ ] Amstrad CPC 464

@@ -21,7 +21,7 @@ for (let y = 0; y < SCREEN_HEIGHT; y++) {
 // This will update all box cells in the console such that stems match
 fixBoxCells(game);
 
-term.update = function () {
+term.update = () => {
   term.clear();
   term.drawConsole(0, 0, game, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   term.drawString(1, 1, 'Hello world!', Colors.WHITE);

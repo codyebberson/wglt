@@ -15,7 +15,7 @@ const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement,
 
 const rng = new RNG();
 
-term.update = function () {
+term.update = () => {
   // Update bottom rows
   for (let y = h - 1; y >= 1; y--) {
     for (let x = 0; x < w; x++) {
