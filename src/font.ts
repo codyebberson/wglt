@@ -2,8 +2,7 @@ export class Font {
   constructor(
     readonly url: string,
     readonly charWidth: number,
-    readonly charHeight: number,
-    readonly scale = 1.0
+    readonly charHeight: number
   ) {}
 }
 
