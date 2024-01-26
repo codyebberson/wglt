@@ -1,1 +1,0 @@
-import{T as l,d as i,C as o}from"../terminal-v72NC_uz.js";const a=80,s=45,t=new l(document.querySelector("canvas"),a,s);let n=0;t.update=()=>{for(let e=0;e<s;e++)for(let r=0;r<a;r++){const c=r/a,d=1-e/s;t.drawChar(r,e,0,0,i(n,c,d))}n+=.001,t.drawString(0,0,"FPS: "+t.fps.toFixed(0),o.WHITE,o.BLACK),t.drawString(0,1,"Avg: "+t.averageFps.toFixed(0),o.WHITE,o.BLACK)};
