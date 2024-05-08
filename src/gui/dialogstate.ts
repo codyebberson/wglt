@@ -1,7 +1,7 @@
-import { Console } from '../console';
-import { Point } from '../point';
-import { Rect } from '../rect';
-import { Dialog } from './dialog';
+import type { Console } from '../console';
+import type { Point } from '../point';
+import type { Rect } from '../rect';
+import type { Dialog } from './dialog';
 
 export class DialogState {
   open = false;

@@ -1,4 +1,4 @@
-import { Color, Colors, fromRgb, RNG, Terminal } from '../src/';
+import { type Color, Colors, fromRgb, RNG, Terminal } from '../src/';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -15,6 +15,6 @@ term.update = () => {
     }
   }
 
-  term.drawString(0, 0, 'FPS: ' + term.fps.toFixed(0), Colors.WHITE, Colors.BLACK);
-  term.drawString(0, 1, 'Avg: ' + term.averageFps.toFixed(0), Colors.WHITE, Colors.BLACK);
+  term.drawString(0, 0, `FPS: ${term.fps.toFixed(0)}`, Colors.WHITE, Colors.BLACK);
+  term.drawString(0, 1, `Avg: ${term.averageFps.toFixed(0)}`, Colors.WHITE, Colors.BLACK);
 };

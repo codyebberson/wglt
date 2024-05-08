@@ -1,7 +1,7 @@
-import { Console } from '../console';
-import { Point } from '../point';
-import { Rect } from '../rect';
-import { Terminal } from '../terminal';
+import type { Console } from '../console';
+import type { Point } from '../point';
+import type { Rect } from '../rect';
+import type { Terminal } from '../terminal';
 
 export abstract class Dialog {
   constructor(

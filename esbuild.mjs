@@ -1,8 +1,8 @@
 /* global console */
 /* eslint no-console: "off" */
 
+import { writeFileSync } from 'node:fs';
 import esbuild from 'esbuild';
-import { writeFileSync } from 'fs';
 
 const options = {
   entryPoints: ['./src/index.ts'],

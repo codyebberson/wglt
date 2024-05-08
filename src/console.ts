@@ -1,9 +1,9 @@
-import { BlendMode } from './blendmode';
+import type { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
-import { Color } from './color';
-import { Message, MessageAlign } from './gui/message';
-import { Rect } from './rect';
+import type { Color } from './color';
+import { MessageAlign, type Message } from './gui/message';
+import type { Rect } from './rect';
 import { serializable } from './serialize';
 import { wordWrap } from './utils';
 
@@ -101,25 +101,27 @@ export class Console {
   }
 
   drawMessage(x: number, y: number, message: Message, maxWidth: number): number {
+    let x2 = x;
+    let y2 = y;
     if (message.text) {
       if (message.align === MessageAlign.RIGHT) {
-        x += maxWidth - message.text.length;
+        x2 += maxWidth - message.text.length;
       } else if (message.align === MessageAlign.CENTER) {
-        x += maxWidth / 2 - message.text.length / 2;
+        x2 += maxWidth / 2 - message.text.length / 2;
       }
 
       const lines = wordWrap(message.text, maxWidth || this.width - x);
       for (const line of lines) {
-        this.drawStringLine(x, y, line, message.fg, message.bg);
-        y++;
+        this.drawStringLine(x2, y2, line, message.fg, message.bg);
+        y2++;
       }
     }
     if (message.children) {
       for (const child of message.children) {
-        y = this.drawMessage(x, y, child, maxWidth);
+        y2 = this.drawMessage(x2, y2, child, maxWidth);
       }
     }
-    return y;
+    return y2;
   }
 
   drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color): void {
@@ -128,13 +130,28 @@ export class Console {
     }
   }
 
-  drawVLine(x: number, y: number, height: number, c: string | number, fg?: Color, bg?: Color): void {
+  drawVLine(
+    x: number,
+    y: number,
+    height: number,
+    c: string | number,
+    fg?: Color,
+    bg?: Color
+  ): void {
     for (let yi = y; yi < y + height; yi++) {
       this.drawChar(x, yi, c, fg, bg);
     }
   }
 
-  drawRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color): void {
+  drawRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    c: string | number,
+    fg?: Color,
+    bg?: Color
+  ): void {
     this.drawHLine(x, y, width, c, fg, bg);
     this.drawHLine(x, y + height - 1, width, c, fg, bg);
     this.drawVLine(x, y, height, c, fg, bg);
@@ -207,7 +224,15 @@ export class Console {
     );
   }
 
-  fillRect(x: number, y: number, width: number, height: number, c: string | number, fg?: Color, bg?: Color): void {
+  fillRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    c: string | number,
+    fg?: Color,
+    bg?: Color
+  ): void {
     for (let yi = y; yi < y + height; yi++) {
       this.drawHLine(x, yi, width, c, fg, bg);
     }
@@ -282,16 +307,16 @@ export class Console {
     let totalObstacles = 0;
     let obstaclesInLastLine = 0;
     let minSlope = 0;
-    let x;
-    let y;
-    let halfSlope;
-    let processedCell;
-    let visible;
-    let extended;
-    let centreSlope;
-    let startSlope;
-    let endSlope;
-    let previousEndSlope;
+    let x: number;
+    let y: number;
+    let halfSlope: number;
+    let processedCell: number;
+    let visible: boolean;
+    let extended: boolean;
+    let centerSlope: number;
+    let startSlope: number;
+    let endSlope: number;
+    let previousEndSlope: number;
 
     for (
       y = this.originY + deltaY;
@@ -301,27 +326,31 @@ export class Console {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (
-        processedCell = Math.floor(minSlope * iteration + 0.5), x = this.originX + processedCell * deltaX;
+        processedCell = Math.floor(minSlope * iteration + 0.5),
+          x = this.originX + processedCell * deltaX;
         processedCell <= iteration && x >= this.minX && x <= this.maxX;
         x += deltaX, ++processedCell, previousEndSlope = endSlope
       ) {
         visible = true;
         extended = false;
-        centreSlope = processedCell / iteration;
+        centerSlope = processedCell / iteration;
         startSlope = previousEndSlope;
-        endSlope = centreSlope + halfSlope;
+        endSlope = centerSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
           if (
             !(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
-            !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)
+            !(
+              this.grid[y - deltaY][x - deltaX].visible &&
+              !this.grid[y - deltaY][x - deltaX].blockedSight
+            )
           ) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
                 if (!this.grid[y][x].blockedSight) {
-                  if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
+                  if (centerSlope > startSlopes[idx] && centerSlope < endSlopes[idx]) {
                     visible = false;
                     break;
                   }
@@ -329,11 +358,10 @@ export class Console {
                   if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
-                  } else {
-                    startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-                    endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-                    extended = true;
                   }
+                  startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+                  endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+                  extended = true;
                 }
               }
             }
@@ -364,16 +392,16 @@ export class Console {
     let totalObstacles = 0;
     let obstaclesInLastLine = 0;
     let minSlope = 0;
-    let x;
-    let y;
-    let halfSlope;
-    let processedCell;
-    let visible;
-    let extended;
-    let centreSlope;
-    let startSlope;
-    let endSlope;
-    let previousEndSlope;
+    let x: number;
+    let y: number;
+    let halfSlope: number;
+    let processedCell: number;
+    let visible: boolean;
+    let extended: boolean;
+    let centerSlope: number;
+    let startSlope: number;
+    let endSlope: number;
+    let previousEndSlope: number;
 
     for (
       x = this.originX + deltaX;
@@ -383,27 +411,31 @@ export class Console {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
       for (
-        processedCell = Math.floor(minSlope * iteration + 0.5), y = this.originY + processedCell * deltaY;
+        processedCell = Math.floor(minSlope * iteration + 0.5),
+          y = this.originY + processedCell * deltaY;
         processedCell <= iteration && y >= this.minY && y <= this.maxY;
         y += deltaY, ++processedCell, previousEndSlope = endSlope
       ) {
         visible = true;
         extended = false;
-        centreSlope = processedCell / iteration;
+        centerSlope = processedCell / iteration;
         startSlope = previousEndSlope;
-        endSlope = centreSlope + halfSlope;
+        endSlope = centerSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
           if (
             !(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
-            !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)
+            !(
+              this.grid[y - deltaY][x - deltaX].visible &&
+              !this.grid[y - deltaY][x - deltaX].blockedSight
+            )
           ) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
               if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
                 if (!this.grid[y][x].blockedSight) {
-                  if (centreSlope > startSlopes[idx] && centreSlope < endSlopes[idx]) {
+                  if (centerSlope > startSlopes[idx] && centerSlope < endSlopes[idx]) {
                     visible = false;
                     break;
                   }
@@ -411,11 +443,10 @@ export class Console {
                   if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
-                  } else {
-                    startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-                    endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-                    extended = true;
                   }
+                  startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+                  endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+                  extended = true;
                 }
               }
             }
@@ -436,7 +467,13 @@ export class Console {
     }
   }
 
-  computeFov(originX: number, originY: number, radius: number, opt_noClear?: boolean, opt_octants?: number): void {
+  computeFov(
+    originX: number,
+    originY: number,
+    radius: number,
+    opt_noClear?: boolean,
+    opt_octants?: number
+  ): void {
     this.originX = originX;
     this.originY = originY;
     this.radius = radius;

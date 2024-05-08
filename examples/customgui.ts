@@ -1,8 +1,8 @@
 import {
   Colors,
   Console,
-  Dialog,
-  DialogRenderer,
+  type Dialog,
+  type DialogRenderer,
   DialogState,
   GUI,
   Keys,
@@ -33,7 +33,7 @@ class CustomRenderer implements DialogRenderer {
     const { x, y, width, height } = dialogState.rect;
     buffer.fillRect(0, 0, width, height, 0, Colors.LIGHT_CYAN, Colors.DARK_CYAN);
     buffer.drawSingleBox(0, 0, width, height);
-    buffer.drawCenteredString((width / 2) | 0, 0, ' ' + dialog.title + ' ');
+    buffer.drawCenteredString((width / 2) | 0, 0, ` ${dialog.title} `);
     dialog.drawContents(buffer, dialogState.contentsOffset);
     this.fadeIn(terminal, x, y, buffer, dialogState.count);
     dialogState.count += 2;
@@ -76,7 +76,7 @@ term.update = () => {
     if (term.isKeyPressed(Keys.VK_I)) {
       gui.add(
         new SelectDialog('INVENTORY', options, (choice) => {
-          gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
+          gui.add(new MessageDialog('ALERT', `You chose: ${options[choice]}`));
         })
       );
     }

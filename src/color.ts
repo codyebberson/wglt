@@ -8,10 +8,7 @@ export type Color = number;
  * @param a - Optional alpha (0-255).
  * @returns A 32-bit unsigned integer color.
  */
-export function fromRgb(r: number, g: number, b: number, a?: number): Color {
-  if (a === undefined) {
-    a = 255;
-  }
+export function fromRgb(r: number, g: number, b: number, a = 255): Color {
   return (r << 24) + (g << 16) + (b << 8) + a;
 }
 
@@ -26,39 +23,50 @@ export function fromRgb(r: number, g: number, b: number, a?: number): Color {
  * @param a - Optional alpha (0.0 - 1.0).
  * @returns A 32-bit unsigned integer color.
  */
-export function fromHsv(h: number, s: number, v: number, a?: number): Color {
+export function fromHsv(h: number, s: number, v: number, a = 1.0): Color {
   const i = (h * 6) | 0;
   const f = h * 6 - i;
   const p = v * (1 - s);
   const q = v * (1 - f * s);
   const t = v * (1 - (1 - f) * s);
-  let r, g, b;
+  let r: number;
+  let g: number;
+  let b: number;
   switch (i % 6) {
     case 0:
-      (r = v), (g = t), (b = p);
+      r = v;
+      g = t;
+      b = p;
       break;
     case 1:
-      (r = q), (g = v), (b = p);
+      r = q;
+      g = v;
+      b = p;
       break;
     case 2:
-      (r = p), (g = v), (b = t);
+      r = p;
+      g = v;
+      b = t;
       break;
     case 3:
-      (r = p), (g = q), (b = v);
+      r = p;
+      g = q;
+      b = v;
       break;
     case 4:
-      (r = t), (g = p), (b = v);
+      r = t;
+      g = p;
+      b = v;
       break;
     case 5:
-      (r = v), (g = p), (b = q);
+      r = v;
+      g = p;
+      b = q;
       break;
     default:
       r = 0;
       g = 0;
       b = 0;
-  }
-  if (a === undefined) {
-    a = 1.0;
   }
   return fromRgb((r * 255) | 0, (g * 255) | 0, (b * 255) | 0, (a * 255) | 0);
 }

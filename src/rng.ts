@@ -50,7 +50,7 @@ export class RNG {
     const rangeSize = end - start;
     const randomUnder1 = this.nextInt() / this.m;
     const result = start + ((randomUnder1 * rangeSize) | 0);
-    if (isNaN(result)) {
+    if (Number.isNaN(result)) {
       throw new Error('rand nan');
     }
     return result;

@@ -1,4 +1,4 @@
-import { Colors, Console, loadImage2x, Terminal } from '../src/';
+import { Colors, type Console, loadImage2x, Terminal } from '../src/';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
 term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
@@ -7,7 +7,9 @@ let x = 10;
 let y = 10;
 
 let img = null as Console | null;
-loadImage2x('../starry2x.png', (result) => (img = result));
+loadImage2x('../starry2x.png', (result) => {
+  img = result;
+});
 
 term.update = () => {
   const moveKey = term.getMovementKey();

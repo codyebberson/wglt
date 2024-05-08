@@ -1,8 +1,8 @@
 import { Colors } from '../palettes/colors';
 import { Point } from '../point';
 import { Rect } from '../rect';
-import { Terminal } from '../terminal';
-import { Dialog } from './dialog';
+import type { Terminal } from '../terminal';
+import type { Dialog } from './dialog';
 import { DialogState } from './dialogstate';
 
 export class DefaultDialogRenderer {
@@ -19,7 +19,7 @@ export class DefaultDialogRenderer {
     const { x, y, width, height } = dialogState.rect;
     term.fillRect(x, y, width, height, 0, Colors.WHITE, Colors.BLACK);
     term.drawSingleBox(x, y, width, height);
-    term.drawCenteredString((x + width / 2) | 0, y, ' ' + dialog.title + ' ');
+    term.drawCenteredString((x + width / 2) | 0, y, ` ${dialog.title} `);
     dialog.drawContents(term, dialogState.contentsOffset);
   }
 }

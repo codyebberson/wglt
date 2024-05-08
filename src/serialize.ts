@@ -37,11 +37,11 @@ export function serialize(obj: unknown): string {
   function replace(input: unknown): unknown {
     if (Array.isArray(input)) {
       return replaceArray(input);
-    } else if (input && typeof input === 'object') {
-      return replaceObject(input as Record<string, unknown>);
-    } else {
-      return input;
     }
+    if (input && typeof input === 'object') {
+      return replaceObject(input as Record<string, unknown>);
+    }
+    return input;
   }
 
   function replaceArray(input: unknown[]): unknown[] {
@@ -53,7 +53,7 @@ export function serialize(obj: unknown): string {
   }
 
   function replaceObject(input: Record<string, unknown>): Record<string, unknown> {
-    if (input && input.constructor.name && input.constructor.name !== 'Object') {
+    if (input.constructor.name !== 'Object') {
       if (!classDefinitions.has(input.constructor.name)) {
         throw new Error(`Class ${input.constructor.name} is not serializable.`);
       }
@@ -92,8 +92,12 @@ export function deserialize(str: string): unknown {
   for (let i = 0; i < instances.length; i++) {
     const instance = instances[i];
     const classDefinition = classDefinitions.get(instance.$type as string) as ObjectConstructor;
+    // biome-ignore lint/performance/noDelete: Need to remove $type property entirely
     delete instance.$type;
-    instances[i] = Object.create(classDefinition.prototype, Object.getOwnPropertyDescriptors(instance));
+    instances[i] = Object.create(
+      classDefinition.prototype,
+      Object.getOwnPropertyDescriptors(instance)
+    );
   }
 
   // Second, replace all references in the list of class instances
@@ -107,11 +111,11 @@ export function deserialize(str: string): unknown {
   function replace(input: unknown): unknown {
     if (Array.isArray(input)) {
       return replaceArray(input);
-    } else if (input && typeof input === 'object') {
-      return replaceObject(input as Record<string, unknown>);
-    } else {
-      return input;
     }
+    if (input && typeof input === 'object') {
+      return replaceObject(input as Record<string, unknown>);
+    }
+    return input;
   }
 
   function replaceArray(input: unknown[]): unknown[] {
@@ -121,7 +125,9 @@ export function deserialize(str: string): unknown {
     return input;
   }
 
-  function replaceObject(input: Record<string, unknown>): InstancePlaceholder | Record<string, unknown> {
+  function replaceObject(
+    input: Record<string, unknown>
+  ): InstancePlaceholder | Record<string, unknown> {
     if (isRef(input)) {
       return instances[input.$ref];
     }

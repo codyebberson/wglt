@@ -1,6 +1,6 @@
-import { Terminal } from '../terminal';
-import { Dialog } from './dialog';
-import { DialogState } from './dialogstate';
+import type { Terminal } from '../terminal';
+import type { Dialog } from './dialog';
+import type { DialogState } from './dialogstate';
 
 export interface DialogRenderer {
   getState(terminal: Terminal, dialog: Dialog): DialogState;

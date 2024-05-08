@@ -40,24 +40,23 @@ export function getFovQuadrant(dx: number, dy: number): number {
   if (dx > 0) {
     if (dy > 0) {
       return FovQuadrants.QUADRANT_SOUTHEAST;
-    } else if (dy === 0) {
-      return FovQuadrants.QUADRANT_EAST;
-    } else {
-      return FovQuadrants.QUADRANT_NORTHEAST;
     }
-  } else if (dx < 0) {
+    if (dy === 0) {
+      return FovQuadrants.QUADRANT_EAST;
+    }
+    return FovQuadrants.QUADRANT_NORTHEAST;
+  }
+  if (dx < 0) {
     if (dy > 0) {
       return FovQuadrants.QUADRANT_SOUTHWEST;
-    } else if (dy === 0) {
+    }
+    if (dy === 0) {
       return FovQuadrants.QUADRANT_WEST;
-    } else {
-      return FovQuadrants.QUADRANT_NORTHWEST;
     }
-  } else {
-    if (dy > 0) {
-      return FovQuadrants.QUADRANT_SOUTH;
-    } else {
-      return FovQuadrants.QUADRANT_NORTH;
-    }
+    return FovQuadrants.QUADRANT_NORTHWEST;
   }
+  if (dy > 0) {
+    return FovQuadrants.QUADRANT_SOUTH;
+  }
+  return FovQuadrants.QUADRANT_NORTH;
 }

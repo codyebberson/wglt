@@ -1,11 +1,11 @@
 import { Chars } from '../chars';
-import { Console } from '../console';
+import type { Console } from '../console';
 import { Keys } from '../keys';
-import { Point } from '../point';
-import { Rect } from '../rect';
-import { Terminal } from '../terminal';
+import type { Point } from '../point';
+import type { Rect } from '../rect';
+import type { Terminal } from '../terminal';
 import { Dialog } from './dialog';
-import { Message } from './message';
+import type { Message } from './message';
 
 export class ScrollableMessageDialog extends Dialog {
   readonly messagesHeight: number;

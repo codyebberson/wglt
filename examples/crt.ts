@@ -1,4 +1,4 @@
-import { Colors, Console, Keys, loadImage2x, Terminal } from '../src/';
+import { Colors, Keys, Terminal, loadImage2x, type Console } from '../src/';
 
 const crt = {
   scale: 6,
@@ -15,7 +15,9 @@ const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement,
 term.fillRect(0, 0, 80, 45, 0, Colors.WHITE, Colors.BLACK);
 
 let img = null as Console | null;
-loadImage2x('../smtpe.png', (result) => (img = result));
+loadImage2x('../smtpe.png', (result) => {
+  img = result;
+});
 
 term.update = () => {
   if (term.isKeyPressed(Keys.VK_Q)) {
@@ -77,12 +79,22 @@ term.update = () => {
     term.drawConsole(0, 0, img, 0, 0, 80, 45);
   }
 
-  term.drawString(1, 1, 'Curvature:            ' + crt.curvature.toFixed(2) + ' [Q/A]', Colors.WHITE);
-  term.drawString(1, 3, 'Chromatic aberration: ' + crt.chroma.toFixed(2) + ' [W/S]', Colors.WHITE);
-  term.drawString(1, 5, 'Vignette:             ' + crt.vignette.toFixed(2) + ' [E/D]', Colors.WHITE);
-  term.drawString(1, 7, 'Scanline Width:       ' + crt.scanlineWidth.toFixed(2) + ' [R/F]', Colors.WHITE);
-  term.drawString(1, 9, 'Scanline Intensity:   ' + crt.scanlineIntensity.toFixed(2) + ' [T/G]', Colors.WHITE);
-  term.drawString(1, 11, 'Blur:                 ' + crt.blur.toFixed(2) + ' [Y/H]', Colors.WHITE);
+  term.drawString(1, 1, `Curvature:            ${crt.curvature.toFixed(2)} [Q/A]`, Colors.WHITE);
+  term.drawString(1, 3, `Chromatic aberration: ${crt.chroma.toFixed(2)} [W/S]`, Colors.WHITE);
+  term.drawString(1, 5, `Vignette:             ${crt.vignette.toFixed(2)} [E/D]`, Colors.WHITE);
+  term.drawString(
+    1,
+    7,
+    `Scanline Width:       ${crt.scanlineWidth.toFixed(2)} [R/F]`,
+    Colors.WHITE
+  );
+  term.drawString(
+    1,
+    9,
+    `Scanline Intensity:   ${crt.scanlineIntensity.toFixed(2)} [T/G]`,
+    Colors.WHITE
+  );
+  term.drawString(1, 11, `Blur:                 ${crt.blur.toFixed(2)} [Y/H]`, Colors.WHITE);
 };
 
 function clamp(value: number, min: number, max: number): number {

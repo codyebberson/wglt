@@ -69,7 +69,7 @@ term.update = () => {
       for (let i = 0; i < 100; i++) {
         messages.push(
           new Message(
-            'Hello World - line ' + (i + 1),
+            `Hello World - line ${i + 1}`,
             fromRgb(Math.random() * 255, Math.random() * 255, Math.random() * 255)
           )
         );
@@ -85,7 +85,7 @@ term.update = () => {
     if (term.isKeyPressed(Keys.VK_I)) {
       gui.add(
         new SelectDialog('INVENTORY', options, (choice) => {
-          gui.add(new MessageDialog('ALERT', 'You chose: ' + options[choice]));
+          gui.add(new MessageDialog('ALERT', `You chose: ${options[choice]}`));
         })
       );
     }

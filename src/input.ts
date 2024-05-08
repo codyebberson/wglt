@@ -35,7 +35,10 @@ export class Input {
     if (this.down) {
       this.downCount++;
       this.upCount = 0;
-      if (time - this.downTime >= INPUT_REPEAT_DELAY && time - this.repeatTime >= INPUT_REPEAT_RATE) {
+      if (
+        time - this.downTime >= INPUT_REPEAT_DELAY &&
+        time - this.repeatTime >= INPUT_REPEAT_RATE
+      ) {
         this.repeat = true;
         this.repeatTime = time;
       }
@@ -80,6 +83,8 @@ export class InputSet<T> {
   }
 
   updateAll(time: number): void {
-    this.inputs.forEach((input) => input.update(time));
+    for (const input of this.inputs.values()) {
+      input.update(time);
+    }
   }
 }

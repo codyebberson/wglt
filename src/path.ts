@@ -1,6 +1,6 @@
-import { Cell } from './cell';
-import { Console } from './console';
-import { PointLike } from './point';
+import type { Cell } from './cell';
+import type { Console } from './console';
+import type { PointLike } from './point';
 
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
@@ -43,7 +43,7 @@ export function computePath(map: Console, source: PointLike, dest: PointLike, ma
         }
         if (v.pathId !== pathId) {
           v.pathId = pathId;
-          v.g = Infinity;
+          v.g = Number.POSITIVE_INFINITY;
           v.h = Math.hypot(x - dest.x, y - dest.y);
           v.prev = null;
         }

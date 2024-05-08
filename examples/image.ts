@@ -1,4 +1,4 @@
-import { Colors, Console, loadImage, Terminal } from '../src/';
+import { Colors, type Console, loadImage, Terminal } from '../src/';
 
 const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, 80, 45);
 term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
@@ -7,7 +7,9 @@ let x = 10;
 let y = 10;
 
 let img = null as Console | null;
-loadImage('../starry.png', (result) => (img = result));
+loadImage('../starry.png', (result) => {
+  img = result;
+});
 
 term.update = () => {
   const moveKey = term.getMovementKey();

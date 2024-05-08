@@ -1,4 +1,4 @@
-import { Cell, Colors, fromRgb, RNG, Terminal } from '../src/';
+import { type Cell, Colors, fromRgb, RNG, Terminal } from '../src/';
 
 const w = 80;
 const h = 45;

@@ -48,8 +48,8 @@ test('chooseKey', () => {
     counts[rng.chooseKey(chancesMap)]++;
   }
 
-  expect(counts['foo']).toBe(729);
-  expect(counts['bar']).toBe(271);
+  expect(counts.foo).toBe(729);
+  expect(counts.bar).toBe(271);
 });
 
 test('serializable', () => {

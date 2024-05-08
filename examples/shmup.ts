@@ -1,4 +1,31 @@
-import { Colors, fromRgb, Keys, RNG, Terminal } from '../src/';
+import { Colors, Keys, RNG, Terminal, fromRgb } from '../src/';
+
+interface Bullet {
+  x: number;
+  y: number;
+}
+
+interface Star {
+  x: number;
+  y: number;
+  color: number;
+  dy: number;
+}
+
+interface Enemy {
+  id: number;
+  x: number;
+  y: number;
+  state: number;
+}
+
+interface Explosion {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  state: number;
+}
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -16,9 +43,9 @@ const player = {
   cooldown: 0,
 };
 
-const bullets: any[] = [];
+const bullets: Bullet[] = [];
 
-const stars: any[] = [];
+const stars: Star[] = [];
 for (let i = 0; i < 100; i++) {
   const b = rng.nextRange(64, 192);
   stars.push({
@@ -29,7 +56,7 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
-const enemies: any[] = [];
+const enemies: Enemy[] = [];
 
 const waypoints = [
   { x: 60, y: 40 },
@@ -41,7 +68,7 @@ const waypoints = [
   { x: 20, y: 40 },
 ];
 
-const explosions: any[] = [];
+const explosions: Explosion[] = [];
 
 const wave = {
   count: 0,
@@ -214,7 +241,7 @@ term.update = () => {
   term.drawString(player.x, player.y + 1, '|', Colors.LIGHT_RED);
 
   if (waveTime < 0 && waveTime > -WAVE_WARMUP_TIME + 60) {
-    term.drawCenteredString(WIDTH / 2, HEIGHT / 2, 'WAVE ' + wave.count, Colors.WHITE);
+    term.drawCenteredString(WIDTH / 2, HEIGHT / 2, `WAVE ${wave.count}`, Colors.WHITE);
   }
 
   term.drawString(1, HEIGHT - 2, 'Z - SHOOT', Colors.WHITE);

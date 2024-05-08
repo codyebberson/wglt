@@ -1,5 +1,5 @@
+import { resolve } from 'node:path';
 import { globSync } from 'glob';
-import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
 
 // Vite is used for the development server and the website.
@@ -10,7 +10,9 @@ import { defineConfig } from 'vitest/config';
 // https://vitejs.dev/guide/build.html#multi-page-app
 
 const htmlFiles = ['./index.html', ...globSync('./examples/**/*.html')];
-const input = Object.fromEntries(htmlFiles.map((file) => [file.replace('./', ''), resolve(__dirname, file)]));
+const input = Object.fromEntries(
+  htmlFiles.map((file) => [file.replace('./', ''), resolve(__dirname, file)])
+);
 
 export default defineConfig({
   build: {

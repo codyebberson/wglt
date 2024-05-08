@@ -1,6 +1,6 @@
-import { Cell } from './cell';
+import type { Cell } from './cell';
 import { Chars } from './chars';
-import { Color, fromRgb } from './color';
+import { type Color, fromRgb } from './color';
 import { Console } from './console';
 
 /**

@@ -1,8 +1,8 @@
-import { Color, Colors } from '../../src';
-import { AI } from './ai';
+import { Colors, type Color } from '../../src';
+import type { AI } from './ai';
 import { Entity } from './entity';
-import { Game } from './game';
-import { Item } from './item';
+import type { Game } from './game';
+import type { Item } from './item';
 
 export class Actor extends Entity {
   level: number;
@@ -55,7 +55,7 @@ export class Actor extends Entity {
     }
 
     item.equipped = true;
-    this.game.addMessage('Equipped ' + item.name + ' on ' + item.slot + '.', Colors.LIGHT_GREEN);
+    this.game.addMessage(`Equipped ${item.name} on ${item.slot}.`, Colors.LIGHT_GREEN);
   }
 
   dequip(item: Item): void {
@@ -63,7 +63,7 @@ export class Actor extends Entity {
       return;
     }
     item.equipped = false;
-    this.game.addMessage('Dequipped ' + item.name + ' on ' + item.slot + '.', Colors.YELLOW);
+    this.game.addMessage(`Dequipped ${item.name} on ${item.slot}.`, Colors.YELLOW);
   }
 
   get maxHp(): number {
@@ -71,7 +71,9 @@ export class Actor extends Entity {
   }
 
   get defense(): number {
-    return this.baseDefense + this.getAllEquipped().reduce((acc, item) => acc + item.defenseBonus, 0);
+    return (
+      this.baseDefense + this.getAllEquipped().reduce((acc, item) => acc + item.defenseBonus, 0)
+    );
   }
 
   get power(): number {
@@ -82,13 +84,13 @@ export class Actor extends Entity {
     const damage = this.power - target.defense;
 
     if (damage > 0) {
-      this.game.addMessage(this.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.');
+      this.game.addMessage(`${this.name} attacks ${target.name} for ${damage} hit points.`);
       target.takeDamage(damage);
       if (target.hp === 0) {
         this.takeXp(target.xp);
       }
     } else {
-      this.game.addMessage(this.name + ' attacks ' + target.name + ' but it has no effect!');
+      this.game.addMessage(`${this.name} attacks ${target.name} but it has no effect!`);
     }
   }
 
@@ -113,23 +115,26 @@ export class Actor extends Entity {
     if (this === this.game.player) {
       this.game.addMessage('You died!', Colors.DARK_RED);
     } else {
-      this.game.addMessage(this.name + ' is dead!', Colors.ORANGE);
+      this.game.addMessage(`${this.name} is dead!`, Colors.ORANGE);
     }
     this.char = '%';
     this.color = Colors.DARK_RED;
     this.blocks = false;
     this.ai = undefined;
-    this.name = 'Remains of ' + this.name;
+    this.name = `Remains of ${this.name}`;
     this.sendToBack();
   }
 
   pickUp(item: Item): void {
     if (this.inventory.length >= 26) {
-      this.game.addMessage('Your inventory is full, cannot pick up ' + item.name + '.', Colors.LIGHT_RED);
+      this.game.addMessage(
+        `Your inventory is full, cannot pick up ${item.name}.`,
+        Colors.LIGHT_RED
+      );
     } else {
       this.inventory.push(item);
       item.remove();
-      this.game.addMessage('You picked up a ' + item.name + '!', Colors.LIGHT_GREEN);
+      this.game.addMessage(`You picked up a ${item.name}!`, Colors.LIGHT_GREEN);
     }
   }
 
@@ -137,7 +142,7 @@ export class Actor extends Entity {
     if (item.useFunction) {
       item.useFunction(item);
     } else {
-      this.game.addMessage('The ' + item.name + ' cannot be used.');
+      this.game.addMessage(`The ${item.name} cannot be used.`);
     }
   }
 

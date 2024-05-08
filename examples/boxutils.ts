@@ -1,4 +1,4 @@
-import { Cell, Chars, Colors, Console, fixBoxCells, Terminal } from '../src/';
+import { type Cell, Chars, Colors, Console, fixBoxCells, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;

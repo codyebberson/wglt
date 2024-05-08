@@ -5,8 +5,8 @@
  * @returns Array of word wrapped lines.
  */
 export function wordWrap(str: string, maxLength: number): string[] {
-  const regex = new RegExp('(\\S(.{0,' + maxLength + '}\\S)?)\\s+', 'g');
-  return (str + ' ')
+  const regex = new RegExp(`(\\S(.{0,${maxLength}}\\S)?)\\s+`, 'g');
+  return `${str} `
     .replace(regex, '$1\n')
     .trim()
     .split('\n')

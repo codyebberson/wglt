@@ -1,4 +1,4 @@
-import { Input, InputSet } from './input';
+import { type Input, InputSet } from './input';
 
 export class Keyboard {
   readonly keys = new InputSet<KeyCode>();

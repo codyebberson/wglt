@@ -1,4 +1,12 @@
-import { Cell, ColodorePalette as Colors, computePath, Console, FovQuadrants, getFovQuadrant, Terminal } from '../src/';
+import {
+  type Cell,
+  ColodorePalette as Colors,
+  computePath,
+  Console,
+  FovQuadrants,
+  getFovQuadrant,
+  Terminal,
+} from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -59,17 +67,22 @@ function isBlocked(x: number, y: number): boolean {
   return getTile(x, y) !== '.';
 }
 
-const term = new Terminal(document.querySelector('canvas') as HTMLCanvasElement, SCREEN_WIDTH, SCREEN_HEIGHT, {
-  crt: {
-    scale: 3,
-    blur: 0.5,
-    curvature: 0.05,
-    chroma: 0.5,
-    vignette: 0.1,
-    scanlineWidth: 0.75,
-    scanlineIntensity: 0.25,
-  },
-});
+const term = new Terminal(
+  document.querySelector('canvas') as HTMLCanvasElement,
+  SCREEN_WIDTH,
+  SCREEN_HEIGHT,
+  {
+    crt: {
+      scale: 3,
+      blur: 0.5,
+      curvature: 0.05,
+      chroma: 0.5,
+      vignette: 0.1,
+      scanlineWidth: 0.75,
+      scanlineIntensity: 0.25,
+    },
+  }
+);
 
 const player = {
   x: Math.floor(MAP_WIDTH / 2),
@@ -113,7 +126,10 @@ term.update = () => {
       player.pathIndex++;
     }
     if (player.pathIndex < player.path.length) {
-      movePlayer(player.path[player.pathIndex].x - player.x, player.path[player.pathIndex].y - player.y);
+      movePlayer(
+        player.path[player.pathIndex].x - player.x,
+        player.path[player.pathIndex].y - player.y
+      );
     }
   }
 
@@ -123,7 +139,7 @@ term.update = () => {
   for (let y = 0; y < MAP_HEIGHT; y++) {
     for (let x = 0; x < MAP_WIDTH; x++) {
       const c = tileMap.getCell(x, y);
-      if (c && c.explored) {
+      if (c?.explored) {
         const color = tileMap.isVisible(x, y) ? Colors.WHITE : Colors.DARK_GRAY;
         tileMap.drawString(x, y, getTile(x, y), color);
       }

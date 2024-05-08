@@ -1,6 +1,4 @@
 import {
-  Cell,
-  Color,
   Colors,
   Console,
   Keys,
@@ -10,10 +8,12 @@ import {
   SelectDialog,
   computePath,
   fromRgb,
+  type Cell,
+  type Color,
 } from '../../src';
 import { Actor } from './actor';
-import { AI, BasicMonster, ConfusedMonster } from './ai';
-import { App, AppState } from './app';
+import { BasicMonster, ConfusedMonster, type AI } from './ai';
+import type { App, AppState } from './app';
 import { Entity } from './entity';
 import { Item } from './item';
 
@@ -367,7 +367,12 @@ export class Game implements AppState {
     }
 
     // Finally, some centered text with the values
-    this.app.term.drawCenteredString(x + totalWidth / 2, y, name + ': ' + value + '/' + maximum, Colors.WHITE);
+    this.app.term.drawCenteredString(
+      x + totalWidth / 2,
+      y,
+      `${name}: ${value}/${maximum}`,
+      Colors.WHITE
+    );
   }
 
   getNamesUnderMouse(): string {
@@ -404,13 +409,13 @@ export class Game implements AppState {
     let target: Actor | null = null;
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities[i];
-      if (entity instanceof Actor && entity != this.player && entity.x === x && entity.y === y) {
+      if (entity instanceof Actor && entity !== this.player && entity.x === x && entity.y === y) {
         target = entity;
         break;
       }
     }
 
-    if (target && target.blocks) {
+    if (target?.blocks) {
       this.player.attack(target);
     } else {
       this.player.move(dx, dy);
@@ -472,12 +477,13 @@ export class Game implements AppState {
       } else {
         const options = this.player.inventory.map((item) => {
           if (item.equipped) {
-            return item.name + ' (on ' + item.slot + ')';
-          } else {
-            return item.name;
+            return `${item.name} (on ${item.slot})`;
           }
+          return item.name;
         });
-        this.app.gui.add(new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice)));
+        this.app.gui.add(
+          new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice))
+        );
       }
     }
     if (term.isKeyPressed(Keys.VK_C)) {
@@ -485,18 +491,15 @@ export class Game implements AppState {
       this.app.gui.add(
         new MessageDialog(
           'CHARACTER',
-          'Level: ' +
-            this.player.level +
-            '\nExperience: ' +
-            this.player.xp +
-            '\nExperience to level up: ' +
-            levelUpXp +
-            '\n\nMaximum HP: ' +
-            this.player.maxHp +
-            '\nAttack: ' +
-            this.player.power +
-            '\nDefense: ' +
-            this.player.defense
+          [
+            `Level: ${this.player.level}`,
+            `Experience: ${this.player.xp}`,
+            `Experience to level up: ${levelUpXp}`,
+            '',
+            `Maximum HP: ${this.player.maxHp}`,
+            `Attack: ${this.player.power}`,
+            `Defense: ${this.player.defense}`,
+          ].join('\n')
         )
       );
     }
@@ -509,7 +512,12 @@ export class Game implements AppState {
     // If the mouse is hovering over the play area,
     // then draw the path from the player to the cursor
     if (!this.pathWalking) {
-      if (term.mouse.x >= 0 && term.mouse.x < MAP_WIDTH && term.mouse.y >= 0 && term.mouse.y < MAP_HEIGHT) {
+      if (
+        term.mouse.x >= 0 &&
+        term.mouse.x < MAP_WIDTH &&
+        term.mouse.y >= 0 &&
+        term.mouse.y < MAP_HEIGHT
+      ) {
         this.path = computePath(this.map, this.player, term.mouse, 100);
       } else {
         this.path = undefined;
@@ -560,12 +568,15 @@ export class Game implements AppState {
     if (this.player.xp >= levelUpXp) {
       this.player.level++;
       this.player.xp -= levelUpXp;
-      this.addMessage('Your battle skills grow stronger! You reached level ' + this.player.level + '!', Colors.YELLOW);
+      this.addMessage(
+        `Your battle skills grow stronger! You reached level ${this.player.level}!`,
+        Colors.YELLOW
+      );
 
       const options = [
-        'Constitution (+20 HP, from ' + this.player.maxHp + ')',
-        'Strength (+1 attack, from ' + this.player.power + ')',
-        'Agility (+1 defense, from ' + this.player.defense + ')',
+        `Constitution (+20 HP, from ${this.player.maxHp})`,
+        `Strength (+1 attack, from ${this.player.power})`,
+        `Agility (+1 defense, from ${this.player.defense})`,
       ];
 
       this.app.gui.add(
@@ -624,8 +635,11 @@ export class Game implements AppState {
     }
 
     // Zap it!
-    this.addMessage('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', Colors.LIGHT_BLUE);
-    this.addMessage('The damage is ' + LIGHTNING_DAMAGE + ' hit points', Colors.LIGHT_BLUE);
+    this.addMessage(
+      `A lightning bolt strikes the ${monster.name} with a loud thunder!`,
+      Colors.LIGHT_BLUE
+    );
+    this.addMessage(`The damage is ${LIGHTNING_DAMAGE} hit points`, Colors.LIGHT_BLUE);
     monster.takeDamage(LIGHTNING_DAMAGE);
     this.player.removeItem(item);
   }
@@ -639,12 +653,18 @@ export class Game implements AppState {
         return;
       }
 
-      this.addMessage('The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!', Colors.ORANGE);
+      this.addMessage(
+        `The fireball explodes, burning everything within ${FIREBALL_RADIUS} tiles!`,
+        Colors.ORANGE
+      );
 
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
         if (entity instanceof Actor && entity.hp > 0 && entity.distance(x, y) <= FIREBALL_RADIUS) {
-          this.addMessage('The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.', Colors.ORANGE);
+          this.addMessage(
+            `The ${entity.name} gets burned for ${FIREBALL_DAMAGE} hit points.`,
+            Colors.ORANGE
+          );
           entity.takeDamage(FIREBALL_DAMAGE);
         }
       }
@@ -669,7 +689,10 @@ export class Game implements AppState {
       }
 
       monster.setAi(new ConfusedMonster(monster.ai as AI));
-      this.addMessage('The eyes of the ' + monster.name + ' look vacant, as he stumbles around!', Colors.LIGHT_GREEN);
+      this.addMessage(
+        `The eyes of the ${monster.name} look vacant, as he stumbles around!`,
+        Colors.LIGHT_GREEN
+      );
       this.player.removeItem(item);
     });
   }
@@ -765,7 +788,7 @@ export class Game implements AppState {
       Colors.DARK_MAGENTA
     );
 
-    term.drawString(1, PANEL_Y + 4, 'Dungeon level ' + this.level, Colors.ORANGE);
+    term.drawString(1, PANEL_Y + 4, `Dungeon level ${this.level}`, Colors.ORANGE);
 
     // Display names of objects under the mouse
     term.drawString(1, PANEL_Y, this.getNamesUnderMouse(), Colors.LIGHT_GRAY);

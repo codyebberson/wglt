@@ -1,6 +1,0 @@
-node_modules
-dist
-*.min.js
-.eslintrc.js
-esbuild.mjs
-vite.config.ts

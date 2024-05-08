@@ -1,8 +1,8 @@
 import { DefaultDialogRenderer } from './gui/defaultdialogrenderer';
-import { Dialog } from './gui/dialog';
-import { DialogRenderer } from './gui/dialogrenderer';
-import { DialogState } from './gui/dialogstate';
-import { Terminal } from './terminal';
+import type { Dialog } from './gui/dialog';
+import type { DialogRenderer } from './gui/dialogrenderer';
+import type { DialogState } from './gui/dialogstate';
+import type { Terminal } from './terminal';
 
 export class GUI {
   constructor(

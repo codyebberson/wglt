@@ -1,5 +1,5 @@
 import { Colors } from '../../src';
-import { Actor } from './actor';
+import type { Actor } from './actor';
 
 const CONFUSE_NUM_TURNS = 10;
 
@@ -61,7 +61,7 @@ export class ConfusedMonster implements AI {
       this.numTurns--;
     } else {
       this.owner.ai = this.oldAi;
-      game.addMessage('The ' + this.owner.name + ' is no longer confused!', Colors.LIGHT_RED);
+      game.addMessage(`The ${this.owner.name} is no longer confused!`, Colors.LIGHT_RED);
     }
   }
 }

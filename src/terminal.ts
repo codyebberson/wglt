@@ -1,7 +1,7 @@
-import { Cell } from './cell';
+import type { Cell } from './cell';
 import { Console } from './console';
-import { DEFAULT_FONT, Font } from './font';
-import { KeyCode, Keyboard, Keys } from './keys';
+import { DEFAULT_FONT, type Font } from './font';
+import { Keyboard, Keys, type KeyCode } from './keys';
 import { Mouse } from './mouse';
 import { Point } from './point';
 import {
@@ -126,7 +126,12 @@ export class Terminal extends Console {
   averageFps: number;
   update?: () => void;
 
-  constructor(canvas: HTMLCanvasElement, width: number, height: number, options: TerminalOptions = DEFAULT_OPTIONS) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    width: number,
+    height: number,
+    options: TerminalOptions = DEFAULT_OPTIONS
+  ) {
     super(width, height);
 
     this.canvas = canvas;
@@ -169,31 +174,54 @@ export class Terminal extends Console {
 
     this.crtProgram = gl.createProgram() as WebGLProgram;
     gl.attachShader(this.crtProgram, this.buildShader(gl.VERTEX_SHADER, CRT_VERTEX_SHADER_SOURCE));
-    gl.attachShader(this.crtProgram, this.buildShader(gl.FRAGMENT_SHADER, CRT_FRAGMENT_SHADER_SOURCE));
+    gl.attachShader(
+      this.crtProgram,
+      this.buildShader(gl.FRAGMENT_SHADER, CRT_FRAGMENT_SHADER_SOURCE)
+    );
     gl.linkProgram(this.crtProgram);
     gl.useProgram(this.crtProgram);
 
     this.crtBlurLocation = gl.getUniformLocation(this.crtProgram, 'u_blur') as WebGLUniformLocation;
-    this.crtCurvatureLocation = gl.getUniformLocation(this.crtProgram, 'u_curvature') as WebGLUniformLocation;
-    this.crtChromaLocation = gl.getUniformLocation(this.crtProgram, 'u_chroma') as WebGLUniformLocation;
-    this.crtScanlineWidthLocation = gl.getUniformLocation(this.crtProgram, 'u_scanlineWidth') as WebGLUniformLocation;
+    this.crtCurvatureLocation = gl.getUniformLocation(
+      this.crtProgram,
+      'u_curvature'
+    ) as WebGLUniformLocation;
+    this.crtChromaLocation = gl.getUniformLocation(
+      this.crtProgram,
+      'u_chroma'
+    ) as WebGLUniformLocation;
+    this.crtScanlineWidthLocation = gl.getUniformLocation(
+      this.crtProgram,
+      'u_scanlineWidth'
+    ) as WebGLUniformLocation;
     this.crtScanlineIntensityLocation = gl.getUniformLocation(
       this.crtProgram,
       'u_scanlineIntensity'
     ) as WebGLUniformLocation;
-    this.crtVignetteLocation = gl.getUniformLocation(this.crtProgram, 'u_vignette') as WebGLUniformLocation;
+    this.crtVignetteLocation = gl.getUniformLocation(
+      this.crtProgram,
+      'u_vignette'
+    ) as WebGLUniformLocation;
 
     this.crtPositionLocation = gl.getAttribLocation(this.crtProgram, 'a_position');
     this.crtPositionBuffer = gl.createBuffer() as WebGLBuffer;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.crtPositionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
     gl.enableVertexAttribArray(this.crtPositionLocation);
     gl.vertexAttribPointer(this.crtPositionLocation, 2, gl.FLOAT, false, 0, 0);
 
     this.crtTexCoordLocation = gl.getAttribLocation(this.crtProgram, 'a_texCoord');
     this.crtTexCoordBuffer = gl.createBuffer() as WebGLBuffer;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.crtTexCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]),
+      gl.STATIC_DRAW
+    );
     gl.enableVertexAttribArray(this.crtTexCoordLocation);
     gl.vertexAttribPointer(this.crtTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
 
@@ -214,7 +242,17 @@ export class Terminal extends Console {
     // Init the frame buffer
     this.frameBufferTexture = gl.createTexture() as WebGLTexture;
     gl.bindTexture(gl.TEXTURE_2D, this.frameBufferTexture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.pixelWidth, this.pixelHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      this.pixelWidth,
+      this.pixelHeight,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null
+    );
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -222,7 +260,13 @@ export class Terminal extends Console {
 
     this.frameBuffer = gl.createFramebuffer() as WebGLFramebuffer;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.frameBufferTexture, 0);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      this.frameBufferTexture,
+      0
+    );
 
     // Init the positions buffer
     let i = 0;
@@ -293,8 +337,8 @@ export class Terminal extends Console {
     const factor = Math.min(widthFactor, heightFactor);
     const width = (factor * this.pixelWidth) | 0;
     const height = (factor * this.pixelHeight) | 0;
-    this.canvas.style.width = width + 'px';
-    this.canvas.style.height = height + 'px';
+    this.canvas.style.width = `${width}px`;
+    this.canvas.style.height = `${height}px`;
   }
 
   private getAttribLocation(name: string): number {
@@ -366,7 +410,9 @@ export class Terminal extends Console {
    * If no key is pressed, returns undefined.
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
-  getMovementKey(movementKeys: Partial<Record<KeyCode, Point>> = DEFAULT_MOVEMENT_KEYS): Point | undefined {
+  getMovementKey(
+    movementKeys: Partial<Record<KeyCode, Point>> = DEFAULT_MOVEMENT_KEYS
+  ): Point | undefined {
     for (const [key, delta] of Object.entries(movementKeys) as [KeyCode, Point][]) {
       if (this.isKeyPressed(key)) {
         return delta;
@@ -384,7 +430,7 @@ export class Terminal extends Console {
     gl.shaderSource(sh, source);
     gl.compileShader(sh);
     if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-      throw new Error('An error occurred compiling the shader: ' + gl.getShaderInfoLog(sh));
+      throw new Error(`An error occurred compiling the shader: ${gl.getShaderInfoLog(sh)}`);
     }
     return sh;
   }
@@ -412,7 +458,17 @@ export class Terminal extends Console {
     const srcFormat = gl.RGBA;
     const srcType = gl.UNSIGNED_BYTE;
     const pixel = new Uint8Array([0, 0, 0, 255]); // opaque black
-    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      level,
+      internalFormat,
+      width,
+      height,
+      border,
+      srcFormat,
+      srcType,
+      pixel
+    );
 
     const image = new Image();
     image.onload = () => {
@@ -452,7 +508,14 @@ export class Terminal extends Console {
       const stride = 0;
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-      gl.vertexAttribPointer(this.positionAttribLocation, numComponents, type, normalize, stride, offset);
+      gl.vertexAttribPointer(
+        this.positionAttribLocation,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+      );
     }
 
     // Tell WebGL how to pull out the texture coordinates from
@@ -465,7 +528,14 @@ export class Terminal extends Console {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.textureArray, gl.DYNAMIC_DRAW);
-      gl.vertexAttribPointer(this.textureAttribLocation, numComponents, type, normalize, stride, offset);
+      gl.vertexAttribPointer(
+        this.textureAttribLocation,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+      );
     }
 
     // Foreground color
@@ -477,7 +547,14 @@ export class Terminal extends Console {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.foregroundBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.foregroundUint8Array, gl.DYNAMIC_DRAW);
-      gl.vertexAttribPointer(this.fgColorAttribLocation, numComponents, type, normalize, stride, offset);
+      gl.vertexAttribPointer(
+        this.fgColorAttribLocation,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+      );
     }
 
     // Background color
@@ -489,7 +566,14 @@ export class Terminal extends Console {
       const offset = 0;
       gl.bindBuffer(gl.ARRAY_BUFFER, this.backgroundBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, this.backgroundUint8Array, gl.DYNAMIC_DRAW);
-      gl.vertexAttribPointer(this.bgColorAttribLocation, numComponents, type, normalize, stride, offset);
+      gl.vertexAttribPointer(
+        this.bgColorAttribLocation,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+      );
     }
 
     // Tell WebGL which indices to use to index the vertices

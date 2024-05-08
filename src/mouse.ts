@@ -1,6 +1,6 @@
 import { InputSet } from './input';
 import { Rect } from './rect';
-import { Terminal } from './terminal';
+import type { Terminal } from './terminal';
 
 export class Mouse {
   readonly el: HTMLCanvasElement;

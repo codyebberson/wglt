@@ -1,4 +1,4 @@
-import { Cell, Colors, computePath, Console, Terminal } from '../src/';
+import { type Cell, Colors, computePath, Console, Terminal } from '../src/';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;

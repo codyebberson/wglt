@@ -1,4 +1,4 @@
-import { Console } from './console';
+import type { Console } from './console';
 
 /**
  * Details about box characters.
@@ -107,7 +107,7 @@ export function fixBoxCells(con: Console): void {
 
         if ((up || right || down || left) && !(charCode >= 0xb3 && charCode <= 0xda)) {
           throw new Error(
-            'invalid char code! (up=' + up + ', right=' + right + ', down=' + down + ', left=' + left + ')'
+            `Invalid char code! (up=${up}, right=${right}, down=${down}, left=${left})`
           );
         }
 

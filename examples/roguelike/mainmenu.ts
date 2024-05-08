@@ -1,5 +1,5 @@
-import { Colors, Console, SelectDialog, loadImage2x } from '../../src';
-import { App, AppState } from './app';
+import { Colors, type Console, SelectDialog, loadImage2x } from '../../src';
+import type { App, AppState } from './app';
 
 let menuBg: Console | null = null;
 

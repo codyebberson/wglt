@@ -1,9 +1,9 @@
-import { Console } from '../console';
-import { KeyCode, Keys } from '../keys';
+import type { Console } from '../console';
+import { Keys, type KeyCode } from '../keys';
 import { Colors } from '../palettes/colors';
-import { Point } from '../point';
+import type { Point } from '../point';
 import { Rect } from '../rect';
-import { Terminal } from '../terminal';
+import type { Terminal } from '../terminal';
 import { Dialog } from './dialog';
 
 export class SelectDialog extends Dialog {
@@ -27,7 +27,7 @@ export class SelectDialog extends Dialog {
 
   drawContents(console: Console, offset: Point): void {
     for (let i = 0; i < this.options.length; i++) {
-      const str = String.fromCharCode(65 + i) + ' - ' + this.options[i];
+      const str = `${String.fromCharCode(65 + i)} - ${this.options[i]}`;
       if (i === this.hoverIndex) {
         console.drawString(offset.x, offset.y + i, str, Colors.BLACK, Colors.WHITE);
       } else {
@@ -41,7 +41,10 @@ export class SelectDialog extends Dialog {
     if (moveKey && moveKey.y !== 0) {
       this.hoverIndex = (this.hoverIndex + this.options.length + moveKey.y) % this.options.length;
     }
-    if (this.hoverIndex >= 0 && (terminal.isKeyPressed(Keys.VK_ENTER) || terminal.isKeyPressed(Keys.VK_NUMPAD_ENTER))) {
+    if (
+      this.hoverIndex >= 0 &&
+      (terminal.isKeyPressed(Keys.VK_ENTER) || terminal.isKeyPressed(Keys.VK_NUMPAD_ENTER))
+    ) {
       this.callback(this.hoverIndex);
       return true;
     }
@@ -60,7 +63,7 @@ export class SelectDialog extends Dialog {
     }
     const startCharCode = 'A'.charCodeAt(0);
     for (let i = 0; i < this.options.length; i++) {
-      if (terminal.isKeyPressed(('Key' + String.fromCharCode(startCharCode + i)) as KeyCode)) {
+      if (terminal.isKeyPressed(`Key${String.fromCharCode(startCharCode + i)}` as KeyCode)) {
         this.callback(i);
         return true;
       }

@@ -1,8 +1,8 @@
-import { Console } from '../console';
+import type { Console } from '../console';
 import { Keys } from '../keys';
-import { Point } from '../point';
+import type { Point } from '../point';
 import { Rect } from '../rect';
-import { Terminal } from '../terminal';
+import type { Terminal } from '../terminal';
 import { Dialog } from './dialog';
 import { Message } from './message';
 
@@ -11,7 +11,7 @@ export class MessageDialog extends Dialog {
     title: string,
     readonly message: string | Message
   ) {
-    let rect;
+    let rect: Rect;
     if (message instanceof Message) {
       rect = new Rect(0, 0, message.getWidth(), message.getHeight());
     } else {

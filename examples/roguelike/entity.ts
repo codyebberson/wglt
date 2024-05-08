@@ -1,5 +1,5 @@
-import { Color } from '../../src';
-import { Game } from './game';
+import type { Color } from '../../src';
+import type { Game } from './game';
 
 export class Entity {
   game: Game;

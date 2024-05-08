@@ -1,14 +1,13 @@
-import { BlendMode } from './blendmode';
-import { Color, fromRgb } from './color';
+import type { BlendMode } from './blendmode';
+import { type Color, fromRgb } from './color';
 import { Colors } from './palettes/colors';
 import { serializable } from './serialize';
 
 function convertCharCode(charCode: string | number): number {
   if (typeof charCode === 'string' && charCode.length > 0) {
     return charCode.charCodeAt(0);
-  } else {
-    return charCode as number;
   }
+  return charCode as number;
 }
 
 @serializable
@@ -73,10 +72,8 @@ export class Cell {
     }
   }
 
-  setValue(charCode: string | number, fg?: Color, bg?: Color): boolean {
-    if (typeof charCode === 'string') {
-      charCode = charCode.charCodeAt(0);
-    }
+  setValue(value: string | number, fg?: Color, bg?: Color): boolean {
+    const charCode = convertCharCode(value);
     if (typeof charCode === 'number') {
       this.setCharCode(charCode);
 
@@ -125,7 +122,11 @@ export class Cell {
         return fromRgb((w1 * r1 + w2 * r2) | 0, (w1 * g1 + w2 * g2) | 0, (w1 * b1 + w2 * b2) | 0);
 
       case 'add':
-        return fromRgb(this.clamp((r1 + w2 * r2) | 0), this.clamp((g1 + w2 * g2) | 0), this.clamp((b1 + w2 * b2) | 0));
+        return fromRgb(
+          this.clamp((r1 + w2 * r2) | 0),
+          this.clamp((g1 + w2 * g2) | 0),
+          this.clamp((b1 + w2 * b2) | 0)
+        );
 
       default:
         return c2;
