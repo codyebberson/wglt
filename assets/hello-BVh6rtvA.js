@@ -1,0 +1,1 @@
+import{T as l,C as t}from"./terminal-CNluqggI.js";const e=new l(document.querySelector("canvas"),80,45);e.fillRect(0,0,80,45,0,t.YELLOW,t.DARK_BLUE);let o=10,a=10;e.update=()=>{const r=e.getMovementKey();r&&(o+=r.x,a+=r.y),e.clear(),e.drawString(1,1,"Hello world!"),e.drawString(1,3,"Use arrow keys to move"),e.drawString(o,a,"@")};
