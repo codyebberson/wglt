@@ -1,51 +1,23 @@
 {
-  "name": "wglt",
-  "version": "0.6.4",
-  "description": "WebGL Terminal",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/codyebberson/wglt"
-  },
-  "license": "MIT",
-  "author": "Cody Ebberson <cody@ebberson.com>",
-  "sideEffects": false,
-  "type": "module",
-  "exports": {
-    "import": {
-      "types": "./dist/esm/index.d.ts",
-      "default": "./dist/esm/index.mjs"
-    },
-    "require": {
-      "types": "./dist/cjs/index.d.ts",
-      "default": "./dist/cjs/index.cjs"
-    }
-  },
-  "main": "dist/cjs/index.cjs",
-  "module": "dist/esm/index.mjs",
-  "types": "dist/esm/index.d.ts",
-  "files": ["dist/cjs", "dist/esm"],
+  "name": "root",
+  "version": "0.7.0",
+  "private": true,
+  "workspaces": ["packages/*"],
   "scripts": {
-    "api-extractor": "api-extractor run --local && cp dist/types.d.ts dist/cjs/index.d.ts && cp dist/types.d.ts dist/esm/index.d.ts",
-    "build": "npm run build:lib && npm run build:types && npm run build:site",
-    "build:lib": "node esbuild.mjs",
-    "build:site": "vite build",
-    "build:types": "tsc --project tsconfig.build.json && npm run api-extractor",
-    "dev": "vite",
-    "fix": "biome lint --apply .",
-    "lint": "biome lint .",
-    "test": "vitest --run"
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "fix": "biome check --apply .",
+    "lint": "biome check .",
+    "test": "turbo run test"
   },
-  "browserslist": ["last 1 Chrome versions"],
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
-    "@microsoft/api-extractor": "7.43.2",
-    "c8": "9.1.0",
+    "@types/node": "20.12.8",
     "esbuild": "0.21.1",
-    "glob": "10.3.12",
-    "ts-node": "10.9.2",
-    "tslib": "2.6.2",
-    "typescript": "5.4.5",
-    "vite": "5.2.11",
-    "vitest": "1.6.0"
+    "turbo": "1.13.3",
+    "typescript": "5.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

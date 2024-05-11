@@ -1,7 +1,5 @@
-/node_modules
-/dist
-/coverage
-/.idea
-/.vscode
-/.rts2_*
+.turbo
+node_modules
+dist
+package-lock.json
 

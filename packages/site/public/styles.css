@@ -1,0 +1,65 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  background: black;
+  color: white;
+  font-family: monospace;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+main {
+  line-height: 1.6;
+  margin: auto;
+  max-width: 1000px;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  font-weight: normal;
+}
+
+canvas {
+  image-rendering: pixelated;
+  width: 960px;
+  height: 540px;
+}
+
+pre {
+  font-size: 12px;
+}
+
+a {
+  color: rgb(77, 178, 255);
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(0, 145, 255);
+  text-decoration: underline;
+}
+
+footer {
+  color: #888;
+  font-size: 11px;
+  padding: 20px;
+  margin: 20px;
+  text-align: center;
+}
+
+#github {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 149px;
+  height: 149px;
+}
