@@ -1,6 +1,5 @@
 import { Rect } from '@wglt/core';
-import { Dialog } from '@wglt/graphics';
-import { Sprite } from '@wglt/graphics';
+import { Dialog, Sprite } from '@wglt/graphics';
 import { AI } from '@wglt/roguelike';
 import { Game } from '../game';
 import { QuestDialog } from '../gui/questdialog';

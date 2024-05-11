@@ -1,7 +1,6 @@
 import { Pico8Palette } from '@wglt/core';
 import { Message, Sprite } from '@wglt/graphics';
-import { Actor } from '@wglt/roguelike';
-import { Item, ItemQuality } from '@wglt/roguelike';
+import { Actor, Item, ItemQuality } from '@wglt/roguelike';
 import { Game } from '../game';
 
 const HEAL_AMOUNT = 4;

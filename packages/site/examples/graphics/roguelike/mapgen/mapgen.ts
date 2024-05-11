@@ -31,10 +31,7 @@ export class MapGenerator {
   }
 
   createMap(): void {
-    // const overworld = new Overworld(this);
-    // const dungeon = new Dungeon(this, overworld.rect.x2, 0);
-
-    // // Create portal entrance
+    // Create portal entrance
     const game = this.game;
     const map = game.tileMap;
 

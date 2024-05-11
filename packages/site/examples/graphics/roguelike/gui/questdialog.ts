@@ -1,5 +1,4 @@
-import { Rect } from '@wglt/core';
-import { Pico8Palette } from '@wglt/core';
+import { Pico8Palette, Rect } from '@wglt/core';
 import { Dialog } from '@wglt/graphics';
 import { Quest } from '../quests/quest';
 

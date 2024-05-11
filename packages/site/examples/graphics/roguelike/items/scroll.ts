@@ -1,6 +1,5 @@
 import { Sprite } from '@wglt/graphics';
-import { Actor } from '@wglt/roguelike';
-import { Ability, Item, ItemQuality, TargetType } from '@wglt/roguelike';
+import { Ability, Actor, Item, ItemQuality, TargetType } from '@wglt/roguelike';
 import { Game } from '../game';
 
 const SPRITE = new Sprite(736, 168, 16, 16, 1, true);

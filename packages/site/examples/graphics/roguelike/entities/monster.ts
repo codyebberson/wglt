@@ -1,6 +1,5 @@
 import { Sprite } from '@wglt/graphics';
-import { Actor } from '@wglt/roguelike';
-import { BasicMonster } from '@wglt/roguelike';
+import { Actor, BasicMonster } from '@wglt/roguelike';
 import { EquipmentBuilder } from '../equipment/equipmentbuilder';
 import { Game } from '../game';
 import { Gold } from '../items/gold';

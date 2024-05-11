@@ -1,7 +1,6 @@
 import { Pico8Palette, Vec2 } from '@wglt/core';
 import { Message, Sprite } from '@wglt/graphics';
-import { Entity } from '@wglt/roguelike';
-import { Ability, Actor, ProjectileAnimation, TargetType } from '@wglt/roguelike';
+import { Ability, Actor, Entity, ProjectileAnimation, TargetType } from '@wglt/roguelike';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
 

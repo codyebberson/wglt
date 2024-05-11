@@ -1,7 +1,6 @@
 import { Pico8Palette } from '@wglt/core';
 import { Message, Sprite } from '@wglt/graphics';
-import { Actor } from '@wglt/roguelike';
-import { Item } from '@wglt/roguelike';
+import { Actor, Item } from '@wglt/roguelike';
 import { Game } from '../game';
 
 const SPRITE = new Sprite(896, 168, 16, 16, 1, true);

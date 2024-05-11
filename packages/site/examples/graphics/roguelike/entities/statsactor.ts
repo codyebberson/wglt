@@ -1,6 +1,5 @@
 import { ArrayList, Pico8Palette } from '@wglt/core';
-import { Sprite } from '@wglt/graphics';
-import { CompoundMessage, Message } from '@wglt/graphics';
+import { CompoundMessage, Message, Sprite } from '@wglt/graphics';
 import { Actor } from '@wglt/roguelike';
 import { Buff } from '../buffs/buff';
 import { Equipment } from '../equipment/equipment';

@@ -1,8 +1,6 @@
-import { Pico8Palette } from '@wglt/core';
-import { Vec2 } from '@wglt/core';
+import { Pico8Palette, Vec2 } from '@wglt/core';
 import { Sprite } from '@wglt/graphics';
-import { Actor } from '@wglt/roguelike';
-import { AI } from '@wglt/roguelike';
+import { AI, Actor } from '@wglt/roguelike';
 import { Game } from '../game';
 import { Monster } from './monster';
 import { Player } from './player';

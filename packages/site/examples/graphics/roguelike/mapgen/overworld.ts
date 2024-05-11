@@ -1,5 +1,4 @@
-import { Rect } from '@wglt/core';
-import { Vec2 } from '@wglt/core';
+import { Rect, Vec2 } from '@wglt/core';
 import { Sprite } from '@wglt/graphics';
 import { ItemQuality } from '@wglt/roguelike';
 import { Bat } from '../entities/bat';
