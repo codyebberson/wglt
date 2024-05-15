@@ -1,6 +1,7 @@
 {
-  "name": "@wglt/site",
-  "version": "0.7.0",
+  "name": "site",
+  "version": "0.7.1",
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
@@ -10,10 +11,6 @@
   "devDependencies": {
     "typescript": "5.4.5",
     "vite": "5.2.11",
-    "@wglt/ascii": "0.7.0",
-    "@wglt/core": "0.7.0",
-    "@wglt/graphics": "0.7.0",
-    "@wglt/roguelike": "0.7.0",
-    "@wglt/tilemap": "0.7.0"
+    "wglt": "0.7.1"
   }
 }
