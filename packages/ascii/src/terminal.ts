@@ -150,8 +150,6 @@ export class Terminal extends Console {
     canvas.style.imageRendering = 'pixelated';
     canvas.style.outline = 'none';
     canvas.tabIndex = 0;
-    this.handleResize();
-    window.addEventListener('resize', () => this.handleResize());
 
     this.keys = new Keyboard(canvas);
     this.mouse = new Mouse(canvas, width, height);
@@ -328,20 +326,6 @@ export class Terminal extends Console {
     } else {
       window.setInterval(() => this.renderLoop(performance.now()), 1000 / this.maxFps);
     }
-  }
-
-  private handleResize(): void {
-    const parent = this.canvas.parentElement;
-    if (!parent) {
-      return;
-    }
-    const widthFactor = parent.offsetWidth / this.pixelWidth;
-    const heightFactor = parent.offsetHeight / this.pixelHeight;
-    const factor = Math.min(widthFactor, heightFactor);
-    const width = (factor * this.pixelWidth) | 0;
-    const height = (factor * this.pixelHeight) | 0;
-    this.canvas.style.width = `${width}px`;
-    this.canvas.style.height = `${height}px`;
   }
 
   private getAttribLocation(name: string): number {

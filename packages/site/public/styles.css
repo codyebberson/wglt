@@ -4,21 +4,25 @@
 }
 
 html {
-  min-height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 body {
   background: black;
   color: white;
   font-family: monospace;
-  min-height: 100%;
   overflow-x: hidden;
+  padding: 0;
+  margin: 0;
+  text-align: center;
 }
 
 main {
   line-height: 1.6;
   margin: auto;
   max-width: 1000px;
+  text-align: left;
 }
 
 h1,
@@ -30,8 +34,6 @@ h3 {
 
 canvas {
   image-rendering: pixelated;
-  width: 960px;
-  height: 540px;
 }
 
 pre {
