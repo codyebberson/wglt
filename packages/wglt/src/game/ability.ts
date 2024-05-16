@@ -1,4 +1,4 @@
-import { Message } from '../graphics/message';
+import { Message } from '../core/message';
 import { Sprite } from '../graphics/sprite';
 import { Actor } from './actor';
 import { Entity } from './entity';

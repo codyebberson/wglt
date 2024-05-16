@@ -1,5 +1,5 @@
-import { Pico8Palette, Vec2 } from '@wglt/core';
-import { Sprite } from '@wglt/graphics';
+import { Pico8Palette, Vec2 } from 'wglt';
+import { Sprite } from 'wglt';
 import { Game } from '../game';
 import { StatsActor } from './statsactor';
 

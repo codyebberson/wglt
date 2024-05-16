@@ -1,8 +1,8 @@
+import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Vec2 } from '../../core/vec2';
 import { DefaultSelectOptionRenderer } from './defaultselectoptionrenderer';
-import { Dialog } from './dialog';
 import { SelectOption } from './selectoption';
 import { SelectOptionRenderer } from './selectoptionrenderer';
 

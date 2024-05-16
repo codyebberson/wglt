@@ -1,6 +1,6 @@
-import { Pico8Palette, Vec2 } from '@wglt/core';
-import { Message, Sprite } from '@wglt/graphics';
-import { Ability, SlideAnimation, TargetType } from '@wglt/roguelike';
+import { Pico8Palette, Vec2 } from 'wglt';
+import { Message, Sprite } from 'wglt';
+import { Ability, SlideAnimation, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
 const RANGE = 10;

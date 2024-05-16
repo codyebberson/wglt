@@ -1,4 +1,4 @@
-import { Sprite } from '@wglt/graphics';
+import { Sprite } from 'wglt';
 import { Game } from '../game';
 import { Monster } from './monster';
 

@@ -1,16 +1,26 @@
+import { BaseApp } from '../../core/baseapp';
+import { Dialog } from '../../core/gui/dialog';
+import { DialogRenderer } from '../../core/gui/dialogrenderer';
 import { Rect } from '../../core/rect';
-import { BaseApp } from '../baseapp';
-import { Dialog } from './dialog';
 
-export class DialogRenderer {
-  baseRect: Rect;
-  closeButtonRect?: Rect;
-  buttonSlotRect?: Rect;
+export class GraphicsDialogRenderer implements DialogRenderer {
+  // baseRect: Rect;
+  // closeButtonRect: Rect;
+  // buttonSlotRect: Rect;
 
-  constructor(baseRect: Rect, closeButtonRect?: Rect) {
-    this.baseRect = baseRect;
-    this.closeButtonRect = closeButtonRect;
-  }
+  // constructor(baseRect: Rect, closeButtonRect?: Rect) {
+  //   this.baseRect = baseRect;
+  //   this.closeButtonRect = closeButtonRect;
+
+  //   // this.gui.renderer.baseRect = new Rect(0, 32, 48, 48);
+  //   // this.gui.renderer.buttonSlotRect = new Rect(48, 32, 24, 24);
+  // }
+
+  constructor(
+    readonly baseRect: Rect,
+    readonly closeButtonRect: Rect,
+    readonly buttonSlotRect: Rect
+  ) {}
 
   drawFrame(app: BaseApp, rect: Rect): void {
     // Draws the dialog chrome using a 3x3 grid

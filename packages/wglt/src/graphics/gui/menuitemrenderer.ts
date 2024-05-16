@@ -1,6 +1,6 @@
+import { GUI } from '../../core/gui/gui';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Vec2 } from '../../core/vec2';
-import { GUI } from './gui';
 import { SelectOption } from './selectoption';
 import { SelectOptionRenderer } from './selectoptionrenderer';
 

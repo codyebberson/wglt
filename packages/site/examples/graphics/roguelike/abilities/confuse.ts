@@ -1,6 +1,6 @@
-import { Pico8Palette } from '@wglt/core';
-import { Message, Sprite } from '@wglt/graphics';
-import { Ability, Actor, ConfusedMonster, TargetType } from '@wglt/roguelike';
+import { Pico8Palette } from 'wglt';
+import { Message, Sprite } from 'wglt';
+import { Ability, Actor, ConfusedMonster, TargetType } from 'wglt';
 
 const CONFUSE_RANGE = 8;
 const CONFUSE_SPRITE = new Sprite(128, 32, 16, 16, 3, false);

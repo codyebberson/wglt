@@ -1,9 +1,9 @@
 import { Color } from '../../core/color';
+import { Panel } from '../../core/gui/panel';
+import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
 import { Vec2 } from '../../core/vec2';
-import { Message } from '../message';
-import { Panel } from './panel';
 
 export class MessageLog extends Panel {
   private readonly messages: Message[];

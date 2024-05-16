@@ -1,17 +1,9 @@
-export class Font {
-  constructor(
-    readonly url: string,
-    readonly charWidth: number,
-    readonly charHeight: number
-  ) {}
-}
-
 /**
  * Font image as data URL.
  * IBM terminal font.
  * See img/font.png.
  */
-const FONT_IMAGE =
+export const IBM_BIOS_FONT_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
   'MAAAD58POIAAAABlBMVEUAAAD///+l2Z/dAAAEhklEQVRIx42Sv4oUQRDGC4UzadSwwMUD8' +
   'QEKlbWD4Q58B/NGpTVocKO1wXHUzMAH0AcwMTYVGg5ag0IzEXaRjdZEZKNzkKbHqtnzHypY' +
@@ -36,5 +28,3 @@ const FONT_IMAGE =
   '4cXOeXMWfsusSw7FOg9x655nax6BlecwpOQQ68WBwp+H2LMQTuOq2RUigzh2Q/R3CWARJIJ' +
   'G199EwOTyKBlQMznshCRGeQ5gHABAQl6M4gLEdAzVaBWMCiANdsayDCHBA/hagKYfielrJI' +
   'lipKKQIA9Nf3wBloTHT6BuAx15zRNa1nAAAAAElFTkSuQmCC';
-
-export const DEFAULT_FONT = new Font(FONT_IMAGE, 8, 8);

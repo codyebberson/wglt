@@ -1,7 +1,7 @@
 import { Color } from '../core/color';
+import { Font } from '../core/font';
 import { ExtendedTexture, createTexture, initShaderProgram } from '../core/glutils';
 import { Vec2 } from '../core/vec2';
-import { Font } from './font';
 
 /**
  * Maximum number of elements per buffer.

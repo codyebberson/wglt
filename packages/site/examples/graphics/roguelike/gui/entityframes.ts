@@ -1,5 +1,5 @@
-import { Pico8Palette, Rect } from '@wglt/core';
-import { GUI, Panel } from '@wglt/graphics';
+import { Pico8Palette, Rect } from 'wglt';
+import { GUI, Panel } from 'wglt';
 import { App } from '../app';
 import { Player } from '../entities/player';
 import { Sentiment, StatsActor } from '../entities/statsactor';

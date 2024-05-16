@@ -1,4 +1,4 @@
-import { getTileId } from '@wglt/tilemap';
+import { getTileId } from 'wglt';
 
 export const Tiles = {
   EMPTY: 0,

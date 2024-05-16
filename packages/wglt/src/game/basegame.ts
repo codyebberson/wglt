@@ -1,16 +1,18 @@
 import { ArrayList } from '../core/arraylist';
+import { AppState } from '../core/baseapp';
 import { Color } from '../core/color';
+import { GUI } from '../core/gui/gui';
+import { Panel } from '../core/gui/panel';
+import { TooltipDialog } from '../core/gui/tooltipdialog';
 import { Key } from '../core/keys';
+import { Message } from '../core/message';
 import { SimplePalette } from '../core/palettes/simple';
 import { Rect } from '../core/rect';
 import { RNG } from '../core/rng';
 import { Vec2 } from '../core/vec2';
-import { AppState, BaseApp } from '../graphics/baseapp';
-import { GUI } from '../graphics/gui/gui';
+import { GraphicsApp } from '../graphics/graphicsapp';
+import { GraphicsDialogRenderer } from '../graphics/gui/dialogrenderer';
 import { MessageLog } from '../graphics/gui/messagelog';
-import { Panel } from '../graphics/gui/panel';
-import { TooltipDialog } from '../graphics/gui/tooltipdialog';
-import { Message } from '../graphics/message';
 import { Sprite } from '../graphics/sprite';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
@@ -66,9 +68,16 @@ export abstract class BaseGame extends AppState {
   readonly screenShakeOffset: Vec2;
   screenShakeCountdown: number;
 
-  constructor(app: BaseApp, seed: number) {
+  constructor(app: GraphicsApp, seed: number) {
     super(app);
-    this.gui = new GUI(app);
+    this.gui = new GUI(
+      app,
+      new GraphicsDialogRenderer(
+        new Rect(0, 32, 48, 48),
+        new Rect(0, 32, 48, 48),
+        new Rect(48, 32, 24, 24)
+      )
+    );
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
@@ -96,8 +105,8 @@ export abstract class BaseGame extends AppState {
 
     this.targetSprite = TARGET_SPRITE;
     this.cooldownSprite = new Sprite(192, 16, 16, 16, 24);
-    this.gui.renderer.baseRect = new Rect(0, 32, 48, 48);
-    this.gui.renderer.buttonSlotRect = new Rect(48, 32, 24, 24);
+    // this.gui.renderer.baseRect = new Rect(0, 32, 48, 48);
+    // this.gui.renderer.buttonSlotRect = new Rect(48, 32, 24, 24);
   }
 
   get tileSize(): Rect {
@@ -314,7 +323,7 @@ export abstract class BaseGame extends AppState {
   }
 
   private drawTileMap(): void {
-    if (this.app.renderSet.spriteTexture.loaded) {
+    if ((this.app as GraphicsApp).renderSet.spriteTexture.loaded) {
       const x = ((this.viewport.x / this.zoom) | 0) * this.zoom - this.screenShakeOffset.x;
       const y = ((this.viewport.y / this.zoom) | 0) * this.zoom - this.screenShakeOffset.y;
       const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;

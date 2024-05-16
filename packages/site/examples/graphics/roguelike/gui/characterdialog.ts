@@ -1,6 +1,6 @@
-import { Pico8Palette, Rect } from '@wglt/core';
-import { ButtonSlot, Dialog } from '@wglt/graphics';
-import { ItemButton } from '@wglt/roguelike';
+import { Pico8Palette, Rect } from 'wglt';
+import { ButtonSlot, Dialog } from 'wglt';
+import { ItemButton } from 'wglt';
 import { Player } from '../entities/player';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';

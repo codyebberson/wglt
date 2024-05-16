@@ -1,7 +1,8 @@
+import { Panel } from '../../core/gui/panel';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Button } from './button';
-import { Panel } from './panel';
+import { GraphicsDialogRenderer } from './dialogrenderer';
 
 export class ButtonSlot extends Panel {
   shortcutKey?: Key;
@@ -21,7 +22,7 @@ export class ButtonSlot extends Panel {
     }
 
     const dst = this.rect;
-    const src = this.gui.renderer.buttonSlotRect;
+    const src = (this.gui.renderer as GraphicsDialogRenderer).buttonSlotRect;
     if (src) {
       this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
     }

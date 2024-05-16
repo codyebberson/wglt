@@ -1,10 +1,11 @@
 import { ArrayList } from '../../core/arraylist';
+import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
+import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
 import { ButtonSlot } from '../../graphics/gui/buttonslot';
-import { Dialog } from '../../graphics/gui/dialog';
-import { Message } from '../../graphics/message';
+import { GraphicsDialogRenderer } from '../../graphics/gui/dialogrenderer';
 import { Actor } from '../actor';
 import { Item } from '../item';
 import { VendorButton } from './vendorbutton';
@@ -98,13 +99,17 @@ export class VendorDialog extends Dialog {
   drawContents(): void {
     super.drawContents();
 
-    if (!this.gui || !this.gui.renderer.buttonSlotRect) {
+    if (!this.gui) {
+      return;
+    }
+
+    const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
+    if (!buttonRect) {
       return;
     }
 
     // Update positions of button slots
     const containerRect = this.rect;
-    const buttonRect = this.gui.renderer.buttonSlotRect;
     const x = containerRect.x + MARGIN;
     let y = containerRect.y + MARGIN;
 

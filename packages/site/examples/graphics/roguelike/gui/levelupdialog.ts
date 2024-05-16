@@ -1,5 +1,5 @@
-import { Key, Pico8Palette, Rect } from '@wglt/core';
-import { Button, ButtonSlot, Dialog, Message, Sprite } from '@wglt/graphics';
+import { Key, Pico8Palette, Rect } from 'wglt';
+import { Button, ButtonSlot, Dialog, Message, Sprite } from 'wglt';
 import { Player } from '../entities/player';
 
 const MARGIN = 5;

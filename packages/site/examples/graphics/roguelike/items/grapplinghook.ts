@@ -1,15 +1,7 @@
-import { Pico8Palette } from '@wglt/core';
-import { Message, Sprite } from '@wglt/graphics';
-import {
-  Ability,
-  Actor,
-  Item,
-  ItemQuality,
-  SlideAnimation,
-  Stunned,
-  TargetType,
-} from '@wglt/roguelike';
-import { TileMapCell } from '@wglt/tilemap';
+import { Pico8Palette } from 'wglt';
+import { Message, Sprite } from 'wglt';
+import { Ability, Actor, Item, ItemQuality, SlideAnimation, Stunned, TargetType } from 'wglt';
+import { TileMapCell } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
 

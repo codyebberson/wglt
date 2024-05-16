@@ -1,6 +1,6 @@
-import { Pico8Palette, Rect } from '@wglt/core';
-import { Button, Message, MessageLog, Sprite } from '@wglt/graphics';
-import { BaseGame, ItemContainerDialog, TalentsDialog } from '@wglt/roguelike';
+import { Pico8Palette, Rect } from 'wglt';
+import { Button, Message, MessageLog, Sprite } from 'wglt';
+import { BaseGame, ItemContainerDialog, TalentsDialog } from 'wglt';
 import { App } from './app';
 import { Player } from './entities/player';
 import { BottomPanel } from './gui/bottompanel';

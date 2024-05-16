@@ -1,13 +1,7 @@
-import { Pico8Palette, Vec2 } from '@wglt/core';
-import { Message, Sprite } from '@wglt/graphics';
-import {
-  Ability,
-  Actor,
-  ExplosionAnimation,
-  ProjectileAnimation,
-  TargetType,
-} from '@wglt/roguelike';
-import { TileMapCell } from '@wglt/tilemap';
+import { Pico8Palette, Vec2 } from 'wglt';
+import { Message, Sprite } from 'wglt';
+import { Ability, Actor, ExplosionAnimation, ProjectileAnimation, TargetType } from 'wglt';
+import { TileMapCell } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
 const FIREBALL_RANGE = 10;

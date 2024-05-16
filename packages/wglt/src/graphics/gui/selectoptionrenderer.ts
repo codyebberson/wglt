@@ -1,5 +1,5 @@
+import { GUI } from '../../core/gui/gui';
 import { Vec2 } from '../../core/vec2';
-import { GUI } from './gui';
 import { SelectOption } from './selectoption';
 
 export interface SelectOptionRenderer {

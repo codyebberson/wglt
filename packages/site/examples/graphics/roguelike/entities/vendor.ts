@@ -1,6 +1,6 @@
-import { Rect } from '@wglt/core';
-import { Dialog, Sprite } from '@wglt/graphics';
-import { AI, VendorDialog } from '@wglt/roguelike';
+import { Rect } from 'wglt';
+import { Dialog, Sprite } from 'wglt';
+import { AI, VendorDialog } from 'wglt';
 import { Game } from '../game';
 import { Player } from './player';
 import { Sentiment, StatsActor } from './statsactor';

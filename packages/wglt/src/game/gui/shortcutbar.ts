@@ -1,7 +1,8 @@
 import { ArrayList } from '../../core/arraylist';
+import { Panel } from '../../core/gui/panel';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
-import { Panel } from '../../graphics/gui/panel';
+import { GraphicsDialogRenderer } from '../../graphics/gui/dialogrenderer';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
@@ -73,7 +74,7 @@ export class ShortcutBar extends Panel {
       return;
     }
 
-    const buttonRect = this.gui.renderer.buttonSlotRect;
+    const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
     if (!buttonRect) {
       return;
     }

@@ -1,6 +1,6 @@
-import { Rect, Vec2 } from '@wglt/core';
-import { ItemQuality, Talent } from '@wglt/roguelike';
-import { TileMap, getTileId } from '@wglt/tilemap';
+import { Rect, Vec2 } from 'wglt';
+import { ItemQuality, Talent } from 'wglt';
+import { TileMap, getTileId } from 'wglt';
 import { FlashHealAbility } from '../abilities/flashheal';
 import { LeapAbility } from '../abilities/leap';
 import { LightningAbility } from '../abilities/lightning';

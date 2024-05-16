@@ -1,4 +1,4 @@
-import { Sprite } from '@wglt/graphics';
+import { Sprite } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 import { Buff } from './buff';
 

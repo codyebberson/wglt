@@ -1,7 +1,7 @@
 import { ArrayList } from '../../core/arraylist';
+import { TooltipDialog } from '../../core/gui/tooltipdialog';
 import { Rect } from '../../core/rect';
 import { Button } from '../../graphics/gui/button';
-import { TooltipDialog } from '../../graphics/gui/tooltipdialog';
 import { Item } from '../item';
 
 export class ItemButton extends Button {

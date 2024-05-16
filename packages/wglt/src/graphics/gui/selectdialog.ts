@@ -1,6 +1,6 @@
+import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
-import { Dialog } from './dialog';
 import { SelectOption } from './selectoption';
 
 const MARGIN = 4;

@@ -1,5 +1,5 @@
+import { BaseApp } from '../core/baseapp';
 import { Rect } from '../core/rect';
-import { BaseApp } from './baseapp';
 
 const DEFAULT_TICKS_PER_FRAME = 30;
 

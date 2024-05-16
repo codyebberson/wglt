@@ -1,6 +1,6 @@
-import { Sprite } from '@wglt/graphics';
-import { Item } from '@wglt/roguelike';
-import { getTileId } from '@wglt/tilemap';
+import { Sprite } from 'wglt';
+import { Item } from 'wglt';
+import { getTileId } from 'wglt';
 import { Game } from '../game';
 
 const TILE_OPEN_DOOR = getTileId(7, 20);

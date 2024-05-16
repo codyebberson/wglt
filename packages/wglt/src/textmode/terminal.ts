@@ -1,10 +1,11 @@
+import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
 import { Keyboard } from '../core/keyboard';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Cell } from './cell';
 import { Console } from './console';
-import { DEFAULT_FONT, Font } from './font';
+import { IBM_BIOS_FONT_DATA_URL } from './font';
 import {
   CRT_FRAGMENT_SHADER_SOURCE,
   CRT_VERTEX_SHADER_SOURCE,
@@ -24,7 +25,8 @@ function interpolate(i: number, max: number): number {
 }
 
 export interface TerminalOptions {
-  font?: Font;
+  fontUrl?: string;
+  font?: MonospacedFont;
   movementKeys?: Partial<Record<Key, Point>>;
   crt?: CrtOptions;
   maxFps?: number;
@@ -75,13 +77,14 @@ const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
 };
 
 const DEFAULT_OPTIONS: TerminalOptions = {
-  font: DEFAULT_FONT,
+  fontUrl: IBM_BIOS_FONT_DATA_URL,
+  font: FONT_IBM_BIOS,
   movementKeys: DEFAULT_MOVEMENT_KEYS,
 };
 
 export class Terminal extends Console {
   readonly canvas: HTMLCanvasElement;
-  readonly font: Font;
+  readonly font: MonospacedFont;
   readonly crt?: CrtOptions;
   readonly maxFps?: number;
   readonly pixelWidth: number;
@@ -141,11 +144,11 @@ export class Terminal extends Console {
         : canvasOrSelector;
 
     this.canvas = canvas;
-    this.font = options.font ?? DEFAULT_FONT;
+    this.font = options.font ?? FONT_IBM_BIOS;
     this.crt = options.crt;
     this.maxFps = options.maxFps;
-    this.pixelWidth = width * this.font.charWidth;
-    this.pixelHeight = height * this.font.charHeight;
+    this.pixelWidth = width * this.font.glyphSize.width;
+    this.pixelHeight = height * this.font.glyphSize.height;
     this.pixelScale = options.crt?.scale ?? 1.0;
 
     canvas.width = this.pixelWidth * this.pixelScale;
@@ -317,7 +320,7 @@ export class Terminal extends Console {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexArray, gl.STATIC_DRAW);
 
-    this.texture = this.loadTexture(this.font.url);
+    this.texture = this.loadTexture(options.fontUrl ?? IBM_BIOS_FONT_DATA_URL);
 
     this.lastRenderTime = 0;
     this.renderDelta = 0;

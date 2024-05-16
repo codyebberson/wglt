@@ -1,6 +1,6 @@
-import { Pico8Palette } from '@wglt/core';
-import { CompoundMessage, Message } from '@wglt/graphics';
-import { Item } from '@wglt/roguelike';
+import { Pico8Palette } from 'wglt';
+import { CompoundMessage, Message } from 'wglt';
+import { Item } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 import { EquipmentBuilder } from './equipmentbuilder';

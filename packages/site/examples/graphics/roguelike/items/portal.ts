@@ -1,5 +1,5 @@
-import { Sprite } from '@wglt/graphics';
-import { Item } from '@wglt/roguelike';
+import { Sprite } from 'wglt';
+import { Item } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 

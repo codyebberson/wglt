@@ -1,9 +1,9 @@
+import { Panel } from '../../core/gui/panel';
+import { TooltipDialog } from '../../core/gui/tooltipdialog';
 import { Key } from '../../core/keys';
+import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
-import { Message } from '../message';
 import { Sprite } from '../sprite';
-import { Panel } from './panel';
-import { TooltipDialog } from './tooltipdialog';
 
 export class Button extends Panel {
   readonly sprite: Sprite;

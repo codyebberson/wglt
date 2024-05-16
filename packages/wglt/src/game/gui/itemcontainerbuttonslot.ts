@@ -1,5 +1,5 @@
+import { Panel } from '../../core/gui/panel';
 import { ButtonSlot } from '../../graphics/gui/buttonslot';
-import { Panel } from '../../graphics/gui/panel';
 import { ItemButton } from './itembutton';
 
 export class ItemContainerButtonSlot extends ButtonSlot {

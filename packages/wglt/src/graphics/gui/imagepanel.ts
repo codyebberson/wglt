@@ -1,5 +1,5 @@
+import { Panel } from '../../core/gui/panel';
 import { Rect } from '../../core/rect';
-import { Panel } from './panel';
 
 export class ImagePanel extends Panel {
   readonly srcRect: Rect;

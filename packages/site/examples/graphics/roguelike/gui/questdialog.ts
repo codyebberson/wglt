@@ -1,5 +1,5 @@
-import { Pico8Palette, Rect } from '@wglt/core';
-import { Dialog } from '@wglt/graphics';
+import { Pico8Palette, Rect } from 'wglt';
+import { Dialog } from 'wglt';
 import { Quest } from '../quests/quest';
 
 const MARGIN = 8;

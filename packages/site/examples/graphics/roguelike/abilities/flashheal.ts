@@ -1,6 +1,6 @@
-import { Pico8Palette } from '@wglt/core';
-import { Message, Sprite } from '@wglt/graphics';
-import { Ability, TargetType } from '@wglt/roguelike';
+import { Pico8Palette } from 'wglt';
+import { Message, Sprite } from 'wglt';
+import { Ability, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
 const SPRITE = new Sprite(672, 144, 16, 16, 1, false);

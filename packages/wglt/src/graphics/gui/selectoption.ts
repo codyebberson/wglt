@@ -1,4 +1,4 @@
-import { Message } from '../message';
+import { Message } from '../../core/message';
 import { Sprite } from '../sprite';
 
 export interface SelectOption {

@@ -1,6 +1,6 @@
-import { Key, Rect } from '@wglt/core';
-import { ButtonSlot, Panel } from '@wglt/graphics';
-import { ShortcutBar } from '@wglt/roguelike';
+import { Key, Rect } from 'wglt';
+import { ButtonSlot, Panel } from 'wglt';
+import { ShortcutBar } from 'wglt';
 
 export class BottomPanel extends Panel {
   readonly shortcutBar: ShortcutBar;

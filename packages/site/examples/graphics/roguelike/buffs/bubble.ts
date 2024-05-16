@@ -1,5 +1,5 @@
-import { Pico8Palette } from '@wglt/core';
-import { Sprite } from '@wglt/graphics';
+import { Pico8Palette } from 'wglt';
+import { Sprite } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 import { Buff } from './buff';
 

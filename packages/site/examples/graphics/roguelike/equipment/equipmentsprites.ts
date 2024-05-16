@@ -1,4 +1,4 @@
-import { Sprite } from '@wglt/graphics';
+import { Sprite } from 'wglt';
 
 const W = 16;
 const H = 16;

@@ -1,7 +1,7 @@
-import { Pico8Palette } from '@wglt/core';
-import { Key } from '@wglt/core';
-import { AppState } from '@wglt/graphics';
-import { Sprite } from '@wglt/graphics';
+import { Pico8Palette } from 'wglt';
+import { Key } from 'wglt';
+import { AppState } from 'wglt';
+import { Sprite } from 'wglt';
 import { App } from './app';
 
 const OPTIONS = [

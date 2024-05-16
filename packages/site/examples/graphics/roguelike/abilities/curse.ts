@@ -1,6 +1,6 @@
-import { Pico8Palette } from '@wglt/core';
-import { Message, Sprite } from '@wglt/graphics';
-import { Ability, TargetType } from '@wglt/roguelike';
+import { Pico8Palette } from 'wglt';
+import { Message, Sprite } from 'wglt';
+import { Ability, TargetType } from 'wglt';
 import { Curse } from '../buffs/curse';
 import { StatsActor } from '../entities/statsactor';
 

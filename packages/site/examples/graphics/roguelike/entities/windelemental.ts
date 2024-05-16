@@ -1,6 +1,6 @@
-import { Rect } from '@wglt/core';
-import { Sprite } from '@wglt/graphics';
-import { AI } from '@wglt/roguelike';
+import { Rect } from 'wglt';
+import { Sprite } from 'wglt';
+import { AI } from 'wglt';
 import { Game } from '../game';
 import { Monster } from './monster';
 import { Player } from './player';

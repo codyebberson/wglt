@@ -1,8 +1,8 @@
 import { ArrayList } from '../../core/arraylist';
+import { TooltipDialog } from '../../core/gui/tooltipdialog';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
 import { Button } from '../../graphics/gui/button';
-import { TooltipDialog } from '../../graphics/gui/tooltipdialog';
 import { Actor } from '../actor';
 import { Item } from '../item';
 

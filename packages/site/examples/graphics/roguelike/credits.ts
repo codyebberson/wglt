@@ -1,4 +1,4 @@
-import { AppState } from '@wglt/graphics';
+import { AppState } from 'wglt';
 
 export class Credits extends AppState {
   update(): void {

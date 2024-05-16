@@ -1,5 +1,4 @@
-import { BaseApp } from '@wglt/graphics';
-import { FadeInAnimation } from '@wglt/roguelike';
+import { FadeInAnimation, GraphicsApp } from 'wglt';
 import { Credits } from './credits';
 import { Player } from './entities/player';
 import { Game } from './game';
@@ -8,7 +7,7 @@ import { Gold } from './items/gold';
 import { Hearthstone } from './items/hearthstone';
 import { MainMenu } from './mainmenu';
 
-export class App extends BaseApp {
+export class App extends GraphicsApp {
   readonly mainMenu: MainMenu;
   readonly highScores: HighScores;
   readonly credits: Credits;
