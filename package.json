@@ -2,7 +2,7 @@
   "name": "root",
   "version": "0.7.1",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": ["wglt", "docs"],
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
