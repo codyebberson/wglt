@@ -1,5 +1,5 @@
 import { Message } from '../core/message';
-import { Sprite } from '../graphics/sprite';
+import { Sprite } from '../core/sprite';
 import { Actor } from './actor';
 import { Entity } from './entity';
 import { TileMapCell } from './tilemap/tilemapcell';

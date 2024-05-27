@@ -1,6 +1,4 @@
-import { Key, Rect } from 'wglt';
-import { ButtonSlot, Panel } from 'wglt';
-import { ShortcutBar } from 'wglt';
+import { BaseApp, ButtonSlot, Key, Panel, Rect, ShortcutBar } from 'wglt';
 
 export class BottomPanel extends Panel {
   readonly shortcutBar: ShortcutBar;
@@ -32,13 +30,7 @@ export class BottomPanel extends Panel {
     this.addChild(this.inventorySlot);
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-
-    const app = this.gui.app;
-
+  draw(app: BaseApp): void {
     // Update button y-positions
     // This will normally be a no-op
     for (let i = 0; i < this.children.length; i++) {
@@ -49,6 +41,6 @@ export class BottomPanel extends Panel {
       }
     }
 
-    this.drawChildren();
+    this.drawChildren(app);
   }
 }

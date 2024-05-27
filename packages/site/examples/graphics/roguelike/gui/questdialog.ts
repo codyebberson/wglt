@@ -1,5 +1,4 @@
-import { Pico8Palette, Rect } from 'wglt';
-import { Dialog } from 'wglt';
+import { BaseApp, Dialog, Pico8Palette, Rect } from 'wglt';
 import { Quest } from '../quests/quest';
 
 const MARGIN = 8;
@@ -12,10 +11,13 @@ export class QuestDialog extends Dialog {
     this.modal = true;
   }
 
-  drawContents(): void {
-    super.drawContents();
+  draw(app: BaseApp): void {
+    super.draw(app);
 
-    if (!this.gui || !this.gui.renderer.buttonSlotRect || !this.quest) {
+    // if (!this.gui || !this.gui.renderer.buttonSlotRect || !this.quest) {
+    //   return;
+    // }
+    if (!this.quest) {
       return;
     }
 
@@ -25,11 +27,11 @@ export class QuestDialog extends Dialog {
     let y = containerRect.y + MARGIN;
 
     for (let i = 0; i < this.quest.description.length; i++) {
-      this.gui.app.drawString(this.quest.description[i], x, y, Pico8Palette.WHITE);
+      app.drawString(x, y, this.quest.description[i], Pico8Palette.WHITE);
       y += 10;
     }
 
     this.rect.height = Math.max(200, y + MARGIN - containerRect.y);
-    this.drawChildren();
+    this.drawChildren(app);
   }
 }

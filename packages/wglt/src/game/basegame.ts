@@ -2,18 +2,15 @@ import { ArrayList } from '../core/arraylist';
 import { AppState } from '../core/baseapp';
 import { Color } from '../core/color';
 import { GUI } from '../core/gui/gui';
-import { Panel } from '../core/gui/panel';
-import { TooltipDialog } from '../core/gui/tooltipdialog';
+import { MessageLog } from '../core/gui/messagelog';
 import { Key } from '../core/keys';
 import { Message } from '../core/message';
 import { SimplePalette } from '../core/palettes/simple';
 import { Rect } from '../core/rect';
 import { RNG } from '../core/rng';
+import { Sprite } from '../core/sprite';
 import { Vec2 } from '../core/vec2';
 import { GraphicsApp } from '../graphics/graphicsapp';
-import { GraphicsDialogRenderer } from '../graphics/gui/dialogrenderer';
-import { MessageLog } from '../graphics/gui/messagelog';
-import { Sprite } from '../graphics/sprite';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { Animation } from './animations/animation';
@@ -43,7 +40,7 @@ export abstract class BaseGame extends AppState {
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
   readonly cursor: Vec2;
-  readonly tooltip: TooltipDialog;
+  // readonly tooltip: TooltipDialog;
   readonly rng: RNG;
   readonly damageColor: Color;
   readonly healColor: Color;
@@ -61,7 +58,7 @@ export abstract class BaseGame extends AppState {
   tileMapRenderer: TileMapRenderer;
   player?: Actor;
   cooldownSprite?: Sprite;
-  tooltipElement?: Panel;
+  // tooltipElement?: Panel;
   horizontalViewDistance: number;
   verticalViewDistance: number;
   zoom: number;
@@ -70,21 +67,22 @@ export abstract class BaseGame extends AppState {
 
   constructor(app: GraphicsApp, seed: number) {
     super(app);
-    this.gui = new GUI(
-      app,
-      new GraphicsDialogRenderer(
-        new Rect(0, 32, 48, 48),
-        new Rect(0, 32, 48, 48),
-        new Rect(48, 32, 24, 24)
-      )
-    );
+    this.gui = new GUI(app.size);
+    // app
+    // ,
+    // new GraphicsDialogRenderer(
+    //   new Rect(0, 32, 48, 48),
+    //   new Rect(0, 32, 48, 48),
+    //   new Rect(48, 32, 24, 24)
+    // )
+    // );
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
     this.blocked = false;
     this.cursor = new Vec2(-1, -1);
-    this.tooltip = new TooltipDialog();
+    // this.tooltip = new TooltipDialog();
     this.rng = new RNG();
     this.pathIndex = 0;
     this.horizontalViewDistance = VIEW_DISTANCE;
@@ -125,10 +123,10 @@ export abstract class BaseGame extends AppState {
 
   update(): void {
     Sprite.updateGlobalAnimations();
-    this.updateTooltip();
+    // this.updateTooltip();
     this.updateZoom();
 
-    if (!this.gui.handleInput()) {
+    if (!this.gui.handleInput(this.app)) {
       this.updateAnimations();
       this.updateEntities();
 
@@ -156,44 +154,44 @@ export abstract class BaseGame extends AppState {
       this.drawAnimations();
     }
 
-    this.gui.draw();
+    this.gui.draw(this.app);
   }
 
-  private updateTooltip(): void {
-    if (this.gui.dragElement) {
-      // No tooltips while drag/drop
-      this.tooltip.visible = false;
-      return;
-    }
+  // private updateTooltip(): void {
+  //   if (GUI.dragElement) {
+  //     // No tooltips while drag/drop
+  //     this.tooltip.visible = false;
+  //     return;
+  //   }
 
-    if (!this.tooltip.visible) {
-      this.tooltipElement = undefined;
-    }
+  //   if (!this.tooltip.visible) {
+  //     this.tooltipElement = undefined;
+  //   }
 
-    const mouse = this.app.mouse;
-    if (!mouse.buttons.get(0).down && (mouse.dx !== 0 || mouse.dy !== 0)) {
-      const hoverPanel = this.gui.getPanelAt(mouse);
-      if (this.tooltipElement !== hoverPanel) {
-        // Hover element has changed
-        this.tooltipElement = hoverPanel;
-        if (hoverPanel) {
-          hoverPanel.updateTooltip(this.tooltip);
-        }
-      }
+  //   const mouse = this.app.mouse;
+  //   if (!mouse.buttons.get(0).down && (mouse.dx !== 0 || mouse.dy !== 0)) {
+  //     const hoverPanel = this.gui.getPanelAt(mouse);
+  //     if (this.tooltipElement !== hoverPanel) {
+  //       // Hover element has changed
+  //       this.tooltipElement = hoverPanel;
+  //       if (hoverPanel) {
+  //         hoverPanel.updateTooltip(this.tooltip);
+  //       }
+  //     }
 
-      if (this.tooltip.visible) {
-        if (!this.tooltip.gui) {
-          // If this is the first time we're showing the tooltip,
-          // make sure it is in the GUI system.
-          this.gui.add(this.tooltip);
-        }
+  //     if (this.tooltip.visible) {
+  //       // if (!this.tooltip.gui) {
+  //       //   // If this is the first time we're showing the tooltip,
+  //       //   // make sure it is in the GUI system.
+  //       //   this.gui.add(this.tooltip);
+  //       // }
 
-        // Update the tooltip to be on the mouse
-        // This is similar to WoW style tooltips.
-        this.tooltip.showAt(mouse.x, mouse.y);
-      }
-    }
-  }
+  //       // Update the tooltip to be on the mouse
+  //       // This is similar to WoW style tooltips.
+  //       this.tooltip.showAt(this.app, mouse.x, mouse.y);
+  //     }
+  //   }
+  // }
 
   private updateZoom(): void {
     if (this.app.mouse.wheelDeltaY !== 0) {
@@ -695,12 +693,9 @@ export abstract class BaseGame extends AppState {
       return;
     }
 
-    this.tileMap.computeFov(
-      this.player.x,
-      this.player.y,
-      this.horizontalViewDistance,
-      this.verticalViewDistance
-    );
+    this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance);
+    this.tileMap.updateExplored();
+    this.tileMap.dirty = true;
 
     // Determine which entities are visible
     for (let i = 0; i < this.entities.length; i++) {

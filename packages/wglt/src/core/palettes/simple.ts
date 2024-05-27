@@ -2,7 +2,7 @@ import { fromRgb } from '../color';
 
 export const SimplePalette = {
   BLACK: fromRgb(0, 0, 0),
-  WHITE: fromRgb(255, 255, 255),
+  WHITE: fromRgb(254, 254, 254),
   RED: fromRgb(255, 0, 0),
   GREEN: fromRgb(0, 255, 0),
   BLUE: fromRgb(0, 0, 255),

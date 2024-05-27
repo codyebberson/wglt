@@ -1,6 +1,7 @@
 import { ArrayList } from '../../core/arraylist';
+import { BaseApp } from '../../core/baseapp';
+import { Button } from '../../core/gui/button';
 import { Rect } from '../../core/rect';
-import { Button } from '../../graphics/gui/button';
 import { Item } from '../item';
 
 export class ItemShortcutButton extends Button {
@@ -24,17 +25,13 @@ export class ItemShortcutButton extends Button {
     }
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-
-    super.drawContents();
+  draw(app: BaseApp): void {
+    super.draw(app);
 
     if (!this.isDragging()) {
       const dst = this.rect;
       const count = this.countItems();
-      this.gui.app.drawRightString(count.toString(), dst.x2 - 3, dst.y2 - 10);
+      app.drawRightString(dst.x2 - 3, dst.y2 - 10, count.toString());
     }
   }
 

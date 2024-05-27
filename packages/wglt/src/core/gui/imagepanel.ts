@@ -1,5 +1,6 @@
 import { Panel } from '../../core/gui/panel';
 import { Rect } from '../../core/rect';
+import { BaseApp } from '../baseapp';
 
 export class ImagePanel extends Panel {
   readonly srcRect: Rect;
@@ -9,13 +10,9 @@ export class ImagePanel extends Panel {
     this.srcRect = srcRect;
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-
+  draw(app: BaseApp): void {
     const src = this.srcRect;
     const dst = this.rect;
-    this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
+    app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
   }
 }

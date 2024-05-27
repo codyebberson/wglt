@@ -1,4 +1,4 @@
-import { Vec2 } from '../../core/vec2';
+import { PointLike } from '../../core/point';
 import { TileMap } from './tilemap';
 import { TileMapCell } from './tilemapcell';
 
@@ -17,8 +17,8 @@ let pathId = 0;
  */
 export function computePath(
   map: TileMap,
-  source: Vec2,
-  dest: Vec2 | undefined,
+  source: PointLike,
+  dest: PointLike | undefined,
   maxDist = 100
 ): TileMapCell[] | undefined {
   pathId++;
@@ -36,8 +36,8 @@ export function computePath(
 
     if (!dest) {
       // No destination
-      // Special case for searching for "not seen"
-      if (!u.seen) {
+      // Special case for searching for "not explored"
+      if (!u.explored) {
         return buildPath(u);
       }
     } else {
@@ -52,7 +52,7 @@ export function computePath(
       const y = u.y + dys[i];
       if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
         const v = map.grid[y][x];
-        if (v.blocked && v.seen && (x !== dest?.x || y !== dest?.y)) {
+        if (v.blocked && v.explored && (x !== dest?.x || y !== dest?.y)) {
           continue;
         }
         if (v.pathId !== pathId) {
@@ -73,7 +73,7 @@ export function computePath(
   return undefined;
 }
 
-function calculateHeuristic(cell: Vec2 | TileMapCell, dest: Vec2 | undefined): number {
+function calculateHeuristic(cell: PointLike, dest: PointLike | undefined): number {
   if (!dest) {
     return 0;
   }

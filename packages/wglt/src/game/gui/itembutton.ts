@@ -1,7 +1,8 @@
 import { ArrayList } from '../../core/arraylist';
-import { TooltipDialog } from '../../core/gui/tooltipdialog';
+import { BaseApp } from '../../core/baseapp';
+import { Button } from '../../core/gui/button';
+import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
-import { Button } from '../../graphics/gui/button';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -32,25 +33,24 @@ export class ItemButton extends Button {
     }
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-
-    super.drawContents();
+  draw(app: BaseApp): void {
+    super.draw(app);
 
     if (this.stackItems.length > 1) {
       const dst = this.rect;
-      this.gui.app.drawRightString(this.stackItems.length.toString(), dst.x2 - 3, dst.y2 - 10);
+      app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
     }
   }
 
-  updateTooltip(tooltip: TooltipDialog): void {
+  updateTooltip(): Message[] | undefined {
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
       item.onUpdateTooltip();
       this.tooltipMessages = item.tooltipMessages;
+    } else {
+      this.tooltipMessages = undefined;
     }
-    super.updateTooltip(tooltip);
+    // super.updateTooltip(tooltip);
+    return this.tooltipMessages;
   }
 }

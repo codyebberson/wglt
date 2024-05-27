@@ -13,7 +13,7 @@ export class Message {
   }
 
   draw(app: BaseApp, pos: Vec2): void {
-    app.drawString(this.text, pos.x, pos.y, this.color, pos);
+    app.drawString(pos.x, pos.y, this.text, this.color, pos);
   }
 
   getWidth(font: Font): number {

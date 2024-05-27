@@ -1,8 +1,8 @@
 import { Panel } from '../../core/gui/panel';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
+import { BaseApp } from '../baseapp';
 import { Button } from './button';
-import { GraphicsDialogRenderer } from './dialogrenderer';
 
 export class ButtonSlot extends Panel {
   shortcutKey?: Key;
@@ -16,16 +16,9 @@ export class ButtonSlot extends Panel {
     return this.children.length > 0 ? (this.children.get(0) as Button) : undefined;
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-
+  draw(app: BaseApp): void {
     const dst = this.rect;
-    const src = (this.gui.renderer as GraphicsDialogRenderer).buttonSlotRect;
-    if (src) {
-      this.gui.app.drawImage(dst.x, dst.y, src.x, src.y, dst.width, dst.height);
-    }
+    app.drawPanelFrame(this);
 
     const button = this.button;
     if (button && !button.isDragging()) {
@@ -33,24 +26,24 @@ export class ButtonSlot extends Panel {
       button.rect.y = this.rect.y;
       button.rect.width = this.rect.width;
       button.rect.height = this.rect.height;
-      this.drawChildren();
+      this.drawChildren(app);
     }
 
     if (this.shortcutKey) {
-      this.gui.app.drawRightString(getShortcutKeyDisplay(this.shortcutKey), dst.x2 - 3, dst.y + 3);
+      app.drawRightString(dst.x2 - 3, dst.y + 3, getShortcutKeyDisplay(this.shortcutKey));
     }
   }
 
-  handleInput(): boolean {
-    if (!this.gui) {
-      return false;
-    }
+  handleInput(app: BaseApp): boolean {
+    // if (!this.gui) {
+    //   return false;
+    // }
 
-    if (this.handleChildrenInput()) {
+    if (this.handleChildrenInput(app)) {
       return true;
     }
 
-    const app = this.gui.app;
+    // const app = app;
     const mouse = app.mouse;
     const button = this.button;
     if (button) {

@@ -1,10 +1,10 @@
+import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
 import { Point } from '../../core/point';
 import { Rect } from '../../core/rect';
 import { Chars } from '../chars';
 import { Console } from '../console';
 import { Terminal } from '../terminal';
-import { Dialog } from './dialog';
 import { Message } from './message';
 
 export class ScrollableMessageDialog extends Dialog {
@@ -20,22 +20,20 @@ export class ScrollableMessageDialog extends Dialog {
   ) {
     super(rect, title);
     this.messagesHeight = message.getHeight();
-    this.scrollMax = Math.max(1, this.messagesHeight - this.contentsRect.height);
-    this.scrollbarHeight =
-      (this.contentsRect.height * this.contentsRect.height) / (this.messagesHeight + 1);
+    this.scrollMax = Math.max(1, this.messagesHeight - this.rect.height);
+    this.scrollbarHeight = (this.rect.height * this.rect.height) / (this.messagesHeight + 1);
   }
 
   drawContents(console: Console, offset: Point): void {
-    console.clip = this.contentsRect;
+    console.clip = this.rect;
     console.drawMessage(offset.x, offset.y - this.scrollY, this.message, this.message.getWidth());
     console.clip = undefined;
 
     // Draw scrollbar
-    const scrollbarY =
-      (this.scrollY / this.scrollMax) * (this.contentsRect.height - this.scrollbarHeight);
+    const scrollbarY = (this.scrollY / this.scrollMax) * (this.rect.height - this.scrollbarHeight);
     console.drawVLine(
-      this.contentsRect.x + this.contentsRect.width + 1,
-      this.contentsRect.y + scrollbarY,
+      this.rect.x + this.rect.width + 1,
+      this.rect.y + scrollbarY,
       this.scrollbarHeight,
       Chars.MEDIUM_SHADE
     );
@@ -47,10 +45,10 @@ export class ScrollableMessageDialog extends Dialog {
       this.scrollY += moveKey.y;
     }
     if (terminal.isKeyPressed(Key.VK_PAGE_DOWN)) {
-      this.scrollY += this.contentsRect.height;
+      this.scrollY += this.rect.height;
     }
     if (terminal.isKeyPressed(Key.VK_PAGE_UP)) {
-      this.scrollY -= this.contentsRect.height;
+      this.scrollY -= this.rect.height;
     }
     if (terminal.mouse.wheelDeltaY !== 0) {
       this.scrollY += terminal.mouse.wheelDeltaY < 0 ? -5 : 5;

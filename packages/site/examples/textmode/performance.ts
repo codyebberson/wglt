@@ -1,5 +1,4 @@
-import { Terminal } from 'wglt';
-import { CgaPalette, Color, RNG, fromRgb } from 'wglt';
+import { CgaPalette, Color, RNG, Terminal, fromRgb } from 'wglt';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -16,6 +15,6 @@ term.update = () => {
     }
   }
 
-  term.drawString(0, 0, `FPS: ${term.fps.toFixed(0)}`, CgaPalette.WHITE, CgaPalette.BLACK);
-  term.drawString(0, 1, `Avg: ${term.averageFps.toFixed(0)}`, CgaPalette.WHITE, CgaPalette.BLACK);
+  term.drawString(0, 0, `FPS: ${term.fps.toFixed(0)}`, CgaPalette.WHITE);
+  term.drawString(0, 1, `Avg: ${term.averageFps.toFixed(0)}`, CgaPalette.WHITE);
 };

@@ -1,8 +1,8 @@
 import { ArrayList } from '../../core/arraylist';
+import { BaseApp } from '../../core/baseapp';
 import { Panel } from '../../core/gui/panel';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
-import { GraphicsDialogRenderer } from '../../graphics/gui/dialogrenderer';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
@@ -69,15 +69,14 @@ export class ShortcutBar extends Panel {
     return false;
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
+  draw(app: BaseApp): void {
+    // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
+    // if (!buttonRect) {
+    //   return;
+    // }
 
-    const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-    if (!buttonRect) {
-      return;
-    }
+    // TODO
+    const buttonRect = new Rect(0, 0, 24, 24);
 
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children.get(i);
@@ -87,7 +86,7 @@ export class ShortcutBar extends Panel {
       child.rect.height = buttonRect.height;
     }
 
-    this.drawChildren();
+    this.drawChildren(app);
   }
 
   private getFreeSlot(rightToLeft: boolean): ShortcutButtonSlot | undefined {

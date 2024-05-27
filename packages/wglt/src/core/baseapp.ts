@@ -5,6 +5,10 @@ import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Rect } from '../core/rect';
 import { Vec2 } from '../core/vec2';
+import { Button } from './gui/button';
+import { Dialog } from './gui/dialog';
+import { Panel } from './gui/panel';
+import { Point } from './point';
 
 // Arrow keys, numpad, vi
 const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y];
@@ -17,9 +21,49 @@ const DOWN_KEYS = [Key.VK_DOWN, Key.VK_NUMPAD2, Key.VK_J];
 const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L];
 const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5];
 
+const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
+  // Up
+  [Key.VK_K]: new Point(0, -1),
+  [Key.VK_UP]: new Point(0, -1),
+  [Key.VK_NUMPAD8]: new Point(0, -1),
+  // Down
+  [Key.VK_J]: new Point(0, 1),
+  [Key.VK_DOWN]: new Point(0, 1),
+  [Key.VK_NUMPAD2]: new Point(0, 1),
+  // Left
+  [Key.VK_H]: new Point(-1, 0),
+  [Key.VK_LEFT]: new Point(-1, 0),
+  [Key.VK_NUMPAD4]: new Point(-1, 0),
+  // Right
+  [Key.VK_L]: new Point(1, 0),
+  [Key.VK_RIGHT]: new Point(1, 0),
+  [Key.VK_NUMPAD6]: new Point(1, 0),
+  // Top-left
+  [Key.VK_Y]: new Point(-1, -1),
+  [Key.VK_NUMPAD7]: new Point(-1, -1),
+  // Top-right
+  [Key.VK_U]: new Point(1, -1),
+  [Key.VK_NUMPAD9]: new Point(1, -1),
+  // Bottom-left
+  [Key.VK_B]: new Point(-1, 1),
+  [Key.VK_NUMPAD1]: new Point(-1, 1),
+  // Bottom-right
+  [Key.VK_N]: new Point(1, 1),
+  [Key.VK_NUMPAD3]: new Point(1, 1),
+  // Wait
+  [Key.VK_PERIOD]: new Point(0, 0),
+  [Key.VK_NUMPAD5]: new Point(0, 0),
+};
+
 export abstract class AppState {
   constructor(readonly app: BaseApp) {}
   abstract update(): void;
+}
+
+export interface BaseAppConfig {
+  readonly canvas: HTMLCanvasElement;
+  readonly sizeInPixels: Rect;
+  readonly font: Font;
 }
 
 export abstract class BaseApp {
@@ -30,6 +74,7 @@ export abstract class BaseApp {
   readonly center: Vec2;
   readonly keyboard: Keyboard;
   readonly mouse: Mouse;
+  update?: () => void;
   state?: AppState;
 
   constructor(canvas: HTMLCanvasElement, size: Rect, font: Font) {
@@ -38,7 +83,7 @@ export abstract class BaseApp {
     this.font = font;
     this.center = new Vec2((this.size.width / 2) | 0, (this.size.height / 2) | 0);
 
-    this.gl = canvas.getContext('webgl', {
+    this.gl = canvas.getContext('webgl2', {
       alpha: false,
       antialias: false,
     }) as WebGLRenderingContext;
@@ -57,20 +102,21 @@ export abstract class BaseApp {
     this.canvas.tabIndex = 0;
     this.canvas.focus();
 
-    this.renderLoop();
+    requestAnimationFrame(() => this.renderLoop());
   }
 
-  renderLoop(): void {
+  private renderLoop(): void {
     const t = performance.now();
     this.keyboard.updateKeys(t);
     this.mouse.update(t);
-    this.startFrame();
+    this.startFrame(t);
+    this.update?.();
     this.state?.update();
     this.endFrame();
     requestAnimationFrame(() => this.renderLoop());
   }
 
-  abstract startFrame(): void;
+  abstract startFrame(time: number): void;
 
   abstract endFrame(): void;
 
@@ -110,31 +156,37 @@ export abstract class BaseApp {
 
   /**
    * Draws a string.
-   * @param str The text string to draw.
    * @param x The x-coordinate of the top-left corner.
    * @param y The y-coordinate of the top-left corner.
+   * @param str The text string to draw.
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  abstract drawString(str: string, x: number, y: number, color?: Color, out?: Vec2): void;
+  abstract drawString(x: number, y: number, str: string, color?: Color, out?: Vec2): void;
 
   /**
    * Draws a string horizontally centered.
-   * @param str The text string to draw.
    * @param x The x-coordinate of the center.
    * @param y The y-coordinate of the top-left corner.
+   * @param str The text string to draw.
    * @param color Optional color.
    */
-  abstract drawCenteredString(str: string, x: number, y: number, color?: Color): void;
+  abstract drawCenteredString(x: number, y: number, str: string, color?: Color): void;
 
   /**
    * Draws a right-aligned string.
-   * @param str The text string to draw.
    * @param x The x-coordinate of the top-right corner.
    * @param y The y-coordinate of the top-right corner.
+   * @param str The text string to draw.
    * @param color Optional color.
    */
-  abstract drawRightString(str: string, x: number, y: number, color?: Color): void;
+  abstract drawRightString(x: number, y: number, str: string, color?: Color): void;
+
+  abstract drawPanelFrame(panel: Panel): void;
+
+  abstract drawDialogFrame(dialog: Dialog): void;
+
+  abstract drawButtonFrame(button: Button): void;
 
   isKeyDown(key: Key): boolean {
     return this.keyboard.getKey(key).down;
@@ -178,6 +230,28 @@ export abstract class BaseApp {
 
   isUpRightKeyPressed(): boolean {
     return this.isKeyArrayPressed(NORTHEAST_KEYS);
+  }
+
+  /**
+   * Returns a standard roguelike movement key if pressed.
+   * Implemented control systems:
+   * 1) Numpad arrows
+   * 2) VIM keys
+   * 3) Normal arrows (4 directions only)
+   * 4) Numpad 5 and '.' (period) for "wait"
+   * If a key is pressed, returns the movement delta.
+   * If no key is pressed, returns undefined.
+   * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
+   */
+  getMovementKey(
+    movementKeys: Partial<Record<Key, Point>> = DEFAULT_MOVEMENT_KEYS
+  ): Point | undefined {
+    for (const [key, delta] of Object.entries(movementKeys) as [Key, Point][]) {
+      if (this.isKeyPressed(key)) {
+        return delta;
+      }
+    }
+    return undefined;
   }
 
   private isKeyArrayPressed(keys: Key[]): boolean {

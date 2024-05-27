@@ -1,6 +1,6 @@
 import { ArrayList } from '../core/arraylist';
 import { Color } from '../core/color';
-import { Sprite } from '../graphics/sprite';
+import { Sprite } from '../core/sprite';
 import { Ability, TargetType } from './ability';
 import { AI } from './ai/ai';
 import { BumpAnimation } from './animations/bumpanimation';

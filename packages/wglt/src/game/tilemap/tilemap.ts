@@ -37,7 +37,7 @@ export class TileMap {
   visibleRect: Rect;
   prevVisibleRect: Rect;
 
-  constructor(width: number, height: number, layerCount: number, tileSize: Rect) {
+  constructor(width: number, height: number, layerCount = 1, tileSize = new Rect(0, 0, 16, 16)) {
     this.width = width;
     this.height = height;
     this.depth = layerCount;
@@ -125,13 +125,13 @@ export class TileMap {
 
   isSeen(x: number, y: number): boolean {
     const cell = this.getCell(x, y);
-    return !!cell?.seen;
+    return !!cell?.explored;
   }
 
-  setSeen(x: number, y: number, seen: boolean): void {
+  setSeen(x: number, y: number, explored: boolean): void {
     const cell = this.getCell(x, y);
     if (cell) {
-      cell.seen = seen;
+      cell.explored = explored;
     }
   }
 
@@ -152,41 +152,162 @@ export class TileMap {
   resetFov(): void {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        this.grid[y][x].seen = false;
+        this.grid[y][x].explored = false;
         this.grid[y][x].visible = false;
       }
     }
   }
 
-  computeFov(originX: number, originY: number, radius: number, vradius?: number): void {
+  // computeFov(
+  //   originX: number,
+  //   originY: number,
+  //   radius: number,
+  //   opt_noClear?: boolean,
+  //   opt_octants?: number
+  // ): void {
+
+  // computeFov(originX: number, originY: number, radius: number, vradius?: number): void {
+  //   this.originX = originX;
+  //   this.originY = originY;
+  //   this.prevVisibleRect.copy(this.visibleRect);
+
+  //   const dx = radius;
+  //   const dy = vradius || radius;
+  //   this.visibleRect.x = Math.max(0, originX - dx);
+  //   this.visibleRect.y = Math.max(0, originY - dy);
+  //   this.visibleRect.width = Math.min(this.width - 1, originX + dx) - this.visibleRect.x + 1;
+  //   this.visibleRect.height = Math.min(this.height - 1, originY + dy) - this.visibleRect.y + 1;
+
+  //   for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
+  //     for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
+  //       this.grid[y][x].visible = false;
+  //     }
+  //   }
+
+  //   this.grid[originY][originX].visible = true;
+
+  //   this.computeOctantY(1, 1);
+  //   this.computeOctantX(1, 1);
+  //   this.computeOctantY(1, -1);
+  //   this.computeOctantX(1, -1);
+  //   this.computeOctantY(-1, 1);
+  //   this.computeOctantX(-1, 1);
+  //   this.computeOctantY(-1, -1);
+  //   this.computeOctantX(-1, -1);
+  //   this.dirty = true;
+  // }
+
+  computeFov(
+    originX: number,
+    originY: number,
+    radius: number,
+    opt_noClear?: boolean,
+    opt_octants?: number
+  ): void {
     this.originX = originX;
     this.originY = originY;
+    // this.radius = radius;
     this.prevVisibleRect.copy(this.visibleRect);
 
-    const dx = radius;
-    const dy = vradius || radius;
-    this.visibleRect.x = Math.max(0, originX - dx);
-    this.visibleRect.y = Math.max(0, originY - dy);
-    this.visibleRect.width = Math.min(this.width - 1, originX + dx) - this.visibleRect.x + 1;
-    this.visibleRect.height = Math.min(this.height - 1, originY + dy) - this.visibleRect.y + 1;
+    let minX = originX;
+    let minY = originY;
+    let maxX = originX;
+    let maxY = originY;
 
-    for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
-      for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
-        this.grid[y][x].visible = false;
+    if (opt_noClear) {
+      minX = Math.min(this.visibleRect.x1, Math.max(0, originX - radius));
+      minY = Math.min(this.visibleRect.y1, Math.max(0, originY - radius));
+      maxX = Math.max(this.visibleRect.x2, Math.min(this.width - 1, originX + radius));
+      maxY = Math.max(this.visibleRect.y2, Math.min(this.height - 1, originY + radius));
+
+      // this.visibleRect.x = Math.max(0, originX - radius);
+      // this.visibleRect.y = Math.max(0, originY - radius);
+      // this.visibleRect.width = Math.min(this.width - 1, originX + radius) - this.visibleRect.x + 1;
+      // this.visibleRect.height =
+      //   Math.min(this.height - 1, originY + radius) - this.visibleRect.y + 1;
+    } else {
+      minX = Math.max(0, originX - radius);
+      minY = Math.max(0, originY - radius);
+      maxX = Math.min(this.width - 1, originX + radius);
+      maxY = Math.min(this.height - 1, originY + radius);
+
+      // this.visibleRect.x = Math.max(0, originX - radius);
+      // this.visibleRect.y = Math.max(0, originY - radius);
+      // this.visibleRect.width = Math.min(this.width - 1, originX + radius) - this.visibleRect.x + 1;
+      // this.visibleRect.height =
+      //   Math.min(this.height - 1, originY + radius) - this.visibleRect.y + 1;
+
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          this.grid[y][x].visible = false;
+        }
       }
+
+      // for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
+      //   for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
+      //     this.grid[y][x].visible = false;
+      //   }
+      // }
     }
+
+    this.visibleRect.x = minX;
+    this.visibleRect.y = minY;
+    this.visibleRect.width = maxX - minX; // + 1;
+    this.visibleRect.height = maxY - minY; // + 1;
 
     this.grid[originY][originX].visible = true;
 
-    this.computeOctantY(1, 1);
-    this.computeOctantX(1, 1);
-    this.computeOctantY(1, -1);
-    this.computeOctantX(1, -1);
-    this.computeOctantY(-1, 1);
-    this.computeOctantX(-1, 1);
-    this.computeOctantY(-1, -1);
-    this.computeOctantX(-1, -1);
-    this.dirty = true;
+    if (opt_octants === undefined) {
+      this.computeOctantY(1, 1);
+      this.computeOctantX(1, 1);
+      this.computeOctantX(1, -1);
+      this.computeOctantY(1, -1);
+      this.computeOctantY(-1, -1);
+      this.computeOctantX(-1, -1);
+      this.computeOctantX(-1, 1);
+      this.computeOctantY(-1, 1);
+    } else {
+      //   \ 4 | 3 /
+      //    \  |  /
+      //  5  \ | /  2
+      //      \|/
+      // ------+-------
+      //      /|\
+      //  6  / | \  1
+      //    /  |  \
+      //   / 7 | 0 \
+      if (opt_octants & 0x001) {
+        this.computeOctantY(1, 1);
+      }
+
+      if (opt_octants & 0x002) {
+        this.computeOctantX(1, 1);
+      }
+
+      if (opt_octants & 0x004) {
+        this.computeOctantX(1, -1);
+      }
+
+      if (opt_octants & 0x008) {
+        this.computeOctantY(1, -1);
+      }
+
+      if (opt_octants & 0x010) {
+        this.computeOctantY(-1, -1);
+      }
+
+      if (opt_octants & 0x020) {
+        this.computeOctantX(-1, -1);
+      }
+
+      if (opt_octants & 0x040) {
+        this.computeOctantX(-1, 1);
+      }
+
+      if (opt_octants & 0x080) {
+        this.computeOctantY(-1, 1);
+      }
+    }
   }
 
   /**
@@ -261,7 +382,7 @@ export class TileMap {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          this.grid[y][x].seen = true;
+          this.grid[y][x].explored = true;
           if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
@@ -347,7 +468,7 @@ export class TileMap {
         }
         if (visible) {
           this.grid[y][x].visible = true;
-          this.grid[y][x].seen = true;
+          this.grid[y][x].explored = true;
           if (this.grid[y][x].blockedSight) {
             if (minSlope >= startSlope) {
               minSlope = endSlope;
@@ -357,6 +478,18 @@ export class TileMap {
             }
           }
         }
+      }
+    }
+  }
+
+  /**
+   * All visible tiles are marked as explored.
+   */
+  updateExplored(): void {
+    for (let y = this.visibleRect.y1; y <= this.visibleRect.y2; y++) {
+      for (let x = this.visibleRect.x1; x <= this.visibleRect.x2; x++) {
+        const tile = this.grid[y][x];
+        tile.explored = tile.explored || tile.visible;
       }
     }
   }

@@ -9,7 +9,8 @@ export type Color = number;
  * @return A 32-bit unsigned integer color.
  */
 export function fromRgb(r: number, g: number, b: number, a = 255): Color {
-  return ((r << 24) + (g << 16) + (b << 8) + a) as Color;
+  // Use unsigned right shift to convert to unsigned 32-bit integer
+  return (((r << 24) + (g << 16) + (b << 8) + a) >>> 0) as Color;
 }
 
 /**

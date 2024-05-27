@@ -1,5 +1,5 @@
+import { Sprite } from '../core/sprite';
 import { Vec2 } from '../core/vec2';
-import { Sprite } from '../graphics/sprite';
 import { Actor } from './actor';
 import { BaseGame } from './basegame';
 

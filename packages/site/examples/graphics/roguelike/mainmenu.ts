@@ -1,7 +1,4 @@
-import { Pico8Palette } from 'wglt';
-import { Key } from 'wglt';
-import { AppState } from 'wglt';
-import { Sprite } from 'wglt';
+import { AppState, Key, Pico8Palette, Sprite } from 'wglt';
 import { App } from './app';
 
 const OPTIONS = [
@@ -24,12 +21,12 @@ export class MainMenu extends AppState {
 
     // Draw the title text
     this.app.drawCenteredString(
-      'KOPI LUWAK DUNGEON',
       this.app.center.x + 1,
       33,
+      'KOPI LUWAK DUNGEON',
       Pico8Palette.BLACK
     );
-    this.app.drawCenteredString('KOPI LUWAK DUNGEON', this.app.center.x, 32);
+    this.app.drawCenteredString(this.app.center.x, 32, 'KOPI LUWAK DUNGEON');
 
     // Draw the menu options
     const mouse = this.app.mouse;
@@ -43,8 +40,8 @@ export class MainMenu extends AppState {
       } else if (i === this.selectedIndex) {
         color = Pico8Palette.YELLOW;
       }
-      this.app.drawCenteredString(option.display, x + 1, y + 1, Pico8Palette.BLACK);
-      this.app.drawCenteredString(option.display, x, y, color);
+      this.app.drawCenteredString(x + 1, y + 1, option.display, Pico8Palette.BLACK);
+      this.app.drawCenteredString(x, y, option.display, color);
 
       if (mouse.y >= y && mouse.y < y + 14 && mouse.isClicked()) {
         window.location.hash = option.hash;

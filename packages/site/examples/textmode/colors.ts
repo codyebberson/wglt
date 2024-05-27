@@ -1,5 +1,4 @@
-import { Terminal } from 'wglt';
-import { CgaPalette, fromHsv } from 'wglt';
+import { CgaPalette, Terminal, fromHsv } from 'wglt';
 
 const WIDTH = 80;
 const HEIGHT = 45;
@@ -17,6 +16,6 @@ term.update = () => {
   }
   hue += 0.001;
 
-  term.drawString(0, 0, `FPS: ${term.fps.toFixed(0)}`, CgaPalette.WHITE, CgaPalette.BLACK);
-  term.drawString(0, 1, `Avg: ${term.averageFps.toFixed(0)}`, CgaPalette.WHITE, CgaPalette.BLACK);
+  term.drawString(0, 0, `FPS: ${term.fps.toFixed(0)}`, CgaPalette.WHITE);
+  term.drawString(0, 1, `Avg: ${term.averageFps.toFixed(0)}`, CgaPalette.WHITE);
 };

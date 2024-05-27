@@ -1,8 +1,7 @@
-import { Terminal } from 'wglt';
-import { CgaPalette } from 'wglt';
+import { CgaPalette, Terminal } from 'wglt';
 
 const term = new Terminal('canvas', 80, 45);
-term.fillRect(0, 0, 80, 45, 0, CgaPalette.YELLOW, CgaPalette.DARK_BLUE);
+term.fillRect(0, 0, 80, 45, CgaPalette.DARK_BLUE);
 
 let x = 10;
 let y = 10;
@@ -15,7 +14,7 @@ term.update = () => {
   }
 
   term.clear();
-  term.drawString(1, 1, 'Hello world!');
-  term.drawString(1, 3, 'Use arrow keys to move');
-  term.drawString(x, y, '@');
+  term.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
+  term.drawString(1, 3, 'Use arrow keys to move', CgaPalette.YELLOW);
+  term.drawChar(x, y, '@', CgaPalette.LIGHT_GREEN);
 };

@@ -1,7 +1,7 @@
 import { BaseApp } from '../core/baseapp';
 import { Rect } from '../core/rect';
 
-const DEFAULT_TICKS_PER_FRAME = 30;
+const DEFAULT_TICKS_PER_FRAME = 60;
 
 export class Sprite extends Rect {
   static globalAnimIndex = 0;

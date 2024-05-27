@@ -1,5 +1,15 @@
-import { Cell, Console, MessageDialog, SelectDialog, computePath } from 'wglt';
-import { CgaPalette, Color, Key, RNG, Rect, fromRgb } from 'wglt';
+import {
+  CgaPalette,
+  Color,
+  Key,
+  RNG,
+  Rect,
+  SelectDialog,
+  TileMap,
+  TileMapCell,
+  computePath,
+  fromRgb,
+} from 'wglt';
 import { Actor } from './actor';
 import { AI, BasicMonster, ConfusedMonster } from './ai';
 import { App, AppState } from './app';
@@ -53,11 +63,11 @@ export class Game implements AppState {
   stairs?: Entity;
   entities: Entity[];
   level: number;
-  map: Console;
+  map: TileMap;
   fovRecompute: boolean;
   targetCursor: { x: number; y: number };
   targetFunction: ((x: number, y: number) => void) | undefined;
-  path?: Cell[];
+  path?: TileMapCell[];
   pathIndex: number;
   pathWalking: boolean;
 
@@ -105,7 +115,7 @@ export class Game implements AppState {
     return false;
   }
 
-  createRoom(map: Console, room: Rect): void {
+  createRoom(map: TileMap, room: Rect): void {
     for (let y = room.y + 1; y < room.y2; y++) {
       for (let x = room.x + 1; x < room.x2; x++) {
         map.grid[y][x].blocked = false;
@@ -114,22 +124,22 @@ export class Game implements AppState {
     }
   }
 
-  createHTunnel(map: Console, x1: number, x2: number, y: number): void {
+  createHTunnel(map: TileMap, x1: number, x2: number, y: number): void {
     for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
       map.grid[y][x].blocked = false;
       map.grid[y][x].blockedSight = false;
     }
   }
 
-  createVTunnel(map: Console, y1: number, y2: number, x: number): void {
+  createVTunnel(map: TileMap, y1: number, y2: number, x: number): void {
     for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
       map.grid[y][x].blocked = false;
       map.grid[y][x].blockedSight = false;
     }
   }
 
-  createMap(): Console {
-    const map = new Console(MAP_WIDTH, MAP_HEIGHT);
+  createMap(): TileMap {
+    const map = new TileMap(MAP_WIDTH, MAP_HEIGHT);
     for (let y = 0; y < MAP_HEIGHT; y++) {
       for (let x = 0; x < MAP_WIDTH; x++) {
         map.grid[y][x].blocked = true;
@@ -348,11 +358,11 @@ export class Game implements AppState {
     const barWidth = Math.round((value / maximum) * totalWidth);
 
     // Render the background first
-    this.app.term.fillRect(x, y, totalWidth, 1, 0, 0, backColor);
+    this.app.term.fillRect(x, y, totalWidth, 1, backColor);
 
     // Now render the bar on top
     if (barWidth > 0) {
-      this.app.term.fillRect(x, y, barWidth, 1, 0, 0, barColor);
+      this.app.term.fillRect(x, y, barWidth, 1, barColor);
     }
 
     // Finally, some centered text with the values
@@ -424,11 +434,11 @@ export class Game implements AppState {
       return;
     }
 
-    if (this.app.gui.handleInput()) {
+    const term = this.app.term;
+    if (this.app.gui.handleInput(term)) {
       return;
     }
 
-    const term = this.app.term;
     const movementKey = term.getMovementKey();
 
     if (this.targetFunction) {
@@ -462,35 +472,44 @@ export class Game implements AppState {
     }
     if (term.isKeyPressed(Key.VK_I)) {
       if (this.player.inventory.length === 0) {
-        this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
+        // TODO
+        // this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
       } else {
         const options = this.player.inventory.map((item) => {
+          // if (item.equipped) {
+          //   return `${item.name} (on ${item.slot})`;
+          // }
+          // return item.name;
+          let text = item.name;
           if (item.equipped) {
-            return `${item.name} (on ${item.slot})`;
+            text += ` (on ${item.slot})`;
           }
-          return item.name;
+          return { name: text };
         });
         this.app.gui.add(
-          new SelectDialog('INVENTORY', options, (choice) => this.useInventory(choice))
+          new SelectDialog(new Rect(10, 10, 20, 20), 'INVENTORY', options, (choice) =>
+            this.useInventory(options.findIndex((option) => option === choice))
+          )
         );
       }
     }
     if (term.isKeyPressed(Key.VK_C)) {
-      const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
-      this.app.gui.add(
-        new MessageDialog(
-          'CHARACTER',
-          [
-            `Level: ${this.player.level}`,
-            `Experience: ${this.player.xp}`,
-            `Experience to level up: ${levelUpXp}`,
-            '',
-            `Maximum HP: ${this.player.maxHp}`,
-            `Attack: ${this.player.power}`,
-            `Defense: ${this.player.defense}`,
-          ].join('\n')
-        )
-      );
+      // TODO
+      // const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
+      // this.app.gui.add(
+      //   new MessageDialog(
+      //     'CHARACTER',
+      //     [
+      //       `Level: ${this.player.level}`,
+      //       `Experience: ${this.player.xp}`,
+      //       `Experience to level up: ${levelUpXp}`,
+      //       '',
+      //       `Maximum HP: ${this.player.maxHp}`,
+      //       `Attack: ${this.player.power}`,
+      //       `Defense: ${this.player.defense}`,
+      //     ].join('\n')
+      //   )
+      // );
     }
     if (term.isKeyPressed(Key.VK_COMMA)) {
       if (this.player.x === this.stairs?.x && this.player.y === this.stairs?.y) {
@@ -562,24 +581,26 @@ export class Game implements AppState {
         CgaPalette.YELLOW
       );
 
-      const options = [
-        `Constitution (+20 HP, from ${this.player.maxHp})`,
-        `Strength (+1 attack, from ${this.player.power})`,
-        `Agility (+1 defense, from ${this.player.defense})`,
-      ];
+      // TODO
 
-      this.app.gui.add(
-        new SelectDialog('LEVEL UP', options, (choice) => {
-          if (choice === 0) {
-            this.player.baseMaxHp += 20;
-            this.player.hp += 20;
-          } else if (choice === 1) {
-            this.player.basePower += 1;
-          } else if (choice === 2) {
-            this.player.baseDefense += 1;
-          }
-        })
-      );
+      // const options = [
+      //   `Constitution (+20 HP, from ${this.player.maxHp})`,
+      //   `Strength (+1 attack, from ${this.player.power})`,
+      //   `Agility (+1 defense, from ${this.player.defense})`,
+      // ];
+
+      // this.app.gui.add(
+      //   new SelectDialog('LEVEL UP', options, (choice) => {
+      //     if (choice === 0) {
+      //       this.player.baseMaxHp += 20;
+      //       this.player.hp += 20;
+      //     } else if (choice === 1) {
+      //       this.player.basePower += 1;
+      //     } else if (choice === 2) {
+      //       this.player.baseDefense += 1;
+      //     }
+      //   })
+      // );
     }
   }
 
@@ -747,7 +768,7 @@ export class Game implements AppState {
     }
 
     // Prepare to render the GUI panel
-    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, 0, CgaPalette.WHITE, CgaPalette.BLACK);
+    term.fillRect(0, PANEL_Y, SCREEN_WIDTH, PANEL_HEIGHT, CgaPalette.BLACK);
 
     // Print the game this.messages, one line at a time
     let y = PANEL_Y + 1;
@@ -793,7 +814,7 @@ export class Game implements AppState {
     }
 
     // Draw dialog boxes
-    this.app.gui.draw();
+    this.app.gui.draw(term);
   }
 
   nextLevel(): void {

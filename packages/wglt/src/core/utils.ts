@@ -24,3 +24,14 @@ export function capitalize(str: string): string {
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+/**
+ * Linearly interpolates a number in the range 0-max to -1.0-1.0.
+ *
+ * @param i - The value between 0 and max.
+ * @param max - The maximum value.
+ * @returns The interpolated value between -1.0 and 1.0.
+ */
+export function interpolate(i: number, max: number): number {
+  return -1.0 + 2.0 * (i / max);
+}

@@ -40,11 +40,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@wglt/ascii': resolve(__dirname, '../ascii/src'),
-      '@wglt/core': resolve(__dirname, '../core/src'),
-      '@wglt/graphics': resolve(__dirname, '../graphics/src'),
-      '@wglt/roguelike': resolve(__dirname, '../roguelike/src'),
-      '@wglt/tilemap': resolve(__dirname, '../tilemap/src'),
+      wglt: resolve(__dirname, '../wglt/src'),
     },
   },
 });

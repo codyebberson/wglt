@@ -1,8 +1,7 @@
-import { Console, Terminal, loadImage } from 'wglt';
-import { CgaPalette } from 'wglt';
+import { CgaPalette, Console, Terminal, loadImage } from 'wglt';
 
 const term = new Terminal('canvas', 80, 45);
-term.fillRect(0, 0, 80, 45, 0, CgaPalette.YELLOW, CgaPalette.DARK_BLUE);
+term.fillRect(0, 0, 80, 45, CgaPalette.DARK_BLUE);
 
 let x = 10;
 let y = 10;

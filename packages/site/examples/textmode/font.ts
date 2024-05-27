@@ -1,11 +1,11 @@
-import { Font, Terminal } from 'wglt';
-import { CgaPalette } from 'wglt';
+import { CgaPalette, MonospacedFont, Rect, Terminal } from 'wglt';
 
 const term = new Terminal('canvas', 80, 25, {
-  font: new Font('../terminal8x14_gs_ro.png', 8, 14),
+  fontUrl: '../terminal8x14_gs_ro.png',
+  font: new MonospacedFont(new Rect(0, 0, 8, 14)),
 });
 
-term.fillRect(0, 0, 80, 25, 0, CgaPalette.YELLOW, CgaPalette.DARK_BLUE);
+term.fillRect(0, 0, 80, 25, CgaPalette.DARK_BLUE);
 
 let x = 10;
 let y = 10;

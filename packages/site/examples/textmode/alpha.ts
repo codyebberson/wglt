@@ -1,5 +1,4 @@
-import { Console, Terminal } from 'wglt';
-import { CgaPalette, RNG, fromHsv } from 'wglt';
+import { CgaPalette, Console, RNG, Terminal, fromHsv } from 'wglt';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
@@ -77,7 +76,7 @@ term.update = () => {
     lights[0].y = term.mouse.y;
   }
 
-  term.fillRect(0, 0, 80, 45, 0, CgaPalette.BLACK, CgaPalette.BLACK);
+  term.fillRect(0, 0, 80, 45, CgaPalette.BLACK);
 
   for (let i = 0; i < rain.length; i++) {
     const raindrop = rain[i];

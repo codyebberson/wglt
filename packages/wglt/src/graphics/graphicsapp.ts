@@ -1,125 +1,47 @@
 import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
-import { MonospacedFont } from '../core/font';
+import { Font } from '../core/font';
+import { Button } from '../core/gui/button';
+import { Dialog } from '../core/gui/dialog';
+import { Panel } from '../core/gui/panel';
 import { Rect } from '../core/rect';
 import { Vec2 } from '../core/vec2';
 import { RenderSet } from './renderset';
 
-const WIDTH = 640;
-const HEIGHT = 360;
-
-// // Arrow keys, numpad, vi
-// const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y];
-// const NORTHEAST_KEYS = [Key.VK_NUMPAD9, Key.VK_U];
-// const SOUTHWEST_KEYS = [Key.VK_NUMPAD1, Key.VK_B];
-// const SOUTHEAST_KEYS = [Key.VK_NUMPAD3, Key.VK_N];
-// const UP_KEYS = [Key.VK_UP, Key.VK_NUMPAD8, Key.VK_K];
-// const LEFT_KEYS = [Key.VK_LEFT, Key.VK_NUMPAD4, Key.VK_H];
-// const DOWN_KEYS = [Key.VK_DOWN, Key.VK_NUMPAD2, Key.VK_J];
-// const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L];
-// const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5];
-
-// export abstract class AppState {
-//   constructor(readonly app: BaseApp) {}
-//   abstract update(): void;
-// }
-
-export abstract class GraphicsApp extends BaseApp {
-  // readonly canvas: HTMLCanvasElement;
-  // readonly gl: WebGLRenderingContext;
-  // readonly size: Rect;
-  // readonly font: Font;
-  readonly center: Vec2;
+export interface GraphicsAppConfig {
+  readonly size: Rect;
+  readonly font: Font;
   readonly fillSourceRect: Rect;
+  readonly dialogRect: Rect;
+  readonly closeButtonRect: Rect;
+  readonly buttonRect: Rect;
+  readonly buttonSlotRect: Rect;
+}
+
+export class GraphicsApp extends BaseApp {
   readonly renderSet: RenderSet;
-  // readonly keyboard: Keyboard;
-  // readonly mouse: Mouse;
-  // update?: () => void;
-  // readonly gui: GUI;
-  // state?: AppState;
-  // game?: BaseGame;
 
-  constructor() {
-    super(
-      document.createElement('canvas'),
-      new Rect(0, 0, WIDTH, HEIGHT),
-      new MonospacedFont(new Rect(0, 0, 6, 8))
-    );
-    // const options = {
-    //   canvas: document.querySelector('canvas') as HTMLCanvasElement,
-    //   imageUrl: '/graphics.png',
-    // };
-
-    // const canvas = options.canvas;
-    // if (!canvas) {
-    //   throw new Error('Null or missing canvas element');
-    // }
-
-    const canvas = this.canvas;
-
-    // const gl = canvas.getContext('webgl', { alpha: false, antialias: false });
-    // if (!gl) {
-    //   throw new Error('Could not get WebGL context');
-    // }
-
-    // this.canvas = canvas;
-    // this.gl = gl;
-    // this.size = new Rect(0, 0, WIDTH, HEIGHT);
-    // this.font = new MonospacedFont(new Rect(0, 0, 6, 8));
-    this.center = new Vec2((this.size.width / 2) | 0, (this.size.height / 2) | 0);
-    this.fillSourceRect = new Rect(1008, 0, 16, 16);
-
-    // gl.disable(gl.DEPTH_TEST);
-    // gl.enable(gl.BLEND);
-    // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-    canvas.width = this.size.width;
-    canvas.height = this.size.height;
-    canvas.style.outline = 'none';
-    canvas.tabIndex = 0;
-    canvas.focus();
-
+  constructor(readonly config: GraphicsAppConfig) {
+    super(document.querySelector('canvas') as HTMLCanvasElement, config.size, config.font);
     this.renderSet = new RenderSet(this.gl, '/graphics.png', this.font);
-    // this.keyboard = new Keyboard(canvas);
-    // this.mouse = new Mouse(canvas, this.size.width, this.size.height);
-    // this.gui = new GUI(this);
-
-    this.renderLoop();
   }
-
-  // renderLoop(): void {
-  //   const t = performance.now();
-  //   this.keyboard.updateKeys(t);
-  //   this.mouse.update(t);
-  //   this.resetGl();
-
-  //   if (this.state) {
-  //     this.state.update();
-  //   }
-
-  //   // this.gui.handleInput();
-  //   // this.gui.handleInput();
-  //   // this.gui.draw();
-
-  //   // if (this.update) {
-  //   //   this.update();
-  //   // }
-
-  //   this.renderSet.flush(WIDTH, HEIGHT);
-  //   requestAnimationFrame(() => this.renderLoop());
-  // }
 
   startFrame(): void {
     this.resetGl();
+
+    // Reset sprite index buffers
+    this.renderSet.positionArrayIndex = 0;
+    this.renderSet.texcoordArrayIndex = 0;
+    this.renderSet.colorArrayIndex = 0;
   }
 
   endFrame(): void {
-    this.renderSet.flush(WIDTH, HEIGHT);
+    this.renderSet.flush(this.size.width, this.size.height);
   }
 
   private resetGl(): void {
     const gl = this.gl;
-    gl.viewport(0, 0, WIDTH, HEIGHT);
+    gl.viewport(0, 0, this.size.width, this.size.height);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -138,7 +60,8 @@ export abstract class GraphicsApp extends BaseApp {
    * @param color The rectangle color.
    */
   fillRect(x: number, y: number, w: number, h: number, color: Color): void {
-    const src = this.fillSourceRect;
+    // const src = this.fillSourceRect;
+    const src = this.config.fillSourceRect;
     this.drawImage(x, y, src.x, src.y, src.width, src.height, color, w, h);
   }
 
@@ -170,88 +93,105 @@ export abstract class GraphicsApp extends BaseApp {
 
   /**
    * Draws a string.
-   * @param str The text string to draw.
    * @param x The x-coordinate of the top-left corner.
    * @param y The y-coordinate of the top-left corner.
+   * @param str The text string to draw.
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(str: string, x: number, y: number, color?: Color, out?: Vec2): void {
+  drawString(x: number, y: number, str: string, color?: Color, out?: Vec2): void {
     this.renderSet.drawString(str, x, y, color, out);
   }
 
   /**
    * Draws a string horizontally centered.
-   * @param str The text string to draw.
    * @param x The x-coordinate of the center.
    * @param y The y-coordinate of the top-left corner.
+   * @param str The text string to draw.
    * @param color Optional color.
    */
-  drawCenteredString(str: string, x: number, y: number, color?: Color): void {
+  drawCenteredString(x: number, y: number, str: string, color?: Color): void {
     this.renderSet.drawCenteredString(str, x, y, color);
   }
 
   /**
    * Draws a right-aligned string.
-   * @param str The text string to draw.
    * @param x The x-coordinate of the top-right corner.
    * @param y The y-coordinate of the top-right corner.
+   * @param str The text string to draw.
    * @param color Optional color.
    */
-  drawRightString(str: string, x: number, y: number, color?: Color): void {
+  drawRightString(x: number, y: number, str: string, color?: Color): void {
     this.renderSet.drawRightString(str, x, y, color);
   }
 
-  // isKeyDown(key: Key): boolean {
-  //   return this.keyboard.getKey(key).down;
-  // }
+  drawPanelFrame(panel: Panel): void {
+    this.drawAutoRect(this.config.dialogRect, panel.rect);
+  }
 
-  // isKeyPressed(key: Key): boolean {
-  //   return this.keyboard.getKey(key).isPressed();
-  // }
+  drawDialogFrame(dialog: Dialog): void {
+    this.drawAutoRect(this.config.dialogRect, dialog.rect);
+  }
 
-  // isDownLeftKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(SOUTHWEST_KEYS);
-  // }
+  drawButtonFrame(button: Button): void {
+    this.drawAutoRect(this.config.buttonRect, button.rect);
+  }
 
-  // isDownKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(DOWN_KEYS);
-  // }
+  drawAutoRect(sourceRect: Rect, destRect: Rect): void {
+    // Draws the dialog chrome using a 3x3 grid
+    // 0   1   2   3
+    //   x   x   x
+    // 1
+    //   x   x   x
+    // 2
+    //   x   x   x
+    // 3
 
-  // isDownRightKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(SOUTHEAST_KEYS);
-  // }
+    // Source image is the baseRect
+    const sx0 = sourceRect.x;
+    const sy0 = sourceRect.y;
+    const sw = (sourceRect.width / 3) | 0;
+    const sh = (sourceRect.height / 3) | 0;
+    const sx1 = sx0 + sw;
+    const sy1 = sy0 + sh;
+    const sx2 = sx0 + 2 * sw;
+    const sy2 = sy0 + 2 * sw;
 
-  // isLeftKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(LEFT_KEYS);
-  // }
+    // Destination rect is the dialog
+    const dx0 = destRect.x;
+    const dy0 = destRect.y;
+    const dw = destRect.width - 2 * sw;
+    const dh = destRect.height - 2 * sh;
+    const dx1 = dx0 + sw;
+    const dy1 = dy0 + sh;
+    const dx2 = dx1 + dw;
+    const dy2 = dy1 + dh;
 
-  // isWaitKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(WAIT_KEYS);
-  // }
+    // Top-left corner
+    this.drawImage(dx0, dy0, sx0, sy0, sw, sh, undefined, sw, sh);
 
-  // isRightKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(RIGHT_KEYS);
-  // }
+    // Top edge
+    this.drawImage(dx1, dy0, sx1, sy0, sw, sh, undefined, dw, sh);
 
-  // isUpLeftKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(NORTHWEST_KEYS);
-  // }
+    // Top-right corner
+    this.drawImage(dx2, dy0, sx2, sy0, sw, sh, undefined, sw, sh);
 
-  // isUpKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(UP_KEYS);
-  // }
+    // Left edge
+    this.drawImage(dx0, dy1, sx0, sy1, sw, sh, undefined, sw, dh);
 
-  // isUpRightKeyPressed(): boolean {
-  //   return this.isKeyArrayPressed(NORTHEAST_KEYS);
-  // }
+    // Center
+    this.drawImage(dx1, dy1, sx1, sy1, sw, sh, undefined, dw, dh);
 
-  // private isKeyArrayPressed(keys: Key[]): boolean {
-  //   for (let i = 0; i < keys.length; i++) {
-  //     if (this.isKeyPressed(keys[i])) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+    // Right edge
+    this.drawImage(dx2, dy1, sx2, sy1, sw, sh, undefined, sw, dh);
+
+    // Bottom-left corner
+    this.drawImage(dx0, dy2, sx0, sy2, sw, sh, undefined, sw, sh);
+
+    // Bottom edge
+    this.drawImage(dx1, dy2, sx1, sy2, sw, sh, undefined, dw, sh);
+
+    // Bottom-right corner
+    this.drawImage(dx2, dy2, sx2, sy2, sw, sh, undefined, sw, sh);
+  }
 }

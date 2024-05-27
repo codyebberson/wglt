@@ -2,7 +2,7 @@ import { Color, fromRgb } from '../core/color';
 import { CompoundMessage } from '../core/compoundmessage';
 import { Message } from '../core/message';
 import { SimplePalette } from '../core/palettes/simple';
-import { Sprite } from '../graphics/sprite';
+import { Sprite } from '../core/sprite';
 import { Actor } from './actor';
 import { BaseGame } from './basegame';
 import { Entity } from './entity';

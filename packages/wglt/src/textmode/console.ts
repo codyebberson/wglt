@@ -21,8 +21,8 @@ export class Console {
 
   constructor(
     readonly width: number,
-    readonly height: number,
-    blockedFunc?: (x: number, y: number) => boolean
+    readonly height: number
+    // blockedFunc?: (x: number, y: number) => boolean
   ) {
     this.grid = [];
     this.originX = 0;
@@ -43,13 +43,13 @@ export class Console {
 
     this.clear();
 
-    if (blockedFunc) {
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          this.grid[y][x].blocked = this.grid[y][x].blockedSight = blockedFunc(x, y);
-        }
-      }
-    }
+    // if (blockedFunc) {
+    //   for (let y = 0; y < height; y++) {
+    //     for (let x = 0; x < width; x++) {
+    //       this.grid[y][x].blocked = this.grid[y][x].blockedSight = blockedFunc(x, y);
+    //     }
+    //   }
+    // }
   }
 
   clear(): void {
@@ -264,302 +264,302 @@ export class Console {
     }
   }
 
-  setBlocked(x: number, y: number, blocked: boolean): void {
-    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-      this.grid[y][x].blocked = blocked;
-    }
-  }
+  // setBlocked(x: number, y: number, blocked: boolean): void {
+  //   if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+  //     this.grid[y][x].blocked = blocked;
+  //   }
+  // }
 
-  setBlockedSight(x: number, y: number, blockedSight: boolean): void {
-    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-      this.grid[y][x].blockedSight = blockedSight;
-    }
-  }
+  // setBlockedSight(x: number, y: number, blockedSight: boolean): void {
+  //   if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+  //     this.grid[y][x].blockedSight = blockedSight;
+  //   }
+  // }
 
-  isVisible(x: number, y: number): boolean {
-    if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
-      return false;
-    }
-    return this.grid[y][x].visible;
-  }
+  // isVisible(x: number, y: number): boolean {
+  //   if (x < this.minX || x > this.maxX || y < this.minY || y > this.maxY) {
+  //     return false;
+  //   }
+  //   return this.grid[y][x].visible;
+  // }
 
-  isBlocked(x: number, y: number): boolean {
-    if (x < 0 || x > this.width || y < 0 || y > this.height) {
-      return true;
-    }
-    return this.grid[y][x].blocked;
-  }
+  // isBlocked(x: number, y: number): boolean {
+  //   if (x < 0 || x > this.width || y < 0 || y > this.height) {
+  //     return true;
+  //   }
+  //   return this.grid[y][x].blocked;
+  // }
 
-  isBlockedSight(x: number, y: number): boolean {
-    if (x < 0 || x > this.width || y < 0 || y > this.height) {
-      return true;
-    }
-    return this.grid[y][x].blockedSight;
-  }
+  // isBlockedSight(x: number, y: number): boolean {
+  //   if (x < 0 || x > this.width || y < 0 || y > this.height) {
+  //     return true;
+  //   }
+  //   return this.grid[y][x].blockedSight;
+  // }
 
-  /**
-   * Compute the FOV in an octant adjacent to the Y axis
-   */
-  private computeOctantY(deltaX: number, deltaY: number): void {
-    const startSlopes: number[] = [];
-    const endSlopes: number[] = [];
-    let iteration = 1;
-    let totalObstacles = 0;
-    let obstaclesInLastLine = 0;
-    let minSlope = 0;
-    let x: number;
-    let y: number;
-    let halfSlope: number;
-    let processedCell: number;
-    let visible: boolean;
-    let extended: boolean;
-    let centerSlope: number;
-    let startSlope: number;
-    let endSlope: number;
-    let previousEndSlope: number;
+  // /**
+  //  * Compute the FOV in an octant adjacent to the Y axis
+  //  */
+  // private computeOctantY(deltaX: number, deltaY: number): void {
+  //   const startSlopes: number[] = [];
+  //   const endSlopes: number[] = [];
+  //   let iteration = 1;
+  //   let totalObstacles = 0;
+  //   let obstaclesInLastLine = 0;
+  //   let minSlope = 0;
+  //   let x: number;
+  //   let y: number;
+  //   let halfSlope: number;
+  //   let processedCell: number;
+  //   let visible: boolean;
+  //   let extended: boolean;
+  //   let centerSlope: number;
+  //   let startSlope: number;
+  //   let endSlope: number;
+  //   let previousEndSlope: number;
 
-    for (
-      y = this.originY + deltaY;
-      y >= this.minY && y <= this.maxY;
-      y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration
-    ) {
-      halfSlope = 0.5 / iteration;
-      previousEndSlope = -1;
-      for (
-        processedCell = Math.floor(minSlope * iteration + 0.5),
-          x = this.originX + processedCell * deltaX;
-        processedCell <= iteration && x >= this.minX && x <= this.maxX;
-        x += deltaX, ++processedCell, previousEndSlope = endSlope
-      ) {
-        visible = true;
-        extended = false;
-        centerSlope = processedCell / iteration;
-        startSlope = previousEndSlope;
-        endSlope = centerSlope + halfSlope;
+  //   for (
+  //     y = this.originY + deltaY;
+  //     y >= this.minY && y <= this.maxY;
+  //     y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration
+  //   ) {
+  //     halfSlope = 0.5 / iteration;
+  //     previousEndSlope = -1;
+  //     for (
+  //       processedCell = Math.floor(minSlope * iteration + 0.5),
+  //         x = this.originX + processedCell * deltaX;
+  //       processedCell <= iteration && x >= this.minX && x <= this.maxX;
+  //       x += deltaX, ++processedCell, previousEndSlope = endSlope
+  //     ) {
+  //       visible = true;
+  //       extended = false;
+  //       centerSlope = processedCell / iteration;
+  //       startSlope = previousEndSlope;
+  //       endSlope = centerSlope + halfSlope;
 
-        if (obstaclesInLastLine > 0) {
-          if (
-            !(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
-            !(
-              this.grid[y - deltaY][x - deltaX].visible &&
-              !this.grid[y - deltaY][x - deltaX].blockedSight
-            )
-          ) {
-            visible = false;
-          } else {
-            for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
-              if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blockedSight) {
-                  if (centerSlope > startSlopes[idx] && centerSlope < endSlopes[idx]) {
-                    visible = false;
-                    break;
-                  }
-                } else {
-                  if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
-                    visible = false;
-                    break;
-                  }
-                  startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-                  endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-                  extended = true;
-                }
-              }
-            }
-          }
-        }
-        if (visible) {
-          this.grid[y][x].visible = true;
-          if (this.grid[y][x].blockedSight) {
-            if (minSlope >= startSlope) {
-              minSlope = endSlope;
-            } else if (!extended) {
-              startSlopes[totalObstacles] = startSlope;
-              endSlopes[totalObstacles++] = endSlope;
-            }
-          }
-        }
-      }
-    }
-  }
+  //       if (obstaclesInLastLine > 0) {
+  //         if (
+  //           !(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
+  //           !(
+  //             this.grid[y - deltaY][x - deltaX].visible &&
+  //             !this.grid[y - deltaY][x - deltaX].blockedSight
+  //           )
+  //         ) {
+  //           visible = false;
+  //         } else {
+  //           for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
+  //             if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
+  //               if (!this.grid[y][x].blockedSight) {
+  //                 if (centerSlope > startSlopes[idx] && centerSlope < endSlopes[idx]) {
+  //                   visible = false;
+  //                   break;
+  //                 }
+  //               } else {
+  //                 if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
+  //                   visible = false;
+  //                   break;
+  //                 }
+  //                 startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+  //                 endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+  //                 extended = true;
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if (visible) {
+  //         this.grid[y][x].visible = true;
+  //         if (this.grid[y][x].blockedSight) {
+  //           if (minSlope >= startSlope) {
+  //             minSlope = endSlope;
+  //           } else if (!extended) {
+  //             startSlopes[totalObstacles] = startSlope;
+  //             endSlopes[totalObstacles++] = endSlope;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-  /**
-   * Compute the FOV in an octant adjacent to the X axis
-   */
-  private computeOctantX(deltaX: number, deltaY: number): void {
-    const startSlopes: number[] = [];
-    const endSlopes: number[] = [];
-    let iteration = 1;
-    let totalObstacles = 0;
-    let obstaclesInLastLine = 0;
-    let minSlope = 0;
-    let x: number;
-    let y: number;
-    let halfSlope: number;
-    let processedCell: number;
-    let visible: boolean;
-    let extended: boolean;
-    let centerSlope: number;
-    let startSlope: number;
-    let endSlope: number;
-    let previousEndSlope: number;
+  // /**
+  //  * Compute the FOV in an octant adjacent to the X axis
+  //  */
+  // private computeOctantX(deltaX: number, deltaY: number): void {
+  //   const startSlopes: number[] = [];
+  //   const endSlopes: number[] = [];
+  //   let iteration = 1;
+  //   let totalObstacles = 0;
+  //   let obstaclesInLastLine = 0;
+  //   let minSlope = 0;
+  //   let x: number;
+  //   let y: number;
+  //   let halfSlope: number;
+  //   let processedCell: number;
+  //   let visible: boolean;
+  //   let extended: boolean;
+  //   let centerSlope: number;
+  //   let startSlope: number;
+  //   let endSlope: number;
+  //   let previousEndSlope: number;
 
-    for (
-      x = this.originX + deltaX;
-      x >= this.minX && x <= this.maxX;
-      x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration
-    ) {
-      halfSlope = 0.5 / iteration;
-      previousEndSlope = -1;
-      for (
-        processedCell = Math.floor(minSlope * iteration + 0.5),
-          y = this.originY + processedCell * deltaY;
-        processedCell <= iteration && y >= this.minY && y <= this.maxY;
-        y += deltaY, ++processedCell, previousEndSlope = endSlope
-      ) {
-        visible = true;
-        extended = false;
-        centerSlope = processedCell / iteration;
-        startSlope = previousEndSlope;
-        endSlope = centerSlope + halfSlope;
+  //   for (
+  //     x = this.originX + deltaX;
+  //     x >= this.minX && x <= this.maxX;
+  //     x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration
+  //   ) {
+  //     halfSlope = 0.5 / iteration;
+  //     previousEndSlope = -1;
+  //     for (
+  //       processedCell = Math.floor(minSlope * iteration + 0.5),
+  //         y = this.originY + processedCell * deltaY;
+  //       processedCell <= iteration && y >= this.minY && y <= this.maxY;
+  //       y += deltaY, ++processedCell, previousEndSlope = endSlope
+  //     ) {
+  //       visible = true;
+  //       extended = false;
+  //       centerSlope = processedCell / iteration;
+  //       startSlope = previousEndSlope;
+  //       endSlope = centerSlope + halfSlope;
 
-        if (obstaclesInLastLine > 0) {
-          if (
-            !(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
-            !(
-              this.grid[y - deltaY][x - deltaX].visible &&
-              !this.grid[y - deltaY][x - deltaX].blockedSight
-            )
-          ) {
-            visible = false;
-          } else {
-            for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
-              if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
-                if (!this.grid[y][x].blockedSight) {
-                  if (centerSlope > startSlopes[idx] && centerSlope < endSlopes[idx]) {
-                    visible = false;
-                    break;
-                  }
-                } else {
-                  if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
-                    visible = false;
-                    break;
-                  }
-                  startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-                  endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-                  extended = true;
-                }
-              }
-            }
-          }
-        }
-        if (visible) {
-          this.grid[y][x].visible = true;
-          if (this.grid[y][x].blockedSight) {
-            if (minSlope >= startSlope) {
-              minSlope = endSlope;
-            } else if (!extended) {
-              startSlopes[totalObstacles] = startSlope;
-              endSlopes[totalObstacles++] = endSlope;
-            }
-          }
-        }
-      }
-    }
-  }
+  //       if (obstaclesInLastLine > 0) {
+  //         if (
+  //           !(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
+  //           !(
+  //             this.grid[y - deltaY][x - deltaX].visible &&
+  //             !this.grid[y - deltaY][x - deltaX].blockedSight
+  //           )
+  //         ) {
+  //           visible = false;
+  //         } else {
+  //           for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
+  //             if (startSlope <= endSlopes[idx] && endSlope >= startSlopes[idx]) {
+  //               if (!this.grid[y][x].blockedSight) {
+  //                 if (centerSlope > startSlopes[idx] && centerSlope < endSlopes[idx]) {
+  //                   visible = false;
+  //                   break;
+  //                 }
+  //               } else {
+  //                 if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
+  //                   visible = false;
+  //                   break;
+  //                 }
+  //                 startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+  //                 endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+  //                 extended = true;
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //       if (visible) {
+  //         this.grid[y][x].visible = true;
+  //         if (this.grid[y][x].blockedSight) {
+  //           if (minSlope >= startSlope) {
+  //             minSlope = endSlope;
+  //           } else if (!extended) {
+  //             startSlopes[totalObstacles] = startSlope;
+  //             endSlopes[totalObstacles++] = endSlope;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-  computeFov(
-    originX: number,
-    originY: number,
-    radius: number,
-    opt_noClear?: boolean,
-    opt_octants?: number
-  ): void {
-    this.originX = originX;
-    this.originY = originY;
-    this.radius = radius;
+  // computeFov(
+  //   originX: number,
+  //   originY: number,
+  //   radius: number,
+  //   opt_noClear?: boolean,
+  //   opt_octants?: number
+  // ): void {
+  //   this.originX = originX;
+  //   this.originY = originY;
+  //   this.radius = radius;
 
-    if (opt_noClear) {
-      this.minX = Math.min(this.minX, Math.max(0, originX - radius));
-      this.minY = Math.min(this.minY, Math.max(0, originY - radius));
-      this.maxX = Math.max(this.maxX, Math.min(this.width - 1, originX + radius));
-      this.maxY = Math.max(this.maxY, Math.min(this.height - 1, originY + radius));
-    } else {
-      this.minX = Math.max(0, originX - radius);
-      this.minY = Math.max(0, originY - radius);
-      this.maxX = Math.min(this.width - 1, originX + radius);
-      this.maxY = Math.min(this.height - 1, originY + radius);
+  //   if (opt_noClear) {
+  //     this.minX = Math.min(this.minX, Math.max(0, originX - radius));
+  //     this.minY = Math.min(this.minY, Math.max(0, originY - radius));
+  //     this.maxX = Math.max(this.maxX, Math.min(this.width - 1, originX + radius));
+  //     this.maxY = Math.max(this.maxY, Math.min(this.height - 1, originY + radius));
+  //   } else {
+  //     this.minX = Math.max(0, originX - radius);
+  //     this.minY = Math.max(0, originY - radius);
+  //     this.maxX = Math.min(this.width - 1, originX + radius);
+  //     this.maxY = Math.min(this.height - 1, originY + radius);
 
-      for (let y = this.minY; y <= this.maxY; y++) {
-        for (let x = this.minX; x <= this.maxX; x++) {
-          this.grid[y][x].visible = false;
-        }
-      }
-    }
+  //     for (let y = this.minY; y <= this.maxY; y++) {
+  //       for (let x = this.minX; x <= this.maxX; x++) {
+  //         this.grid[y][x].visible = false;
+  //       }
+  //     }
+  //   }
 
-    this.grid[originY][originX].visible = true;
+  //   this.grid[originY][originX].visible = true;
 
-    if (opt_octants === undefined) {
-      this.computeOctantY(1, 1);
-      this.computeOctantX(1, 1);
-      this.computeOctantX(1, -1);
-      this.computeOctantY(1, -1);
-      this.computeOctantY(-1, -1);
-      this.computeOctantX(-1, -1);
-      this.computeOctantX(-1, 1);
-      this.computeOctantY(-1, 1);
-    } else {
-      //   \ 4 | 3 /
-      //    \  |  /
-      //  5  \ | /  2
-      //      \|/
-      // ------+-------
-      //      /|\
-      //  6  / | \  1
-      //    /  |  \
-      //   / 7 | 0 \
-      if (opt_octants & 0x001) {
-        this.computeOctantY(1, 1);
-      }
+  //   if (opt_octants === undefined) {
+  //     this.computeOctantY(1, 1);
+  //     this.computeOctantX(1, 1);
+  //     this.computeOctantX(1, -1);
+  //     this.computeOctantY(1, -1);
+  //     this.computeOctantY(-1, -1);
+  //     this.computeOctantX(-1, -1);
+  //     this.computeOctantX(-1, 1);
+  //     this.computeOctantY(-1, 1);
+  //   } else {
+  //     //   \ 4 | 3 /
+  //     //    \  |  /
+  //     //  5  \ | /  2
+  //     //      \|/
+  //     // ------+-------
+  //     //      /|\
+  //     //  6  / | \  1
+  //     //    /  |  \
+  //     //   / 7 | 0 \
+  //     if (opt_octants & 0x001) {
+  //       this.computeOctantY(1, 1);
+  //     }
 
-      if (opt_octants & 0x002) {
-        this.computeOctantX(1, 1);
-      }
+  //     if (opt_octants & 0x002) {
+  //       this.computeOctantX(1, 1);
+  //     }
 
-      if (opt_octants & 0x004) {
-        this.computeOctantX(1, -1);
-      }
+  //     if (opt_octants & 0x004) {
+  //       this.computeOctantX(1, -1);
+  //     }
 
-      if (opt_octants & 0x008) {
-        this.computeOctantY(1, -1);
-      }
+  //     if (opt_octants & 0x008) {
+  //       this.computeOctantY(1, -1);
+  //     }
 
-      if (opt_octants & 0x010) {
-        this.computeOctantY(-1, -1);
-      }
+  //     if (opt_octants & 0x010) {
+  //       this.computeOctantY(-1, -1);
+  //     }
 
-      if (opt_octants & 0x020) {
-        this.computeOctantX(-1, -1);
-      }
+  //     if (opt_octants & 0x020) {
+  //       this.computeOctantX(-1, -1);
+  //     }
 
-      if (opt_octants & 0x040) {
-        this.computeOctantX(-1, 1);
-      }
+  //     if (opt_octants & 0x040) {
+  //       this.computeOctantX(-1, 1);
+  //     }
 
-      if (opt_octants & 0x080) {
-        this.computeOctantY(-1, 1);
-      }
-    }
-  }
+  //     if (opt_octants & 0x080) {
+  //       this.computeOctantY(-1, 1);
+  //     }
+  //   }
+  // }
 
-  /**
-   * All visible tiles are marked as explored.
-   */
-  updateExplored(): void {
-    for (let y = this.minY; y <= this.maxY; y++) {
-      for (let x = this.minX; x <= this.maxX; x++) {
-        const tile = this.grid[y][x];
-        tile.explored = tile.explored || tile.visible;
-      }
-    }
-  }
+  // /**
+  //  * All visible tiles are marked as explored.
+  //  */
+  // updateExplored(): void {
+  //   for (let y = this.minY; y <= this.maxY; y++) {
+  //     for (let x = this.minX; x <= this.maxX; x++) {
+  //       const tile = this.grid[y][x];
+  //       tile.explored = tile.explored || tile.visible;
+  //     }
+  //   }
+  // }
 }

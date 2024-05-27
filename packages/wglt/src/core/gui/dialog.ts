@@ -1,37 +1,41 @@
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
+import { BaseApp } from '../baseapp';
 import { Panel } from './panel';
 
 export class Dialog extends Panel {
+  title?: string;
   closeButton: boolean;
 
-  constructor(rect: Rect) {
+  constructor(rect: Rect, title?: string) {
     super(rect);
+    this.title = title;
     this.closeButton = false;
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-    this.gui.renderer.draw(this.gui.app, this);
+  draw(app: BaseApp): void {
+    // if (!this.gui) {
+    //   return;
+    // }
+    // this.gui.renderer.draw(app, this);
+    app.drawDialogFrame(this);
   }
 
-  handleInput(): boolean {
-    if (!this.gui) {
-      return false;
-    }
+  handleInput(app: BaseApp): boolean {
+    // if (!this.gui) {
+    //   return false;
+    // }
 
-    if (this.handleChildrenInput()) {
+    if (this.handleChildrenInput(app)) {
       return true;
     }
 
-    if (this.gui.app.isKeyPressed(Key.VK_ESCAPE)) {
+    if (app.isKeyPressed(Key.VK_ESCAPE)) {
       this.visible = false;
       return true;
     }
 
-    const mouse = this.gui.app.mouse;
+    const mouse = app.mouse;
     if (mouse.isClicked() && !this.rect.contains(mouse)) {
       this.visible = false;
       return true;
@@ -41,9 +45,13 @@ export class Dialog extends Panel {
   }
 
   close(): void {
-    if (!this.gui) {
-      return;
+    // if (!this.gui) {
+    //   return;
+    // }
+    // this.gui.remove(this);
+    // this.removeChild
+    if (this.parent) {
+      this.parent.removeChild(this);
     }
-    this.gui.remove(this);
   }
 }

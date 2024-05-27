@@ -16,14 +16,14 @@ export class Cell {
   fg: Color;
   bg: Color;
   dirty: boolean;
-  blocked: boolean;
-  blockedSight: boolean;
-  explored: boolean;
-  visible: boolean;
-  pathId: number;
-  g: number;
-  h: number;
-  prev: Cell | null;
+  // blocked: boolean;
+  // blockedSight: boolean;
+  // explored: boolean;
+  // visible: boolean;
+  // pathId: number;
+  // g: number;
+  // h: number;
+  // prev: Cell | null;
 
   constructor(
     readonly x: number,
@@ -41,14 +41,14 @@ export class Cell {
     this.fg = fg;
     this.bg = bg;
     this.dirty = true;
-    this.blocked = false;
-    this.blockedSight = false;
-    this.explored = false;
-    this.visible = false;
-    this.pathId = -1;
-    this.g = 0;
-    this.h = 0;
-    this.prev = null;
+    // this.blocked = false;
+    // this.blockedSight = false;
+    // this.explored = false;
+    // this.visible = false;
+    // this.pathId = -1;
+    // this.g = 0;
+    // this.h = 0;
+    // this.prev = null;
   }
 
   setCharCode(charCode: number): void {

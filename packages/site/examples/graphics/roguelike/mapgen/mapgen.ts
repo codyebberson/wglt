@@ -1,6 +1,4 @@
-import { Rect, Vec2 } from 'wglt';
-import { ItemQuality, Talent } from 'wglt';
-import { TileMap, getTileId } from 'wglt';
+import { ItemQuality, Rect, Talent, TileMap, Vec2, getTileId } from 'wglt';
 import { FlashHealAbility } from '../abilities/flashheal';
 import { LeapAbility } from '../abilities/leap';
 import { LightningAbility } from '../abilities/lightning';
@@ -102,7 +100,7 @@ export class MapGenerator {
     player.intelligence += 2;
     player.recalculateMaxHp();
 
-    this.clearMap(map, new Rect(0, 0, MAP_WIDTH, MAP_HEIGHT), Tiles.GRASS, false, false);
+    this.clearMap(map, new Rect(0, 0, MAP_WIDTH, MAP_HEIGHT));
 
     // this.createRandomWall(map, 1000);
     this.createRandomRoom(new Rect(4, 4, 504, 248));
@@ -127,12 +125,10 @@ export class MapGenerator {
     game.recomputeFov();
   }
 
-  clearMap(map: TileMap, rect: Rect, tile: number, blocked: boolean, blockedSight: boolean): void {
+  clearMap(map: TileMap, rect: Rect): void {
     for (let y = rect.y1; y < rect.y2; y++) {
       for (let x = rect.x1; x < rect.x2; x++) {
-        map.setTile(x, y, 0, tile);
-        map.setAnimated(x, y, 0, false);
-        map.setBlocked(x, y, blocked, blockedSight);
+        this.createFloor(x, y);
         for (let z = 1; z < 4; z++) {
           map.setTile(z, x, y, Tiles.EMPTY);
           map.setAnimated(x, y, z, false);
@@ -204,8 +200,11 @@ export class MapGenerator {
   }
 
   createFloor(x: number, y: number): void {
+    // FLOOR: getTileId(32, 32), // (13, 17),
+    const tile = getTileId(Math.floor(32 + Math.random() * 6), Math.floor(32 + Math.random() * 4));
+
     const map = this.game.tileMap;
-    map.setTile(x, y, 0, Tiles.FLOOR);
+    map.setTile(x, y, 0, tile);
     map.setAnimated(x, y, 0, false);
     map.setBlocked(x, y, false, false);
   }

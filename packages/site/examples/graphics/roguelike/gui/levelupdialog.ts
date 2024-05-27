@@ -1,5 +1,14 @@
-import { Key, Pico8Palette, Rect } from 'wglt';
-import { Button, ButtonSlot, Dialog, Message, Sprite } from 'wglt';
+import {
+  BaseApp,
+  Button,
+  ButtonSlot,
+  Dialog,
+  Key,
+  Message,
+  Pico8Palette,
+  Rect,
+  Sprite,
+} from 'wglt';
 import { Player } from '../entities/player';
 
 const MARGIN = 5;
@@ -98,26 +107,28 @@ export class LevelUpDialog extends Dialog {
     }
   }
 
-  drawContents(): void {
-    super.drawContents();
+  draw(app: BaseApp): void {
+    super.draw(app);
 
-    if (!this.gui || !this.gui.renderer.buttonSlotRect) {
-      return;
-    }
+    // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
+    //   return;
+    // }
+
+    // TODO
+    const buttonRect = new Rect(0, 0, 24, 24);
 
     // Update positions of button slots
     const containerRect = this.rect;
-    const buttonRect = this.gui.renderer.buttonSlotRect;
     const x = containerRect.x + MARGIN;
     let y = containerRect.y + MARGIN;
 
-    this.gui.app.drawString('Leveled up!', x, y, Pico8Palette.WHITE);
+    app.drawString(x, y, 'Leveled up!', Pico8Palette.WHITE);
     y += 10;
 
-    this.gui.app.drawString(
-      `Choose ${this.player.remainingAbilityPoints} stats to increase:`,
+    app.drawString(
       x,
       y,
+      `Choose ${this.player.remainingAbilityPoints} stats to increase:`,
       Pico8Palette.WHITE
     );
     y += 10;
@@ -125,7 +136,7 @@ export class LevelUpDialog extends Dialog {
     for (let i = 0; i < 4; i++) {
       const desc = DESCRIPTIONS[i];
       for (let j = 0; j < desc.length; j++) {
-        this.gui.app.drawString(desc[j].text, x + 25, y + 1 + j * 8, desc[j].color);
+        app.drawString(x + 25, y + 1 + j * 8, desc[j].text, desc[j].color);
       }
 
       const child = this.children.get(i);
@@ -137,6 +148,6 @@ export class LevelUpDialog extends Dialog {
     }
 
     this.rect.height = y + MARGIN - containerRect.y;
-    this.drawChildren();
+    this.drawChildren(app);
   }
 }

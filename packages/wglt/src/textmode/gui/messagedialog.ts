@@ -1,9 +1,9 @@
+import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
 import { Point } from '../../core/point';
 import { Rect } from '../../core/rect';
 import { Console } from '../console';
 import { Terminal } from '../terminal';
-import { Dialog } from './dialog';
 import { Message } from './message';
 
 export class MessageDialog extends Dialog {

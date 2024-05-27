@@ -1,11 +1,11 @@
 import { ArrayList } from '../../core/arraylist';
+import { BaseApp } from '../../core/baseapp';
+import { ButtonSlot } from '../../core/gui/buttonslot';
 import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
-import { ButtonSlot } from '../../graphics/gui/buttonslot';
-import { GraphicsDialogRenderer } from '../../graphics/gui/dialogrenderer';
 import { Actor } from '../actor';
 import { Item } from '../item';
 import { VendorButton } from './vendorbutton';
@@ -96,17 +96,16 @@ export class VendorDialog extends Dialog {
     return undefined;
   }
 
-  drawContents(): void {
-    super.drawContents();
+  draw(app: BaseApp): void {
+    super.draw(app);
 
-    if (!this.gui) {
-      return;
-    }
+    // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
+    // if (!buttonRect) {
+    //   return;
+    // }
 
-    const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-    if (!buttonRect) {
-      return;
-    }
+    // TODO
+    const buttonRect = new Rect(0, 32, 48, 48);
 
     // Update positions of button slots
     const containerRect = this.rect;
@@ -115,7 +114,7 @@ export class VendorDialog extends Dialog {
 
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];
-      this.gui.app.drawString(msg.text, x, y, msg.color);
+      app.drawString(x, y, msg.text, msg.color);
       y += 10;
     }
 
@@ -130,8 +129,8 @@ export class VendorDialog extends Dialog {
       if (button) {
         const item = button.getFirstItem();
         if (item && item instanceof Item) {
-          this.gui.app.drawString(item.name, x + 25, y + 3, SimplePalette.YELLOW);
-          this.gui.app.drawString(`${item.sellPrice} gold`, x + 25, y + 11, SimplePalette.WHITE);
+          app.drawString(x + 25, y + 3, item.name, SimplePalette.YELLOW);
+          app.drawString(x + 25, y + 11, `${item.sellPrice} gold`, SimplePalette.WHITE);
         }
       }
 
@@ -139,6 +138,6 @@ export class VendorDialog extends Dialog {
     }
 
     this.rect.height = y + MARGIN - containerRect.y;
-    this.drawChildren();
+    this.drawChildren(app);
   }
 }

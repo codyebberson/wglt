@@ -1,9 +1,10 @@
 import { Panel } from '../../core/gui/panel';
-import { TooltipDialog } from '../../core/gui/tooltipdialog';
 import { Key } from '../../core/keys';
 import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
+import { BaseApp } from '../baseapp';
 import { Sprite } from '../sprite';
+import { GUI } from './gui';
 
 export class Button extends Panel {
   readonly sprite: Sprite;
@@ -13,36 +14,33 @@ export class Button extends Panel {
 
   constructor(destRect: Rect, sprite: Sprite, shortcutKey?: Key, onClick?: () => void) {
     super(destRect);
-    if (!sprite) {
-      throw new Error('require non null sprite');
-    }
     this.sprite = sprite;
     this.shortcutKey = shortcutKey;
     this.onClick = onClick;
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
+  draw(app: BaseApp): void {
+    // if (!this.gui) {
+    //   return;
+    // }
 
     const src = this.sprite;
     const dst = this.rect;
     const offsetX = ((dst.width - src.width) / 2) | 0;
     const offsetY = ((dst.height - src.height) / 2) | 0;
-    src.draw(this.gui.app, dst.x + offsetX, dst.y + offsetY);
+    src.draw(app, dst.x + offsetX, dst.y + offsetY);
   }
 
-  handleInput(): boolean {
-    if (!this.gui) {
-      return false;
-    }
+  handleInput(app: BaseApp): boolean {
+    // if (!this.gui) {
+    //   return false;
+    // }
 
-    const app = this.gui.app;
+    // const app = app;
     const mouse = app.mouse;
 
     if (this.rect.contains(mouse.start) && mouse.isDragging()) {
-      this.gui.startDragging(this);
+      GUI.startDragging(app, this);
       return true;
     }
 
@@ -63,12 +61,13 @@ export class Button extends Panel {
     }
   }
 
-  updateTooltip(tooltip: TooltipDialog): void {
-    if (this.tooltipMessages) {
-      tooltip.messages = this.tooltipMessages;
-      tooltip.visible = true;
-    } else {
-      tooltip.visible = false;
-    }
+  updateTooltip(): Message[] | undefined {
+    // if (this.tooltipMessages) {
+    //   tooltip.messages = this.tooltipMessages;
+    //   tooltip.visible = true;
+    // } else {
+    //   tooltip.visible = false;
+    // }
+    return this.tooltipMessages;
   }
 }

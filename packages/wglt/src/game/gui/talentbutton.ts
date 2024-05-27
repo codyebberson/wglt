@@ -1,6 +1,7 @@
+import { BaseApp } from '../../core/baseapp';
+import { Button } from '../../core/gui/button';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
-import { Button } from '../../graphics/gui/button';
 import { Talent } from '../talent';
 
 export class TalentButton extends Button {
@@ -18,8 +19,8 @@ export class TalentButton extends Button {
     this.talent.use();
   }
 
-  drawContents(): void {
-    super.drawContents();
+  draw(app: BaseApp): void {
+    super.draw(app);
 
     if (this.talent.cooldown > 0) {
       const game = this.talent.actor.game;
@@ -36,15 +37,15 @@ export class TalentButton extends Button {
         const cx = (this.rect.x + this.rect.width / 2) | 0;
         const cy = (this.rect.y + this.rect.height / 2) | 0;
         game.app.drawCenteredString(
-          this.talent.cooldown.toString(),
           cx + 1,
           cy - 2,
+          this.talent.cooldown.toString(),
           SimplePalette.BLACK
         );
         game.app.drawCenteredString(
-          this.talent.cooldown.toString(),
           cx,
           cy - 3,
+          this.talent.cooldown.toString(),
           SimplePalette.WHITE
         );
       }

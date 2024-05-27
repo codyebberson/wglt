@@ -1,5 +1,4 @@
-import { Console, SelectDialog, loadImage2x } from 'wglt';
-import { CgaPalette } from 'wglt';
+import { CgaPalette, Console, Panel, Rect, SelectDialog, SelectOption, loadImage2x } from 'wglt';
 import { App, AppState } from './app';
 
 let menuBg: Console | null = null;
@@ -15,28 +14,29 @@ export class MainMenu implements AppState {
     const term = this.app.term;
     const gui = this.app.gui;
 
-    if (gui.dialogs.length === 0) {
-      const options = ['Play a new game', 'Continue last game'];
+    if ((gui.rootPanel as Panel).children.length === 0) {
+      // const options = ['Play a new game', 'Continue last game'];
+      const options: SelectOption[] = [{ name: 'Play a new game' }, { name: 'Continue last game' }];
       gui.add(
-        new SelectDialog('MAIN MENU', options, (choice) => {
-          if (choice === 0) {
+        new SelectDialog(new Rect(10, 10, 20, 20), 'MAIN MENU', options, (choice) => {
+          if (choice.name === 'Play a new game') {
             this.app.newGame();
-          } else if (choice === 1) {
+          } else if (choice.name === 'Continue last game') {
             this.app.continueGame();
           }
-          switch (choice) {
-            case 0:
-              this.app.newGame();
-              break;
-            case 1:
-              this.app.continueGame();
-              break;
-          }
+          // switch (choice) {
+          //   case 0:
+          //     this.app.newGame();
+          //     break;
+          //   case 1:
+          //     this.app.continueGame();
+          //     break;
+          // }
         })
       );
     }
 
-    gui.handleInput();
+    gui.handleInput(term);
 
     term.clear();
 
@@ -46,6 +46,6 @@ export class MainMenu implements AppState {
 
     term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', CgaPalette.YELLOW);
     term.drawCenteredString(40, 12, 'By Jotaf', CgaPalette.YELLOW);
-    gui.draw();
+    gui.draw(term);
   }
 }

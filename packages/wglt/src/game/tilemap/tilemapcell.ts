@@ -4,7 +4,9 @@ export class TileMapCell extends Vec2 {
   blocked: boolean;
   blockedSight: boolean;
   visible: boolean;
-  seen: boolean;
+  // blockedSight: boolean;
+  // explored: boolean;
+  explored: boolean;
   pathId: number;
   g: number;
   h: number;
@@ -15,7 +17,7 @@ export class TileMapCell extends Vec2 {
     this.blocked = true;
     this.blockedSight = true;
     this.visible = false;
-    this.seen = false;
+    this.explored = false;
     this.pathId = -1;
     this.g = 0;
     this.h = 0;

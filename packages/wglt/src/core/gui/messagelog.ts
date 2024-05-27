@@ -4,6 +4,7 @@ import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
 import { Vec2 } from '../../core/vec2';
+import { BaseApp } from '../baseapp';
 
 export class MessageLog extends Panel {
   private readonly messages: Message[];
@@ -27,28 +28,24 @@ export class MessageLog extends Panel {
     }
   }
 
-  drawContents(): void {
-    if (!this.gui) {
-      return;
-    }
-
+  draw(app: BaseApp): void {
     const pos = new Vec2(this.rect.x, this.rect.y);
 
     if (pos.y < 0) {
       // Negative y value indicates attached to bottom of screen
-      const bottom = this.gui.app.size.height + pos.y + this.rect.height;
+      const bottom = app.size.height + pos.y + this.rect.height;
       pos.y = bottom - this.messages.length * 10;
     }
 
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];
-      msg.draw(this.gui.app, pos);
+      msg.draw(app, pos);
       pos.x = 0;
       pos.y += 10;
     }
   }
 
-  handleInput(): boolean {
+  handleInput(app: BaseApp): boolean {
     return false;
   }
 }
