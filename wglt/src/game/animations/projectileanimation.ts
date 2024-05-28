@@ -1,18 +1,18 @@
 import { Sprite } from '../../core/sprite';
-import { Vec2 } from '../../core/vec2';
+import { Point } from '../../core/point';
 import { BaseGame } from '../basegame';
 import { Animation, AnimationFunction } from './animation';
 
 export class ProjectileAnimation extends Animation {
   readonly sprite: Sprite;
-  readonly position: Vec2;
-  readonly velocity: Vec2;
+  readonly position: Point;
+  readonly velocity: Point;
   readonly duration: number;
 
   constructor(
     sprite: Sprite,
-    position: Vec2,
-    velocity: Vec2,
+    position: Point,
+    velocity: Point,
     duration: number,
     onDone?: AnimationFunction
   ) {

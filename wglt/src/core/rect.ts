@@ -1,7 +1,5 @@
-import { Mouse } from './mouse';
-import { PointLike } from './point';
+import { Point, PointLike } from './point';
 import { serializable } from './serialize';
-import { Vec2 } from './vec2';
 
 @serializable
 export class Rect {
@@ -47,15 +45,15 @@ export class Rect {
     this.height = other.height;
   }
 
-  getCenter(): Vec2 {
-    return new Vec2((this.x + this.width / 2) | 0, (this.y + this.height / 2) | 0);
+  getCenter(): Point {
+    return new Point((this.x + this.width / 2) | 0, (this.y + this.height / 2) | 0);
   }
 
   intersects(other: Rect): boolean {
     return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 && this.y2 >= other.y;
   }
 
-  contains(point: Vec2 | PointLike | Mouse): boolean {
+  contains(point: PointLike): boolean {
     return point.x >= this.x && point.x <= this.x2 && point.y >= this.y && point.y <= this.y2;
   }
 }

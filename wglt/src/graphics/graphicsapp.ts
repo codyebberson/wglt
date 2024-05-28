@@ -5,7 +5,7 @@ import { Button } from '../core/gui/button';
 import { Dialog } from '../core/gui/dialog';
 import { Panel } from '../core/gui/panel';
 import { Rect } from '../core/rect';
-import { Vec2 } from '../core/vec2';
+import { Point } from '../core/point';
 import { RenderSet } from './renderset';
 
 export interface GraphicsAppConfig {
@@ -99,7 +99,7 @@ export class GraphicsApp extends BaseApp {
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(x: number, y: number, str: string, color?: Color, out?: Vec2): void {
+  drawString(x: number, y: number, str: string, color?: Color, out?: Point): void {
     this.renderSet.drawString(str, x, y, color, out);
   }
 

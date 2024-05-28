@@ -1,4 +1,4 @@
-import { Pico8Palette, Vec2 } from 'wglt';
+import { Pico8Palette, Point } from 'wglt';
 import { Sprite } from 'wglt';
 import { AI, Actor } from 'wglt';
 import { Game } from '../game';
@@ -9,13 +9,13 @@ import { Sentiment } from './statsactor';
 const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
 
 class GuardAI extends AI {
-  readonly waypoints: Vec2[];
+  readonly waypoints: Point[];
   waypointIndex: number;
   waitCount: number;
   aggroTarget?: Actor;
   aggroCount: number;
 
-  constructor(actor: Guard, waypoints: Vec2[]) {
+  constructor(actor: Guard, waypoints: Point[]) {
     super(actor);
     this.waypoints = waypoints;
     this.waypointIndex = 0;
@@ -105,7 +105,7 @@ class GuardAI extends AI {
 }
 
 export class Guard extends Monster {
-  constructor(game: Game, x: number, y: number, waypoints: Vec2[]) {
+  constructor(game: Game, x: number, y: number, waypoints: Point[]) {
     super(game, x, y, 'Guard', SPRITE, 10);
     this.ai = new GuardAI(this, waypoints);
     this.seen = true;

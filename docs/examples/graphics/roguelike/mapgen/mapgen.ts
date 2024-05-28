@@ -1,4 +1,4 @@
-import { ItemQuality, Rect, Talent, TileMap, Vec2, getTileId } from 'wglt';
+import { ItemQuality, Rect, Talent, TileMap, Point, getTileId } from 'wglt';
 import { FlashHealAbility } from '../abilities/flashheal';
 import { LeapAbility } from '../abilities/leap';
 import { LightningAbility } from '../abilities/lightning';
@@ -211,10 +211,10 @@ export class MapGenerator {
 
   createRandomWall(map: TileMap, length: number): void {
     const rng = this.game.rng;
-    // const pos = new Vec2(rng.nextRange(0, map.width), rng.nextRange(0, map.height));
-    const pos = new Vec2(256, 280);
+    // const pos = new Point(rng.nextRange(0, map.width), rng.nextRange(0, map.height));
+    const pos = new Point(256, 280);
     console.log('start pos', pos.x, pos.y);
-    const dir = new Vec2(1, 0);
+    const dir = new Point(1, 0);
 
     for (let i = 0; i < length; i++) {
       map.setTile(pos.x, pos.y, 0, Tiles.WALL_ISLAND);

@@ -3,7 +3,7 @@ import { Panel } from '../../core/gui/panel';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
-import { Vec2 } from '../../core/vec2';
+import { Point } from '../../core/point';
 import { BaseApp } from '../baseapp';
 
 export class MessageLog extends Panel {
@@ -29,7 +29,7 @@ export class MessageLog extends Panel {
   }
 
   draw(app: BaseApp): void {
-    const pos = new Vec2(this.rect.x, this.rect.y);
+    const pos = new Point(this.rect.x, this.rect.y);
 
     if (pos.y < 0) {
       // Negative y value indicates attached to bottom of screen

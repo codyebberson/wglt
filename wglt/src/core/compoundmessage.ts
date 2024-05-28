@@ -1,6 +1,6 @@
 import { BaseApp } from '../core/baseapp';
 import { Font } from '../core/font';
-import { Vec2 } from '../core/vec2';
+import { Point } from '../core/point';
 import { Message } from './message';
 
 export class CompoundMessage extends Message {
@@ -11,7 +11,7 @@ export class CompoundMessage extends Message {
     this.messages = messages;
   }
 
-  draw(app: BaseApp, pos: Vec2): void {
+  draw(app: BaseApp, pos: Point): void {
     for (let i = 0; i < this.messages.length; i++) {
       this.messages[i].draw(app, pos);
     }

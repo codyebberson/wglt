@@ -1,6 +1,6 @@
-import { Vec2 } from '../../core/vec2';
+import { Point } from '../../core/point';
 
-export class TileMapCell extends Vec2 {
+export class TileMapCell extends Point {
   blocked: boolean;
   blockedSight: boolean;
   visible: boolean;

@@ -1,11 +1,11 @@
 import { Sprite } from '../core/sprite';
-import { Vec2 } from '../core/vec2';
+import { Point } from '../core/point';
 import { Actor } from './actor';
 import { BaseGame } from './basegame';
 
-export class Entity extends Vec2 {
+export class Entity extends Point {
   readonly game: BaseGame;
-  readonly offset: Vec2;
+  readonly offset: Point;
   name: string;
   sprite: Sprite;
   flipped: boolean;
@@ -15,7 +15,7 @@ export class Entity extends Vec2 {
   constructor(game: BaseGame, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(x, y);
     this.game = game;
-    this.offset = new Vec2(0, 0);
+    this.offset = new Point(0, 0);
     this.name = name;
     this.sprite = sprite;
     this.flipped = false;
@@ -39,7 +39,7 @@ export class Entity extends Vec2 {
     return (this.pixelY + this.sprite.height / 2) | 0;
   }
 
-  distanceTo(other: Vec2): number {
+  distanceTo(other: Point): number {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }
 

@@ -1,13 +1,13 @@
 import { InputSet } from './input';
 import { Rect } from './rect';
-import { Vec2 } from './vec2';
+import { Point } from './point';
 
 const MIN_DRAG_DISTANCE = 4;
 
 export class Mouse {
   readonly buttons = new InputSet<number>();
-  readonly prev: Vec2;
-  readonly start: Vec2;
+  readonly prev: Point;
+  readonly start: Point;
   x: number;
   y: number;
   dx: number;
@@ -23,8 +23,8 @@ export class Mouse {
     readonly width: number,
     readonly height: number
   ) {
-    this.prev = new Vec2(0, 0);
-    this.start = new Vec2(0, 0);
+    this.prev = new Point(0, 0);
+    this.start = new Point(0, 0);
     this.x = 0;
     this.y = 0;
     this.dx = 0;

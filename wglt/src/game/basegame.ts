@@ -9,7 +9,7 @@ import { SimplePalette } from '../core/palettes/simple';
 import { Rect } from '../core/rect';
 import { RNG } from '../core/rng';
 import { Sprite } from '../core/sprite';
-import { Vec2 } from '../core/vec2';
+import { Point } from '../core/point';
 import { GraphicsApp } from '../graphics/graphicsapp';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
@@ -39,7 +39,7 @@ export abstract class BaseGame extends AppState {
   readonly viewport: Rect;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
-  readonly cursor: Vec2;
+  readonly cursor: Point;
   // readonly tooltip: TooltipDialog;
   readonly rng: RNG;
   readonly damageColor: Color;
@@ -62,7 +62,7 @@ export abstract class BaseGame extends AppState {
   horizontalViewDistance: number;
   verticalViewDistance: number;
   zoom: number;
-  readonly screenShakeOffset: Vec2;
+  readonly screenShakeOffset: Point;
   screenShakeCountdown: number;
 
   constructor(app: GraphicsApp, seed: number) {
@@ -81,7 +81,7 @@ export abstract class BaseGame extends AppState {
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
     this.blocked = false;
-    this.cursor = new Vec2(-1, -1);
+    this.cursor = new Point(-1, -1);
     // this.tooltip = new TooltipDialog();
     this.rng = new RNG();
     this.pathIndex = 0;
@@ -90,7 +90,7 @@ export abstract class BaseGame extends AppState {
     this.zoom = 1.0;
     this.damageColor = SimplePalette.RED;
     this.healColor = SimplePalette.GREEN;
-    this.screenShakeOffset = new Vec2(0, 0);
+    this.screenShakeOffset = new Point(0, 0);
     this.screenShakeCountdown = 0;
 
     const mapSize = MAP_SIZE;
@@ -509,7 +509,7 @@ export abstract class BaseGame extends AppState {
 
     if (this.app.isKeyPressed(Key.VK_X)) {
       // Explore
-      this.path = computePath(this.tileMap, this.player, new Vec2(256, 0), 1000);
+      this.path = computePath(this.tileMap, this.player, new Point(256, 0), 1000);
       this.pathIndex = 0;
     }
 
@@ -726,7 +726,7 @@ export abstract class BaseGame extends AppState {
     // this.talentsDialog.visible = false;
   }
 
-  warpToPoint(point: Vec2): void {
+  warpToPoint(point: Point): void {
     this.addAnimation(
       new FadeOutAnimation(30, () => {
         if (this.player) {
@@ -741,14 +741,14 @@ export abstract class BaseGame extends AppState {
     );
   }
 
-  findFreeTile(x0: number, y0: number, maxDistance: number): Vec2 | undefined {
+  findFreeTile(x0: number, y0: number, maxDistance: number): Point | undefined {
     for (let r = 0; r <= maxDistance; r += 0.5) {
       const r2 = Math.ceil(r);
       for (let y = y0 - r2; y <= y0 + r2; y++) {
         for (let x = x0 - r2; x <= x0 + r2; x++) {
           if (Math.hypot(x - x0, y - y0) <= r) {
             if (!this.isBlocked(x, y) && !this.getEntityAt(x, y)) {
-              return new Vec2(x, y);
+              return new Point(x, y);
             }
           }
         }

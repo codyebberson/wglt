@@ -1,14 +1,13 @@
-import { Color } from '../core/color';
-import { Font } from '../core/font';
-import { Keyboard } from '../core/keyboard';
-import { Key } from '../core/keys';
-import { Mouse } from '../core/mouse';
-import { Rect } from '../core/rect';
-import { Vec2 } from '../core/vec2';
+import { Color } from './color';
+import { Font } from './font';
 import { Button } from './gui/button';
 import { Dialog } from './gui/dialog';
 import { Panel } from './gui/panel';
+import { Keyboard } from './keyboard';
+import { Key } from './keys';
+import { Mouse } from './mouse';
 import { Point } from './point';
+import { Rect } from './rect';
 
 // Arrow keys, numpad, vi
 const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y];
@@ -71,7 +70,7 @@ export abstract class BaseApp {
   readonly gl: WebGLRenderingContext;
   readonly size: Rect;
   readonly font: Font;
-  readonly center: Vec2;
+  readonly center: Point;
   readonly keyboard: Keyboard;
   readonly mouse: Mouse;
   update?: () => void;
@@ -81,7 +80,7 @@ export abstract class BaseApp {
     this.canvas = canvas;
     this.size = size;
     this.font = font;
-    this.center = new Vec2((this.size.width / 2) | 0, (this.size.height / 2) | 0);
+    this.center = new Point((this.size.width / 2) | 0, (this.size.height / 2) | 0);
 
     this.gl = canvas.getContext('webgl2', {
       alpha: false,
@@ -162,7 +161,7 @@ export abstract class BaseApp {
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  abstract drawString(x: number, y: number, str: string, color?: Color, out?: Vec2): void;
+  abstract drawString(x: number, y: number, str: string, color?: Color, out?: Point): void;
 
   /**
    * Draws a string horizontally centered.

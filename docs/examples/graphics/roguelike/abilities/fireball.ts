@@ -1,7 +1,15 @@
-import { Pico8Palette, Vec2 } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Ability, Actor, ExplosionAnimation, ProjectileAnimation, TargetType } from 'wglt';
-import { TileMapCell } from 'wglt';
+import {
+  Ability,
+  Actor,
+  ExplosionAnimation,
+  Message,
+  Pico8Palette,
+  Point,
+  ProjectileAnimation,
+  Sprite,
+  TargetType,
+  TileMapCell,
+} from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
 const FIREBALL_RANGE = 10;
@@ -64,8 +72,8 @@ export class FireballAbility implements Ability {
     game.addAnimation(
       new ProjectileAnimation(
         FIREBALL_SPRITE,
-        new Vec2(caster.pixelX, caster.pixelY),
-        new Vec2(dx, dy),
+        new Point(caster.pixelX, caster.pixelY),
+        new Point(dx, dy),
         count,
         () => {
           game.addAnimation(

@@ -1,15 +1,15 @@
 import { Sprite } from '../../core/sprite';
-import { Vec2 } from '../../core/vec2';
+import { Point } from '../../core/point';
 import { BaseGame } from '../basegame';
 import { Animation } from './animation';
 
 export class GuiSlideAnimation extends Animation {
   readonly sprite: Sprite;
-  readonly start: Vec2;
-  readonly end: Vec2;
+  readonly start: Point;
+  readonly end: Point;
   readonly duration: number;
 
-  constructor(sprite: Sprite, start: Vec2, end: Vec2, duration: number) {
+  constructor(sprite: Sprite, start: Point, end: Point, duration: number) {
     super(duration, false);
     this.sprite = sprite;
     this.start = start;

@@ -1,4 +1,4 @@
-import { Vec2 } from 'wglt';
+import { Point } from 'wglt';
 import { Sprite } from 'wglt';
 import { AI } from 'wglt';
 import { Game } from '../game';
@@ -12,7 +12,7 @@ class StoneGolemAI extends AI {
   countdown = 0;
   cooldown = 10;
   charging = 0;
-  target = new Vec2(0, 0);
+  target = new Point(0, 0);
 
   doAi(): void {
     const golem = this.actor as StoneGolem;

@@ -1,4 +1,4 @@
-import { Pico8Palette, Vec2 } from 'wglt';
+import { Pico8Palette, Point } from 'wglt';
 import { Message, Sprite } from 'wglt';
 import { Ability, Actor, Entity, ProjectileAnimation, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
@@ -56,8 +56,8 @@ export class LightningAbility implements Ability {
     game.addAnimation(
       new ProjectileAnimation(
         explosion,
-        new Vec2(monster.pixelX, monster.pixelY),
-        new Vec2(0, 0),
+        new Point(monster.pixelX, monster.pixelY),
+        new Point(0, 0),
         32,
         () => {
           game.log(`The damage is ${damage} hit points`, Pico8Palette.BLUE);

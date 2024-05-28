@@ -1,4 +1,4 @@
-import { Pico8Palette, Vec2 } from 'wglt';
+import { Pico8Palette, Point } from 'wglt';
 import { Sprite } from 'wglt';
 import { Game } from '../game';
 import { StatsActor } from './statsactor';
@@ -9,7 +9,7 @@ export class Player extends StatsActor {
   xp: number;
   maxXp: number;
   remainingAbilityPoints: number;
-  home: Vec2;
+  home: Point;
   keys: boolean[];
 
   constructor(game: Game, x: number, y: number) {
@@ -22,7 +22,7 @@ export class Player extends StatsActor {
     this.strength = 20;
     this.armor = 20;
     this.remainingAbilityPoints = 0;
-    this.home = new Vec2(x, y);
+    this.home = new Point(x, y);
     this.keys = new Array(1000);
   }
 

@@ -9,7 +9,7 @@ import { defineConfig } from 'vite';
 // For more details, see:
 // https://vitejs.dev/guide/build.html#multi-page-app
 
-const htmlFiles: string[] = ['./index.html'];
+const htmlFiles: string[] = ['./index.html', './home.html'];
 
 function findFiles(dir: string): void {
   for (const file of readdirSync(dir)) {

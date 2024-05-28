@@ -1,5 +1,5 @@
 import { Rect } from '../../core/rect';
-import { Vec2 } from '../../core/vec2';
+import { Point } from '../../core/point';
 import { GraphicsApp } from '../../graphics/graphicsapp';
 import { BaseApp } from '../baseapp';
 import { Message } from '../message';
@@ -62,7 +62,7 @@ export class TooltipDialog implements Component {
     graphicsApp.drawAutoRect(graphicsApp.config.dialogRect, this.rect);
 
     const lineHeight = app.font.getHeight() + LINE_PADDING;
-    const pos = new Vec2(this.rect.x + MARGIN, this.rect.y + MARGIN);
+    const pos = new Point(this.rect.x + MARGIN, this.rect.y + MARGIN);
 
     for (let i = 0; i < this.messages.length; i++) {
       const msg = this.messages[i];

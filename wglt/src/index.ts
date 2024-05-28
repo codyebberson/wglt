@@ -33,7 +33,6 @@ export * from './core/rng';
 export * from './core/serialize';
 export * from './core/sprite';
 export * from './core/utils';
-export * from './core/vec2';
 export * from './game/ability';
 export * from './game/actor';
 export * from './game/ai/ai';

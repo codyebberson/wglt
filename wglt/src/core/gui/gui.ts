@@ -1,14 +1,14 @@
 import { BaseApp } from '../baseapp';
 import { PointLike } from '../point';
 import { Rect } from '../rect';
-import { Vec2 } from '../vec2';
+import { Point } from '../point';
 import { Component } from './component';
 import { Panel } from './panel';
 import { TooltipDialog } from './tooltipdialog';
 
 export class GUI {
   static dragElement?: Component;
-  static dragOffset?: Vec2;
+  static dragOffset?: Point;
   readonly rootPanel: Component;
   tooltip?: TooltipDialog;
   tooltipElement?: Component;
@@ -95,13 +95,13 @@ export class GUI {
   static startDragging(app: BaseApp, panel: Panel): void {
     const mouse = app.mouse;
     GUI.dragElement = panel;
-    GUI.dragOffset = new Vec2(mouse.start.x - panel.rect.x, mouse.start.y - panel.rect.y);
+    GUI.dragOffset = new Point(mouse.start.x - panel.rect.x, mouse.start.y - panel.rect.y);
   }
 
   private updateDragging(app: BaseApp): void {
     const mouse = app.mouse;
     const dragElement = GUI.dragElement as Panel;
-    const dragOffset = GUI.dragOffset as Vec2;
+    const dragOffset = GUI.dragOffset as Point;
 
     // TODO: Refactor all of this into callbacks
 

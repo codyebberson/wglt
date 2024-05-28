@@ -1,7 +1,7 @@
 import { Color } from '../core/color';
 import { Font } from '../core/font';
 import { ExtendedTexture, createTexture, initShaderProgram } from '../core/glutils';
-import { Vec2 } from '../core/vec2';
+import { Point } from '../core/point';
 
 /**
  * Maximum number of elements per buffer.
@@ -127,7 +127,7 @@ export class RenderSet {
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(str: string, x0: number, y0: number, color?: Color, out?: Vec2): void {
+  drawString(str: string, x0: number, y0: number, color?: Color, out?: Point): void {
     const lines = str.split('\n');
     const height = this.font.getHeight();
     let x = x0;

@@ -1,7 +1,7 @@
 import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { Font } from '../core/font';
-import { Vec2 } from '../core/vec2';
+import { Point } from '../core/point';
 
 export class Message {
   readonly text: string;
@@ -12,7 +12,7 @@ export class Message {
     this.color = color;
   }
 
-  draw(app: BaseApp, pos: Vec2): void {
+  draw(app: BaseApp, pos: Point): void {
     app.drawString(pos.x, pos.y, this.text, this.color, pos);
   }
 

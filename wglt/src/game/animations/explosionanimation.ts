@@ -1,19 +1,19 @@
 import { Sprite } from '../../core/sprite';
-import { Vec2 } from '../../core/vec2';
+import { Point } from '../../core/point';
 import { BaseGame } from '../basegame';
 import { Animation, AnimationFunction } from './animation';
 import { ProjectileAnimation } from './projectileanimation';
 
 export class ExplosionAnimation extends Animation {
   readonly game: BaseGame;
-  readonly center: Vec2;
+  readonly center: Point;
   readonly radius: number;
   readonly duration: number;
   readonly sprites: Sprite[];
 
   constructor(
     game: BaseGame,
-    center: Vec2,
+    center: Point,
     radius: number,
     duration: number,
     onDone?: AnimationFunction
@@ -40,7 +40,7 @@ export class ExplosionAnimation extends Animation {
       const x = centerX + game.tileSize.width * radius * Math.cos(angle);
       const y = centerY + game.tileSize.height * radius * Math.sin(angle);
       const explosion = new Sprite(512, 336, 16, 16, 4, false, 4);
-      const animation = new ProjectileAnimation(explosion, new Vec2(x, y), new Vec2(0, 0), 16);
+      const animation = new ProjectileAnimation(explosion, new Point(x, y), new Point(0, 0), 16);
       animation.blocking = false;
       game.animations.push(animation);
     }

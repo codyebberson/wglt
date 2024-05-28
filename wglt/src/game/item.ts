@@ -74,8 +74,8 @@ export abstract class Item extends Entity {
     );
 
     // TODO: How to expose this to library users?
-    // const start = new Vec2(this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
-    // const end = new Vec2(this.game.app.size.width - 16, this.game.app.size.height - 24);
+    // const start = new Point(this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
+    // const end = new Point(this.game.app.size.width - 16, this.game.app.size.height - 24);
     // this.game.animations.push(new GuiSlideAnimation(this.sprite, start, end, 15));
   }
 

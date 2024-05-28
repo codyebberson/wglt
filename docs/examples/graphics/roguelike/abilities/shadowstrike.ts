@@ -1,4 +1,4 @@
-import { Pico8Palette, Vec2 } from 'wglt';
+import { Pico8Palette, Point } from 'wglt';
 import { Message, Sprite } from 'wglt';
 import { Ability, SlideAnimation, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
@@ -53,7 +53,7 @@ export class ShadowStrikeAbility implements Ability {
     // which can result in moving at an angle.
     const targetX = caster.x + 2 * (target.x - caster.x);
     const targetY = caster.y + 2 * (target.y - caster.y);
-    let bestTile: Vec2 | null = null;
+    let bestTile: Point | null = null;
     let bestDistance = 1000.0;
 
     for (let y = target.y - 1; y <= target.y + 1; y++) {
@@ -64,7 +64,7 @@ export class ShadowStrikeAbility implements Ability {
         }
         const distance = Math.hypot(x - targetX, y - targetY);
         if (distance < bestDistance) {
-          bestTile = new Vec2(x, y);
+          bestTile = new Point(x, y);
           bestDistance = distance;
         }
       }
@@ -82,8 +82,8 @@ export class ShadowStrikeAbility implements Ability {
     const ySpeed = ((bestTile.y - caster.y) * game.tileSize.height) / count;
     game.addAnimation(
       new SlideAnimation(caster, xSpeed, ySpeed, count, () => {
-        caster.x = (bestTile as Vec2).x;
-        caster.y = (bestTile as Vec2).y;
+        caster.x = (bestTile as Point).x;
+        caster.y = (bestTile as Point).y;
         caster.attack(target, caster.getDamage() * 2);
         caster.ap--;
       })

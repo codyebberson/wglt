@@ -1,4 +1,4 @@
-import { Vec2 } from 'wglt';
+import { Point } from 'wglt';
 import { Sprite } from 'wglt';
 import { AI, Stunned } from 'wglt';
 import { Game } from '../game';
@@ -11,7 +11,7 @@ const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
 class GriffonAI extends AI {
   countdown = 0;
   cooldown = 10;
-  target = new Vec2(0, 0);
+  target = new Point(0, 0);
 
   doAi(): void {
     const griffon = this.actor as Griffon;

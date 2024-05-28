@@ -8,7 +8,6 @@ import { Key } from '../core/keys';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { interpolate } from '../core/utils';
-import { Vec2 } from '../core/vec2';
 import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Console } from './console';
@@ -473,7 +472,7 @@ export class Terminal extends BaseApp {
     y: number,
     str: string,
     color?: number | undefined,
-    out?: Vec2 | undefined
+    out?: Point | undefined
   ): void {
     this.console.drawString(x, y, str, color);
   }
