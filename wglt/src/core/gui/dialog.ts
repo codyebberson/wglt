@@ -14,18 +14,10 @@ export class Dialog extends Panel {
   }
 
   draw(app: BaseApp): void {
-    // if (!this.gui) {
-    //   return;
-    // }
-    // this.gui.renderer.draw(app, this);
     app.drawDialogFrame(this);
   }
 
   handleInput(app: BaseApp): boolean {
-    // if (!this.gui) {
-    //   return false;
-    // }
-
     if (this.handleChildrenInput(app)) {
       return true;
     }
@@ -45,11 +37,6 @@ export class Dialog extends Panel {
   }
 
   close(): void {
-    // if (!this.gui) {
-    //   return;
-    // }
-    // this.gui.remove(this);
-    // this.removeChild
     if (this.parent) {
       this.parent.removeChild(this);
     }

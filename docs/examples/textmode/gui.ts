@@ -1,4 +1,4 @@
-import { CgaPalette, GUI, Key, Terminal } from 'wglt';
+import { CgaPalette, GUI, Key, MessageDialog, Rect, Terminal } from 'wglt';
 
 const term = new Terminal('canvas', 80, 45);
 
@@ -23,9 +23,9 @@ term.update = () => {
     if (term.isKeyDown(Key.VK_DOWN)) {
       y++;
     }
-    // if (term.isKeyPressed(Key.VK_H)) {
-    //   gui.add(new MessageDialog('ALERT', 'Hello World'));
-    // }
+    if (term.isKeyPressed(Key.VK_H)) {
+      gui.add(new MessageDialog(new Rect(30, 15, 20, 10), 'ALERT', 'Hello World'));
+    }
     // if (term.isKeyPressed(Key.VK_F)) {
     //   gui.add(
     //     new MessageDialog(
@@ -86,6 +86,7 @@ term.update = () => {
   }
 
   term.clear();
+  term.console.clear();
   term.fillRect(0, 0, 80, 45, CgaPalette.DARK_BLUE);
   term.drawString(1, 1, 'Hello world!');
   term.drawString(1, 3, 'Use arrow keys to move');

@@ -2,24 +2,7 @@ import { CgaPalette, Terminal, TileMap, TileMapCell, computePath } from 'wglt';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
-
-// const MAP = new Array(SCREEN_HEIGHT);
-// for (let y = 0; y < SCREEN_HEIGHT; y++) {
-//   MAP[y] = new Array(SCREEN_WIDTH);
-//   for (let x = 0; x < SCREEN_WIDTH; x++) {
-//     MAP[y][x] = Math.random() < 0.4 ? '#' : '.';
-//   }
-// }
-
 const VIEW_DISTANCE = 15;
-
-// function getTile(x: number, y: number): string {
-//   return MAP[y][x];
-// }
-
-// function isBlocked(x: number, y: number): boolean {
-//   return getTile(x, y) !== '.';
-// }
 
 const term = new Terminal(
   document.querySelector('canvas') as HTMLCanvasElement,
@@ -28,8 +11,8 @@ const term = new Terminal(
 );
 
 const player = {
-  x: Math.floor(SCREEN_WIDTH / 2),
-  y: Math.floor(SCREEN_HEIGHT / 2),
+  x: 40,
+  y: 20,
   path: null as TileMapCell[] | null,
   pathIndex: 0,
 };
@@ -39,16 +22,12 @@ function computeFov(): void {
   tileMap.updateExplored();
 }
 
-// const tileMap = new Console(SCREEN_WIDTH, SCREEN_HEIGHT, isBlocked);
 const tileMap = new TileMap(SCREEN_WIDTH, SCREEN_HEIGHT);
 for (let y = 0; y < SCREEN_HEIGHT; y++) {
   for (let x = 0; x < SCREEN_WIDTH; x++) {
-    // (tileMap.getCell(x, y) as TileMapCell).explored = true;
     const blocked = Math.random() < 0.4;
-    // if (Math.random() < 0.4) {
     tileMap.setTile(x, y, 0, blocked ? 1 : 2);
     tileMap.setBlocked(x, y, blocked);
-    // }
   }
 }
 computeFov();
@@ -87,7 +66,6 @@ term.update = () => {
   }
 
   term.clear();
-  // tileMap.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, CgaPalette.WHITE, CgaPalette.BLACK);
 
   for (let y = 0; y < SCREEN_HEIGHT; y++) {
     for (let x = 0; x < SCREEN_WIDTH; x++) {
@@ -114,7 +92,6 @@ term.update = () => {
     }
   }
 
-  // term.drawConsole(0, 0, tileMap, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   term.drawString(player.x, player.y, '@');
   term.drawString(1, 1, 'Hello world!', CgaPalette.WHITE);
   term.drawString(1, 3, 'Use arrow keys to move', CgaPalette.WHITE);

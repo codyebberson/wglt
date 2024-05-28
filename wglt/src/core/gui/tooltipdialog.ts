@@ -17,14 +17,12 @@ export class TooltipDialog implements Component {
   messages: Message[];
 
   constructor() {
-    // super(new Rect(0, 0, WIDTH, 10));
     this.rect = new Rect(0, 0, WIDTH, 10);
     this.messages = [];
     this.visible = false;
   }
 
   showAt(app: BaseApp, x: number, y: number): void {
-    // Resize
     const font = app.font;
     const lineHeight = font.getHeight() + LINE_PADDING;
     this.rect.width = 2 * MARGIN;
@@ -60,10 +58,6 @@ export class TooltipDialog implements Component {
   }
 
   draw(app: BaseApp): void {
-    // Draw the dialog border
-    // super.draw(app);
-
-    // app.drawDialogFrame((app as Gra));
     const graphicsApp = app as GraphicsApp;
     graphicsApp.drawAutoRect(graphicsApp.config.dialogRect, this.rect);
 
@@ -87,15 +81,14 @@ export class TooltipDialog implements Component {
   }
 
   addChild(panel: Component): void {
-    // throw new Error('Method not implemented.');
     // no-op
   }
+
   removeChild(panel: Component): void {
-    // throw new Error('Method not implemented.');
     // no-op
   }
+
   getPanelAt(point: PointLike): Component | undefined {
-    // throw new Error('Method not implemented.');
     return undefined;
   }
 
@@ -104,11 +97,10 @@ export class TooltipDialog implements Component {
   }
 
   isDragging(): boolean {
-    // throw new Error('Method not implemented.');
     return false;
   }
+
   onDrop(_panel: Component): boolean {
-    // throw new Error('Method not implemented.');
     return false;
   }
 }

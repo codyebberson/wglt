@@ -13,30 +13,14 @@ import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Console } from './console';
 import { IBM_BIOS_FONT_DATA_URL } from './font';
-import {
-  // CRT_FRAGMENT_SHADER_SOURCE,
-  // CRT_VERTEX_SHADER_SOURCE,
-  FRAGMENT_SHADER_SOURCE,
-  VERTEX_SHADER_SOURCE,
-} from './shaders';
+import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
 export interface TerminalOptions {
   fontUrl?: string;
   font?: MonospacedFont;
   movementKeys?: Partial<Record<Key, Point>>;
-  // crt?: CrtsOptions;
   maxFps?: number;
 }
-
-// export interface CrtOptions {
-//   scale: number;
-//   blur: number;
-//   curvature: number;
-//   chroma: number;
-//   vignette: number;
-//   scanlineWidth: number;
-//   scanlineIntensity: number;
-// }
 
 const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
   // Up
@@ -78,19 +62,10 @@ const DEFAULT_OPTIONS: TerminalOptions = {
   movementKeys: DEFAULT_MOVEMENT_KEYS,
 };
 
-// export class Terminal extends Console {
 export class Terminal extends BaseApp {
-  // readonly canvas: HTMLCanvasElement;
-  // readonly font: MonospacedFont;
-  // readonly crt?: CrtOptions;
-  // readonly maxFps?: number;
   readonly console: Console;
   readonly pixelWidth: number;
   readonly pixelHeight: number;
-  // readonly pixelScale: number;
-  // readonly keys: Keyboard;
-  // readonly mouse: Mouse;
-  // readonly gl: WebGLRenderingContext;
   readonly program: WebGLProgram;
   readonly positionAttribLocation: number;
   readonly textureAttribLocation: number;
@@ -109,24 +84,10 @@ export class Terminal extends BaseApp {
   readonly foregroundBuffer: WebGLBuffer;
   readonly backgroundBuffer: WebGLBuffer;
   readonly texture: WebGLTexture;
-  // readonly frameBufferTexture: WebGLTexture;
-  // readonly frameBuffer: WebGLFramebuffer;
-  // readonly crtProgram: WebGLProgram;
-  // readonly crtBlurLocation: WebGLUniformLocation;
-  // readonly crtCurvatureLocation: WebGLUniformLocation;
-  // readonly crtChromaLocation: WebGLUniformLocation;
-  // readonly crtScanlineWidthLocation: WebGLUniformLocation;
-  // readonly crtScanlineIntensityLocation: WebGLUniformLocation;
-  // readonly crtVignetteLocation: WebGLUniformLocation;
-  // readonly crtPositionLocation: number;
-  // readonly crtTexCoordLocation: number;
-  // readonly crtPositionBuffer: WebGLBuffer;
-  // readonly crtTexCoordBuffer: WebGLBuffer;
   private lastRenderTime: number;
   private renderDelta: number;
   fps: number;
   averageFps: number;
-  // update?: () => void;
 
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
@@ -134,8 +95,6 @@ export class Terminal extends BaseApp {
     height: number,
     options: TerminalOptions = DEFAULT_OPTIONS
   ) {
-    // super(width, height);
-
     const canvas =
       typeof canvasOrSelector === 'string'
         ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
@@ -148,31 +107,8 @@ export class Terminal extends BaseApp {
     super(canvas, new Rect(0, 0, pixelWidth, pixelHeight), font);
 
     this.console = new Console(width, height);
-
-    // this.canvas = canvas;
-    // this.font = options.font ?? FONT_IBM_BIOS;
-    // this.crt = options.crt;
-    // this.maxFps = options.maxFps;
-    // this.pixelWidth = width * font.glyphSize.width;
-    // this.pixelHeight = height * font.glyphSize.height;
-    // this.pixelScale = options.crt?.scale ?? 1.0;
     this.pixelWidth = pixelWidth;
     this.pixelHeight = pixelHeight;
-
-    // canvas.width = this.pixelWidth * this.pixelScale;
-    // canvas.height = this.pixelHeight * this.pixelScale;
-    // canvas.style.imageRendering = 'pixelated';
-    // canvas.style.outline = 'none';
-    // canvas.tabIndex = 0;
-
-    // this.keys = new Keyboard(canvas);
-    // this.mouse = new Mouse(canvas, width, height);
-
-    // // Get the WebGL context from the canvas
-    // const gl = canvas.getContext('webgl2', { antialias: false });
-    // if (!gl) {
-    //   throw new Error('Unable to initialize WebGL. Your browser may not support it.');
-    // }
 
     const gl = this.gl;
     const program = gl.createProgram();
@@ -180,66 +116,12 @@ export class Terminal extends BaseApp {
       throw new Error('Unable to initialize WebGL. Your browser may not support it.');
     }
 
-    // this.gl = gl;
     this.program = program;
 
     gl.attachShader(program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
     gl.attachShader(program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
     gl.linkProgram(program);
     gl.useProgram(program);
-
-    // this.crtProgram = gl.createProgram() as WebGLProgram;
-    // gl.attachShader(this.crtProgram, this.buildShader(gl.VERTEX_SHADER, CRT_VERTEX_SHADER_SOURCE));
-    // gl.attachShader(
-    //   this.crtProgram,
-    //   this.buildShader(gl.FRAGMENT_SHADER, CRT_FRAGMENT_SHADER_SOURCE)
-    // );
-    // gl.linkProgram(this.crtProgram);
-    // gl.useProgram(this.crtProgram);
-
-    // this.crtBlurLocation = gl.getUniformLocation(this.crtProgram, 'u_blur') as WebGLUniformLocation;
-    // this.crtCurvatureLocation = gl.getUniformLocation(
-    //   this.crtProgram,
-    //   'u_curvature'
-    // ) as WebGLUniformLocation;
-    // this.crtChromaLocation = gl.getUniformLocation(
-    //   this.crtProgram,
-    //   'u_chroma'
-    // ) as WebGLUniformLocation;
-    // this.crtScanlineWidthLocation = gl.getUniformLocation(
-    //   this.crtProgram,
-    //   'u_scanlineWidth'
-    // ) as WebGLUniformLocation;
-    // this.crtScanlineIntensityLocation = gl.getUniformLocation(
-    //   this.crtProgram,
-    //   'u_scanlineIntensity'
-    // ) as WebGLUniformLocation;
-    // this.crtVignetteLocation = gl.getUniformLocation(
-    //   this.crtProgram,
-    //   'u_vignette'
-    // ) as WebGLUniformLocation;
-
-    // this.crtPositionLocation = gl.getAttribLocation(this.crtProgram, 'a_position');
-    // this.crtPositionBuffer = gl.createBuffer() as WebGLBuffer;
-    // gl.bindBuffer(gl.ARRAY_BUFFER, this.crtPositionBuffer);
-    // gl.bufferData(
-    //   gl.ARRAY_BUFFER,
-    //   new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
-    //   gl.STATIC_DRAW
-    // );
-    // gl.enableVertexAttribArray(this.crtPositionLocation);
-    // gl.vertexAttribPointer(this.crtPositionLocation, 2, gl.FLOAT, false, 0, 0);
-
-    // this.crtTexCoordLocation = gl.getAttribLocation(this.crtProgram, 'a_texCoord');
-    // this.crtTexCoordBuffer = gl.createBuffer() as WebGLBuffer;
-    // gl.bindBuffer(gl.ARRAY_BUFFER, this.crtTexCoordBuffer);
-    // gl.bufferData(
-    //   gl.ARRAY_BUFFER,
-    //   new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]),
-    //   gl.STATIC_DRAW
-    // );
-    // gl.enableVertexAttribArray(this.crtTexCoordLocation);
-    // gl.vertexAttribPointer(this.crtTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
 
     this.positionAttribLocation = this.getAttribLocation('a');
     this.textureAttribLocation = this.getAttribLocation('b');
@@ -254,35 +136,6 @@ export class Terminal extends BaseApp {
     this.foregroundDataView = new DataView(this.foregroundUint8Array.buffer);
     this.backgroundUint8Array = new Uint8Array(cellCount * 4 * 4);
     this.backgroundDataView = new DataView(this.backgroundUint8Array.buffer);
-
-    // // Init the frame buffer
-    // this.frameBufferTexture = gl.createTexture() as WebGLTexture;
-    // gl.bindTexture(gl.TEXTURE_2D, this.frameBufferTexture);
-    // gl.texImage2D(
-    //   gl.TEXTURE_2D,
-    //   0,
-    //   gl.RGBA,
-    //   this.pixelWidth,
-    //   this.pixelHeight,
-    //   0,
-    //   gl.RGBA,
-    //   gl.UNSIGNED_BYTE,
-    //   null
-    // );
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-    // this.frameBuffer = gl.createFramebuffer() as WebGLFramebuffer;
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-    // gl.framebufferTexture2D(
-    //   gl.FRAMEBUFFER,
-    //   gl.COLOR_ATTACHMENT0,
-    //   gl.TEXTURE_2D,
-    //   this.frameBufferTexture,
-    //   0
-    // );
 
     // Init the positions buffer
     let i = 0;
@@ -335,12 +188,6 @@ export class Terminal extends BaseApp {
     this.renderDelta = 0;
     this.fps = 0;
     this.averageFps = 0;
-
-    // if (this.maxFps === undefined) {
-    // this.requestAnimationFrame();
-    // } else {
-    //   window.setInterval(() => this.renderLoop(performance.now()), 1000 / this.maxFps);
-    // }
   }
 
   private getAttribLocation(name: string): number {
@@ -389,40 +236,6 @@ export class Terminal extends BaseApp {
       }
     }
   }
-
-  // isKeyDown(key: Key): boolean {
-  //   return this.keys.getKey(key).down;
-  // }
-
-  // isKeyPressed(key: Key): boolean {
-  //   return this.keys.getKey(key).isPressed();
-  // }
-
-  // getKeyDownCount(key: Key): number {
-  //   return this.keys.getKey(key).downCount;
-  // }
-
-  // /**
-  //  * Returns a standard roguelike movement key if pressed.
-  //  * Implemented control systems:
-  //  * 1) Numpad arrows
-  //  * 2) VIM keys
-  //  * 3) Normal arrows (4 directions only)
-  //  * 4) Numpad 5 and '.' (period) for "wait"
-  //  * If a key is pressed, returns the movement delta.
-  //  * If no key is pressed, returns undefined.
-  //  * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
-  //  */
-  // getMovementKey(
-  //   movementKeys: Partial<Record<Key, Point>> = DEFAULT_MOVEMENT_KEYS
-  // ): Point | undefined {
-  //   for (const [key, delta] of Object.entries(movementKeys) as [Key, Point][]) {
-  //     if (this.isKeyPressed(key)) {
-  //       return delta;
-  //     }
-  //   }
-  //   return undefined;
-  // }
 
   private buildShader(type: number, source: string): WebGLShader {
     const gl = this.gl;
@@ -495,11 +308,6 @@ export class Terminal extends BaseApp {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    // if (this.crt) {
-    //   gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-    // } else {
-    //   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    // }
     gl.viewport(0, 0, this.pixelWidth, this.pixelHeight);
 
     // Tell WebGL how to pull out the positions from the position
@@ -600,60 +408,6 @@ export class Terminal extends BaseApp {
     }
   }
 
-  // private renderCrt(): void {
-  //   const crt = this.crt;
-  //   if (!crt) {
-  //     return;
-  //   }
-  //   const gl = this.gl;
-  //   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  //   gl.viewport(0, 0, this.pixelWidth * this.pixelScale, this.pixelHeight * this.pixelScale);
-  //   gl.useProgram(this.crtProgram);
-  //   gl.uniform1f(this.crtBlurLocation, crt.blur);
-  //   gl.uniform1f(this.crtCurvatureLocation, crt.curvature);
-  //   gl.uniform1f(this.crtChromaLocation, crt.chroma);
-  //   gl.uniform1f(this.crtVignetteLocation, crt.vignette);
-  //   gl.uniform1f(this.crtScanlineWidthLocation, crt.scanlineWidth);
-  //   gl.uniform1f(this.crtScanlineIntensityLocation, crt.scanlineIntensity);
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, this.crtPositionBuffer);
-  //   gl.vertexAttribPointer(this.crtPositionLocation, 2, gl.FLOAT, false, 0, 0);
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, this.crtTexCoordBuffer);
-  //   gl.vertexAttribPointer(this.crtTexCoordLocation, 2, gl.FLOAT, false, 0, 0);
-  //   gl.activeTexture(gl.TEXTURE0);
-  //   gl.bindTexture(gl.TEXTURE_2D, this.frameBufferTexture);
-  //   gl.drawArrays(gl.TRIANGLES, 0, 6);
-  // }
-
-  // private requestAnimationFrame(): void {
-  //   window.requestAnimationFrame((t) => this.renderLoop(t));
-  // }
-
-  // private renderLoop(time: number): void {
-  //   if (this.lastRenderTime === 0) {
-  //     this.lastRenderTime = time;
-  //     this.fps = 0;
-  //   } else {
-  //     this.renderDelta = time - this.lastRenderTime;
-  //     this.lastRenderTime = time;
-  //     this.fps = 1000.0 / this.renderDelta;
-  //     this.averageFps = 0.95 * this.averageFps + 0.05 * this.fps;
-  //   }
-
-  //   this.keys.updateKeys(time);
-  //   this.mouse.update(time);
-  //   if (this.update) {
-  //     this.update();
-  //   }
-  //   this.flush();
-  //   this.render();
-  //   if (this.crt) {
-  //     this.renderCrt();
-  //   }
-  //   if (this.maxFps === undefined) {
-  //     this.requestAnimationFrame();
-  //   }
-  // }
-
   startFrame(time: number): void {
     if (this.lastRenderTime === 0) {
       this.lastRenderTime = time;
@@ -667,19 +421,8 @@ export class Terminal extends BaseApp {
   }
 
   endFrame(): void {
-    // this.keys.updateKeys(time);
-    // this.mouse.update(time);
-    // if (this.update) {
-    //   this.update();
-    // }
     this.flush();
     this.render();
-    // if (this.crt) {
-    //   this.renderCrt();
-    // }
-    // if (this.maxFps === undefined) {
-    //   this.requestAnimationFrame();
-    // }
   }
 
   clear(): void {
@@ -732,18 +475,14 @@ export class Terminal extends BaseApp {
     color?: number | undefined,
     out?: Vec2 | undefined
   ): void {
-    // throw new Error('Method not implemented.');
     this.console.drawString(x, y, str, color);
   }
 
   drawCenteredString(x: number, y: number, str: string, color?: number | undefined): void {
-    // throw new Error('Method not implemented.');
     this.console.drawCenteredString(x, y, str, color);
   }
 
   drawRightString(x: number, y: number, str: string, color?: number | undefined): void {
-    // throw new Error('Method not implemented.');
-    // this.console.drawRightString(x, y, str, color);
     this.console.drawString(x - str.length, y, str, color);
   }
 
@@ -756,7 +495,6 @@ export class Terminal extends BaseApp {
   }
 
   drawButtonFrame(button: Button): void {
-    // throw new Error('Method not implemented.');
     this.console.drawSingleBox(button.rect.x, button.rect.y, button.rect.width, button.rect.height);
   }
 }

@@ -10,6 +10,7 @@ export * from './core/gui/buttonslot';
 export * from './core/gui/dialog';
 export * from './core/gui/gui';
 export * from './core/gui/imagepanel';
+export * from './core/gui/messagedialog';
 export * from './core/gui/messagelog';
 export * from './core/gui/panel';
 export * from './core/gui/selectdialog';

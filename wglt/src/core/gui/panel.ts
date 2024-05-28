@@ -5,13 +5,8 @@ import { PointLike } from '../point';
 import { Rect } from '../rect';
 import { Component } from './component';
 import { GUI } from './gui';
-// import { TooltipDialog } from './tooltipdialog';
 
 export class Panel implements Component {
-  // static dragElement?: Panel;
-  // static dragOffset?: Vec2;
-
-  // gui: GUI | null;
   readonly rect: Rect;
   readonly children: ArrayList<Component>;
   modal: boolean;
@@ -19,27 +14,14 @@ export class Panel implements Component {
   parent: Component | undefined = undefined;
 
   constructor(rect: Rect) {
-    // this.gui = null;
     this.rect = rect;
     this.children = new ArrayList();
     this.modal = false;
     this.visible = true;
   }
 
-  // setGui(gui: GUI): void {
-  //   if (this.gui) {
-  //     // Already set
-  //     return;
-  //   }
-  //   this.gui = gui;
-  //   for (let i = 0; i < this.children.length; i++) {
-  //     this.children.get(i).setGui(gui);
-  //   }
-  // }
-
   addChild(panel: Component): void {
     panel.parent = this;
-    // panel.setGui(this.gui as GUI);
     this.children.add(panel);
   }
 
@@ -96,14 +78,12 @@ export class Panel implements Component {
   }
 
   handleChildrenInput(app: BaseApp): boolean {
-    // for (let i = 0; i < this.children.length; i++) {
     for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children.get(i);
       if (!child.visible) {
         // Ignore hidden elements
         continue;
       }
-      // if (child.handleInput(app) || child.modal) {
       if (child.handleInput(app)) {
         return true;
       }
@@ -112,7 +92,6 @@ export class Panel implements Component {
   }
 
   isDragging(): boolean {
-    // return !!(this.gui && this.gui.dragElement === this);
     return !!(GUI.dragElement === this);
   }
 
@@ -123,7 +102,6 @@ export class Panel implements Component {
   updateTooltip(): Message[] | undefined {
     // By default, no visible tooltips
     // Inheriting classes can override this method with tooltip details
-    // tooltip.visible = false;
     return undefined;
   }
 }

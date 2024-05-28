@@ -20,10 +20,6 @@ export class Button extends Panel {
   }
 
   draw(app: BaseApp): void {
-    // if (!this.gui) {
-    //   return;
-    // }
-
     const src = this.sprite;
     const dst = this.rect;
     const offsetX = ((dst.width - src.width) / 2) | 0;
@@ -32,11 +28,6 @@ export class Button extends Panel {
   }
 
   handleInput(app: BaseApp): boolean {
-    // if (!this.gui) {
-    //   return false;
-    // }
-
-    // const app = app;
     const mouse = app.mouse;
 
     if (this.rect.contains(mouse.start) && mouse.isDragging()) {
@@ -62,12 +53,6 @@ export class Button extends Panel {
   }
 
   updateTooltip(): Message[] | undefined {
-    // if (this.tooltipMessages) {
-    //   tooltip.messages = this.tooltipMessages;
-    //   tooltip.visible = true;
-    // } else {
-    //   tooltip.visible = false;
-    // }
     return this.tooltipMessages;
   }
 }

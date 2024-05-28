@@ -16,5 +16,5 @@ term.update = () => {
   term.clear();
   term.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
   term.drawString(1, 3, 'Use arrow keys to move', CgaPalette.YELLOW);
-  term.drawChar(x, y, '@', CgaPalette.LIGHT_GREEN);
+  term.drawChar(x, y, '@', CgaPalette.WHITE);
 };

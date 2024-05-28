@@ -4,12 +4,6 @@ import { PointLike } from '../point';
 import { Rect } from '../rect';
 
 export interface Component {
-  // draw(): void;
-
-  // handleInput(): boolean;
-
-  // close(): void;
-
   get parent(): Component | undefined;
 
   set parent(parent: Component | undefined);

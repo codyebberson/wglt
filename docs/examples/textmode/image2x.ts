@@ -8,7 +8,7 @@ let x = 10;
 let y = 10;
 
 let img = null as Console | null;
-loadImage2x('../starry2x.png', (result) => {
+loadImage2x('/starry2x.png', (result) => {
   img = result;
 });
 

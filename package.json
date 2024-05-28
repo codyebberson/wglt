@@ -6,6 +6,7 @@
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
+    "dev": "npm run dev --workspace=docs",
     "fix": "biome check --apply .",
     "lint": "biome check .",
     "test": "turbo run test"
