@@ -12,7 +12,6 @@ body {
   background: black;
   color: white;
   font-family: monospace;
-  overflow-x: hidden;
   padding: 0;
   margin: 0;
   text-align: center;
@@ -94,7 +93,7 @@ footer {
   left: 150px;
   right: 0;
   bottom: 0;
-  overflow: auto;
+  overflow: hidden;
 }
 
 iframe {
@@ -133,4 +132,8 @@ iframe {
   background: #eee;
   color: black;
   text-decoration: none;
+}
+
+.overflow-hidden {
+  overflow: hidden;
 }
