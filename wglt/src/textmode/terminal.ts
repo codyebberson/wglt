@@ -5,6 +5,7 @@ import { Button } from '../core/gui/button';
 import { Dialog } from '../core/gui/dialog';
 import { Panel } from '../core/gui/panel';
 import { Key } from '../core/keys';
+import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { interpolate } from '../core/utils';
@@ -103,7 +104,9 @@ export class Terminal extends BaseApp {
     const pixelWidth = width * font.glyphSize.width;
     const pixelHeight = height * font.glyphSize.height;
 
-    super(canvas, new Rect(0, 0, pixelWidth, pixelHeight), font);
+    const mouse = new Mouse(canvas, width, height);
+
+    super(canvas, new Rect(0, 0, pixelWidth, pixelHeight), font, mouse);
 
     this.console = new Console(width, height);
     this.pixelWidth = pixelWidth;

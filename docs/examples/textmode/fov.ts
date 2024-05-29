@@ -72,8 +72,8 @@ const term = new Terminal(
 );
 
 const player = {
-  x: 20,
-  y: 20,
+  x: 24,
+  y: 15,
   direction: FovQuadrants.QUADRANT_NORTH,
   path: null as TileMapCell[] | null,
   pathIndex: 0,
@@ -129,6 +129,7 @@ term.update = () => {
   }
 
   term.clear();
+  term.console.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, CgaPalette.WHITE, CgaPalette.BLACK);
 
   for (let y = 0; y < SCREEN_HEIGHT; y++) {
     for (let x = 0; x < SCREEN_WIDTH; x++) {

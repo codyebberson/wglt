@@ -7,6 +7,7 @@ import { Panel } from '../core/gui/panel';
 import { Rect } from '../core/rect';
 import { Point } from '../core/point';
 import { RenderSet } from './renderset';
+import { Mouse } from '../core/mouse';
 
 export interface GraphicsAppConfig {
   readonly size: Rect;
@@ -22,7 +23,9 @@ export class GraphicsApp extends BaseApp {
   readonly renderSet: RenderSet;
 
   constructor(readonly config: GraphicsAppConfig) {
-    super(document.querySelector('canvas') as HTMLCanvasElement, config.size, config.font);
+    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+    const mouse = new Mouse(canvas, config.size.width, config.size.height);
+    super(canvas, config.size, config.font, mouse);
     this.renderSet = new RenderSet(this.gl, '/graphics.png', this.font);
   }
 

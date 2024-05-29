@@ -22,7 +22,6 @@ export class Console {
   constructor(
     readonly width: number,
     readonly height: number
-    // blockedFunc?: (x: number, y: number) => boolean
   ) {
     this.grid = [];
     this.originX = 0;
@@ -42,14 +41,6 @@ export class Console {
     }
 
     this.clear();
-
-    // if (blockedFunc) {
-    //   for (let y = 0; y < height; y++) {
-    //     for (let x = 0; x < width; x++) {
-    //       this.grid[y][x].blocked = this.grid[y][x].blockedSight = blockedFunc(x, y);
-    //     }
-    //   }
-    // }
   }
 
   clear(): void {
