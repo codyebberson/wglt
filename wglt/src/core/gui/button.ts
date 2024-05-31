@@ -11,6 +11,7 @@ export class Button extends Container {
   shortcutKey?: Key;
   onClick?: () => void;
   tooltipMessages?: Message[];
+  draggable?: boolean;
 
   constructor(destRect: Rect, sprite: Sprite, shortcutKey?: Key, onClick?: () => void) {
     super(destRect);
@@ -30,7 +31,7 @@ export class Button extends Container {
   handleInput(app: BaseApp): boolean {
     const mouse = app.mouse;
 
-    if (this.rect.contains(mouse.start) && mouse.isDragging()) {
+    if (this.draggable && this.rect.contains(mouse.start) && mouse.isDragging()) {
       GUI.startDragging(app, this);
       return true;
     }

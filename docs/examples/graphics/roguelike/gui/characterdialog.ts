@@ -1,7 +1,8 @@
-import { BaseApp, ButtonSlot, Dialog, ItemButton, Pico8Palette, Rect } from 'wglt';
+import { ButtonSlot, Dialog, GraphicsApp, ItemButton, Pico8Palette, Rect } from 'wglt';
 import { Player } from '../entities/player';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
+import { App } from '../app';
 
 const MARGIN = 4;
 const BUTTON_SPACING = 2;
@@ -109,7 +110,7 @@ export class CharacterDialog extends Dialog {
     }
   }
 
-  draw(app: BaseApp): void {
+  draw(app: App): void {
     super.draw(app);
 
     // if (!this.gui || !this.gui.renderer.buttonSlotRect) {

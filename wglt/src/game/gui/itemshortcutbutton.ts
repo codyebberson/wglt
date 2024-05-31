@@ -13,6 +13,7 @@ export class ItemShortcutButton extends Button {
     this.containerItems = containerItems;
     this.shortcutItem = shortcutItem;
     this.tooltipMessages = shortcutItem.tooltipMessages;
+    this.draggable = true;
   }
 
   click(): void {
