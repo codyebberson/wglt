@@ -6,10 +6,10 @@ import { MessageLog } from '../core/gui/messagelog';
 import { Key } from '../core/keys';
 import { Message } from '../core/message';
 import { SimplePalette } from '../core/palettes/simple';
+import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { RNG } from '../core/rng';
 import { Sprite } from '../core/sprite';
-import { Point } from '../core/point';
 import { GraphicsApp } from '../graphics/graphicsapp';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
@@ -103,8 +103,6 @@ export abstract class BaseGame extends AppState {
 
     this.targetSprite = TARGET_SPRITE;
     this.cooldownSprite = new Sprite(192, 16, 16, 16, 24);
-    // this.gui.renderer.baseRect = new Rect(0, 32, 48, 48);
-    // this.gui.renderer.buttonSlotRect = new Rect(48, 32, 24, 24);
   }
 
   get tileSize(): Rect {
@@ -122,8 +120,6 @@ export abstract class BaseGame extends AppState {
   }
 
   update(): void {
-    Sprite.updateGlobalAnimations();
-    // this.updateTooltip();
     this.updateZoom();
 
     if (!this.gui.handleInput(this.app)) {
@@ -324,7 +320,8 @@ export abstract class BaseGame extends AppState {
     if ((this.app as GraphicsApp).renderSet.spriteTexture.loaded) {
       const x = ((this.viewport.x / this.zoom) | 0) * this.zoom - this.screenShakeOffset.x;
       const y = ((this.viewport.y / this.zoom) | 0) * this.zoom - this.screenShakeOffset.y;
-      const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
+      // const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
+      const animFrame = 0; // TODO: Fix this
       this.tileMapRenderer.draw(x, y, this.viewport.width, this.viewport.height, animFrame);
     }
   }

@@ -1,4 +1,4 @@
-import { CgaPalette, FONT_04B03, GraphicsApp, Rect } from 'wglt';
+import { CgaPalette, FONT_04B03, GraphicsApp, Rect, Sprite } from 'wglt';
 
 const app = new GraphicsApp({
   size: new Rect(0, 0, 640, 360),
@@ -9,6 +9,8 @@ const app = new GraphicsApp({
   buttonRect: new Rect(0, 32, 48, 48),
   buttonSlotRect: new Rect(0, 32, 48, 48),
 });
+
+const sprite = new Sprite(576, 240, 16, 16, 2);
 
 let x = 160;
 let y = 160;
@@ -23,5 +25,5 @@ app.update = () => {
   app.fillRect(0, 0, 640, 360, CgaPalette.DARK_BLUE);
   app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
   app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
-  app.drawString(x, y, '@', CgaPalette.WHITE);
+  sprite.draw(app, x, y);
 };

@@ -4,7 +4,7 @@ import { Ability, TargetType } from 'wglt';
 import { Bubble } from '../buffs/bubble';
 import { StatsActor } from '../entities/statsactor';
 
-const SPRITE = new Sprite(896, 216, 16, 16, 1, true);
+const SPRITE = new Sprite(896, 216, 16, 16);
 const TOOLTIP_MESSAGES = [
   new Message('Bubble', Pico8Palette.WHITE),
   new Message('20 mana', Pico8Palette.WHITE),

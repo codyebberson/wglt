@@ -4,11 +4,7 @@ const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
 const VIEW_DISTANCE = 15;
 
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT
-);
+const term = new Terminal('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const player = {
   x: 40,

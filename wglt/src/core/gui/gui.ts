@@ -1,7 +1,7 @@
 import { BaseApp } from '../baseapp';
 import { PointLike } from '../point';
-import { Rect } from '../rect';
 import { Point } from '../point';
+import { Rect } from '../rect';
 import { Component } from './component';
 import { Panel } from './panel';
 import { TooltipDialog } from './tooltipdialog';

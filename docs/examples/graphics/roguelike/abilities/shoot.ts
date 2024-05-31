@@ -4,7 +4,7 @@ import { Ability, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
 const RANGE = 8;
-const SPRITE = new Sprite(896, 96, 16, 16, 1, false);
+const SPRITE = new Sprite(896, 96, 16, 16);
 const TOOLTIP_MESSAGES = [
   new Message('Shoot', Pico8Palette.WHITE),
   new Message('30 yard range', Pico8Palette.WHITE),

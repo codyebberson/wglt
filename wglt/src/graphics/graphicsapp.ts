@@ -4,10 +4,10 @@ import { Font } from '../core/font';
 import { Button } from '../core/gui/button';
 import { Dialog } from '../core/gui/dialog';
 import { Panel } from '../core/gui/panel';
-import { Rect } from '../core/rect';
-import { Point } from '../core/point';
-import { RenderSet } from './renderset';
 import { Mouse } from '../core/mouse';
+import { Point } from '../core/point';
+import { Rect } from '../core/rect';
+import { RenderSet } from './renderset';
 
 export interface GraphicsAppConfig {
   readonly size: Rect;

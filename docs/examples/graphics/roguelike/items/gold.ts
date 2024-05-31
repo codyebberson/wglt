@@ -3,7 +3,7 @@ import { Message, Sprite } from 'wglt';
 import { Actor, Item } from 'wglt';
 import { Game } from '../game';
 
-const SPRITE = new Sprite(896, 168, 16, 16, 1, true);
+const SPRITE = new Sprite(896, 168, 16, 16);
 
 const TOOLTIPS = [
   new Message('Gold', Pico8Palette.WHITE),

@@ -29,7 +29,7 @@ import {
 } from './equipmentsprites';
 import { EquipmentType } from './equipmenttype';
 
-const DEFAULT_SPRITE = new Sprite(160, 240, 16, 16, 1, false);
+const DEFAULT_SPRITE = new Sprite(160, 240, 16, 16);
 
 export class EquipmentBuilder {
   game: Game;

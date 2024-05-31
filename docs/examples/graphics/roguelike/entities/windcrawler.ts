@@ -4,7 +4,7 @@ import { Game } from '../game';
 import { Monster } from './monster';
 import { Player } from './player';
 
-const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
+const SPRITE = new Sprite(96, 272, 16, 16, 2);
 
 class WindCrawlerAI extends AI {
   aliveCount: number;

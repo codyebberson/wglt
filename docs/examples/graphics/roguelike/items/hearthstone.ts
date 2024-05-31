@@ -4,7 +4,7 @@ import { Item } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 
-const SPRITE = new Sprite(848, 168, 16, 16, 1, true);
+const SPRITE = new Sprite(848, 168, 16, 16);
 
 const TOOLTIPS = [
   new Message('Hearthstone', Pico8Palette.WHITE),

@@ -4,7 +4,7 @@ import { Player } from '../entities/player';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
 
-const SPRITE = new Sprite(432, 408, 16, 16, 1, true);
+const SPRITE = new Sprite(432, 408, 16, 16);
 
 export class Gateway extends Item {
   readonly owner: StatsActor;

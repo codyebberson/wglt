@@ -37,7 +37,7 @@ export class Game extends BaseGame {
 
     const inventoryButton = new Button(
       new Rect(0, 0, 20, 28),
-      new Sprite(832, 168, 16, 16, 1, true, 30),
+      new Sprite(832, 168, 16, 16),
       undefined,
       () => {
         this.hideAllDialogs();

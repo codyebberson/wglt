@@ -7,7 +7,7 @@ import { Player } from './player';
 import { Sentiment } from './statsactor';
 import { WindCrawler } from './windcrawler';
 
-const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
+const SPRITE = new Sprite(96, 272, 16, 16, 2);
 
 class WindElementalAI extends AI {
   doAi(): void {

@@ -7,7 +7,7 @@ import { Quest } from '../quests/quest';
 import { Player } from './player';
 import { Sentiment, StatsActor } from './statsactor';
 
-const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
+const SPRITE = new Sprite(96, 272, 16, 16, 2);
 
 class KingAI extends AI {
   doAi(): void {

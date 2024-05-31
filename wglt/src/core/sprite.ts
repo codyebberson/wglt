@@ -1,14 +1,10 @@
 import { BaseApp } from '../core/baseapp';
 import { Rect } from '../core/rect';
 
-const DEFAULT_TICKS_PER_FRAME = 60;
+const DEFAULT_TICKS_PER_FRAME = 20;
 
 export class Sprite extends Rect {
-  static globalAnimIndex = 0;
-  readonly frames: number;
-  readonly loop: boolean;
-  readonly ticksPerFrame: number;
-  private animIndex: number;
+  private animFrame: number;
   private animDelay: number;
 
   constructor(
@@ -16,25 +12,17 @@ export class Sprite extends Rect {
     y: number,
     width: number,
     height: number,
-    frames?: number,
-    loop?: boolean,
-    ticksPerFrame?: number
+    readonly frames = 1,
+    readonly loop = true,
+    readonly ticksPerFrame = DEFAULT_TICKS_PER_FRAME
   ) {
     super(x, y, width, height);
-    this.frames = frames || 1;
-    this.loop = !!loop;
-    this.ticksPerFrame = ticksPerFrame || DEFAULT_TICKS_PER_FRAME;
-    this.animIndex = 0;
+    this.animFrame = 0;
     this.animDelay = 0;
   }
 
   draw(app: BaseApp, x: number, y: number, flipped = false): void {
-    let frame = this.animIndex;
-    if (this.loop) {
-      frame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
-    }
-
-    const u = this.x + frame * this.width;
+    const u = this.x + this.animFrame * this.width;
     const v = this.y;
 
     if (flipped) {
@@ -44,14 +32,14 @@ export class Sprite extends Rect {
     }
 
     this.animDelay++;
-    if (this.animDelay > this.ticksPerFrame) {
+    if (this.frames > 1 && this.animDelay > this.ticksPerFrame) {
       this.animDelay = 0;
-      this.animIndex++;
-      if (this.animIndex >= this.frames) {
+      this.animFrame++;
+      if (this.animFrame >= this.frames) {
         if (this.loop) {
-          this.animIndex = 0;
+          this.animFrame = 0;
         } else {
-          this.animIndex = this.frames - 1;
+          this.animFrame = this.frames - 1;
         }
       }
     }
@@ -67,9 +55,5 @@ export class Sprite extends Rect {
       this.loop,
       this.ticksPerFrame
     );
-  }
-
-  static updateGlobalAnimations(): void {
-    Sprite.globalAnimIndex++;
   }
 }

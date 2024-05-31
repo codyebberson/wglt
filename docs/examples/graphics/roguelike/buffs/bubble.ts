@@ -4,7 +4,7 @@ import { StatsActor } from '../entities/statsactor';
 import { Buff } from './buff';
 
 const COLOR = Pico8Palette.BLUE;
-const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
+const SPRITE = new Sprite(96, 272, 16, 16, 2);
 
 export class Bubble extends Buff {
   remaining: number;

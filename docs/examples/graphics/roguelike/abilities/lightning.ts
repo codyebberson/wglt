@@ -52,7 +52,7 @@ export class LightningAbility implements Ability {
     const damage = 4 + caster.intelligenceModifier;
 
     // Create lightning animation
-    const explosion = new Sprite(256, 408, 16, 16, 2, true, 8);
+    const explosion = new Sprite(256, 408, 16, 16, 2);
     game.addAnimation(
       new ProjectileAnimation(
         explosion,

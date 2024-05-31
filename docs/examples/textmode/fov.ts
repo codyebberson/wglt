@@ -65,11 +65,7 @@ function getTile(x: number, y: number): string {
   return MAP[y]?.charAt(x) ?? ' ';
 }
 
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT
-);
+const term = new Terminal('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const player = {
   x: 24,

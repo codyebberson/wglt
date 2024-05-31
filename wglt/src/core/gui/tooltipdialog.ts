@@ -1,5 +1,5 @@
-import { Rect } from '../../core/rect';
 import { Point } from '../../core/point';
+import { Rect } from '../../core/rect';
 import { GraphicsApp } from '../../graphics/graphicsapp';
 import { BaseApp } from '../baseapp';
 import { Message } from '../message';

@@ -70,7 +70,7 @@ export class NetherSwapAbility implements Ability {
   }
 }
 
-const ANIMATION = new Sprite(576, 288, 16, 16, 2, true);
+const ANIMATION = new Sprite(576, 288, 16, 16, 2);
 const DURATION = 60;
 
 export class NetherSwapAnimation extends Animation {

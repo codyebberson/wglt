@@ -3,7 +3,7 @@ import { Item } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 
-const SPRITE = new Sprite(688, 168, 16, 16, 1, true);
+const SPRITE = new Sprite(688, 168, 16, 16);
 
 export class Key extends Item {
   readonly keyId: number;
