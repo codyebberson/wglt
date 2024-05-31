@@ -1,8 +1,7 @@
 import { Color } from './color';
 import { Font } from './font';
 import { Button } from './gui/button';
-import { Dialog } from './gui/dialog';
-import { Panel } from './gui/panel';
+import { Component } from './gui/component';
 import { Keyboard } from './keyboard';
 import { Key } from './keys';
 import { Mouse } from './mouse';
@@ -181,9 +180,9 @@ export abstract class BaseApp {
    */
   abstract drawRightString(x: number, y: number, str: string, color?: Color): void;
 
-  abstract drawPanelFrame(panel: Panel): void;
+  abstract drawPanelFrame(component: Component): void;
 
-  abstract drawDialogFrame(dialog: Dialog): void;
+  abstract drawDialogFrame(component: Component): void;
 
   abstract drawButtonFrame(button: Button): void;
 

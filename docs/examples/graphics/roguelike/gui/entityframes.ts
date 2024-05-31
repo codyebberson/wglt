@@ -1,9 +1,9 @@
-import { BaseApp, GraphicsApp, Panel, Pico8Palette, Rect } from 'wglt';
+import { BaseApp, Container, GraphicsApp, Pico8Palette, Rect } from 'wglt';
 import { Player } from '../entities/player';
 import { Sentiment, StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
 
-export class EntityFrames extends Panel {
+export class EntityFrames extends Container {
   readonly game: Game;
 
   constructor(game: Game) {

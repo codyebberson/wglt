@@ -21,7 +21,6 @@ export class TalentsDialog extends Dialog {
     this.messages = messages;
     this.capacity = capacity;
     this.talents = talents;
-    this.modal = true;
 
     talents.addListener({
       onAdd: (_, talent) => this.addItem(talent),

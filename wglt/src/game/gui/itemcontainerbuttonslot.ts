@@ -1,9 +1,13 @@
 import { ButtonSlot } from '../../core/gui/buttonslot';
-import { Panel } from '../../core/gui/panel';
+import { Component } from '../../core/gui/component';
 import { ItemButton } from './itembutton';
 
 export class ItemContainerButtonSlot extends ButtonSlot {
-  onDrop(panel: Panel): boolean {
-    return panel instanceof ItemButton;
+  onDrop(component: Component): boolean {
+    if (component instanceof ItemButton) {
+      this.moveChild(component);
+      return true;
+    }
+    return false;
   }
 }

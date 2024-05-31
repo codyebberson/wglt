@@ -1,4 +1,4 @@
-import { BaseApp, Dialog, Pico8Palette, Rect } from 'wglt';
+import { BaseApp, Dialog, Pico8Palette } from 'wglt';
 import { Quest } from '../quests/quest';
 
 const MARGIN = 8;
@@ -6,17 +6,9 @@ const MARGIN = 8;
 export class QuestDialog extends Dialog {
   quest?: Quest;
 
-  constructor(rect: Rect) {
-    super(rect);
-    this.modal = true;
-  }
-
   draw(app: BaseApp): void {
     super.draw(app);
 
-    // if (!this.gui || !this.gui.renderer.buttonSlotRect || !this.quest) {
-    //   return;
-    // }
     if (!this.quest) {
       return;
     }

@@ -48,7 +48,6 @@ export class LevelUpDialog extends Dialog {
   constructor(rect: Rect, player: Player) {
     super(rect);
     this.player = player;
-    this.modal = true;
 
     const constitutionSlot = new ButtonSlot(new Rect(0, 0, 24, 24), Key.VK_1);
     const constitutionBtn = new Button(new Rect(0, 0, 16, 24), CONSTITUTION_SPRITE, undefined, () =>

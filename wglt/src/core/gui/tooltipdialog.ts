@@ -3,21 +3,17 @@ import { Rect } from '../../core/rect';
 import { GraphicsApp } from '../../graphics/graphicsapp';
 import { BaseApp } from '../baseapp';
 import { Message } from '../message';
-import { PointLike } from '../point';
 import { Component } from './component';
 
 const WIDTH = 100;
 const MARGIN = 5;
 const LINE_PADDING = 2;
 
-export class TooltipDialog implements Component {
-  readonly parent: Component | undefined = undefined;
-  readonly rect: Rect;
-  visible: boolean;
+export class TooltipDialog extends Component {
   messages: Message[];
 
   constructor() {
-    this.rect = new Rect(0, 0, WIDTH, 10);
+    super(new Rect(0, 0, WIDTH, 10));
     this.messages = [];
     this.visible = false;
   }
@@ -77,30 +73,6 @@ export class TooltipDialog implements Component {
       this.visible = false;
     }
 
-    return false;
-  }
-
-  addChild(panel: Component): void {
-    // no-op
-  }
-
-  removeChild(panel: Component): void {
-    // no-op
-  }
-
-  getPanelAt(point: PointLike): Component | undefined {
-    return undefined;
-  }
-
-  updateTooltip(): Message[] | undefined {
-    return undefined;
-  }
-
-  isDragging(): boolean {
-    return false;
-  }
-
-  onDrop(_panel: Component): boolean {
     return false;
   }
 }

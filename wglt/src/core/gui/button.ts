@@ -1,4 +1,4 @@
-import { Panel } from '../../core/gui/panel';
+import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
@@ -6,7 +6,7 @@ import { BaseApp } from '../baseapp';
 import { Sprite } from '../sprite';
 import { GUI } from './gui';
 
-export class Button extends Panel {
+export class Button extends Container {
   readonly sprite: Sprite;
   shortcutKey?: Key;
   onClick?: () => void;

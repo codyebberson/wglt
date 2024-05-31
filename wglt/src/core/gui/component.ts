@@ -1,30 +1,52 @@
+import { ArrayList } from '../arraylist';
 import { BaseApp } from '../baseapp';
 import { Message } from '../message';
-import { PointLike } from '../point';
+import { Point, PointLike } from '../point';
 import { Rect } from '../rect';
+import { Container } from './container';
 
-export interface Component {
-  get parent(): Component | undefined;
+export abstract class Component {
+  static dragElement?: Component;
+  static dragOffset?: Point;
+  readonly rect: Rect;
+  readonly children: ArrayList<Component>;
+  visible: boolean;
+  parent: Container | undefined = undefined;
 
-  set parent(parent: Component | undefined);
+  constructor(rect: Rect) {
+    this.rect = rect;
+    this.children = new ArrayList();
+    this.visible = true;
+  }
 
-  get rect(): Rect;
+  abstract handleInput(app: BaseApp): boolean;
 
-  get visible(): boolean;
+  abstract draw(app: BaseApp): void;
 
-  addChild(panel: Component): void;
+  getChildAt(_point: PointLike): Component | undefined {
+    // By default, components do not have children
+    return undefined;
+  }
 
-  removeChild(panel: Component): void;
+  canDrag(): boolean {
+    // By default, components cannot be dragged
+    // Child classes can override this method
+    return false;
+  }
 
-  getPanelAt(point: PointLike): Component | undefined;
+  isDragging(): boolean {
+    return Component.dragElement === this;
+  }
 
-  handleInput(app: BaseApp): boolean;
+  onDrop(_dest: Component): boolean {
+    // By default, do nothing
+    // Child classes can override this method
+    return false;
+  }
 
-  draw(app: BaseApp): void;
-
-  updateTooltip(): Message[] | undefined;
-
-  isDragging(): boolean;
-
-  onDrop(_panel: Component): boolean;
+  updateTooltip(): Message[] | undefined {
+    // By default, no visible tooltips
+    // Inheriting classes can override this method with tooltip details
+    return undefined;
+  }
 }

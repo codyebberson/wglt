@@ -12,7 +12,6 @@ export class CharacterDialog extends Dialog {
   constructor(rect: Rect, player: Player) {
     super(rect);
     this.player = player;
-    this.modal = true;
 
     const capacity = 10;
     for (let i = 0; i < capacity; i++) {

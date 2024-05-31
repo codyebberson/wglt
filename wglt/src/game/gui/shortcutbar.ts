@@ -1,6 +1,6 @@
 import { ArrayList } from '../../core/arraylist';
 import { BaseApp } from '../../core/baseapp';
-import { Panel } from '../../core/gui/panel';
+import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Item } from '../item';
@@ -11,7 +11,7 @@ import { TalentButton } from './talentbutton';
 
 const DEFAULT_SPACING = 2;
 
-export class ShortcutBar extends Panel {
+export class ShortcutBar extends Container {
   spacing: number;
 
   constructor(rect: Rect, count: number, spacing?: number) {

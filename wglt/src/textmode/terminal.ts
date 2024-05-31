@@ -2,8 +2,8 @@ import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
 import { Button } from '../core/gui/button';
+import { Component } from '../core/gui/component';
 import { Dialog } from '../core/gui/dialog';
-import { Panel } from '../core/gui/panel';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
@@ -488,8 +488,13 @@ export class Terminal extends BaseApp {
     this.console.drawString(x - str.length, y, str, color);
   }
 
-  drawPanelFrame(panel: Panel): void {
-    this.console.drawDoubleBox(panel.rect.x, panel.rect.y, panel.rect.width, panel.rect.height);
+  drawPanelFrame(component: Component): void {
+    this.console.drawDoubleBox(
+      component.rect.x,
+      component.rect.y,
+      component.rect.width,
+      component.rect.height
+    );
   }
 
   drawDialogFrame(dialog: Dialog): void {

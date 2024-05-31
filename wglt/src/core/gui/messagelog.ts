@@ -1,12 +1,12 @@
 import { Color } from '../../core/color';
-import { Panel } from '../../core/gui/panel';
+import { Container } from '../../core/gui/container';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Point } from '../../core/point';
 import { Rect } from '../../core/rect';
 import { BaseApp } from '../baseapp';
 
-export class MessageLog extends Panel {
+export class MessageLog extends Container {
   private readonly messages: Message[];
   readonly maxItems: number;
 
