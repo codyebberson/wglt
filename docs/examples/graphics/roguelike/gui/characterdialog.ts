@@ -1,8 +1,8 @@
-import { ButtonSlot, Dialog, GraphicsApp, ItemButton, Pico8Palette, Rect } from 'wglt';
+import { ButtonSlot, Dialog, ItemButton, Pico8Palette, Rect } from 'wglt';
+import { App } from '../app';
 import { Player } from '../entities/player';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
-import { App } from '../app';
 
 const MARGIN = 4;
 const BUTTON_SPACING = 2;
