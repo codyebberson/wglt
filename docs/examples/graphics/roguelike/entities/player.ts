@@ -3,7 +3,7 @@ import { Sprite } from 'wglt';
 import { Game } from '../game';
 import { StatsActor } from './statsactor';
 
-const PLAYER_SPRITE = new Sprite(576, 240, 16, 16, 2, true);
+const PLAYER_SPRITE = new Sprite(576, 240, 16, 16, 2);
 
 export class Player extends StatsActor {
   xp: number;

@@ -2,9 +2,10 @@ import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
 import { Button } from '../core/gui/button';
+import { Component } from '../core/gui/component';
 import { Dialog } from '../core/gui/dialog';
-import { Panel } from '../core/gui/panel';
 import { Key } from '../core/keys';
+import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { interpolate } from '../core/utils';
@@ -103,7 +104,9 @@ export class Terminal extends BaseApp {
     const pixelWidth = width * font.glyphSize.width;
     const pixelHeight = height * font.glyphSize.height;
 
-    super(canvas, new Rect(0, 0, pixelWidth, pixelHeight), font);
+    const mouse = new Mouse(canvas, width, height);
+
+    super(canvas, new Rect(0, 0, pixelWidth, pixelHeight), font, mouse);
 
     this.console = new Console(width, height);
     this.pixelWidth = pixelWidth;
@@ -485,8 +488,13 @@ export class Terminal extends BaseApp {
     this.console.drawString(x - str.length, y, str, color);
   }
 
-  drawPanelFrame(panel: Panel): void {
-    this.console.drawDoubleBox(panel.rect.x, panel.rect.y, panel.rect.width, panel.rect.height);
+  drawPanelFrame(component: Component): void {
+    this.console.drawDoubleBox(
+      component.rect.x,
+      component.rect.y,
+      component.rect.width,
+      component.rect.height
+    );
   }
 
   drawDialogFrame(dialog: Dialog): void {

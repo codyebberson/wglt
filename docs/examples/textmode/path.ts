@@ -4,11 +4,7 @@ const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
 const VIEW_DISTANCE = 15;
 
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT
-);
+const term = new Terminal('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const player = {
   x: 40,
@@ -28,6 +24,7 @@ for (let y = 0; y < SCREEN_HEIGHT; y++) {
     const blocked = Math.random() < 0.4;
     tileMap.setTile(x, y, 0, blocked ? 1 : 2);
     tileMap.setBlocked(x, y, blocked);
+    tileMap.setSeen(x, y, true);
   }
 }
 computeFov();
@@ -66,6 +63,7 @@ term.update = () => {
   }
 
   term.clear();
+  term.console.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, CgaPalette.WHITE, CgaPalette.BLACK);
 
   for (let y = 0; y < SCREEN_HEIGHT; y++) {
     for (let x = 0; x < SCREEN_WIDTH; x++) {
@@ -95,6 +93,4 @@ term.update = () => {
   term.drawString(player.x, player.y, '@');
   term.drawString(1, 1, 'Hello world!', CgaPalette.WHITE);
   term.drawString(1, 3, 'Use arrow keys to move', CgaPalette.WHITE);
-
-  term.drawString(20, 1, `Mouse: ${term.mouse.x}, ${term.mouse.y}`, CgaPalette.WHITE);
 };

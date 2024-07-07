@@ -7,7 +7,7 @@ import { Game } from '../game';
 import { Gateway } from '../items/gateway';
 
 const RANGE = 10;
-const SPRITE = new Sprite(432, 408, 16, 16, 1, true);
+const SPRITE = new Sprite(432, 408, 16, 16);
 const TOOLTIP_MESSAGES = [
   new Message('Demonic Gateway', Pico8Palette.WHITE),
   new Message('20 mana', Pico8Palette.WHITE),

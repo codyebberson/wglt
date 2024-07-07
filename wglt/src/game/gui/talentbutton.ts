@@ -13,6 +13,7 @@ export class TalentButton extends Button {
     this.talent = talent;
     this.shortcut = !!shortcut;
     this.tooltipMessages = talent.ability.tooltipMessages;
+    this.draggable = true;
   }
 
   click(): void {

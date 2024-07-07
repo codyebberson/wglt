@@ -1,4 +1,4 @@
-import { Panel } from '../../core/gui/panel';
+import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
@@ -6,11 +6,12 @@ import { BaseApp } from '../baseapp';
 import { Sprite } from '../sprite';
 import { GUI } from './gui';
 
-export class Button extends Panel {
+export class Button extends Container {
   readonly sprite: Sprite;
   shortcutKey?: Key;
   onClick?: () => void;
   tooltipMessages?: Message[];
+  draggable?: boolean;
 
   constructor(destRect: Rect, sprite: Sprite, shortcutKey?: Key, onClick?: () => void) {
     super(destRect);
@@ -30,7 +31,7 @@ export class Button extends Panel {
   handleInput(app: BaseApp): boolean {
     const mouse = app.mouse;
 
-    if (this.rect.contains(mouse.start) && mouse.isDragging()) {
+    if (this.draggable && this.rect.contains(mouse.start) && mouse.isDragging()) {
       GUI.startDragging(app, this);
       return true;
     }

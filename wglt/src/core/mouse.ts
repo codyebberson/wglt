@@ -1,6 +1,6 @@
 import { InputSet } from './input';
-import { Rect } from './rect';
 import { Point } from './point';
+import { Rect } from './rect';
 
 const MIN_DRAG_DISTANCE = 4;
 

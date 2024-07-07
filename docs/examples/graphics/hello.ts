@@ -1,14 +1,4 @@
-import {
-  Button,
-  ButtonSlot,
-  CgaPalette,
-  FONT_04B03,
-  GUI,
-  GraphicsApp,
-  Message,
-  Rect,
-  Sprite,
-} from 'wglt';
+import { CgaPalette, FONT_04B03, GraphicsApp, Rect, Sprite } from 'wglt';
 
 const app = new GraphicsApp({
   size: new Rect(0, 0, 640, 360),
@@ -20,22 +10,10 @@ const app = new GraphicsApp({
   buttonSlotRect: new Rect(0, 32, 48, 48),
 });
 
+const sprite = new Sprite(576, 240, 16, 16, 2);
+
 let x = 160;
 let y = 160;
-
-const testDialogRect = new Rect(100, 100, 200, 100);
-
-const testGui = new GUI(app.size);
-
-const testButtonSprite = new Sprite(0, 0, 16, 16);
-
-const testButton = new Button(new Rect(10, 40, 24, 24), testButtonSprite);
-testButton.tooltipMessages = [new Message('Test button tooltip', CgaPalette.YELLOW)];
-// testGui.add(testButton);
-
-const testButtonSlot = new ButtonSlot(new Rect(10, 70, 24, 24));
-testButtonSlot.addChild(testButton);
-testGui.add(testButtonSlot);
 
 app.update = () => {
   const moveKey = app.getMovementKey();
@@ -45,14 +23,7 @@ app.update = () => {
   }
 
   app.fillRect(0, 0, 640, 360, CgaPalette.DARK_BLUE);
-
-  // testGui.update(app);
-  testGui.handleInput(app);
-  testGui.draw(app);
-
   app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
   app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
-  app.drawString(x, y, '@', CgaPalette.LIGHT_GREEN);
-
-  app.drawAutoRect(app.config.dialogRect, testDialogRect);
+  sprite.draw(app, x, y);
 };

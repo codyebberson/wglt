@@ -5,7 +5,7 @@ import { Curse } from '../buffs/curse';
 import { StatsActor } from '../entities/statsactor';
 
 const RANGE = 8;
-const SPRITE = new Sprite(880, 144, 16, 16, 1, false);
+const SPRITE = new Sprite(880, 144, 16, 16);
 const TOOLTIP_MESSAGES = [
   new Message('Curse', Pico8Palette.WHITE),
   new Message('20 mana', Pico8Palette.WHITE),

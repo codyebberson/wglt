@@ -1,9 +1,9 @@
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { BaseApp } from '../baseapp';
-import { Panel } from './panel';
+import { Container } from './container';
 
-export class Dialog extends Panel {
+export class Dialog extends Container {
   title?: string;
   closeButton: boolean;
 

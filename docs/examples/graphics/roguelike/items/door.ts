@@ -4,7 +4,7 @@ import { getTileId } from 'wglt';
 import { Game } from '../game';
 
 const TILE_OPEN_DOOR = getTileId(7, 20);
-const SPRITE = new Sprite(256, 432, 16, 16, 1, true);
+const SPRITE = new Sprite(256, 432, 16, 16);
 
 export abstract class Door extends Item {
   constructor(game: Game, x: number, y: number) {

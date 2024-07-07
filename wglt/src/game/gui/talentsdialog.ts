@@ -21,7 +21,6 @@ export class TalentsDialog extends Dialog {
     this.messages = messages;
     this.capacity = capacity;
     this.talents = talents;
-    this.modal = true;
 
     talents.addListener({
       onAdd: (_, talent) => this.addItem(talent),
@@ -73,7 +72,7 @@ export class TalentsDialog extends Dialog {
     // }
 
     // TODO
-    const buttonRect = new Rect(0, 32, 48, 48);
+    const buttonRect = new Rect(0, 32, 24, 24);
 
     // Update positions of button slots
     const containerRect = this.rect;

@@ -1,4 +1,4 @@
-import { AppState, Key, Pico8Palette, Sprite } from 'wglt';
+import { AppState, Key, Pico8Palette } from 'wglt';
 import { App } from './app';
 
 const OPTIONS = [
@@ -13,8 +13,6 @@ export class MainMenu extends AppState {
   private selectedIndex = 0;
 
   update(): void {
-    Sprite.updateGlobalAnimations();
-
     // "Continue" is only enabled if there is an active game
     const app = this.app as App;
     OPTIONS[1].enabled = !!app.game;

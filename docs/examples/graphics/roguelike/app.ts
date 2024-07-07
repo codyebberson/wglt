@@ -39,7 +39,6 @@ export class App extends GraphicsApp {
     const game = new Game(this, this.seed);
     this.game = game;
 
-    // TODO: Where to put this logic?  Game constructor?
     const player = game.player as Player;
     player.inventory.add(new Hearthstone(game));
     for (let i = 0; i < 20; i++) {
@@ -47,8 +46,6 @@ export class App extends GraphicsApp {
     }
 
     window.location.hash = 'game';
-
-    // playMusic(0).catch(console.log);
   }
 
   playGame(): void {

@@ -4,11 +4,7 @@ import { CgaPalette } from 'wglt';
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
 
-const term = new Terminal(
-  document.querySelector('canvas') as HTMLCanvasElement,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT
-);
+const term = new Terminal('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const game = new Console(SCREEN_WIDTH, SCREEN_HEIGHT);
 for (let y = 0; y < SCREEN_HEIGHT; y++) {

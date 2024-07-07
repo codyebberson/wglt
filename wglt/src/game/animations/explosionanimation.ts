@@ -1,5 +1,5 @@
-import { Sprite } from '../../core/sprite';
 import { Point } from '../../core/point';
+import { Sprite } from '../../core/sprite';
 import { BaseGame } from '../basegame';
 import { Animation, AnimationFunction } from './animation';
 import { ProjectileAnimation } from './projectileanimation';

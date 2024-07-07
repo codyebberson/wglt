@@ -5,7 +5,7 @@ import { Game } from '../game';
 
 const HEAL_AMOUNT = 4;
 const NAME = 'Healing Potion';
-const SPRITE = new Sprite(656, 168, 16, 16, 1, true);
+const SPRITE = new Sprite(656, 168, 16, 16);
 
 export class HealthPotion extends Item {
   constructor(game: Game) {

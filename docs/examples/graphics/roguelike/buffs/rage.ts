@@ -2,7 +2,7 @@ import { Sprite } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 import { Buff } from './buff';
 
-const SPRITE = new Sprite(96, 272, 16, 16, 2, true);
+const SPRITE = new Sprite(96, 272, 16, 16, 2);
 
 export class Rage extends Buff {
   countdown: number;

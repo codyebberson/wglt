@@ -6,10 +6,10 @@ import { MessageLog } from '../core/gui/messagelog';
 import { Key } from '../core/keys';
 import { Message } from '../core/message';
 import { SimplePalette } from '../core/palettes/simple';
+import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { RNG } from '../core/rng';
 import { Sprite } from '../core/sprite';
-import { Point } from '../core/point';
 import { GraphicsApp } from '../graphics/graphicsapp';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
@@ -40,7 +40,6 @@ export abstract class BaseGame extends AppState {
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
   readonly cursor: Point;
-  // readonly tooltip: TooltipDialog;
   readonly rng: RNG;
   readonly damageColor: Color;
   readonly healColor: Color;
@@ -58,7 +57,6 @@ export abstract class BaseGame extends AppState {
   tileMapRenderer: TileMapRenderer;
   player?: Actor;
   cooldownSprite?: Sprite;
-  // tooltipElement?: Panel;
   horizontalViewDistance: number;
   verticalViewDistance: number;
   zoom: number;
@@ -68,21 +66,12 @@ export abstract class BaseGame extends AppState {
   constructor(app: GraphicsApp, seed: number) {
     super(app);
     this.gui = new GUI(app.size);
-    // app
-    // ,
-    // new GraphicsDialogRenderer(
-    //   new Rect(0, 32, 48, 48),
-    //   new Rect(0, 32, 48, 48),
-    //   new Rect(48, 32, 24, 24)
-    // )
-    // );
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
     this.blocked = false;
     this.cursor = new Point(-1, -1);
-    // this.tooltip = new TooltipDialog();
     this.rng = new RNG();
     this.pathIndex = 0;
     this.horizontalViewDistance = VIEW_DISTANCE;
@@ -103,8 +92,6 @@ export abstract class BaseGame extends AppState {
 
     this.targetSprite = TARGET_SPRITE;
     this.cooldownSprite = new Sprite(192, 16, 16, 16, 24);
-    // this.gui.renderer.baseRect = new Rect(0, 32, 48, 48);
-    // this.gui.renderer.buttonSlotRect = new Rect(48, 32, 24, 24);
   }
 
   get tileSize(): Rect {
@@ -122,8 +109,6 @@ export abstract class BaseGame extends AppState {
   }
 
   update(): void {
-    Sprite.updateGlobalAnimations();
-    // this.updateTooltip();
     this.updateZoom();
 
     if (!this.gui.handleInput(this.app)) {
@@ -156,42 +141,6 @@ export abstract class BaseGame extends AppState {
 
     this.gui.draw(this.app);
   }
-
-  // private updateTooltip(): void {
-  //   if (GUI.dragElement) {
-  //     // No tooltips while drag/drop
-  //     this.tooltip.visible = false;
-  //     return;
-  //   }
-
-  //   if (!this.tooltip.visible) {
-  //     this.tooltipElement = undefined;
-  //   }
-
-  //   const mouse = this.app.mouse;
-  //   if (!mouse.buttons.get(0).down && (mouse.dx !== 0 || mouse.dy !== 0)) {
-  //     const hoverPanel = this.gui.getPanelAt(mouse);
-  //     if (this.tooltipElement !== hoverPanel) {
-  //       // Hover element has changed
-  //       this.tooltipElement = hoverPanel;
-  //       if (hoverPanel) {
-  //         hoverPanel.updateTooltip(this.tooltip);
-  //       }
-  //     }
-
-  //     if (this.tooltip.visible) {
-  //       // if (!this.tooltip.gui) {
-  //       //   // If this is the first time we're showing the tooltip,
-  //       //   // make sure it is in the GUI system.
-  //       //   this.gui.add(this.tooltip);
-  //       // }
-
-  //       // Update the tooltip to be on the mouse
-  //       // This is similar to WoW style tooltips.
-  //       this.tooltip.showAt(this.app, mouse.x, mouse.y);
-  //     }
-  //   }
-  // }
 
   private updateZoom(): void {
     if (this.app.mouse.wheelDeltaY !== 0) {
@@ -324,7 +273,8 @@ export abstract class BaseGame extends AppState {
     if ((this.app as GraphicsApp).renderSet.spriteTexture.loaded) {
       const x = ((this.viewport.x / this.zoom) | 0) * this.zoom - this.screenShakeOffset.x;
       const y = ((this.viewport.y / this.zoom) | 0) * this.zoom - this.screenShakeOffset.y;
-      const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
+      // const animFrame = ((Sprite.globalAnimIndex / 30) | 0) % 2;
+      const animFrame = 0; // TODO: Fix this
       this.tileMapRenderer.draw(x, y, this.viewport.width, this.viewport.height, animFrame);
     }
   }

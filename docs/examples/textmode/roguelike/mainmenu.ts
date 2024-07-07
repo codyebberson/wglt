@@ -1,4 +1,4 @@
-import { CgaPalette, Console, Panel, Rect, SelectDialog, SelectOption, loadImage2x } from 'wglt';
+import { CgaPalette, Console, Rect, SelectDialog, SelectOption, loadImage2x } from 'wglt';
 import { App, AppState } from './app';
 
 let menuBg: Console | null = null;
@@ -14,7 +14,7 @@ export class MainMenu implements AppState {
     const term = this.app.term;
     const gui = this.app.gui;
 
-    if ((gui.rootPanel as Panel).children.length === 0) {
+    if (gui.root.children.length === 0) {
       const options: SelectOption[] = [{ name: 'Play a new game' }, { name: 'Continue last game' }];
       gui.add(
         new SelectDialog(new Rect(10, 15, 20, 20), 'MAIN MENU', options, (choice) => {

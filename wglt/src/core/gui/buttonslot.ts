@@ -1,10 +1,10 @@
-import { Panel } from '../../core/gui/panel';
+import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { BaseApp } from '../baseapp';
 import { Button } from './button';
 
-export class ButtonSlot extends Panel {
+export class ButtonSlot extends Container {
   shortcutKey?: Key;
 
   constructor(rect: Rect, shortcutKey?: Key) {

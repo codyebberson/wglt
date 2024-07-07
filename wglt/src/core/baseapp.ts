@@ -1,8 +1,7 @@
 import { Color } from './color';
 import { Font } from './font';
 import { Button } from './gui/button';
-import { Dialog } from './gui/dialog';
-import { Panel } from './gui/panel';
+import { Component } from './gui/component';
 import { Keyboard } from './keyboard';
 import { Key } from './keys';
 import { Mouse } from './mouse';
@@ -66,17 +65,18 @@ export interface BaseAppConfig {
 }
 
 export abstract class BaseApp {
-  readonly canvas: HTMLCanvasElement;
   readonly gl: WebGLRenderingContext;
-  readonly size: Rect;
-  readonly font: Font;
   readonly center: Point;
   readonly keyboard: Keyboard;
-  readonly mouse: Mouse;
   update?: () => void;
   state?: AppState;
 
-  constructor(canvas: HTMLCanvasElement, size: Rect, font: Font) {
+  constructor(
+    readonly canvas: HTMLCanvasElement,
+    readonly size: Rect,
+    readonly font: Font,
+    readonly mouse: Mouse
+  ) {
     this.canvas = canvas;
     this.size = size;
     this.font = font;
@@ -85,10 +85,9 @@ export abstract class BaseApp {
     this.gl = canvas.getContext('webgl2', {
       alpha: false,
       antialias: false,
-    }) as WebGLRenderingContext;
+    }) as WebGL2RenderingContext;
 
     this.keyboard = new Keyboard(canvas);
-    this.mouse = new Mouse(canvas, this.size.width, this.size.height);
 
     this.gl.disable(this.gl.DEPTH_TEST);
     this.gl.enable(this.gl.BLEND);
@@ -181,9 +180,9 @@ export abstract class BaseApp {
    */
   abstract drawRightString(x: number, y: number, str: string, color?: Color): void;
 
-  abstract drawPanelFrame(panel: Panel): void;
+  abstract drawPanelFrame(component: Component): void;
 
-  abstract drawDialogFrame(dialog: Dialog): void;
+  abstract drawDialogFrame(component: Component): void;
 
   abstract drawButtonFrame(button: Button): void;
 

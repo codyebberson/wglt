@@ -2,10 +2,10 @@ import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { Font } from '../core/font';
 import { Button } from '../core/gui/button';
-import { Dialog } from '../core/gui/dialog';
-import { Panel } from '../core/gui/panel';
-import { Rect } from '../core/rect';
+import { Component } from '../core/gui/component';
+import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
+import { Rect } from '../core/rect';
 import { RenderSet } from './renderset';
 
 export interface GraphicsAppConfig {
@@ -22,7 +22,9 @@ export class GraphicsApp extends BaseApp {
   readonly renderSet: RenderSet;
 
   constructor(readonly config: GraphicsAppConfig) {
-    super(document.querySelector('canvas') as HTMLCanvasElement, config.size, config.font);
+    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+    const mouse = new Mouse(canvas, config.size.width, config.size.height);
+    super(canvas, config.size, config.font, mouse);
     this.renderSet = new RenderSet(this.gl, '/graphics.png', this.font);
   }
 
@@ -125,12 +127,12 @@ export class GraphicsApp extends BaseApp {
     this.renderSet.drawRightString(str, x, y, color);
   }
 
-  drawPanelFrame(panel: Panel): void {
-    this.drawAutoRect(this.config.dialogRect, panel.rect);
+  drawPanelFrame(component: Component): void {
+    this.drawAutoRect(this.config.dialogRect, component.rect);
   }
 
-  drawDialogFrame(dialog: Dialog): void {
-    this.drawAutoRect(this.config.dialogRect, dialog.rect);
+  drawDialogFrame(component: Component): void {
+    this.drawAutoRect(this.config.dialogRect, component.rect);
   }
 
   drawButtonFrame(button: Button): void {

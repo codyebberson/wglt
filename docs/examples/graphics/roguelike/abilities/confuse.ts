@@ -3,7 +3,7 @@ import { Message, Sprite } from 'wglt';
 import { Ability, Actor, ConfusedMonster, TargetType } from 'wglt';
 
 const CONFUSE_RANGE = 8;
-const CONFUSE_SPRITE = new Sprite(128, 32, 16, 16, 3, false);
+const CONFUSE_SPRITE = new Sprite(128, 32, 16, 16, 3);
 const TOOLTIP_MESSAGES = [
   new Message('Confuse', Pico8Palette.WHITE),
   new Message('20 mana', Pico8Palette.WHITE),

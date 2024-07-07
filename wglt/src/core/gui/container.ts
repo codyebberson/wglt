@@ -1,42 +1,27 @@
 import { ArrayList } from '../arraylist';
 import { BaseApp } from '../baseapp';
-import { Message } from '../message';
 import { PointLike } from '../point';
-import { Rect } from '../rect';
 import { Component } from './component';
-import { GUI } from './gui';
 
-export class Panel implements Component {
-  readonly rect: Rect;
-  readonly children: ArrayList<Component>;
-  modal: boolean;
-  visible: boolean;
-  parent: Component | undefined = undefined;
+export class Container extends Component {
+  readonly children = new ArrayList<Component>();
 
-  constructor(rect: Rect) {
-    this.rect = rect;
-    this.children = new ArrayList();
-    this.modal = false;
-    this.visible = true;
+  addChild(child: Component): void {
+    child.parent = this;
+    this.children.add(child);
   }
 
-  addChild(panel: Component): void {
-    panel.parent = this;
-    this.children.add(panel);
+  removeChild(child: Component): void {
+    this.children.remove(child);
+    child.parent = undefined;
   }
 
-  removeChild(panel: Component): void {
-    this.children.remove(panel);
+  moveChild(child: Component): void {
+    child.parent?.removeChild(child);
+    this.addChild(child);
   }
 
-  moveChild(newParent: Component): void {
-    if (this.parent) {
-      this.parent.removeChild(this);
-    }
-    newParent.addChild(this);
-  }
-
-  getPanelAt(point: PointLike): Component | undefined {
+  getChildAt(point: PointLike): Component | undefined {
     for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children.get(i);
       if (!child.visible) {
@@ -47,7 +32,7 @@ export class Panel implements Component {
         // Ignore dragging element
         continue;
       }
-      const childResult = child.getPanelAt(point);
+      const childResult = child.getChildAt(point);
       if (childResult) {
         return childResult;
       }
@@ -89,19 +74,5 @@ export class Panel implements Component {
       }
     }
     return false;
-  }
-
-  isDragging(): boolean {
-    return !!(GUI.dragElement === this);
-  }
-
-  onDrop(_panel: Panel): boolean {
-    return false;
-  }
-
-  updateTooltip(): Message[] | undefined {
-    // By default, no visible tooltips
-    // Inheriting classes can override this method with tooltip details
-    return undefined;
   }
 }

@@ -3,7 +3,7 @@ import { Message, Sprite } from 'wglt';
 import { Ability, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
-const SPRITE = new Sprite(672, 144, 16, 16, 1, false);
+const SPRITE = new Sprite(672, 144, 16, 16);
 const TOOLTIP_MESSAGES = [
   new Message('Flash Heal', Pico8Palette.WHITE),
   new Message('20 mana', Pico8Palette.WHITE),

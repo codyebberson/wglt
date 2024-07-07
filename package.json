@@ -9,6 +9,7 @@
     "dev": "npm run dev --workspace=docs",
     "fix": "biome check --apply .",
     "lint": "biome check .",
+    "preview": "npm run preview --workspace=docs",
     "test": "turbo run test"
   },
   "devDependencies": {

@@ -37,7 +37,7 @@ export class Game extends BaseGame {
 
     const inventoryButton = new Button(
       new Rect(0, 0, 20, 28),
-      new Sprite(832, 168, 16, 16, 1, true, 30),
+      new Sprite(832, 168, 16, 16),
       undefined,
       () => {
         this.hideAllDialogs();
@@ -113,7 +113,7 @@ export class Game extends BaseGame {
     this.gui.add(this.characterDialog);
 
     this.talentsDialog = new TalentsDialog(
-      new Rect(8, 48, 96, 132),
+      new Rect(8, 48, 110, 132),
       [
         new Message('Talents', Pico8Palette.GREEN),
         new Message('Click an ability to use', Pico8Palette.LIGHT_GRAY),

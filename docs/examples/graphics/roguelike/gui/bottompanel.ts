@@ -1,6 +1,6 @@
-import { BaseApp, ButtonSlot, Key, Panel, Rect, ShortcutBar } from 'wglt';
+import { BaseApp, ButtonSlot, Container, Key, Rect, ShortcutBar } from 'wglt';
 
-export class BottomPanel extends Panel {
+export class BottomPanel extends Container {
   readonly shortcutBar: ShortcutBar;
   readonly characterSlot: ButtonSlot;
   readonly talentsSlot: ButtonSlot;

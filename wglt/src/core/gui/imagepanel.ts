@@ -1,8 +1,8 @@
-import { Panel } from '../../core/gui/panel';
+import { Container } from '../../core/gui/container';
 import { Rect } from '../../core/rect';
 import { BaseApp } from '../baseapp';
 
-export class ImagePanel extends Panel {
+export class ImagePanel extends Container {
   readonly srcRect: Rect;
 
   constructor(srcRect: Rect, destRect: Rect) {

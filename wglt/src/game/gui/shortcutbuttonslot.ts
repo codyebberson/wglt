@@ -1,19 +1,19 @@
 import { ButtonSlot } from '../../core/gui/buttonslot';
-import { Panel } from '../../core/gui/panel';
+import { Component } from '../../core/gui/component';
 import { ItemButton } from './itembutton';
 import { ItemShortcutButton } from './itemshortcutbutton';
 import { TalentButton } from './talentbutton';
 
 export class ShortcutButtonSlot extends ButtonSlot {
-  onDrop(panel: Panel): boolean {
+  onDrop(component: Component): boolean {
     if (this.children.length > 0) {
       // Already has a button
       // TODO: Add ability to replace an existing shortcut
       return false;
     }
 
-    if (panel instanceof ItemButton) {
-      const itemButton = panel as ItemButton;
+    if (component instanceof ItemButton) {
+      const itemButton = component as ItemButton;
       const containerItems = itemButton.containerItems;
       const shortcutItem = itemButton.stackItems.get(0);
       this.addChild(new ItemShortcutButton(this.rect.clone(), containerItems, shortcutItem));
@@ -22,18 +22,23 @@ export class ShortcutButtonSlot extends ButtonSlot {
       return false;
     }
 
-    if (panel instanceof TalentButton) {
-      if (panel.shortcut) {
+    if (component instanceof TalentButton) {
+      if (component.shortcut) {
         // Move the existing shortcut
+        this.moveChild(component);
         return true;
       }
       // Create a shortcut to the talent
-      this.addChild(new TalentButton(this.rect.clone(), panel.talent, true));
+      this.addChild(new TalentButton(this.rect.clone(), component.talent, true));
       return false;
     }
 
-    if (panel instanceof ItemShortcutButton || (panel instanceof TalentButton && panel.shortcut)) {
+    if (
+      component instanceof ItemShortcutButton ||
+      (component instanceof TalentButton && component.shortcut)
+    ) {
       // Move button
+      this.moveChild(component);
       return true;
     }
 

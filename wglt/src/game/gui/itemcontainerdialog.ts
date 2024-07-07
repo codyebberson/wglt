@@ -22,7 +22,6 @@ export class ItemContainerDialog extends Dialog {
     this.messages = messages;
     this.capacity = capacity;
     this.items = items;
-    this.modal = true;
 
     items.addListener({
       onAdd: (_, item) => this.addItem(item),

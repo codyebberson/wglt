@@ -23,7 +23,6 @@ export class VendorDialog extends Dialog {
     super(rect);
     this.vendor = vendor;
     this.items = vendor.inventory;
-    this.modal = true;
 
     for (let i = 0; i < PAGE_SIZE; i++) {
       // Slots are repositioned at render time
