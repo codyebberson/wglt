@@ -201,7 +201,8 @@ export class MapGenerator {
 
   createFloor(x: number, y: number): void {
     // FLOOR: getTileId(32, 32), // (13, 17),
-    const tile = getTileId(Math.floor(32 + Math.random() * 6), Math.floor(32 + Math.random() * 4));
+    // const tile = getTileId(Math.floor(32 + Math.random() * 6), Math.floor(32 + Math.random() * 4));
+    const tile = getTileId(1, 7);
 
     const map = this.game.tileMap;
     map.setTile(x, y, 0, tile);
