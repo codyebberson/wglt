@@ -11,7 +11,7 @@ import { Point } from '../core/point';
  *
  * @const {number}
  */
-const BUFFER_SIZE = 65536;
+const BUFFER_SIZE = 65536 * 32;
 
 const spriteVertexShader =
   'uniform vec2 u_viewportSize;' +
