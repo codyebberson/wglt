@@ -13,11 +13,12 @@
     "test": "turbo run test"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.3",
-    "@types/node": "20.12.12",
-    "turbo": "1.13.3"
+    "@biomejs/biome": "1.9.2",
+    "@types/node": "22.7.4",
+    "turbo": "2.1.2"
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "packageManager": "npm@10.8.3"
 }
