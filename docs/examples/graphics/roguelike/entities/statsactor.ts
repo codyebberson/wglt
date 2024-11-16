@@ -1,6 +1,4 @@
-import { ArrayList, Pico8Palette } from 'wglt';
-import { CompoundMessage, Message, Sprite } from 'wglt';
-import { Actor } from 'wglt';
+import { Actor, ArrayList, Pico8Palette, Sprite } from 'wglt';
 import { Buff } from '../buffs/buff';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
@@ -204,13 +202,14 @@ export abstract class StatsActor extends Actor {
   equipItem(item: Equipment): boolean {
     if (!this.canEquip(item)) {
       if (this === this.game.player) {
-        this.game.log(
-          new CompoundMessage(
-            new Message('You do not have ', Pico8Palette.LIGHT_GRAY),
-            new Message(`[${item.type}]`, Pico8Palette.WHITE),
-            new Message(' proficiency', Pico8Palette.LIGHT_GRAY)
-          )
-        );
+        this.game.log(`You do not have [${item.type}] proficiency`, Pico8Palette.LIGHT_GRAY);
+        // this.game.log(
+        //   new Message(undefined, undefined, undefined, [
+        //     new Message('You do not have ', Pico8Palette.LIGHT_GRAY),
+        //     new Message(`[${item.type}]`, Pico8Palette.WHITE),
+        //     new Message(' proficiency', Pico8Palette.LIGHT_GRAY),
+        //   ])
+        // );
       }
       return false;
     }

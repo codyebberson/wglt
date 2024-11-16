@@ -1,5 +1,4 @@
 import { ArrayList } from '../arraylist';
-import { BaseApp } from '../baseapp';
 import { PointLike } from '../point';
 import { Component } from './component';
 
@@ -7,6 +6,7 @@ export class Container extends Component {
   readonly children = new ArrayList<Component>();
 
   addChild(child: Component): void {
+    child.root = this.root;
     child.parent = this;
     this.children.add(child);
   }
@@ -14,6 +14,7 @@ export class Container extends Component {
   removeChild(child: Component): void {
     this.children.remove(child);
     child.parent = undefined;
+    child.root = undefined;
   }
 
   moveChild(child: Component): void {
@@ -43,33 +44,33 @@ export class Container extends Component {
     return undefined;
   }
 
-  draw(app: BaseApp): void {
-    this.drawChildren(app);
+  // draw(app: BaseApp): void {
+  //   this.drawChildren(app);
+  // }
+
+  // drawChildren(app: BaseApp): void {
+  //   for (let i = 0; i < this.children.length; i++) {
+  //     const child = this.children.get(i);
+  //     if (!child.visible) {
+  //       // Ignore hidden elements
+  //       continue;
+  //     }
+  //     child.draw(app);
+  //   }
+  // }
+
+  handleInput(): boolean {
+    return this.handleChildrenInput();
   }
 
-  drawChildren(app: BaseApp): void {
-    for (let i = 0; i < this.children.length; i++) {
-      const child = this.children.get(i);
-      if (!child.visible) {
-        // Ignore hidden elements
-        continue;
-      }
-      child.draw(app);
-    }
-  }
-
-  handleInput(app: BaseApp): boolean {
-    return this.handleChildrenInput(app);
-  }
-
-  handleChildrenInput(app: BaseApp): boolean {
+  handleChildrenInput(): boolean {
     for (let i = this.children.length - 1; i >= 0; i--) {
       const child = this.children.get(i);
       if (!child.visible) {
         // Ignore hidden elements
         continue;
       }
-      if (child.handleInput(app)) {
+      if (child.handleInput()) {
         return true;
       }
     }

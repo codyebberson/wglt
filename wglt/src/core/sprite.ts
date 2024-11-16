@@ -1,5 +1,5 @@
-import { BaseApp } from '../core/baseapp';
 import { Rect } from '../core/rect';
+import { GraphicsApp } from '../graphics/graphicsapp';
 
 const DEFAULT_TICKS_PER_FRAME = 20;
 
@@ -21,7 +21,7 @@ export class Sprite extends Rect {
     this.animDelay = 0;
   }
 
-  draw(app: BaseApp, x: number, y: number, flipped = false): void {
+  draw(app: GraphicsApp, x: number, y: number, flipped = false): void {
     const u = this.x + this.animFrame * this.width;
     const v = this.y;
 

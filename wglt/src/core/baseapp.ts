@@ -1,7 +1,4 @@
-import { Color } from './color';
 import { Font } from './font';
-import { Button } from './gui/button';
-import { Component } from './gui/component';
 import { Keyboard } from './keyboard';
 import { Key } from './keys';
 import { Mouse } from './mouse';
@@ -118,73 +115,73 @@ export abstract class BaseApp {
 
   abstract endFrame(): void;
 
-  /**
-   * Fills a rectangle with a solid color.
-   * @param x Destination x coordinate.
-   * @param y Destination y coordinate.
-   * @param w Destination width.
-   * @param h Destination height.
-   * @param color The rectangle color.
-   */
-  abstract fillRect(x: number, y: number, w: number, h: number, color: Color): void;
+  // /**
+  //  * Fills a rectangle with a solid color.
+  //  * @param x Destination x coordinate.
+  //  * @param y Destination y coordinate.
+  //  * @param w Destination width.
+  //  * @param h Destination height.
+  //  * @param color The rectangle color.
+  //  */
+  // abstract fillRect(x: number, y: number, w: number, h: number, color: Color): void;
 
-  /**
-   * Draws a sprite.
-   * @param x The x-coordinate of the top-left corner on the screen.
-   * @param y The y-coordinate of the top-left corner on the screen.
-   * @param u The x-coordinate of the top-left corner on the sprite sheet.
-   * @param v The y-coordinate of the top-left corner on the sprite sheet.
-   * @param w The width of the sprite.
-   * @param h The height of the sprite.
-   * @param color Optional color.
-   * @param dw Optional destination width.
-   * @param dh Optional destination height.
-   */
-  abstract drawImage(
-    x: number,
-    y: number,
-    u: number,
-    v: number,
-    w: number,
-    h: number,
-    color?: Color,
-    dw?: number,
-    dh?: number
-  ): void;
+  // /**
+  //  * Draws a sprite.
+  //  * @param x The x-coordinate of the top-left corner on the screen.
+  //  * @param y The y-coordinate of the top-left corner on the screen.
+  //  * @param u The x-coordinate of the top-left corner on the sprite sheet.
+  //  * @param v The y-coordinate of the top-left corner on the sprite sheet.
+  //  * @param w The width of the sprite.
+  //  * @param h The height of the sprite.
+  //  * @param color Optional color.
+  //  * @param dw Optional destination width.
+  //  * @param dh Optional destination height.
+  //  */
+  // abstract drawImage(
+  //   x: number,
+  //   y: number,
+  //   u: number,
+  //   v: number,
+  //   w: number,
+  //   h: number,
+  //   color?: Color,
+  //   dw?: number,
+  //   dh?: number
+  // ): void;
 
-  /**
-   * Draws a string.
-   * @param x The x-coordinate of the top-left corner.
-   * @param y The y-coordinate of the top-left corner.
-   * @param str The text string to draw.
-   * @param color Optional color.
-   * @param out Optional output location of cursor.
-   */
-  abstract drawString(x: number, y: number, str: string, color?: Color, out?: Point): void;
+  // /**
+  //  * Draws a string.
+  //  * @param x The x-coordinate of the top-left corner.
+  //  * @param y The y-coordinate of the top-left corner.
+  //  * @param str The text string to draw.
+  //  * @param color Optional color.
+  //  * @param out Optional output location of cursor.
+  //  */
+  // abstract drawString(x: number, y: number, str: string, color?: Color, out?: Point): void;
 
-  /**
-   * Draws a string horizontally centered.
-   * @param x The x-coordinate of the center.
-   * @param y The y-coordinate of the top-left corner.
-   * @param str The text string to draw.
-   * @param color Optional color.
-   */
-  abstract drawCenteredString(x: number, y: number, str: string, color?: Color): void;
+  // /**
+  //  * Draws a string horizontally centered.
+  //  * @param x The x-coordinate of the center.
+  //  * @param y The y-coordinate of the top-left corner.
+  //  * @param str The text string to draw.
+  //  * @param color Optional color.
+  //  */
+  // abstract drawCenteredString(x: number, y: number, str: string, color?: Color): void;
 
-  /**
-   * Draws a right-aligned string.
-   * @param x The x-coordinate of the top-right corner.
-   * @param y The y-coordinate of the top-right corner.
-   * @param str The text string to draw.
-   * @param color Optional color.
-   */
-  abstract drawRightString(x: number, y: number, str: string, color?: Color): void;
+  // /**
+  //  * Draws a right-aligned string.
+  //  * @param x The x-coordinate of the top-right corner.
+  //  * @param y The y-coordinate of the top-right corner.
+  //  * @param str The text string to draw.
+  //  * @param color Optional color.
+  //  */
+  // abstract drawRightString(x: number, y: number, str: string, color?: Color): void;
 
-  abstract drawPanelFrame(component: Component): void;
+  // abstract drawPanelFrame(component: Component): void;
 
-  abstract drawDialogFrame(component: Component): void;
+  // abstract drawDialogFrame(component: Component): void;
 
-  abstract drawButtonFrame(button: Button): void;
+  // abstract drawButtonFrame(button: Button): void;
 
   isKeyDown(key: Key): boolean {
     return this.keyboard.getKey(key).down;

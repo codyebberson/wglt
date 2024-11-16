@@ -14,10 +14,11 @@ export class MainMenu implements AppState {
     const term = this.app.term;
     const gui = this.app.gui;
 
-    if (gui.root.children.length === 0) {
+    if (gui.children.length === 0) {
+      // Create the main menu if it doesn't exist
       const options: SelectOption[] = [{ name: 'Play a new game' }, { name: 'Continue last game' }];
-      gui.add(
-        new SelectDialog(new Rect(10, 15, 20, 20), 'MAIN MENU', options, (choice) => {
+      gui.addChild(
+        new SelectDialog(new Rect(10, 15, 40, 20), 'MAIN MENU', options, (choice) => {
           if (choice.name === 'Play a new game') {
             this.app.newGame();
           } else if (choice.name === 'Continue last game') {
@@ -27,7 +28,7 @@ export class MainMenu implements AppState {
       );
     }
 
-    gui.handleInput(term);
+    gui.handleInput();
 
     term.clear();
 
@@ -37,8 +38,7 @@ export class MainMenu implements AppState {
 
     term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', CgaPalette.YELLOW);
     term.drawCenteredString(40, 12, 'By Jotaf', CgaPalette.YELLOW);
-    // term.fillRect(10, 15, 20, 20, )
-    term.console.fillRect(10, 15, 20, 20, 0, CgaPalette.LIGHT_GRAY, CgaPalette.DARK_GRAY);
-    gui.draw(term);
+    // term.console.fillRect(10, 15, 20, 20, 0, CgaPalette.LIGHT_GRAY, CgaPalette.DARK_GRAY);
+    gui.draw();
   }
 }

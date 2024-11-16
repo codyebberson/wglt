@@ -1,11 +1,9 @@
 import { Color } from '../core/color';
 import { Rect } from '../core/rect';
 import { serializable } from '../core/serialize';
-import { wordWrap } from '../core/utils';
 import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
-import { Message, MessageAlign } from './gui/message';
 
 @serializable
 export class Console {
@@ -91,29 +89,29 @@ export class Console {
     this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
   }
 
-  drawMessage(x: number, y: number, message: Message, maxWidth: number): number {
-    let x2 = x;
-    let y2 = y;
-    if (message.text) {
-      if (message.align === MessageAlign.RIGHT) {
-        x2 += maxWidth - message.text.length;
-      } else if (message.align === MessageAlign.CENTER) {
-        x2 += maxWidth / 2 - message.text.length / 2;
-      }
+  // drawMessage(x: number, y: number, message: Message, maxWidth: number): number {
+  //   let x2 = x;
+  //   let y2 = y;
+  //   if (message.text) {
+  //     if (message.align === MessageAlign.RIGHT) {
+  //       x2 += maxWidth - message.text.length;
+  //     } else if (message.align === MessageAlign.CENTER) {
+  //       x2 += maxWidth / 2 - message.text.length / 2;
+  //     }
 
-      const lines = wordWrap(message.text, maxWidth || this.width - x);
-      for (const line of lines) {
-        this.drawStringLine(x2, y2, line, message.fg, message.bg);
-        y2++;
-      }
-    }
-    if (message.children) {
-      for (const child of message.children) {
-        y2 = this.drawMessage(x2, y2, child, maxWidth);
-      }
-    }
-    return y2;
-  }
+  //     const lines = wordWrap(message.text, maxWidth || this.width - x);
+  //     for (const line of lines) {
+  //       this.drawStringLine(x2, y2, line, message.fg, message.bg);
+  //       y2++;
+  //     }
+  //   }
+  //   if (message.children) {
+  //     for (const child of message.children) {
+  //       y2 = this.drawMessage(x2, y2, child, maxWidth);
+  //     }
+  //   }
+  //   return y2;
+  // }
 
   drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color): void {
     for (let xi = x; xi < x + width; xi++) {

@@ -1,8 +1,6 @@
 import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { Font } from '../core/font';
-import { Button } from '../core/gui/button';
-import { Component } from '../core/gui/component';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
@@ -127,17 +125,17 @@ export class GraphicsApp extends BaseApp {
     this.renderSet.drawRightString(str, x, y, color);
   }
 
-  drawPanelFrame(component: Component): void {
-    this.drawAutoRect(this.config.dialogRect, component.rect);
-  }
+  // drawPanelFrame(component: Component): void {
+  //   this.drawAutoRect(this.config.dialogRect, component.rect);
+  // }
 
-  drawDialogFrame(component: Component): void {
-    this.drawAutoRect(this.config.dialogRect, component.rect);
-  }
+  // drawDialogFrame(component: Component): void {
+  //   this.drawAutoRect(this.config.dialogRect, component.rect);
+  // }
 
-  drawButtonFrame(button: Button): void {
-    this.drawAutoRect(this.config.buttonRect, button.rect);
-  }
+  // drawButtonFrame(button: Button): void {
+  //   this.drawAutoRect(this.config.buttonRect, button.rect);
+  // }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {
     // Draws the dialog chrome using a 3x3 grid

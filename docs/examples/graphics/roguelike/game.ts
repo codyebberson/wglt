@@ -1,6 +1,14 @@
-import { Pico8Palette, Rect } from 'wglt';
-import { Button, Message, MessageLog, Sprite } from 'wglt';
-import { BaseGame, ItemContainerDialog, TalentsDialog } from 'wglt';
+import {
+  BaseGame,
+  Button,
+  ItemContainerDialog,
+  Message,
+  MessageLog,
+  Pico8Palette,
+  Rect,
+  Sprite,
+  TalentsDialog,
+} from 'wglt';
 import { App } from './app';
 import { Player } from './entities/player';
 import { BottomPanel } from './gui/bottompanel';
@@ -27,13 +35,13 @@ export class Game extends BaseGame {
     this.player = player;
     this.entities.add(player);
     this.messageLog = new MessageLog(new Rect(1, -84, 100, 50));
-    this.gui.add(this.messageLog);
+    this.gui.addChild(this.messageLog);
     this.log('Welcome stranger! Prepare to perish!', Pico8Palette.DARK_RED);
 
     const bottomPanel = new BottomPanel();
-    this.gui.add(bottomPanel);
+    this.gui.addChild(bottomPanel);
 
-    this.gui.add(new EntityFrames(this));
+    this.gui.addChild(new EntityFrames(this));
 
     const inventoryButton = new Button(
       new Rect(0, 0, 20, 28),
@@ -106,11 +114,11 @@ export class Game extends BaseGame {
       player.inventory
     );
     this.inventoryDialog.visible = false;
-    this.gui.add(this.inventoryDialog);
+    this.gui.addChild(this.inventoryDialog);
 
     this.characterDialog = new CharacterDialog(new Rect(8, 64, 128, 144), player);
     this.characterDialog.visible = false;
-    this.gui.add(this.characterDialog);
+    this.gui.addChild(this.characterDialog);
 
     this.talentsDialog = new TalentsDialog(
       new Rect(8, 48, 110, 132),
@@ -123,11 +131,11 @@ export class Game extends BaseGame {
       player.talents
     );
     this.talentsDialog.visible = false;
-    this.gui.add(this.talentsDialog);
+    this.gui.addChild(this.talentsDialog);
 
     const levelUpDialog = new LevelUpDialog(new Rect(8, 64, 160, 126), player);
     levelUpDialog.visible = false;
-    this.gui.add(levelUpDialog);
+    this.gui.addChild(levelUpDialog);
     this.levelUpDialog = levelUpDialog;
 
     player.inventory.addListener({

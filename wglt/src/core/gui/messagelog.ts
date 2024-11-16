@@ -2,9 +2,7 @@ import { Color } from '../../core/color';
 import { Container } from '../../core/gui/container';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
-import { Point } from '../../core/point';
 import { Rect } from '../../core/rect';
-import { BaseApp } from '../baseapp';
 
 export class MessageLog extends Container {
   private readonly messages: Message[];
@@ -28,24 +26,24 @@ export class MessageLog extends Container {
     }
   }
 
-  draw(app: BaseApp): void {
-    const pos = new Point(this.rect.x, this.rect.y);
+  // draw(app: BaseApp): void {
+  //   const pos = new Point(this.rect.x, this.rect.y);
 
-    if (pos.y < 0) {
-      // Negative y value indicates attached to bottom of screen
-      const bottom = app.size.height + pos.y + this.rect.height;
-      pos.y = bottom - this.messages.length * 10;
-    }
+  //   if (pos.y < 0) {
+  //     // Negative y value indicates attached to bottom of screen
+  //     const bottom = app.size.height + pos.y + this.rect.height;
+  //     pos.y = bottom - this.messages.length * 10;
+  //   }
 
-    for (let i = 0; i < this.messages.length; i++) {
-      const msg = this.messages[i];
-      msg.draw(app, pos);
-      pos.x = 0;
-      pos.y += 10;
-    }
-  }
+  //   for (let i = 0; i < this.messages.length; i++) {
+  //     const msg = this.messages[i];
+  //     msg.draw(app, pos);
+  //     pos.x = 0;
+  //     pos.y += 10;
+  //   }
+  // }
 
-  handleInput(app: BaseApp): boolean {
+  handleInput(): boolean {
     return false;
   }
 }

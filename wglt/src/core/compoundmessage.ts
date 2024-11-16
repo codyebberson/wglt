@@ -1,27 +1,28 @@
-import { BaseApp } from '../core/baseapp';
-import { Font } from '../core/font';
-import { Point } from '../core/point';
-import { Message } from './message';
+// import { BaseApp } from '../core/baseapp';
+// import { Font } from '../core/font';
+// import { Point } from '../core/point';
+// import { Message } from './message';
 
-export class CompoundMessage extends Message {
-  readonly messages: Message[];
+// /** @deprecated */
+// export class CompoundMessage extends Message {
+//   readonly messages: Message[];
 
-  constructor(...messages: Message[]) {
-    super('', 0);
-    this.messages = messages;
-  }
+//   constructor(...messages: Message[]) {
+//     super('', 0);
+//     this.messages = messages;
+//   }
 
-  draw(app: BaseApp, pos: Point): void {
-    for (let i = 0; i < this.messages.length; i++) {
-      this.messages[i].draw(app, pos);
-    }
-  }
+//   draw(app: BaseApp, pos: Point): void {
+//     for (let i = 0; i < this.messages.length; i++) {
+//       this.messages[i].draw(app, pos);
+//     }
+//   }
 
-  getWidth(font: Font): number {
-    let sum = 0;
-    for (let i = 0; i < this.messages.length; i++) {
-      sum += this.messages[i].getWidth(font);
-    }
-    return sum;
-  }
-}
+//   getWidth(font: Font): number {
+//     let sum = 0;
+//     for (let i = 0; i < this.messages.length; i++) {
+//       sum += this.messages[i].getWidth(font);
+//     }
+//     return sum;
+//   }
+// }

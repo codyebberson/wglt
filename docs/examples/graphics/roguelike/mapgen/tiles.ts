@@ -2,7 +2,8 @@ import { getTileId } from 'wglt';
 
 export const Tiles = {
   EMPTY: 0,
-  FLOOR: getTileId(32, 32), // (13, 17),
+  // FLOOR: getTileId(32, 32), // (13, 17),
+  FLOOR: getTileId(560 / 16, 240 / 16),
 
   WALL_ISLAND: getTileId(6, 50),
   WALL_INTERSECTION: getTileId(3, 50),

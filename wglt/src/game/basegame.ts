@@ -65,7 +65,7 @@ export abstract class BaseGame extends AppState {
 
   constructor(app: GraphicsApp, seed: number) {
     super(app);
-    this.gui = new GUI(app.size);
+    this.gui = new GUI(app);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
@@ -111,7 +111,7 @@ export abstract class BaseGame extends AppState {
   update(): void {
     this.updateZoom();
 
-    if (!this.gui.handleInput(this.app)) {
+    if (!this.gui.handleInput()) {
       this.updateAnimations();
       this.updateEntities();
 
@@ -139,7 +139,7 @@ export abstract class BaseGame extends AppState {
       this.drawAnimations();
     }
 
-    this.gui.draw(this.app);
+    this.gui.draw();
   }
 
   private updateZoom(): void {
@@ -285,7 +285,7 @@ export abstract class BaseGame extends AppState {
         this.cursor.x * this.tileMap.tileSize.width - this.viewport.x + this.screenShakeOffset.x;
       const y =
         this.cursor.y * this.tileMap.tileSize.height - this.viewport.y + this.screenShakeOffset.x;
-      this.targetSprite.draw(this.app, x, y);
+      this.targetSprite.draw(this.app as GraphicsApp, x, y);
     }
   }
 

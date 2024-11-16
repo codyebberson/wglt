@@ -1,6 +1,5 @@
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
-import { BaseApp } from '../baseapp';
 import { Container } from './container';
 
 export class Dialog extends Container {
@@ -13,12 +12,17 @@ export class Dialog extends Container {
     this.closeButton = false;
   }
 
-  draw(app: BaseApp): void {
-    app.drawDialogFrame(this);
-  }
+  // draw(app: BaseApp): void {
+  //   app.drawDialogFrame(this);
+  // }
 
-  handleInput(app: BaseApp): boolean {
-    if (this.handleChildrenInput(app)) {
+  handleInput(): boolean {
+    const app = this.root?.context;
+    if (!app) {
+      return false;
+    }
+
+    if (this.handleChildrenInput()) {
       return true;
     }
 

@@ -1,5 +1,4 @@
 import { Color, fromRgb } from '../core/color';
-import { CompoundMessage } from '../core/compoundmessage';
 import { Message } from '../core/message';
 import { SimplePalette } from '../core/palettes/simple';
 import { Sprite } from '../core/sprite';
@@ -66,12 +65,17 @@ export abstract class Item extends Entity {
   }
 
   onPickup(entity: Actor): void {
+    // TODO: Add a message log to the game
+    // How to expose formatted text options to library users?
     this.game.log(
-      new CompoundMessage(
-        new Message(`${entity.name} picked up `, SimplePalette.WHITE),
-        new Message(`[${this.name}]`, this.getColor(this.quality))
-      )
+      new Message(`${entity.name} picked up [${this.name}]`, this.getColor(this.quality))
     );
+    // this.game.log(
+    //   new Message(undefined, undefined, undefined, [
+    //     new Message(`${entity.name} picked up `, SimplePalette.WHITE),
+    //     new Message(`[${this.name}]`, this.getColor(this.quality)),
+    //   ])
+    // );
 
     // Animate the icon going to the user's inventory slot.
     // TODO: How to expose this to library users?

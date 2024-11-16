@@ -1,27 +1,29 @@
-import { ArrayList } from '../arraylist';
-import { BaseApp } from '../baseapp';
 import { Message } from '../message';
 import { Point, PointLike } from '../point';
 import { Rect } from '../rect';
 import { Container } from './container';
+import { GUI } from './gui';
 
 export abstract class Component {
   static dragElement?: Component;
   static dragOffset?: Point;
   readonly rect: Rect;
-  readonly children: ArrayList<Component>;
+  root?: GUI;
+  parent?: Container;
   visible: boolean;
-  parent: Container | undefined = undefined;
 
   constructor(rect: Rect) {
     this.rect = rect;
-    this.children = new ArrayList();
     this.visible = true;
   }
 
-  abstract handleInput(app: BaseApp): boolean;
+  handleInput(): boolean {
+    // By default, components do not handle input
+    // Child classes can override this method
+    return false;
+  }
 
-  abstract draw(app: BaseApp): void;
+  // abstract draw(app: BaseApp): void;
 
   getChildAt(_point: PointLike): Component | undefined {
     // By default, components do not have children
@@ -50,3 +52,6 @@ export abstract class Component {
     return undefined;
   }
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type ComponentConstructor<T extends Component = Component> = new (...args: any[]) => T;

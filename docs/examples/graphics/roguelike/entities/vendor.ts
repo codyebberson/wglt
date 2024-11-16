@@ -1,6 +1,4 @@
-import { Rect } from 'wglt';
-import { Dialog, Sprite } from 'wglt';
-import { AI, VendorDialog } from 'wglt';
+import { AI, Dialog, Rect, Sprite, VendorDialog } from 'wglt';
 import { Game } from '../game';
 import { Player } from './player';
 import { Sentiment, StatsActor } from './statsactor';
@@ -42,7 +40,7 @@ export class Vendor extends StatsActor {
     this.strength = 10 + this.level * 2;
     this.dialog = new VendorDialog(new Rect(10, 40, 125, 175), this);
     this.dialog.visible = false;
-    this.game.gui.add(this.dialog);
+    this.game.gui.addChild(this.dialog);
   }
 
   onBump(player: Player): boolean {

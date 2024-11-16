@@ -1,12 +1,14 @@
 import {
-  BaseApp,
   Button,
   ButtonSlot,
   Dialog,
+  GUI,
+  GraphicsApp,
   Key,
   Message,
   Pico8Palette,
   Rect,
+  Renderer,
   Sprite,
 } from 'wglt';
 import { Player } from '../entities/player';
@@ -105,9 +107,17 @@ export class LevelUpDialog extends Dialog {
       this.visible = false;
     }
   }
+}
 
-  draw(app: BaseApp): void {
-    super.draw(app);
+export class LevelUpDialogRenderer implements Renderer<GraphicsApp, LevelUpDialog> {
+  render(gui: GUI<GraphicsApp>, dialog: LevelUpDialog): void {
+    // super.draw(app);
+    // app.
+
+    const app = gui.context;
+    if (!app) {
+      return;
+    }
 
     // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
     //   return;
@@ -117,7 +127,7 @@ export class LevelUpDialog extends Dialog {
     const buttonRect = new Rect(0, 0, 24, 24);
 
     // Update positions of button slots
-    const containerRect = this.rect;
+    const containerRect = dialog.rect;
     const x = containerRect.x + MARGIN;
     let y = containerRect.y + MARGIN;
 
@@ -127,7 +137,7 @@ export class LevelUpDialog extends Dialog {
     app.drawString(
       x,
       y,
-      `Choose ${this.player.remainingAbilityPoints} stats to increase:`,
+      `Choose ${dialog.player.remainingAbilityPoints} stats to increase:`,
       Pico8Palette.WHITE
     );
     y += 10;
@@ -135,10 +145,10 @@ export class LevelUpDialog extends Dialog {
     for (let i = 0; i < 4; i++) {
       const desc = DESCRIPTIONS[i];
       for (let j = 0; j < desc.length; j++) {
-        app.drawString(x + 25, y + 1 + j * 8, desc[j].text, desc[j].color);
+        // app.drawString(x + 25, y + 1 + j * 8, desc[j].text, desc[j].color);
       }
 
-      const child = this.children.get(i);
+      const child = dialog.children.get(i);
       child.rect.x = x;
       child.rect.y = y;
       child.rect.width = buttonRect.width;
@@ -146,7 +156,7 @@ export class LevelUpDialog extends Dialog {
       y += buttonRect.height + BUTTON_SPACING;
     }
 
-    this.rect.height = y + MARGIN - containerRect.y;
-    this.drawChildren(app);
+    dialog.rect.height = y + MARGIN - containerRect.y;
+    // this.drawChildren(app);
   }
 }

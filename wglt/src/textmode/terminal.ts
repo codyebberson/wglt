@@ -1,9 +1,6 @@
 import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
-import { Button } from '../core/gui/button';
-import { Component } from '../core/gui/component';
-import { Dialog } from '../core/gui/dialog';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
@@ -488,20 +485,20 @@ export class Terminal extends BaseApp {
     this.console.drawString(x - str.length, y, str, color);
   }
 
-  drawPanelFrame(component: Component): void {
-    this.console.drawDoubleBox(
-      component.rect.x,
-      component.rect.y,
-      component.rect.width,
-      component.rect.height
-    );
-  }
+  // drawPanelFrame(component: Component): void {
+  //   this.console.drawDoubleBox(
+  //     component.rect.x,
+  //     component.rect.y,
+  //     component.rect.width,
+  //     component.rect.height
+  //   );
+  // }
 
-  drawDialogFrame(dialog: Dialog): void {
-    this.console.drawDoubleBox(dialog.rect.x, dialog.rect.y, dialog.rect.width, dialog.rect.height);
-  }
+  // drawDialogFrame(dialog: Dialog): void {
+  //   this.console.drawDoubleBox(dialog.rect.x, dialog.rect.y, dialog.rect.width, dialog.rect.height);
+  // }
 
-  drawButtonFrame(button: Button): void {
-    this.console.drawSingleBox(button.rect.x, button.rect.y, button.rect.width, button.rect.height);
-  }
+  // drawButtonFrame(button: Button): void {
+  //   this.console.drawSingleBox(button.rect.x, button.rect.y, button.rect.width, button.rect.height);
+  // }
 }

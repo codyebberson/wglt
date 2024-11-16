@@ -1,5 +1,6 @@
 import { Point } from '../../core/point';
 import { Sprite } from '../../core/sprite';
+import { GraphicsApp } from '../../graphics/graphicsapp';
 import { BaseGame } from '../basegame';
 import { Animation } from './animation';
 
@@ -21,6 +22,9 @@ export class GuiSlideAnimation extends Animation {
     const f = this.countdown / this.duration;
     const x = f * this.start.x + (1.0 - f) * this.end.x;
     const y = f * this.start.y + (1.0 - f) * this.end.y;
-    this.sprite.draw(game.app, x, y);
+    // this.sprite.draw(game.app, x, y);
+
+    const app = game.app as GraphicsApp;
+    this.sprite.draw(app, x, y);
   }
 }

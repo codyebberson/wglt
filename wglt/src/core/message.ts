@@ -1,22 +1,39 @@
-import { BaseApp } from '../core/baseapp';
-import { Color } from '../core/color';
-import { Font } from '../core/font';
-import { Point } from '../core/point';
+import { Color } from './color';
+import { serializable } from './serialize';
 
+// export const MessageAlign = {
+//   LEFT: 'left',
+//   CENTER: 'center',
+//   RIGHT: 'right',
+// };
+
+@serializable
 export class Message {
-  readonly text: string;
-  readonly color: Color;
+  constructor(
+    readonly text: string | undefined,
+    readonly fg?: Color | undefined
+    // readonly bg?: Color | undefined,
+    // readonly children?: Message[],
+    // readonly align?: string | undefined
+  ) {}
 
-  constructor(text: string, color: Color) {
-    this.text = text;
-    this.color = color;
-  }
+  // static fromChildren(...children: Message[]): Message {
+  //   return new Message(undefined, undefined, undefined, children);
+  // }
 
-  draw(app: BaseApp, pos: Point): void {
-    app.drawString(pos.x, pos.y, this.text, this.color, pos);
-  }
+  // readonly text: string;
+  // readonly color: Color;
 
-  getWidth(font: Font): number {
-    return font.getStringWidth(this.text);
-  }
+  // constructor(text: string, color: Color) {
+  //   this.text = text;
+  //   this.color = color;
+  // }
+
+  // draw(app: BaseApp, pos: Point): void {
+  //   app.drawString(pos.x, pos.y, this.text, this.color, pos);
+  // }
+
+  // getWidth(font: Font): number {
+  //   return font.getStringWidth(this.text);
+  // }
 }

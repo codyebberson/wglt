@@ -435,7 +435,7 @@ export class Game implements AppState {
     }
 
     const term = this.app.term;
-    if (this.app.gui.handleInput(term)) {
+    if (this.app.gui.handleInput()) {
       return;
     }
 
@@ -486,7 +486,7 @@ export class Game implements AppState {
           }
           return { name: text };
         });
-        this.app.gui.add(
+        this.app.gui.addChild(
           new SelectDialog(new Rect(10, 10, 20, 20), 'INVENTORY', options, (choice) =>
             this.useInventory(options.findIndex((option) => option === choice))
           )
@@ -814,7 +814,7 @@ export class Game implements AppState {
     }
 
     // Draw dialog boxes
-    this.app.gui.draw(term);
+    this.app.gui.draw();
   }
 
   nextLevel(): void {

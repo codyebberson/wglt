@@ -1,5 +1,4 @@
 import { ArrayList } from '../../core/arraylist';
-import { BaseApp } from '../../core/baseapp';
 import { ButtonSlot } from '../../core/gui/buttonslot';
 import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
@@ -10,8 +9,8 @@ import { Actor } from '../actor';
 import { Item } from '../item';
 import { VendorButton } from './vendorbutton';
 
-const MARGIN = 4;
-const BUTTON_SPACING = 2;
+// const MARGIN = 4;
+// const BUTTON_SPACING = 2;
 const PAGE_SIZE = 5;
 
 export class VendorDialog extends Dialog {
@@ -95,48 +94,48 @@ export class VendorDialog extends Dialog {
     return undefined;
   }
 
-  draw(app: BaseApp): void {
-    super.draw(app);
+  // draw(app: BaseApp): void {
+  //   super.draw(app);
 
-    // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-    // if (!buttonRect) {
-    //   return;
-    // }
+  //   // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
+  //   // if (!buttonRect) {
+  //   //   return;
+  //   // }
 
-    // TODO
-    const buttonRect = new Rect(0, 32, 48, 48);
+  //   // TODO
+  //   const buttonRect = new Rect(0, 32, 48, 48);
 
-    // Update positions of button slots
-    const containerRect = this.rect;
-    const x = containerRect.x + MARGIN;
-    let y = containerRect.y + MARGIN;
+  //   // Update positions of button slots
+  //   const containerRect = this.rect;
+  //   const x = containerRect.x + MARGIN;
+  //   let y = containerRect.y + MARGIN;
 
-    for (let i = 0; i < this.messages.length; i++) {
-      const msg = this.messages[i];
-      app.drawString(x, y, msg.text, msg.color);
-      y += 10;
-    }
+  //   for (let i = 0; i < this.messages.length; i++) {
+  //     const msg = this.messages[i];
+  //     app.drawString(x, y, msg.text, msg.color);
+  //     y += 10;
+  //   }
 
-    for (let i = 0; i < PAGE_SIZE; i++) {
-      const buttonSlot = this.children.get(i) as ButtonSlot;
-      buttonSlot.rect.x = x;
-      buttonSlot.rect.y = y;
-      buttonSlot.rect.width = buttonRect.width;
-      buttonSlot.rect.height = buttonRect.height;
+  //   for (let i = 0; i < PAGE_SIZE; i++) {
+  //     const buttonSlot = this.children.get(i) as ButtonSlot;
+  //     buttonSlot.rect.x = x;
+  //     buttonSlot.rect.y = y;
+  //     buttonSlot.rect.width = buttonRect.width;
+  //     buttonSlot.rect.height = buttonRect.height;
 
-      const button = buttonSlot.button as VendorButton | undefined;
-      if (button) {
-        const item = button.getFirstItem();
-        if (item && item instanceof Item) {
-          app.drawString(x + 25, y + 3, item.name, SimplePalette.YELLOW);
-          app.drawString(x + 25, y + 11, `${item.sellPrice} gold`, SimplePalette.WHITE);
-        }
-      }
+  //     const button = buttonSlot.button as VendorButton | undefined;
+  //     if (button) {
+  //       const item = button.getFirstItem();
+  //       if (item && item instanceof Item) {
+  //         app.drawString(x + 25, y + 3, item.name, SimplePalette.YELLOW);
+  //         app.drawString(x + 25, y + 11, `${item.sellPrice} gold`, SimplePalette.WHITE);
+  //       }
+  //     }
 
-      y += buttonRect.height + BUTTON_SPACING;
-    }
+  //     y += buttonRect.height + BUTTON_SPACING;
+  //   }
 
-    this.rect.height = y + MARGIN - containerRect.y;
-    this.drawChildren(app);
-  }
+  //   this.rect.height = y + MARGIN - containerRect.y;
+  //   this.drawChildren(app);
+  // }
 }

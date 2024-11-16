@@ -2,7 +2,6 @@ import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
-import { BaseApp } from '../baseapp';
 import { Sprite } from '../sprite';
 import { GUI } from './gui';
 
@@ -20,15 +19,20 @@ export class Button extends Container {
     this.onClick = onClick;
   }
 
-  draw(app: BaseApp): void {
-    const src = this.sprite;
-    const dst = this.rect;
-    const offsetX = ((dst.width - src.width) / 2) | 0;
-    const offsetY = ((dst.height - src.height) / 2) | 0;
-    src.draw(app, dst.x + offsetX, dst.y + offsetY);
-  }
+  // draw(app: BaseApp): void {
+  //   const src = this.sprite;
+  //   const dst = this.rect;
+  //   const offsetX = ((dst.width - src.width) / 2) | 0;
+  //   const offsetY = ((dst.height - src.height) / 2) | 0;
+  //   src.draw(app, dst.x + offsetX, dst.y + offsetY);
+  // }
 
-  handleInput(app: BaseApp): boolean {
+  handleInput(): boolean {
+    const app = this.root?.context;
+    if (!app) {
+      return false;
+    }
+
     const mouse = app.mouse;
 
     if (this.draggable && this.rect.contains(mouse.start) && mouse.isDragging()) {
@@ -57,3 +61,5 @@ export class Button extends Container {
     return this.tooltipMessages;
   }
 }
+
+// const buttonClass = Button;

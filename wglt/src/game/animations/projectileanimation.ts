@@ -1,5 +1,6 @@
 import { Point } from '../../core/point';
 import { Sprite } from '../../core/sprite';
+import { GraphicsApp } from '../../graphics/graphicsapp';
 import { BaseGame } from '../basegame';
 import { Animation, AnimationFunction } from './animation';
 
@@ -31,6 +32,9 @@ export class ProjectileAnimation extends Animation {
   draw(game: BaseGame): void {
     const x = this.position.x - game.viewport.x;
     const y = this.position.y - game.viewport.y;
-    this.sprite.draw(game.app, x, y);
+    // this.sprite.draw(game.app, x, y);
+
+    const app = game.app as GraphicsApp;
+    this.sprite.draw(app, x, y);
   }
 }

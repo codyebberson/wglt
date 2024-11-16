@@ -1,5 +1,6 @@
 import { Point } from '../core/point';
 import { Sprite } from '../core/sprite';
+import { GraphicsApp } from '../graphics/graphicsapp';
 import { Actor } from './actor';
 import { BaseGame } from './basegame';
 
@@ -49,7 +50,7 @@ export class Entity extends Point {
 
   draw(): void {
     this.sprite.draw(
-      this.game.app,
+      this.game.app as GraphicsApp,
       this.pixelX - this.game.viewport.x + this.game.screenShakeOffset.x,
       this.pixelY - this.game.viewport.y + this.game.screenShakeOffset.y,
       this.flipped

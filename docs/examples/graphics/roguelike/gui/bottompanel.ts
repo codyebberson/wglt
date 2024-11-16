@@ -1,4 +1,4 @@
-import { BaseApp, ButtonSlot, Container, Key, Rect, ShortcutBar } from 'wglt';
+import { ButtonSlot, Container, Key, Rect, ShortcutBar } from 'wglt';
 
 export class BottomPanel extends Container {
   readonly shortcutBar: ShortcutBar;
@@ -30,17 +30,17 @@ export class BottomPanel extends Container {
     this.addChild(this.inventorySlot);
   }
 
-  draw(app: BaseApp): void {
-    // Update button y-positions
-    // This will normally be a no-op
-    for (let i = 0; i < this.children.length; i++) {
-      this.children.get(i).rect.y = app.size.height - 28;
+  // draw(app: BaseApp): void {
+  //   // Update button y-positions
+  //   // This will normally be a no-op
+  //   for (let i = 0; i < this.children.length; i++) {
+  //     this.children.get(i).rect.y = app.size.height - 28;
 
-      if (i > 0) {
-        this.children.get(i).rect.x = app.size.width - 2 - 26 * 6 + i * 26;
-      }
-    }
+  //     if (i > 0) {
+  //       this.children.get(i).rect.x = app.size.width - 2 - 26 * 6 + i * 26;
+  //     }
+  //   }
 
-    this.drawChildren(app);
-  }
+  //   this.drawChildren(app);
+  // }
 }

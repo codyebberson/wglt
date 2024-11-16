@@ -1,6 +1,4 @@
-import { Pico8Palette } from 'wglt';
-import { CompoundMessage, Message } from 'wglt';
-import { Item } from 'wglt';
+import { Item, Message, Pico8Palette } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 import { EquipmentBuilder } from './equipmentbuilder';
@@ -68,10 +66,11 @@ export class Equipment extends Item {
     this.tooltipMessages = [];
     this.tooltipMessages.push(new Message(this.name, this.getColor(this.quality)));
     this.tooltipMessages.push(
-      new CompoundMessage(
-        new Message(`Item Level ${this.itemLevel}`, Pico8Palette.YELLOW),
-        compMessage(this.itemLevel, equipped.itemLevel)
-      )
+      // Message.fromChildren(
+      //   new Message(`Item Level ${this.itemLevel}`, Pico8Palette.YELLOW),
+      //   compMessage(this.itemLevel, equipped.itemLevel)
+      // )
+      compareMessage(`Item Level ${this.itemLevel}`, this.itemLevel, equipped.itemLevel)
     );
 
     if (this.type === EquipmentType.NONE) {
@@ -82,64 +81,83 @@ export class Equipment extends Item {
 
     if (this.slot === EquipmentSlot.MAINHAND) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`${this.minDamage}-${this.maxDamage} Damage`, Pico8Palette.YELLOW),
-          compMessage(this.minDamage, equipped.minDamage)
+        // Message.fromChildren(
+        //   new Message(`${this.minDamage}-${this.maxDamage} Damage`, Pico8Palette.YELLOW),
+        //   compMessage(this.minDamage, equipped.minDamage)
+        // )
+        compareMessage(
+          `${this.minDamage}-${this.maxDamage} Damage`,
+          this.minDamage,
+          equipped.minDamage
         )
       );
     }
 
     if (this.armor > 0 || equipped.armor > 0) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`${this.armor} Armor`, Pico8Palette.YELLOW),
-          compMessage(this.armor, equipped.armor)
-        )
+        // Message.fromChildren(
+        //   new Message(`${this.armor} Armor`, Pico8Palette.YELLOW),
+        //   compMessage(this.armor, equipped.armor)
+        // )
+        compareMessage(`${this.armor} Armor`, this.armor, equipped.armor)
       );
     }
 
     if (this.strength > 0 || equipped.strength > 0) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`${this.strength} Strength`, Pico8Palette.GREEN),
-          compMessage(this.strength, equipped.strength)
-        )
+        // Message.fromChildren(
+        //   new Message(`${this.strength} Strength`, Pico8Palette.GREEN),
+        //   compMessage(this.strength, equipped.strength)
+        // )
+        compareMessage(`${this.strength} Strength`, this.strength, equipped.strength)
       );
     }
 
     if (this.dexterity > 0 || equipped.dexterity > 0) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`${this.dexterity} Dexterity`, Pico8Palette.GREEN),
-          compMessage(this.dexterity, equipped.dexterity)
-        )
+        // Message.fromChildren(
+        //   new Message(`${this.dexterity} Dexterity`, Pico8Palette.GREEN),
+        //   compMessage(this.dexterity, equipped.dexterity)
+        // )
+        compareMessage(`${this.dexterity} Dexterity`, this.dexterity, equipped.dexterity)
       );
     }
 
     if (this.constitution > 0 || equipped.constitution > 0) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`${this.constitution} Constitution`, Pico8Palette.GREEN),
-          compMessage(this.constitution, equipped.constitution)
+        // Message.fromChildren(
+        //   new Message(`${this.constitution} Constitution`, Pico8Palette.GREEN),
+        //   compMessage(this.constitution, equipped.constitution)
+        // )
+        compareMessage(
+          `${this.constitution} Constitution`,
+          this.constitution,
+          equipped.constitution
         )
       );
     }
 
     if (this.intelligence > 0 || equipped.intelligence > 0) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`${this.intelligence} Intelligence`, Pico8Palette.GREEN),
-          compMessage(this.intelligence, equipped.intelligence)
+        // Message.fromChildren(
+        //   new Message(`${this.intelligence} Intelligence`, Pico8Palette.GREEN),
+        //   compMessage(this.intelligence, equipped.intelligence)
+        // )
+        compareMessage(
+          `${this.intelligence} Intelligence`,
+          this.intelligence,
+          equipped.intelligence
         )
       );
     }
 
     if (this.sellPrice > 0 || equipped.sellPrice > 0) {
       this.tooltipMessages.push(
-        new CompoundMessage(
-          new Message(`Sell Price: ${this.sellPrice}`, Pico8Palette.WHITE),
-          compMessage(this.sellPrice, equipped.sellPrice)
-        )
+        // Message.fromChildren(
+        //   new Message(`Sell Price: ${this.sellPrice}`, Pico8Palette.WHITE),
+        //   compMessage(this.sellPrice, equipped.sellPrice)
+        // )
+        compareMessage(`Sell Price: ${this.sellPrice}`, this.sellPrice, equipped.sellPrice)
       );
     }
   }
@@ -191,12 +209,25 @@ export class Equipment extends Item {
   }
 }
 
-function compMessage(current: number, equipped: number): Message {
-  if (current === equipped) {
-    return new Message('', Pico8Palette.WHITE);
-  }
+function compareMessage(description: string, current: number, equipped: number): Message {
+  let msg = description;
+  let color = Pico8Palette.WHITE;
+
+  // if (current === equipped) {
+  //   // return new Message('', Pico8Palette.WHITE);
+  // }
+  // if (current < equipped) {
+  //   return new Message(` (-${equipped - current})`, Pico8Palette.RED);
+  // }
+  // return new Message(` (+${current - equipped})`, Pico8Palette.GREEN);
+
   if (current < equipped) {
-    return new Message(` (-${equipped - current})`, Pico8Palette.RED);
+    msg += ` (-${equipped - current})`;
+    color = Pico8Palette.RED;
+  } else if (current > equipped) {
+    msg += ` (+${current - equipped})`;
+    color = Pico8Palette.GREEN;
   }
-  return new Message(` (+${current - equipped})`, Pico8Palette.GREEN);
+
+  return new Message(msg, color);
 }

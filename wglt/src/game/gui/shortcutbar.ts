@@ -1,5 +1,4 @@
 import { ArrayList } from '../../core/arraylist';
-import { BaseApp } from '../../core/baseapp';
 import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
@@ -69,25 +68,25 @@ export class ShortcutBar extends Container {
     return false;
   }
 
-  draw(app: BaseApp): void {
-    // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-    // if (!buttonRect) {
-    //   return;
-    // }
+  // draw(app: BaseApp): void {
+  //   // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
+  //   // if (!buttonRect) {
+  //   //   return;
+  //   // }
 
-    // TODO
-    const buttonRect = new Rect(0, 0, 24, 24);
+  //   // TODO
+  //   const buttonRect = new Rect(0, 0, 24, 24);
 
-    for (let i = 0; i < this.children.length; i++) {
-      const child = this.children.get(i);
-      child.rect.x = this.rect.x + i * (buttonRect.width + DEFAULT_SPACING);
-      child.rect.y = this.rect.y;
-      child.rect.width = buttonRect.width;
-      child.rect.height = buttonRect.height;
-    }
+  //   for (let i = 0; i < this.children.length; i++) {
+  //     const child = this.children.get(i);
+  //     child.rect.x = this.rect.x + i * (buttonRect.width + DEFAULT_SPACING);
+  //     child.rect.y = this.rect.y;
+  //     child.rect.width = buttonRect.width;
+  //     child.rect.height = buttonRect.height;
+  //   }
 
-    this.drawChildren(app);
-  }
+  //   this.drawChildren(app);
+  // }
 
   private getFreeSlot(rightToLeft: boolean): ShortcutButtonSlot | undefined {
     if (rightToLeft) {

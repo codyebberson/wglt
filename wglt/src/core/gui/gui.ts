@@ -1,51 +1,93 @@
 import { BaseApp } from '../baseapp';
-import { Point, PointLike } from '../point';
-import { Rect } from '../rect';
-import { Component } from './component';
+import { Point } from '../point';
+import { Component, ComponentConstructor } from './component';
 import { Container } from './container';
+import { RendererMap } from './renderermap';
 import { TooltipDialog } from './tooltipdialog';
 
-export class GUI {
-  readonly root: Container;
+export class GUI<TContext extends BaseApp = BaseApp> extends Container {
+  readonly context: TContext;
+  readonly renderers: RendererMap<TContext>;
   tooltip?: TooltipDialog;
   tooltipElement?: Component;
 
-  constructor(rect: Rect) {
-    this.root = new Container(rect);
+  constructor(context: TContext) {
+    super(context.size);
+    this.context = context;
+    this.root = this;
+    this.renderers = new RendererMap<TContext>();
   }
 
-  add(panel: Component): void {
-    this.root.addChild(panel);
-  }
+  // add(panel: Component): void {
+  //   this.root.addChild(panel);
+  // }
 
-  remove(panel: Component): void {
-    this.root.removeChild(panel);
-  }
+  // remove(panel: Component): void {
+  //   this.root.removeChild(panel);
+  // }
 
-  getChildAt(point: PointLike): Component | undefined {
-    return this.root.getChildAt(point);
-  }
+  // getChildAt(point: PointLike): Component | undefined {
+  //   return this.root.getChildAt(point);
+  // }
 
-  handleInput(app: BaseApp): boolean {
-    this.updateTooltip(app);
+  handleInput(): boolean {
+    this.updateTooltip();
 
-    if (this.updateDragging(app)) {
+    if (this.updateDragging()) {
       return true;
     }
 
-    return this.root.handleInput(app);
+    return super.handleInput();
   }
 
-  draw(app: BaseApp): void {
-    this.root.draw(app);
+  draw(): void {
+    // this.root.draw(app);
+    // this.drawComponent(this);
+    this.drawChildren(this);
 
     if (Component.dragElement) {
       // Draw drag element on top of everything else
-      Component.dragElement.draw(app);
+      // Component.dragElement.draw(app);
+      this.drawComponent(Component.dragElement);
     }
   }
 
-  private updateTooltip(app: BaseApp): void {
+  drawComponent<T extends Component>(component: T): void {
+    if (!component.visible) {
+      return;
+    }
+
+    if (component.constructor === Container) {
+      // Special case for containers
+      this.drawChildren(component as Container);
+      return;
+    }
+
+    const componentClass = component.constructor as ComponentConstructor<T>;
+    const renderer = this.renderers.get(componentClass);
+    if (!renderer) {
+      console.error(`No renderer for component: ${componentClass.name}`);
+      return;
+    }
+
+    renderer.render(this, component);
+  }
+
+  drawChildren(container: Container): void {
+    for (let i = 0; i < container.children.length; i++) {
+      const child = container.children.get(i);
+      if (!child.visible) {
+        // Ignore hidden elements
+        continue;
+      }
+      // child.draw(app);
+      this.drawComponent(child);
+    }
+  }
+
+  updateTooltip(): undefined {
+    const app = this.context;
+
     if (Component.dragElement && this.tooltip) {
       // No tooltips while drag/drop
       this.tooltip.visible = false;
@@ -57,25 +99,27 @@ export class GUI {
     const mouse = app.mouse;
     if (!mouse.buttons.get(0).down && (mouse.dx !== 0 || mouse.dy !== 0)) {
       const hoverPanel = this.getChildAt(mouse);
-      if (this.tooltipElement !== hoverPanel) {
-        // Hover element has changed
-        this.tooltipElement = hoverPanel;
-        if (!this.tooltip) {
-          this.tooltip = new TooltipDialog();
-          this.add(this.tooltip);
+      if (hoverPanel !== this) {
+        if (this.tooltipElement !== hoverPanel) {
+          // Hover element has changed
+          this.tooltipElement = hoverPanel;
+          if (!this.tooltip) {
+            this.tooltip = new TooltipDialog();
+            this.addChild(this.tooltip);
+          }
+          const hoverPanelMessages = hoverPanel?.updateTooltip();
+          if (hoverPanelMessages) {
+            this.tooltip.messages = hoverPanelMessages;
+            this.tooltip.visible = true;
+          } else {
+            this.tooltip.visible = false;
+          }
         }
-        const hoverPanelMessages = hoverPanel?.updateTooltip();
-        if (hoverPanelMessages) {
-          this.tooltip.messages = hoverPanelMessages;
-          this.tooltip.visible = true;
-        } else {
-          this.tooltip.visible = false;
+        if (this.tooltip?.visible) {
+          // Update the tooltip to be on the mouse
+          // This is similar to WoW style tooltips.
+          this.tooltip.showAt(app, mouse.x, mouse.y);
         }
-      }
-      if (this.tooltip?.visible) {
-        // Update the tooltip to be on the mouse
-        // This is similar to WoW style tooltips.
-        this.tooltip.showAt(app, mouse.x, mouse.y);
       }
     }
   }
@@ -89,7 +133,8 @@ export class GUI {
     );
   }
 
-  private updateDragging(app: BaseApp): boolean {
+  private updateDragging(): boolean {
+    const app = this.context;
     const mouse = app.mouse;
     const dragElement = Component.dragElement;
     const dragOffset = Component.dragOffset;
@@ -105,7 +150,7 @@ export class GUI {
       // End the drag
       // TODO: How to represent dropping on the "root"?
       // Should that just be implemented in custom "root" panel?
-      const target = this.root.getChildAt(mouse);
+      const target = this.getChildAt(mouse);
       if (!target?.onDrop(dragElement)) {
         // If the target doesn't accept the drop, move back to the original location
         dragElement.rect.x = mouse.start.x - dragOffset.x;

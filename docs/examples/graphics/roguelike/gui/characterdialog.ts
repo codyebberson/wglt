@@ -1,11 +1,10 @@
-import { ButtonSlot, Dialog, ItemButton, Pico8Palette, Rect } from 'wglt';
-import { App } from '../app';
+import { ButtonSlot, Dialog, ItemButton, Rect } from 'wglt';
 import { Player } from '../entities/player';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
 
-const MARGIN = 4;
-const BUTTON_SPACING = 2;
+// const MARGIN = 4;
+// const BUTTON_SPACING = 2;
 
 export class CharacterDialog extends Dialog {
   readonly player: Player;
@@ -110,89 +109,89 @@ export class CharacterDialog extends Dialog {
     }
   }
 
-  draw(app: App): void {
-    super.draw(app);
+  // draw(app: App): void {
+  //   super.draw(app);
 
-    // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
-    //   return;
-    // }
+  //   // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
+  //   //   return;
+  //   // }
 
-    // TODO
-    const buttonRect = new Rect(0, 32, 48, 48);
+  //   // TODO
+  //   const buttonRect = new Rect(0, 32, 48, 48);
 
-    // Update positions of button slots
-    const containerRect = this.rect;
-    // const buttonRect = this.gui.renderer.buttonSlotRect;
-    const centerX = ((containerRect.x1 + containerRect.x2) / 2) | 0;
-    const x = containerRect.x + MARGIN;
-    let y = containerRect.y + MARGIN;
+  //   // Update positions of button slots
+  //   const containerRect = this.rect;
+  //   // const buttonRect = this.gui.renderer.buttonSlotRect;
+  //   const centerX = ((containerRect.x1 + containerRect.x2) / 2) | 0;
+  //   const x = containerRect.x + MARGIN;
+  //   let y = containerRect.y + MARGIN;
 
-    app.drawCenteredString(centerX, y, 'ORYX THE BRAVE', Pico8Palette.WHITE);
-    y += 10;
+  //   app.drawCenteredString(centerX, y, 'ORYX THE BRAVE', Pico8Palette.WHITE);
+  //   y += 10;
 
-    const desc = `Level ${this.player.level}`;
+  //   const desc = `Level ${this.player.level}`;
 
-    app.drawCenteredString(centerX, y, desc, Pico8Palette.WHITE);
-    y += 10;
+  //   app.drawCenteredString(centerX, y, desc, Pico8Palette.WHITE);
+  //   y += 10;
 
-    // Draw the player sprite at 2x
-    this.player.sprite.draw(app, centerX - 8, y + 32);
+  //   // Draw the player sprite at 2x
+  //   this.player.sprite.draw(app, centerX - 8, y + 32);
 
-    // Left column:  head, neck, back, chest
-    for (let i = 0; i < 4; i++) {
-      const child = this.children.get(i);
-      child.rect.x = x;
-      child.rect.y = y + i * (buttonRect.height + BUTTON_SPACING);
-      child.rect.width = buttonRect.width;
-      child.rect.height = buttonRect.height;
-    }
+  //   // Left column:  head, neck, back, chest
+  //   for (let i = 0; i < 4; i++) {
+  //     const child = this.children.get(i);
+  //     child.rect.x = x;
+  //     child.rect.y = y + i * (buttonRect.height + BUTTON_SPACING);
+  //     child.rect.width = buttonRect.width;
+  //     child.rect.height = buttonRect.height;
+  //   }
 
-    // Right column: hands, legs, ring1, ring2
-    for (let i = 0; i < 4; i++) {
-      const child = this.children.get(4 + i);
-      child.rect.x = containerRect.x2 - MARGIN - buttonRect.width;
-      child.rect.y = y + i * (buttonRect.height + BUTTON_SPACING);
-      child.rect.width = buttonRect.width;
-      child.rect.height = buttonRect.height;
-    }
+  //   // Right column: hands, legs, ring1, ring2
+  //   for (let i = 0; i < 4; i++) {
+  //     const child = this.children.get(4 + i);
+  //     child.rect.x = containerRect.x2 - MARGIN - buttonRect.width;
+  //     child.rect.y = y + i * (buttonRect.height + BUTTON_SPACING);
+  //     child.rect.width = buttonRect.width;
+  //     child.rect.height = buttonRect.height;
+  //   }
 
-    this.mainHandSlot.rect.x = centerX - buttonRect.width - 1;
-    this.mainHandSlot.rect.y = y + 90;
-    this.mainHandSlot.rect.width = buttonRect.width;
-    this.mainHandSlot.rect.height = buttonRect.height;
+  //   this.mainHandSlot.rect.x = centerX - buttonRect.width - 1;
+  //   this.mainHandSlot.rect.y = y + 90;
+  //   this.mainHandSlot.rect.width = buttonRect.width;
+  //   this.mainHandSlot.rect.height = buttonRect.height;
 
-    this.offHandSlot.rect.x = centerX + 1;
-    this.offHandSlot.rect.y = y + 90;
-    this.offHandSlot.rect.width = buttonRect.width;
-    this.offHandSlot.rect.height = buttonRect.height;
+  //   this.offHandSlot.rect.x = centerX + 1;
+  //   this.offHandSlot.rect.y = y + 90;
+  //   this.offHandSlot.rect.width = buttonRect.width;
+  //   this.offHandSlot.rect.height = buttonRect.height;
 
-    y += 5 * (buttonRect.height + BUTTON_SPACING) + MARGIN;
+  //   y += 5 * (buttonRect.height + BUTTON_SPACING) + MARGIN;
 
-    app.drawString(x + 2, y, 'Armor', Pico8Palette.YELLOW);
-    app.drawRightString(x + 85, y, this.player.armor.toString(), Pico8Palette.WHITE);
-    y += 10;
+  //   app.drawString(x + 2, y, 'Armor', Pico8Palette.YELLOW);
+  //   app.drawRightString(x + 85, y, this.player.armor.toString(), Pico8Palette.WHITE);
+  //   y += 10;
 
-    app.drawString(x + 2, y, 'Constitution', Pico8Palette.YELLOW);
-    app.drawRightString(x + 85, y, this.player.constitution.toString(), Pico8Palette.WHITE);
-    app.drawString(x + 95, y, `+${this.player.constitutionModifier}`, Pico8Palette.GREEN);
-    y += 10;
+  //   app.drawString(x + 2, y, 'Constitution', Pico8Palette.YELLOW);
+  //   app.drawRightString(x + 85, y, this.player.constitution.toString(), Pico8Palette.WHITE);
+  //   app.drawString(x + 95, y, `+${this.player.constitutionModifier}`, Pico8Palette.GREEN);
+  //   y += 10;
 
-    app.drawString(x + 2, y, 'Strength', Pico8Palette.YELLOW);
-    app.drawRightString(x + 85, y, this.player.strength.toString(), Pico8Palette.WHITE);
-    app.drawString(x + 95, y, `+${this.player.strengthModifier}`, Pico8Palette.GREEN);
-    y += 10;
+  //   app.drawString(x + 2, y, 'Strength', Pico8Palette.YELLOW);
+  //   app.drawRightString(x + 85, y, this.player.strength.toString(), Pico8Palette.WHITE);
+  //   app.drawString(x + 95, y, `+${this.player.strengthModifier}`, Pico8Palette.GREEN);
+  //   y += 10;
 
-    app.drawString(x + 2, y, 'Dexterity', Pico8Palette.YELLOW);
-    app.drawRightString(x + 85, y, this.player.dexterity.toString(), Pico8Palette.WHITE);
-    app.drawString(x + 95, y, `+${this.player.dexterityModifier}`, Pico8Palette.GREEN);
-    y += 10;
+  //   app.drawString(x + 2, y, 'Dexterity', Pico8Palette.YELLOW);
+  //   app.drawRightString(x + 85, y, this.player.dexterity.toString(), Pico8Palette.WHITE);
+  //   app.drawString(x + 95, y, `+${this.player.dexterityModifier}`, Pico8Palette.GREEN);
+  //   y += 10;
 
-    app.drawString(x + 2, y, 'Intelligence', Pico8Palette.YELLOW);
-    app.drawRightString(x + 85, y, this.player.intelligence.toString(), Pico8Palette.WHITE);
-    app.drawString(x + 95, y, `+${this.player.intelligenceModifier}`, Pico8Palette.GREEN);
-    y += 10;
+  //   app.drawString(x + 2, y, 'Intelligence', Pico8Palette.YELLOW);
+  //   app.drawRightString(x + 85, y, this.player.intelligence.toString(), Pico8Palette.WHITE);
+  //   app.drawString(x + 95, y, `+${this.player.intelligenceModifier}`, Pico8Palette.GREEN);
+  //   y += 10;
 
-    this.rect.height = y + MARGIN - containerRect.y;
-    this.drawChildren(app);
-  }
+  //   this.rect.height = y + MARGIN - containerRect.y;
+  //   this.drawChildren(app);
+  // }
 }

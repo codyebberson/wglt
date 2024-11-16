@@ -1,5 +1,4 @@
 import { ArrayList } from '../../core/arraylist';
-import { BaseApp } from '../../core/baseapp';
 import { ButtonSlot } from '../../core/gui/buttonslot';
 import { Dialog } from '../../core/gui/dialog';
 import { Key } from '../../core/keys';
@@ -9,8 +8,8 @@ import { Item } from '../item';
 import { ItemButton } from './itembutton';
 import { ItemContainerButtonSlot } from './itemcontainerbuttonslot';
 
-const MARGIN = 4;
-const BUTTON_SPACING = 2;
+// const MARGIN = 4;
+// const BUTTON_SPACING = 2;
 
 export class ItemContainerDialog extends Dialog {
   readonly messages: Message[];
@@ -87,48 +86,48 @@ export class ItemContainerDialog extends Dialog {
     return undefined;
   }
 
-  draw(app: BaseApp): void {
-    super.draw(app);
+  // draw(app: BaseApp): void {
+  //   super.draw(app);
 
-    // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
-    //   return;
-    // }
+  //   // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
+  //   //   return;
+  //   // }
 
-    // TODO
-    const buttonRect = new Rect(0, 0, 24, 24);
+  //   // TODO
+  //   const buttonRect = new Rect(0, 0, 24, 24);
 
-    // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-    // if (!buttonRect) {
-    //   return;
-    // }
+  //   // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
+  //   // if (!buttonRect) {
+  //   //   return;
+  //   // }
 
-    // Update positions of button slots
-    const containerRect = this.rect;
-    // const buttonRect = this.gui.renderer.buttonSlotRect;
-    let x = containerRect.x + MARGIN;
-    let y = containerRect.y + MARGIN;
+  //   // Update positions of button slots
+  //   const containerRect = this.rect;
+  //   // const buttonRect = this.gui.renderer.buttonSlotRect;
+  //   let x = containerRect.x + MARGIN;
+  //   let y = containerRect.y + MARGIN;
 
-    for (let i = 0; i < this.messages.length; i++) {
-      const msg = this.messages[i];
-      app.drawString(x, y, msg.text, msg.color);
-      y += 10;
-    }
+  //   for (let i = 0; i < this.messages.length; i++) {
+  //     const msg = this.messages[i];
+  //     app.drawString(x, y, msg.text, msg.color);
+  //     y += 10;
+  //   }
 
-    for (let i = 0; i < this.capacity; i++) {
-      const child = this.children.get(i);
-      child.rect.x = x;
-      child.rect.y = y;
-      child.rect.width = buttonRect.width;
-      child.rect.height = buttonRect.height;
+  //   for (let i = 0; i < this.capacity; i++) {
+  //     const child = this.children.get(i);
+  //     child.rect.x = x;
+  //     child.rect.y = y;
+  //     child.rect.width = buttonRect.width;
+  //     child.rect.height = buttonRect.height;
 
-      x += buttonRect.width + BUTTON_SPACING;
-      if (x > containerRect.x2 - buttonRect.width - MARGIN) {
-        x = containerRect.x + MARGIN;
-        y += buttonRect.height + BUTTON_SPACING;
-      }
-    }
+  //     x += buttonRect.width + BUTTON_SPACING;
+  //     if (x > containerRect.x2 - buttonRect.width - MARGIN) {
+  //       x = containerRect.x + MARGIN;
+  //       y += buttonRect.height + BUTTON_SPACING;
+  //     }
+  //   }
 
-    this.rect.height = y + MARGIN - containerRect.y;
-    this.drawChildren(app);
-  }
+  //   this.rect.height = y + MARGIN - containerRect.y;
+  //   this.drawChildren(app);
+  // }
 }

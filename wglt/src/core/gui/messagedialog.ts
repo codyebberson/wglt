@@ -1,18 +1,17 @@
-import { Dialog } from '../../core/gui/dialog';
-import { Rect } from '../../core/rect';
-import { BaseApp } from '../baseapp';
 import { Message } from '../message';
+import { Rect } from '../rect';
+import { Dialog } from './dialog';
+import { Label } from './label';
 
 export class MessageDialog extends Dialog {
   constructor(
     rect: Rect,
-    title: string,
+    title: string | undefined,
     readonly message: string | Message
   ) {
     super(rect, title);
-  }
 
-  draw(app: BaseApp): void {
-    super.draw(app);
+    const labelRect = new Rect(1, 1, rect.width - 2, rect.height - 2);
+    this.addChild(new Label(labelRect, message as string));
   }
 }

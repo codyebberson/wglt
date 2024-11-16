@@ -25,7 +25,7 @@ let y = 160;
 
 const testDialogRect = new Rect(100, 100, 200, 100);
 
-const testGui = new GUI(app.size);
+const testGui = new GUI(app);
 
 const testButtonSprite = new Sprite(0, 0, 16, 16);
 
@@ -35,7 +35,7 @@ testButton.tooltipMessages = [new Message('Test button tooltip', CgaPalette.YELL
 
 const testButtonSlot = new ButtonSlot(new Rect(10, 70, 24, 24));
 testButtonSlot.addChild(testButton);
-testGui.add(testButtonSlot);
+testGui.addChild(testButtonSlot);
 
 app.update = () => {
   const moveKey = app.getMovementKey();
@@ -47,8 +47,8 @@ app.update = () => {
   app.fillRect(0, 0, 640, 360, CgaPalette.DARK_BLUE);
 
   // testGui.update(app);
-  testGui.handleInput(app);
-  testGui.draw(app);
+  testGui.handleInput();
+  testGui.draw();
 
   app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
   app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
