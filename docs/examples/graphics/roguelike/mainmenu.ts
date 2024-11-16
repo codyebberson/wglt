@@ -18,13 +18,8 @@ export class MainMenu extends AppState {
     OPTIONS[1].enabled = !!app.game;
 
     // Draw the title text
-    this.app.drawCenteredString(
-      this.app.center.x + 1,
-      33,
-      'KOPI LUWAK DUNGEON',
-      Pico8Palette.BLACK
-    );
-    this.app.drawCenteredString(this.app.center.x, 32, 'KOPI LUWAK DUNGEON');
+    app.drawCenteredString(this.app.center.x + 1, 33, 'KOPI LUWAK DUNGEON', Pico8Palette.BLACK);
+    app.drawCenteredString(this.app.center.x, 32, 'KOPI LUWAK DUNGEON');
 
     // Draw the menu options
     const mouse = this.app.mouse;
@@ -38,8 +33,8 @@ export class MainMenu extends AppState {
       } else if (i === this.selectedIndex) {
         color = Pico8Palette.YELLOW;
       }
-      this.app.drawCenteredString(x + 1, y + 1, option.display, Pico8Palette.BLACK);
-      this.app.drawCenteredString(x, y, option.display, color);
+      app.drawCenteredString(x + 1, y + 1, option.display, Pico8Palette.BLACK);
+      app.drawCenteredString(x, y, option.display, color);
 
       if (mouse.y >= y && mouse.y < y + 14 && mouse.isClicked()) {
         window.location.hash = option.hash;

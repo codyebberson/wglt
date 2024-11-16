@@ -1,4 +1,5 @@
 import { Sprite } from 'wglt';
+import { App } from '../app';
 import { StatsActor } from '../entities/statsactor';
 import { Buff } from './buff';
 
@@ -29,7 +30,7 @@ export class Rage extends Buff {
   draw(): void {
     const actor = this.actor;
     const game = actor.game;
-    const app = game.app;
+    const app = game.app as App;
     SPRITE.draw(app, actor.pixelX - game.viewport.x, actor.pixelY - game.viewport.y);
   }
 

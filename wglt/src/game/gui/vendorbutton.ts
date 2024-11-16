@@ -1,5 +1,4 @@
 import { ArrayList } from '../../core/arraylist';
-import { BaseApp } from '../../core/baseapp';
 import { Button } from '../../core/gui/button';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
@@ -43,14 +42,14 @@ export class VendorButton extends Button {
     game.log(`Purchased ${item.name}`);
   }
 
-  draw(app: BaseApp): void {
-    super.draw(app);
+  // draw(app: BaseApp): void {
+  //   super.draw(app);
 
-    if (this.stackItems.length > 1) {
-      const dst = this.rect;
-      app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
-    }
-  }
+  //   if (this.stackItems.length > 1) {
+  //     const dst = this.rect;
+  //     app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
+  //   }
+  // }
 
   updateTooltip(): Message[] | undefined {
     if (this.stackItems.length > 0) {

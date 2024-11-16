@@ -1,8 +1,10 @@
 import { ArrayList } from '../../core/arraylist';
-import { BaseApp } from '../../core/baseapp';
 import { Button } from '../../core/gui/button';
+import { GUI } from '../../core/gui/gui';
+import { Renderer } from '../../core/gui/renderer';
 import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
+import { GraphicsApp } from '../../graphics/graphicsapp';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -33,14 +35,14 @@ export class ItemButton extends Button {
     }
   }
 
-  draw(app: BaseApp): void {
-    super.draw(app);
+  // draw(app: BaseApp): void {
+  //   super.draw(app);
 
-    if (this.stackItems.length > 1) {
-      const dst = this.rect;
-      app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
-    }
-  }
+  //   if (this.stackItems.length > 1) {
+  //     const dst = this.rect;
+  //     app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
+  //   }
+  // }
 
   updateTooltip(): Message[] | undefined {
     if (this.stackItems.length > 0) {
@@ -52,5 +54,16 @@ export class ItemButton extends Button {
     }
     // super.updateTooltip(tooltip);
     return this.tooltipMessages;
+  }
+}
+
+export class GraphicsItemButtonRenderer implements Renderer<GraphicsApp, ItemButton> {
+  render(gui: GUI<GraphicsApp>, itemButton: ItemButton): void {
+    // itemButton.draw(app);
+    // super.draw(app);
+    // if (this.stackItems.length > 1) {
+    //   const dst = this.rect;
+    //   app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
+    // }
   }
 }

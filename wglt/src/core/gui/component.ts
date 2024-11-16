@@ -8,7 +8,7 @@ export abstract class Component {
   static dragElement?: Component;
   static dragOffset?: Point;
   readonly rect: Rect;
-  root?: GUI;
+  // root?: GUI;
   parent?: Container;
   visible: boolean;
 
@@ -17,6 +17,16 @@ export abstract class Component {
     this.visible = true;
   }
 
+  get root(): GUI | undefined {
+    return this.parent?.root;
+  }
+
+  /**
+   * Handle input for this component.
+   * If the component handles the input, it should return true.
+   * If the component does not handle the input, it should return false.
+   * @returns true if the component handled the input, false otherwise.
+   */
   handleInput(): boolean {
     // By default, components do not handle input
     // Child classes can override this method

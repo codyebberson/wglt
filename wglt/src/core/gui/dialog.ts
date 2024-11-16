@@ -22,12 +22,12 @@ export class Dialog extends Container {
       return false;
     }
 
-    if (this.handleChildrenInput()) {
+    if (app.isKeyPressed(Key.VK_ESCAPE)) {
+      this.visible = false;
       return true;
     }
 
-    if (app.isKeyPressed(Key.VK_ESCAPE)) {
-      this.visible = false;
+    if (this.handleChildrenInput()) {
       return true;
     }
 

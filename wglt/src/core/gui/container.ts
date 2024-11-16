@@ -6,7 +6,7 @@ export class Container extends Component {
   readonly children = new ArrayList<Component>();
 
   addChild(child: Component): void {
-    child.root = this.root;
+    // child.root = this.root;
     child.parent = this;
     this.children.add(child);
   }
@@ -14,7 +14,7 @@ export class Container extends Component {
   removeChild(child: Component): void {
     this.children.remove(child);
     child.parent = undefined;
-    child.root = undefined;
+    // child.root = undefined;
   }
 
   moveChild(child: Component): void {

@@ -11,7 +11,7 @@ export class MessageDialog extends Dialog {
   ) {
     super(rect, title);
 
-    const labelRect = new Rect(1, 1, rect.width - 2, rect.height - 2);
+    const labelRect = new Rect(2, 2, rect.width - 2, rect.height - 2);
     this.addChild(new Label(labelRect, message as string));
   }
 }

@@ -1,4 +1,4 @@
-import { CgaPalette, Console, Rect, SelectDialog, SelectOption, loadImage2x } from 'wglt';
+import { CgaPalette, Console, Dialog, Rect, SelectInput, SelectOption, loadImage2x } from 'wglt';
 import { App, AppState } from './app';
 
 let menuBg: Console | null = null;
@@ -16,9 +16,11 @@ export class MainMenu implements AppState {
 
     if (gui.children.length === 0) {
       // Create the main menu if it doesn't exist
+      const dialog = new Dialog(new Rect(25, 20, 30, 10));
       const options: SelectOption[] = [{ name: 'Play a new game' }, { name: 'Continue last game' }];
-      gui.addChild(
-        new SelectDialog(new Rect(10, 15, 40, 20), 'MAIN MENU', options, (choice) => {
+      dialog.addChild(
+        new SelectInput(new Rect(2, 2, 40, 20), options, (choice) => {
+          dialog.close();
           if (choice.name === 'Play a new game') {
             this.app.newGame();
           } else if (choice.name === 'Continue last game') {
@@ -26,6 +28,7 @@ export class MainMenu implements AppState {
           }
         })
       );
+      gui.addChild(dialog);
     }
 
     gui.handleInput();
@@ -38,7 +41,6 @@ export class MainMenu implements AppState {
 
     term.drawCenteredString(40, 10, 'TOMBS OF THE ANCIENT KINGS', CgaPalette.YELLOW);
     term.drawCenteredString(40, 12, 'By Jotaf', CgaPalette.YELLOW);
-    // term.console.fillRect(10, 15, 20, 20, 0, CgaPalette.LIGHT_GRAY, CgaPalette.DARK_GRAY);
     gui.draw();
   }
 }

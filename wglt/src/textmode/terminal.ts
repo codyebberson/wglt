@@ -453,28 +453,28 @@ export class Terminal extends BaseApp {
     this.console.drawConsole(dstX, dstY, srcConsole, srcX, srcY, srcWidth, srcHeight, blendMode);
   }
 
-  drawImage(
-    x: number,
-    y: number,
-    u: number,
-    v: number,
-    w: number,
-    h: number,
-    color?: number | undefined,
-    dw?: number | undefined,
-    dh?: number | undefined
-  ): void {
-    throw new Error('Method not implemented.');
-  }
+  // drawImage(
+  //   x: number,
+  //   y: number,
+  //   u: number,
+  //   v: number,
+  //   w: number,
+  //   h: number,
+  //   color?: number | undefined,
+  //   dw?: number | undefined,
+  //   dh?: number | undefined
+  // ): void {
+  //   throw new Error('Method not implemented.');
+  // }
 
   drawString(
     x: number,
     y: number,
     str: string,
     color?: number | undefined,
-    out?: Point | undefined
+    bg?: number | undefined
   ): void {
-    this.console.drawString(x, y, str, color);
+    this.console.drawString(x, y, str, color, bg);
   }
 
   drawCenteredString(x: number, y: number, str: string, color?: number | undefined): void {

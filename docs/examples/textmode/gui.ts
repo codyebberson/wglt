@@ -6,27 +6,20 @@ import {
   Label,
   MessageDialog,
   Rect,
+  SelectInput,
   Terminal,
   TerminalDialogRenderer,
   TerminalLabelRenderer,
+  TerminalSelectInputRenderer,
 } from 'wglt';
 
 const term = new Terminal('canvas', 80, 45);
 
 const gui = new GUI(term);
-// gui.ren
-
-// const dialogConstructor = Dialog.constructor as ComponentConstructor<Dialog>;
 gui.renderers.set(Dialog, new TerminalDialogRenderer());
-console.log('gui.renders.size', gui.renderers.size);
-
-// const messageDialogConstructor = MessageDialog.constructor as ComponentConstructor<MessageDialog>;
 gui.renderers.set(MessageDialog, new TerminalDialogRenderer());
-console.log('gui.renders.size', gui.renderers.size);
-
 gui.renderers.set(Label, new TerminalLabelRenderer());
-
-// const options = ['Sword', 'Banana', 'Magic Potion', 'Red Stapler'];
+gui.renderers.set(SelectInput, new TerminalSelectInputRenderer());
 
 let x = 10;
 let y = 15;
@@ -54,46 +47,46 @@ term.update = () => {
     }
 
     if (term.isKeyPressed(Key.VK_F)) {
-      const dialog = new Dialog(new Rect(20, 10, 40, 20), 'Formatted Text');
+      const dialog = new Dialog(new Rect(18, 10, 44, 22), 'Formatted Text');
 
       dialog.addChild(
-        new Label(new Rect(1, 1, 20, 1), 'Dagger of the Rising Moon', CgaPalette.DARK_MAGENTA)
+        new Label(new Rect(2, 2, 20, 1), 'Dagger of the Rising Moon', CgaPalette.DARK_MAGENTA)
       );
 
-      dialog.addChild(new Label(new Rect(1, 3, 20, 1), 'Item Level 200', CgaPalette.YELLOW));
-      dialog.addChild(new Label(new Rect(1, 4, 20, 1), 'Binds when picked up', CgaPalette.WHITE));
-      dialog.addChild(new Label(new Rect(1, 5, 20, 1), 'Unique-Equipped', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 4, 20, 1), 'Item Level 200', CgaPalette.YELLOW));
+      dialog.addChild(new Label(new Rect(2, 5, 20, 1), 'Binds when picked up', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 6, 20, 1), 'Unique-Equipped', CgaPalette.WHITE));
 
-      dialog.addChild(new Label(new Rect(1, 7, 20, 1), 'One-Hand', CgaPalette.WHITE));
-      dialog.addChild(new Label(new Rect(33, 7, 20, 1), 'Dagger', CgaPalette.WHITE));
-      dialog.addChild(new Label(new Rect(1, 8, 20, 1), '195-293 Damage', CgaPalette.WHITE));
-      dialog.addChild(new Label(new Rect(29, 8, 20, 1), 'Speed 1.70', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 8, 20, 1), 'One-Hand', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(36, 8, 20, 1), 'Dagger', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 9, 20, 1), '195-293 Damage', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(32, 9, 20, 1), 'Speed 1.70', CgaPalette.WHITE));
 
       dialog.addChild(
-        new Label(new Rect(1, 9, 20, 1), '143.53 damage per second', CgaPalette.WHITE)
+        new Label(new Rect(2, 9, 20, 1), '143.53 damage per second', CgaPalette.WHITE)
       );
-      dialog.addChild(new Label(new Rect(1, 10, 20, 1), '+43 Stamina', CgaPalette.WHITE));
-      dialog.addChild(new Label(new Rect(1, 11, 20, 20), 'Total: 1.70', CgaPalette.LIGHT_GRAY));
-      dialog.addChild(new Label(new Rect(1, 13, 20, 1), 'Durability 75 / 75', CgaPalette.WHITE));
-      dialog.addChild(new Label(new Rect(1, 14, 20, 1), 'Requires Level 80', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 11, 20, 1), '+43 Stamina', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 12, 20, 20), 'Total: 1.70', CgaPalette.LIGHT_GRAY));
+      dialog.addChild(new Label(new Rect(2, 14, 20, 1), 'Durability 75 / 75', CgaPalette.WHITE));
+      dialog.addChild(new Label(new Rect(2, 15, 20, 1), 'Requires Level 80', CgaPalette.WHITE));
 
       dialog.addChild(
         new Label(
-          new Rect(1, 16, 20, 1),
+          new Rect(2, 17, 20, 1),
           'Equip: Improves critical strike by 22',
           CgaPalette.LIGHT_GREEN
         )
       );
       dialog.addChild(
         new Label(
-          new Rect(1, 17, 20, 1),
+          new Rect(2, 18, 20, 1),
           'Equip: Improves hit rating by 38',
           CgaPalette.LIGHT_GREEN
         )
       );
       dialog.addChild(
         new Label(
-          new Rect(1, 18, 20, 1),
+          new Rect(2, 19, 20, 1),
           'Equip: Increases attack power by 78',
           CgaPalette.LIGHT_GREEN
         )
@@ -120,13 +113,24 @@ term.update = () => {
     //       )
     //     );
     //   }
-    //   if (term.isKeyPressed(Key.VK_I)) {
-    //     gui.add(
-    //       new SelectDialog('INVENTORY', options, (choice) => {
-    //         gui.add(new MessageDialog('ALERT', `You chose: ${options[choice]}`));
-    //       })
-    //     );
-    //   }
+    if (term.isKeyPressed(Key.VK_I)) {
+      const dialog = new Dialog(new Rect(20, 10, 40, 8), 'Inventory');
+
+      dialog.addChild(
+        new SelectInput(
+          new Rect(1, 1, 38, 6),
+          [{ name: 'Apple' }, { name: 'Banana' }, { name: 'Coconut' }, { name: 'Dinosaur' }],
+          (choice) => {
+            dialog.close();
+            gui.addChild(
+              new MessageDialog(new Rect(30, 15, 20, 10), 'ALERT', `You chose: ${choice.name}`)
+            );
+          }
+        )
+      );
+
+      gui.addChild(dialog);
+    }
   }
 
   term.console.fillRect(0, 0, 80, 45, 0, CgaPalette.YELLOW, CgaPalette.DARK_BLUE);

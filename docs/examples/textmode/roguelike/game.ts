@@ -1,10 +1,11 @@
 import {
   CgaPalette,
   Color,
+  Dialog,
   Key,
   RNG,
   Rect,
-  SelectDialog,
+  SelectInput,
   TileMap,
   TileMapCell,
   computePath,
@@ -486,11 +487,21 @@ export class Game implements AppState {
           }
           return { name: text };
         });
-        this.app.gui.addChild(
-          new SelectDialog(new Rect(10, 10, 20, 20), 'INVENTORY', options, (choice) =>
-            this.useInventory(options.findIndex((option) => option === choice))
-          )
+
+        const dialog = new Dialog(new Rect(20, 10, 40, 20), 'INVENTORY');
+        dialog.addChild(
+          new SelectInput(new Rect(1, 1, 40, 20), options, (choice) => {
+            dialog.close();
+            this.useInventory(options.findIndex((option) => option === choice));
+          })
         );
+        this.app.gui.addChild(dialog);
+
+        // this.app.gui.addChild(
+        //   new SelectDialog(new Rect(10, 10, 20, 20), 'INVENTORY', options, (choice) =>
+        //     this.useInventory(options.findIndex((option) => option === choice))
+        //   )
+        // );
       }
     }
     if (term.isKeyPressed(Key.VK_C)) {

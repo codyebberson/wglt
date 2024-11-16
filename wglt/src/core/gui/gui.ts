@@ -14,8 +14,11 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   constructor(context: TContext) {
     super(context.size);
     this.context = context;
-    this.root = this;
     this.renderers = new RendererMap<TContext>();
+  }
+
+  get root(): GUI<TContext> {
+    return this;
   }
 
   // add(panel: Component): void {

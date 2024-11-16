@@ -1,6 +1,13 @@
-import { Pico8Palette } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Ability, Animation, AnimationFunction, TargetType } from 'wglt';
+import {
+  Ability,
+  Animation,
+  AnimationFunction,
+  Message,
+  Pico8Palette,
+  Sprite,
+  TargetType,
+} from 'wglt';
+import { App } from '../app';
 import { StatsActor } from '../entities/statsactor';
 
 const RANGE = 10;
@@ -89,7 +96,7 @@ export class NetherSwapAnimation extends Animation {
     const caster = this.caster;
     const target = this.target;
     const game = caster.game;
-    const app = game.app;
+    const app = game.app as App;
     ANIMATION.draw(app, caster.pixelX - game.viewport.x, caster.pixelY - game.viewport.y);
     ANIMATION.draw(app, target.pixelX - game.viewport.x, target.pixelY - game.viewport.y);
   }

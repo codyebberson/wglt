@@ -5,6 +5,10 @@ import { Terminal } from '../terminal';
 
 export class TerminalLabelRenderer implements Renderer<Terminal, Label> {
   render(gui: GUI<Terminal>, component: Label): void {
+    if (!component.text) {
+      return;
+    }
+
     const app = gui.context;
     if (!app) {
       return;
