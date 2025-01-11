@@ -1,6 +1,6 @@
 {
   "name": "wglt",
-  "version": "0.7.1",
+  "version": "2.0.0",
   "sideEffects": false,
   "type": "module",
   "types": "./dist/index.d.ts",
