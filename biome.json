@@ -26,6 +26,6 @@
     }
   },
   "files": {
-    "ignore": ["dist"]
+    "ignore": [".turbo", "dist"]
   }
 }
