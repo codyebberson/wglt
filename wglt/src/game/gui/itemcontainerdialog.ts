@@ -8,9 +8,6 @@ import { Item } from '../item';
 import { ItemButton } from './itembutton';
 import { ItemContainerButtonSlot } from './itemcontainerbuttonslot';
 
-// const MARGIN = 4;
-// const BUTTON_SPACING = 2;
-
 export class ItemContainerDialog extends Dialog {
   readonly messages: Message[];
   readonly capacity: number;
@@ -27,19 +24,9 @@ export class ItemContainerDialog extends Dialog {
       onRemove: (_, item) => this.removeItem(item),
     });
 
-    // for (let i = 0; i < capacity; i++) {
-    //   // Slots are repositioned at render time
-    //   const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
-    //   this.addChild(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), key));
-    // }
-
     let i = 0;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
-        // const item = new Item('Item', 'Item', 'item.png');
-        // item.stackSize = 5;
-        // items.add(item);
-
         const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
         this.addChild(new ItemContainerButtonSlot(new Rect(4 + x * 26, 10 + y * 26, 24, 24), key));
         i++;
@@ -98,49 +85,4 @@ export class ItemContainerDialog extends Dialog {
     }
     return undefined;
   }
-
-  // draw(app: BaseApp): void {
-  //   super.draw(app);
-
-  //   // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
-  //   //   return;
-  //   // }
-
-  //   // TODO
-  //   const buttonRect = new Rect(0, 0, 24, 24);
-
-  //   // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-  //   // if (!buttonRect) {
-  //   //   return;
-  //   // }
-
-  //   // Update positions of button slots
-  //   const containerRect = this.rect;
-  //   // const buttonRect = this.gui.renderer.buttonSlotRect;
-  //   let x = containerRect.x + MARGIN;
-  //   let y = containerRect.y + MARGIN;
-
-  //   for (let i = 0; i < this.messages.length; i++) {
-  //     const msg = this.messages[i];
-  //     app.drawString(x, y, msg.text, msg.color);
-  //     y += 10;
-  //   }
-
-  //   for (let i = 0; i < this.capacity; i++) {
-  //     const child = this.children.get(i);
-  //     child.rect.x = x;
-  //     child.rect.y = y;
-  //     child.rect.width = buttonRect.width;
-  //     child.rect.height = buttonRect.height;
-
-  //     x += buttonRect.width + BUTTON_SPACING;
-  //     if (x > containerRect.x2 - buttonRect.width - MARGIN) {
-  //       x = containerRect.x + MARGIN;
-  //       y += buttonRect.height + BUTTON_SPACING;
-  //     }
-  //   }
-
-  //   this.rect.height = y + MARGIN - containerRect.y;
-  //   this.drawChildren(app);
-  // }
 }

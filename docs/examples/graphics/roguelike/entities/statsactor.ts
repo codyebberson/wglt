@@ -6,9 +6,6 @@ import { EquipmentType } from '../equipment/equipmenttype';
 import { Game } from '../game';
 import { Player } from './player';
 
-// const START_BLOOD = 1367;
-// const END_BLOOD = 1370;
-
 export enum Sentiment {
   HOSTILE = -1,
   NEUTRAL = 0,

@@ -7,9 +7,6 @@ import { Rect } from '../../core/rect';
 import { Talent } from '../talent';
 import { TalentButton } from './talentbutton';
 
-// const MARGIN = 4;
-// const BUTTON_SPACING = 2;
-
 export class TalentsDialog extends Dialog {
   readonly messages: Message[];
   readonly capacity: number;
@@ -61,44 +58,4 @@ export class TalentsDialog extends Dialog {
     }
     return undefined;
   }
-
-  // draw(app: BaseApp): void {
-  //   super.draw(app);
-
-  //   // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-  //   // if (!buttonRect) {
-  //   //   return;
-  //   // }
-
-  //   // TODO
-  //   const buttonRect = new Rect(0, 32, 24, 24);
-
-  //   // Update positions of button slots
-  //   const containerRect = this.rect;
-  //   let x = containerRect.x + MARGIN;
-  //   let y = containerRect.y + MARGIN;
-
-  //   for (let i = 0; i < this.messages.length; i++) {
-  //     const msg = this.messages[i];
-  //     app.drawString(x, y, msg.text, msg.color);
-  //     y += 10;
-  //   }
-
-  //   for (let i = 0; i < this.capacity; i++) {
-  //     const child = this.children.get(i);
-  //     child.rect.x = x;
-  //     child.rect.y = y;
-  //     child.rect.width = buttonRect.width;
-  //     child.rect.height = buttonRect.height;
-
-  //     x += buttonRect.width + BUTTON_SPACING;
-  //     if (x > containerRect.x2 - buttonRect.width - MARGIN) {
-  //       x = containerRect.x + MARGIN;
-  //       y += buttonRect.height + BUTTON_SPACING;
-  //     }
-  //   }
-
-  //   this.rect.height = y + MARGIN - containerRect.y;
-  //   this.drawChildren(app);
-  // }
 }

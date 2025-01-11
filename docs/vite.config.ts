@@ -2,13 +2,6 @@ import { readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
-// Vite is used for the development server and the website.
-// ESBuild is used for the published library.
-// This allows us to use the Vite "Multi-Page App" feature.
-// Each example is its own Vite entry point.
-// For more details, see:
-// https://vitejs.dev/guide/build.html#multi-page-app
-
 const htmlFiles: string[] = ['./index.html', './home.html'];
 
 function findFiles(dir: string): void {

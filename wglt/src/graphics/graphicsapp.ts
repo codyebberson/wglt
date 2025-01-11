@@ -9,11 +9,6 @@ import { RenderSet } from './renderset';
 export interface GraphicsAppConfig {
   readonly size: Rect;
   readonly font: Font;
-  // readonly fillSourceRect: Rect;
-  // readonly dialogRect: Rect;
-  // readonly closeButtonRect: Rect;
-  // readonly buttonRect: Rect;
-  // readonly buttonSlotRect: Rect;
 }
 
 export class GraphicsApp extends BaseApp {
@@ -50,20 +45,6 @@ export class GraphicsApp extends BaseApp {
     this.renderSet.texcoordArrayIndex = 0;
     this.renderSet.colorArrayIndex = 0;
   }
-
-  // /**
-  //  * Fills a rectangle with a solid color.
-  //  * @param x Destination x coordinate.
-  //  * @param y Destination y coordinate.
-  //  * @param w Destination width.
-  //  * @param h Destination height.
-  //  * @param color The rectangle color.
-  //  */
-  // fillRect(x: number, y: number, w: number, h: number, color: Color): void {
-  //   // const src = this.fillSourceRect;
-  //   const src = this.config.fillSourceRect;
-  //   this.drawImage(x, y, src.x, src.y, src.width, src.height, color, w, h);
-  // }
 
   /**
    * Draws a sprite.
@@ -124,18 +105,6 @@ export class GraphicsApp extends BaseApp {
   drawRightString(x: number, y: number, str: string, color?: Color): void {
     this.renderSet.drawRightString(str, x, y, color);
   }
-
-  // drawPanelFrame(component: Component): void {
-  //   this.drawAutoRect(this.config.dialogRect, component.rect);
-  // }
-
-  // drawDialogFrame(component: Component): void {
-  //   this.drawAutoRect(this.config.dialogRect, component.rect);
-  // }
-
-  // drawButtonFrame(button: Button): void {
-  //   this.drawAutoRect(this.config.buttonRect, button.rect);
-  // }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {
     // Draws the dialog chrome using a 3x3 grid

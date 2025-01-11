@@ -3,9 +3,6 @@ import { Player } from '../entities/player';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
 
-// const MARGIN = 4;
-// const BUTTON_SPACING = 2;
-
 export class CharacterDialog extends Dialog {
   readonly player: Player;
 

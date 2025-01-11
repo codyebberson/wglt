@@ -9,8 +9,6 @@ import { Actor } from '../actor';
 import { Item } from '../item';
 import { VendorButton } from './vendorbutton';
 
-// const MARGIN = 4;
-// const BUTTON_SPACING = 2;
 const PAGE_SIZE = 5;
 
 export class VendorDialog extends Dialog {

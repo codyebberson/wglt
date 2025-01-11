@@ -218,23 +218,12 @@ export const oscillators = [
  */
 export const getFreq = (pitch: number): number => 65 * 2 ** (pitch / 12);
 
-// /**
-//  * Converts frequency to midi.
-//  * @param frequency The note frequency.
-//  * @returns The midi note.
-//  */
-// function frequencyToMidiNoteNumber(frequency) {
-//   return Math.round(69 + 12 * Math.log2(frequency / 440));
-// }
-
 /**
  * Cache of pre-built sounds.
  * Key is `${sfxIndex}-${pitchOffset}
  * Value is a AudioBuffer.
  */
 export const soundCache: Record<number, AudioBuffer> = {};
-
-// export const codyOutput = {};
 
 /**
  * Builds the sound from scratch.
