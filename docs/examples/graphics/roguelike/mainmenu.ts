@@ -40,16 +40,16 @@ export class MainMenu extends AppState {
         window.location.hash = option.hash;
       }
 
-      if (i === this.selectedIndex && this.app.isKeyPressed(Key.VK_ENTER)) {
+      if (i === this.selectedIndex && this.app.keyboard.isKeyPressed(Key.VK_ENTER)) {
         window.location.hash = option.hash;
       }
     }
 
-    if (this.app.isKeyPressed(Key.VK_UP)) {
+    if (this.app.keyboard.isUpKeyPressed()) {
       this.selectedIndex--;
     }
 
-    if (this.app.isKeyPressed(Key.VK_DOWN)) {
+    if (this.app.keyboard.isDownKeyPressed()) {
       this.selectedIndex++;
     }
 

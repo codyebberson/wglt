@@ -20,7 +20,7 @@ export class Dialog extends Panel {
       return false;
     }
 
-    if (app.isKeyPressed(Key.VK_ESCAPE)) {
+    if (app.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
       this.visible = false;
       return true;
     }

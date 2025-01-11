@@ -26,27 +26,27 @@ let y = 15;
 
 term.update = () => {
   if (!gui.handleInput()) {
-    if (term.isKeyDown(Key.VK_UP)) {
+    if (term.keyboard.isKeyDown(Key.VK_UP)) {
       y--;
     }
 
-    if (term.isKeyDown(Key.VK_LEFT)) {
+    if (term.keyboard.isKeyDown(Key.VK_LEFT)) {
       x--;
     }
 
-    if (term.isKeyDown(Key.VK_RIGHT)) {
+    if (term.keyboard.isKeyDown(Key.VK_RIGHT)) {
       x++;
     }
 
-    if (term.isKeyDown(Key.VK_DOWN)) {
+    if (term.keyboard.isKeyDown(Key.VK_DOWN)) {
       y++;
     }
 
-    if (term.isKeyPressed(Key.VK_H)) {
+    if (term.keyboard.isKeyPressed(Key.VK_H)) {
       gui.addChild(new MessageDialog(new Rect(30, 15, 20, 10), 'ALERT', 'Hello World'));
     }
 
-    if (term.isKeyPressed(Key.VK_F)) {
+    if (term.keyboard.isKeyPressed(Key.VK_F)) {
       const dialog = new Dialog(new Rect(18, 10, 44, 22), 'Formatted Text');
 
       dialog.addChild(
@@ -95,7 +95,7 @@ term.update = () => {
       gui.addChild(dialog);
     }
 
-    //   if (term.isKeyPressed(Key.VK_S)) {
+    //   if (term.keyboard.isKeyPressed(Key.VK_S)) {
     //     const messages = [];
     //     for (let i = 0; i < 100; i++) {
     //       messages.push(
@@ -113,7 +113,7 @@ term.update = () => {
     //       )
     //     );
     //   }
-    if (term.isKeyPressed(Key.VK_I)) {
+    if (term.keyboard.isKeyPressed(Key.VK_I)) {
       const dialog = new Dialog(new Rect(20, 10, 40, 8), 'Inventory');
 
       dialog.addChild(

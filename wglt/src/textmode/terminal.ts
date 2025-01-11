@@ -19,44 +19,9 @@ export interface TerminalOptions {
   maxFps?: number;
 }
 
-const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
-  // Up
-  [Key.VK_K]: new Point(0, -1),
-  [Key.VK_UP]: new Point(0, -1),
-  [Key.VK_NUMPAD8]: new Point(0, -1),
-  // Down
-  [Key.VK_J]: new Point(0, 1),
-  [Key.VK_DOWN]: new Point(0, 1),
-  [Key.VK_NUMPAD2]: new Point(0, 1),
-  // Left
-  [Key.VK_H]: new Point(-1, 0),
-  [Key.VK_LEFT]: new Point(-1, 0),
-  [Key.VK_NUMPAD4]: new Point(-1, 0),
-  // Right
-  [Key.VK_L]: new Point(1, 0),
-  [Key.VK_RIGHT]: new Point(1, 0),
-  [Key.VK_NUMPAD6]: new Point(1, 0),
-  // Top-left
-  [Key.VK_Y]: new Point(-1, -1),
-  [Key.VK_NUMPAD7]: new Point(-1, -1),
-  // Top-right
-  [Key.VK_U]: new Point(1, -1),
-  [Key.VK_NUMPAD9]: new Point(1, -1),
-  // Bottom-left
-  [Key.VK_B]: new Point(-1, 1),
-  [Key.VK_NUMPAD1]: new Point(-1, 1),
-  // Bottom-right
-  [Key.VK_N]: new Point(1, 1),
-  [Key.VK_NUMPAD3]: new Point(1, 1),
-  // Wait
-  [Key.VK_PERIOD]: new Point(0, 0),
-  [Key.VK_NUMPAD5]: new Point(0, 0),
-};
-
 const DEFAULT_OPTIONS: TerminalOptions = {
   fontUrl: IBM_BIOS_FONT_DATA_URL,
   font: FONT_IBM_BIOS,
-  movementKeys: DEFAULT_MOVEMENT_KEYS,
 };
 
 export class Terminal extends BaseApp {
@@ -452,21 +417,6 @@ export class Terminal extends BaseApp {
   ): void {
     this.console.drawConsole(dstX, dstY, srcConsole, srcX, srcY, srcWidth, srcHeight, blendMode);
   }
-
-  // drawImage(
-  //   x: number,
-  //   y: number,
-  //   u: number,
-  //   v: number,
-  //   w: number,
-  //   h: number,
-  //   color?: number | undefined,
-  //   dw?: number | undefined,
-  //   dh?: number | undefined
-  // ): void {
-  //   throw new Error('Method not implemented.');
-  // }
-
   drawString(
     x: number,
     y: number,
@@ -484,21 +434,4 @@ export class Terminal extends BaseApp {
   drawRightString(x: number, y: number, str: string, color?: number | undefined): void {
     this.console.drawString(x - str.length, y, str, color);
   }
-
-  // drawPanelFrame(component: Component): void {
-  //   this.console.drawDoubleBox(
-  //     component.rect.x,
-  //     component.rect.y,
-  //     component.rect.width,
-  //     component.rect.height
-  //   );
-  // }
-
-  // drawDialogFrame(dialog: Dialog): void {
-  //   this.console.drawDoubleBox(dialog.rect.x, dialog.rect.y, dialog.rect.width, dialog.rect.height);
-  // }
-
-  // drawButtonFrame(button: Button): void {
-  //   this.console.drawSingleBox(button.rect.x, button.rect.y, button.rect.width, button.rect.height);
-  // }
 }

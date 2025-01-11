@@ -41,7 +41,7 @@ function movePlayer(dx: number, dy: number): void {
 }
 
 term.update = () => {
-  const moveKey = term.getMovementKey();
+  const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     movePlayer(moveKey.x, moveKey.y);
   }

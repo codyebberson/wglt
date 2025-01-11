@@ -440,13 +440,13 @@ export class Game implements AppState {
       return;
     }
 
-    const movementKey = term.getMovementKey();
+    const movementKey = term.keyboard.getMovementKey();
 
     if (this.targetFunction) {
-      if (term.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons.get(0).isClicked()) {
+      if (term.keyboard.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons.get(0).isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (term.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons.get(2).isClicked()) {
+      if (term.keyboard.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons.get(2).isClicked()) {
         this.cancelTargeting();
       }
       if (movementKey) {
@@ -462,7 +462,7 @@ export class Game implements AppState {
     if (movementKey) {
       this.playerMoveOrAttack(movementKey.x, movementKey.y);
     }
-    if (term.isKeyPressed(Key.VK_G)) {
+    if (term.keyboard.isKeyPressed(Key.VK_G)) {
       // Pick up an item
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities[i];
@@ -471,7 +471,7 @@ export class Game implements AppState {
         }
       }
     }
-    if (term.isKeyPressed(Key.VK_I)) {
+    if (term.keyboard.isKeyPressed(Key.VK_I)) {
       if (this.player.inventory.length === 0) {
         // TODO
         // this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
@@ -504,7 +504,7 @@ export class Game implements AppState {
         // );
       }
     }
-    if (term.isKeyPressed(Key.VK_C)) {
+    if (term.keyboard.isKeyPressed(Key.VK_C)) {
       // TODO
       // const levelUpXp = LEVEL_UP_BASE + this.player.level * LEVEL_UP_FACTOR;
       // this.app.gui.add(
@@ -522,7 +522,7 @@ export class Game implements AppState {
       //   )
       // );
     }
-    if (term.isKeyPressed(Key.VK_COMMA)) {
+    if (term.keyboard.isKeyPressed(Key.VK_COMMA)) {
       if (this.player.x === this.stairs?.x && this.player.y === this.stairs?.y) {
         this.nextLevel();
       }

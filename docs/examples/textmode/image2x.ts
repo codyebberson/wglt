@@ -12,7 +12,7 @@ loadImage2x('/starry2x.png', (result) => {
 });
 
 term.update = () => {
-  const moveKey = term.getMovementKey();
+  const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     x += moveKey.x;
     y += moveKey.y;

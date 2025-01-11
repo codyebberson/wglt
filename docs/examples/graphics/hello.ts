@@ -11,7 +11,7 @@ let x = 160;
 let y = 160;
 
 app.update = () => {
-  const moveKey = app.getMovementKey();
+  const moveKey = app.keyboard.getMovementKey();
   if (moveKey) {
     x += moveKey.x * 8;
     y += moveKey.y * 8;

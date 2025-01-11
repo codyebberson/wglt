@@ -62,7 +62,7 @@ for (let i = 0; i < 500; i++) {
 }
 
 term.update = () => {
-  const moveKey = term.getMovementKey();
+  const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     lights[0].x += moveKey.x;
     lights[0].y += moveKey.y;

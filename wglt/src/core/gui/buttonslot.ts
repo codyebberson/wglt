@@ -16,29 +16,7 @@ export class ButtonSlot extends Container {
     return this.children.length > 0 ? (this.children.get(0) as Button) : undefined;
   }
 
-  // draw(app: BaseApp): void {
-  //   const dst = this.rect;
-  //   app.drawPanelFrame(this);
-
-  //   const button = this.button;
-  //   if (button && !button.isDragging()) {
-  //     button.rect.x = this.rect.x;
-  //     button.rect.y = this.rect.y;
-  //     button.rect.width = this.rect.width;
-  //     button.rect.height = this.rect.height;
-  //     this.drawChildren(app);
-  //   }
-
-  //   if (this.shortcutKey) {
-  //     app.drawRightString(dst.x2 - 3, dst.y + 3, getShortcutKeyDisplay(this.shortcutKey));
-  //   }
-  // }
-
   handleInput(): boolean {
-    // if (!this.gui) {
-    //   return false;
-    // }
-
     const app = this.root?.context;
     if (!app) {
       return false;
@@ -53,7 +31,7 @@ export class ButtonSlot extends Container {
     const button = this.button;
     if (button) {
       if (
-        (this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
+        (this.shortcutKey && app.keyboard.isKeyPressed(this.shortcutKey)) ||
         (this.screenRect.contains(mouse) && mouse.isClicked())
       ) {
         button.click();

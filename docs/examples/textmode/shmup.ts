@@ -89,7 +89,7 @@ scheduleWave();
 term.update = () => {
   const waveTime = time - wave.startTime;
 
-  const moveKey = term.getMovementKey();
+  const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     player.x = Math.max(0, Math.min(WIDTH - 2, player.x + moveKey.x));
     player.y = Math.max(0, Math.min(HEIGHT - 2, player.y + moveKey.y));
@@ -99,7 +99,7 @@ term.update = () => {
     player.cooldown--;
   }
 
-  if (player.cooldown === 0 && term.isKeyDown(Key.VK_Z)) {
+  if (player.cooldown === 0 && term.keyboard.isKeyDown(Key.VK_Z)) {
     bullets.push({
       x: player.x,
       y: player.y,

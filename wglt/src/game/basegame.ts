@@ -243,8 +243,8 @@ export abstract class BaseGame extends AppState {
       this.viewport.x -= mouse.dx / this.zoom;
       this.viewport.y -= mouse.dy / this.zoom;
     } else if (
-      !this.app.isKeyDown(Key.VK_CONTROL_LEFT) &&
-      !this.app.isKeyDown(Key.VK_CONTROL_RIGHT)
+      !this.app.keyboard.isKeyDown(Key.VK_CONTROL_LEFT) &&
+      !this.app.keyboard.isKeyDown(Key.VK_CONTROL_RIGHT)
     ) {
       const player = this.player as Actor;
       const viewportX_25 = this.viewport.x + ((this.viewport.width * 0.25) | 0);
@@ -366,34 +366,37 @@ export abstract class BaseGame extends AppState {
       this.cursor.y = ((this.viewport.y + mouse.y) / this.tileMap.tileSize.height) | 0;
     }
 
-    if (this.app.isKeyDown(Key.VK_CONTROL_LEFT) || this.app.isKeyDown(Key.VK_CONTROL_RIGHT)) {
+    if (
+      this.app.keyboard.isKeyDown(Key.VK_CONTROL_LEFT) ||
+      this.app.keyboard.isKeyDown(Key.VK_CONTROL_RIGHT)
+    ) {
       let dx = 0;
       let dy = 0;
-      if (this.app.isDownLeftKeyPressed()) {
+      if (this.app.keyboard.isDownLeftKeyPressed()) {
         dx = -1;
         dy = 1;
       }
-      if (this.app.isDownKeyPressed()) {
+      if (this.app.keyboard.isDownKeyPressed()) {
         dy = 1;
       }
-      if (this.app.isDownRightKeyPressed()) {
+      if (this.app.keyboard.isDownRightKeyPressed()) {
         dx = 1;
         dy = 1;
       }
-      if (this.app.isLeftKeyPressed()) {
+      if (this.app.keyboard.isLeftKeyPressed()) {
         dx = -1;
       }
-      if (this.app.isRightKeyPressed()) {
+      if (this.app.keyboard.isRightKeyPressed()) {
         dx = 1;
       }
-      if (this.app.isUpLeftKeyPressed()) {
+      if (this.app.keyboard.isUpLeftKeyPressed()) {
         dx = -1;
         dy = -1;
       }
-      if (this.app.isUpKeyPressed()) {
+      if (this.app.keyboard.isUpKeyPressed()) {
         dy = -1;
       }
-      if (this.app.isUpRightKeyPressed()) {
+      if (this.app.keyboard.isUpRightKeyPressed()) {
         dx = 1;
         dy = -1;
       }
@@ -404,40 +407,40 @@ export abstract class BaseGame extends AppState {
 
     if (this.isTargeting()) {
       if (
-        this.app.isKeyPressed(Key.VK_ENTER) ||
-        this.app.isKeyPressed(Key.VK_NUMPAD_ENTER) ||
+        this.app.keyboard.isKeyPressed(Key.VK_ENTER) ||
+        this.app.keyboard.isKeyPressed(Key.VK_NUMPAD_ENTER) ||
         this.app.mouse.isClicked()
       ) {
         this.endTargeting();
       }
-      if (this.app.isKeyPressed(Key.VK_ESCAPE)) {
+      if (this.app.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
         this.cancelTargeting();
       }
-      if (this.app.isDownLeftKeyPressed()) {
+      if (this.app.keyboard.isDownLeftKeyPressed()) {
         this.cursor.x--;
         this.cursor.y++;
       }
-      if (this.app.isDownKeyPressed()) {
+      if (this.app.keyboard.isDownKeyPressed()) {
         this.cursor.y++;
       }
-      if (this.app.isDownRightKeyPressed()) {
+      if (this.app.keyboard.isDownRightKeyPressed()) {
         this.cursor.x++;
         this.cursor.y++;
       }
-      if (this.app.isLeftKeyPressed()) {
+      if (this.app.keyboard.isLeftKeyPressed()) {
         this.cursor.x--;
       }
-      if (this.app.isRightKeyPressed()) {
+      if (this.app.keyboard.isRightKeyPressed()) {
         this.cursor.x++;
       }
-      if (this.app.isUpLeftKeyPressed()) {
+      if (this.app.keyboard.isUpLeftKeyPressed()) {
         this.cursor.x--;
         this.cursor.y--;
       }
-      if (this.app.isUpKeyPressed()) {
+      if (this.app.keyboard.isUpKeyPressed()) {
         this.cursor.y--;
       }
-      if (this.app.isUpRightKeyPressed()) {
+      if (this.app.keyboard.isUpRightKeyPressed()) {
         this.cursor.x++;
         this.cursor.y--;
       }
@@ -455,7 +458,7 @@ export abstract class BaseGame extends AppState {
       }
     }
 
-    if (this.app.isKeyPressed(Key.VK_X)) {
+    if (this.app.keyboard.isKeyPressed(Key.VK_X)) {
       // Explore
       this.path = computePath(this.tileMap, this.player, new Point(256, 0), 1000);
       this.pathIndex = 0;
@@ -482,31 +485,31 @@ export abstract class BaseGame extends AppState {
       return;
     }
 
-    if (this.app.isDownLeftKeyPressed() && this.tryMoveOrAttack(-1, 1)) {
+    if (this.app.keyboard.isDownLeftKeyPressed() && this.tryMoveOrAttack(-1, 1)) {
       return;
     }
-    if (this.app.isDownKeyPressed() && this.tryMoveOrAttack(0, 1)) {
+    if (this.app.keyboard.isDownKeyPressed() && this.tryMoveOrAttack(0, 1)) {
       return;
     }
-    if (this.app.isDownRightKeyPressed() && this.tryMoveOrAttack(1, 1)) {
+    if (this.app.keyboard.isDownRightKeyPressed() && this.tryMoveOrAttack(1, 1)) {
       return;
     }
-    if (this.app.isLeftKeyPressed() && this.tryMoveOrAttack(-1, 0)) {
+    if (this.app.keyboard.isLeftKeyPressed() && this.tryMoveOrAttack(-1, 0)) {
       return;
     }
-    if (this.app.isRightKeyPressed() && this.tryMoveOrAttack(1, 0)) {
+    if (this.app.keyboard.isRightKeyPressed() && this.tryMoveOrAttack(1, 0)) {
       return;
     }
-    if (this.app.isUpLeftKeyPressed() && this.tryMoveOrAttack(-1, -1)) {
+    if (this.app.keyboard.isUpLeftKeyPressed() && this.tryMoveOrAttack(-1, -1)) {
       return;
     }
-    if (this.app.isUpKeyPressed() && this.tryMoveOrAttack(0, -1)) {
+    if (this.app.keyboard.isUpKeyPressed() && this.tryMoveOrAttack(0, -1)) {
       return;
     }
-    if (this.app.isUpRightKeyPressed() && this.tryMoveOrAttack(1, -1)) {
+    if (this.app.keyboard.isUpRightKeyPressed() && this.tryMoveOrAttack(1, -1)) {
       return;
     }
-    if (this.app.isWaitKeyPressed()) {
+    if (this.app.keyboard.isWaitKeyPressed()) {
       this.player.ap = 0;
     }
   }

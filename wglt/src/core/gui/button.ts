@@ -34,7 +34,7 @@ export class Button extends Container {
     }
 
     if (
-      (this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
+      (this.shortcutKey && app.keyboard.isKeyPressed(this.shortcutKey)) ||
       (this.screenRect.contains(mouse) && mouse.isClicked())
     ) {
       this.click();
