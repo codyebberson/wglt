@@ -9,11 +9,11 @@ import { RenderSet } from './renderset';
 export interface GraphicsAppConfig {
   readonly size: Rect;
   readonly font: Font;
-  readonly fillSourceRect: Rect;
-  readonly dialogRect: Rect;
-  readonly closeButtonRect: Rect;
-  readonly buttonRect: Rect;
-  readonly buttonSlotRect: Rect;
+  // readonly fillSourceRect: Rect;
+  // readonly dialogRect: Rect;
+  // readonly closeButtonRect: Rect;
+  // readonly buttonRect: Rect;
+  // readonly buttonSlotRect: Rect;
 }
 
 export class GraphicsApp extends BaseApp {
@@ -51,19 +51,19 @@ export class GraphicsApp extends BaseApp {
     this.renderSet.colorArrayIndex = 0;
   }
 
-  /**
-   * Fills a rectangle with a solid color.
-   * @param x Destination x coordinate.
-   * @param y Destination y coordinate.
-   * @param w Destination width.
-   * @param h Destination height.
-   * @param color The rectangle color.
-   */
-  fillRect(x: number, y: number, w: number, h: number, color: Color): void {
-    // const src = this.fillSourceRect;
-    const src = this.config.fillSourceRect;
-    this.drawImage(x, y, src.x, src.y, src.width, src.height, color, w, h);
-  }
+  // /**
+  //  * Fills a rectangle with a solid color.
+  //  * @param x Destination x coordinate.
+  //  * @param y Destination y coordinate.
+  //  * @param w Destination width.
+  //  * @param h Destination height.
+  //  * @param color The rectangle color.
+  //  */
+  // fillRect(x: number, y: number, w: number, h: number, color: Color): void {
+  //   // const src = this.fillSourceRect;
+  //   const src = this.config.fillSourceRect;
+  //   this.drawImage(x, y, src.x, src.y, src.width, src.height, color, w, h);
+  // }
 
   /**
    * Draws a sprite.

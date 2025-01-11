@@ -7,13 +7,8 @@ import { Terminal } from '../terminal';
 export class TerminalSelectInputRenderer implements Renderer<Terminal, SelectInput> {
   render(gui: GUI<Terminal>, input: SelectInput): void {
     const terminal = gui.context;
-    let x = input.rect.x;
-    let y = input.rect.y;
-
-    if (input.parent) {
-      x += input.parent.rect.x;
-      y += input.parent.rect.y;
-    }
+    const x = input.screenRect.x;
+    const y = input.screenRect.y;
 
     for (let i = 0; i < input.options.length; i++) {
       const str = `${String.fromCharCode(65 + i)} - ${input.options[i].name}`;

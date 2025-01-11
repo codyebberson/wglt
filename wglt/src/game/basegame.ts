@@ -14,8 +14,6 @@ import { GraphicsApp } from '../graphics/graphicsapp';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { Animation } from './animations/animation';
-import { FadeInAnimation } from './animations/fadeinanimation';
-import { FadeOutAnimation } from './animations/fadeoutanimation';
 import { Entity } from './entity';
 import { Item } from './item';
 import { computePath } from './tilemap/path';
@@ -674,21 +672,6 @@ export abstract class BaseGame extends AppState {
     // this.inventoryDialog.visible = false;
     // this.characterDialog.visible = false;
     // this.talentsDialog.visible = false;
-  }
-
-  warpToPoint(point: Point): void {
-    this.addAnimation(
-      new FadeOutAnimation(30, () => {
-        if (this.player) {
-          this.player.x = point.x;
-          this.player.y = point.y;
-        }
-        this.stopAutoWalk();
-        this.resetViewport();
-        this.recomputeFov();
-        this.addAnimation(new FadeInAnimation(30));
-      })
-    );
   }
 
   findFreeTile(x0: number, y0: number, maxDistance: number): Point | undefined {

@@ -27,10 +27,23 @@ export class ItemContainerDialog extends Dialog {
       onRemove: (_, item) => this.removeItem(item),
     });
 
-    for (let i = 0; i < capacity; i++) {
-      // Slots are repositioned at render time
-      const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
-      this.addChild(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), key));
+    // for (let i = 0; i < capacity; i++) {
+    //   // Slots are repositioned at render time
+    //   const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
+    //   this.addChild(new ItemContainerButtonSlot(new Rect(0, 0, 24, 24), key));
+    // }
+
+    let i = 0;
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        // const item = new Item('Item', 'Item', 'item.png');
+        // item.stackSize = 5;
+        // items.add(item);
+
+        const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
+        this.addChild(new ItemContainerButtonSlot(new Rect(4 + x * 26, 10 + y * 26, 24, 24), key));
+        i++;
+      }
     }
   }
 

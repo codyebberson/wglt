@@ -1,20 +1,29 @@
 import { ArrayList } from '../arraylist';
+import { Message } from '../message';
 import { PointLike } from '../point';
+import { Rect } from '../rect';
 import { Component } from './component';
+import { Label } from './label';
 
 export class Container extends Component {
   readonly children = new ArrayList<Component>();
 
   addChild(child: Component): void {
-    // child.root = this.root;
     child.parent = this;
+    child.recalculateLayout();
     this.children.add(child);
   }
 
   removeChild(child: Component): void {
     this.children.remove(child);
     child.parent = undefined;
-    // child.root = undefined;
+  }
+
+  removeAllChildren(): void {
+    for (const child of this.children) {
+      child.parent = undefined;
+    }
+    this.children.clear();
   }
 
   moveChild(child: Component): void {
@@ -38,7 +47,7 @@ export class Container extends Component {
         return childResult;
       }
     }
-    if (this.rect.contains(point)) {
+    if (this.screenRect.contains(point)) {
       return this;
     }
     return undefined;
@@ -59,6 +68,18 @@ export class Container extends Component {
   //   }
   // }
 
+  recalculateLayout(): void {
+    // if (this.parent) {
+    //   // We can assume that the parent's screenRect is already up-to-date
+    //   this.screenRect.x = this.parent.rect.x + this.rect.x;
+    //   this.screenRect.y = this.parent.rect.y + this.rect.y;
+    // }
+    super.recalculateLayout();
+    for (let i = 0; i < this.children.length; i++) {
+      this.children.get(i).recalculateLayout();
+    }
+  }
+
   handleInput(): boolean {
     return this.handleChildrenInput();
   }
@@ -75,5 +96,15 @@ export class Container extends Component {
       }
     }
     return false;
+  }
+
+  static fromMessages(messages: Message[]): Container {
+    const container = new Container(new Rect(0, 0, 120, 10 * messages.length));
+    let y = 0;
+    for (const message of messages) {
+      container.addChild(new Label(new Rect(0, y, 100, 10), message.text ?? '', message.fg));
+      y += 10;
+    }
+    return container;
   }
 }

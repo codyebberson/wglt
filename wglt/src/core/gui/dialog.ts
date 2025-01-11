@@ -1,20 +1,18 @@
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
-import { Container } from './container';
+import { Panel } from './panel';
 
-export class Dialog extends Container {
+export class Dialog extends Panel {
   title?: string;
+  modal: boolean;
   closeButton: boolean;
 
   constructor(rect: Rect, title?: string) {
     super(rect);
     this.title = title;
+    this.modal = true;
     this.closeButton = false;
   }
-
-  // draw(app: BaseApp): void {
-  //   app.drawDialogFrame(this);
-  // }
 
   handleInput(): boolean {
     const app = this.root?.context;
@@ -32,7 +30,7 @@ export class Dialog extends Container {
     }
 
     const mouse = app.mouse;
-    if (mouse.isClicked() && !this.rect.contains(mouse)) {
+    if (mouse.isClicked() && !this.screenRect.contains(mouse)) {
       this.visible = false;
       return true;
     }

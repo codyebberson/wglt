@@ -1,5 +1,4 @@
-import { Sprite } from 'wglt';
-import { Item } from 'wglt';
+import { Item, Sprite } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 
@@ -22,7 +21,8 @@ export class Portal extends Item {
       return false;
     }
 
-    this.game.warpToPoint(exit);
+    const game = this.game as Game;
+    game.warpToPoint(exit);
     return true;
   }
 }

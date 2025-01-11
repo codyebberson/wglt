@@ -111,17 +111,7 @@ export class LevelUpDialog extends Dialog {
 
 export class LevelUpDialogRenderer implements Renderer<GraphicsApp, LevelUpDialog> {
   render(gui: GUI<GraphicsApp>, dialog: LevelUpDialog): void {
-    // super.draw(app);
-    // app.
-
     const app = gui.context;
-    if (!app) {
-      return;
-    }
-
-    // if (!this.gui || !this.gui.renderer.buttonSlotRect) {
-    //   return;
-    // }
 
     // TODO
     const buttonRect = new Rect(0, 0, 24, 24);

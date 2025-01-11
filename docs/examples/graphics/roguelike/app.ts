@@ -1,4 +1,4 @@
-import { FONT_04B03, FadeInAnimation, GraphicsApp, Rect } from 'wglt';
+import { FONT_04B03, GraphicsApp, Rect } from 'wglt';
 import { Credits } from './credits';
 import { Player } from './entities/player';
 import { Game } from './game';
@@ -18,11 +18,6 @@ export class App extends GraphicsApp {
     super({
       size: new Rect(0, 0, 640, 360),
       font: FONT_04B03,
-      fillSourceRect: new Rect(1008, 0, 16, 16),
-      dialogRect: new Rect(0, 32, 48, 48),
-      closeButtonRect: new Rect(0, 0, 80, 45),
-      buttonRect: new Rect(0, 32, 48, 48),
-      buttonSlotRect: new Rect(0, 32, 48, 48),
     });
     this.mainMenu = new MainMenu(this);
     this.highScores = new HighScores(this);
@@ -51,7 +46,7 @@ export class App extends GraphicsApp {
   playGame(): void {
     const game = this.game as Game;
     this.state = game;
-    game.addAnimation(new FadeInAnimation(30));
+    game.fadeIn();
   }
 
   showHighScores(): void {

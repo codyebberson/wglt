@@ -1,0 +1,21 @@
+import { BaseApp } from '../baseapp';
+import { Container } from './container';
+
+export class Panel extends Container {
+  showAt(app: BaseApp, x: number, y: number): void {
+    if (x < app.size.width / 2) {
+      this.rect.x = x + 2;
+    } else {
+      this.rect.x = x - this.rect.width - 1;
+    }
+
+    if (y < app.size.height / 2) {
+      this.rect.y = y + 2;
+    } else {
+      this.rect.y = y - this.rect.height - 1;
+    }
+
+    this.visible = true;
+    this.recalculateLayout();
+  }
+}

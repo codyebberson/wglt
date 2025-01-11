@@ -10,19 +10,14 @@ export class TerminalLabelRenderer implements Renderer<Terminal, Label> {
     }
 
     const app = gui.context;
-    if (!app) {
-      return;
-    }
-
-    let x = component.rect.x;
-    let y = component.rect.y;
-
-    if (component.parent) {
-      x += component.parent.rect.x;
-      y += component.parent.rect.y;
-    }
 
     // TODO: Implement halign and valign
-    app.console.drawString(x, y, component.text, component.fg, component.bg);
+    app.console.drawString(
+      component.screenRect.x,
+      component.screenRect.y,
+      component.text,
+      component.fg,
+      component.bg
+    );
   }
 }

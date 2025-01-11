@@ -1,4 +1,5 @@
-import { ButtonSlot, Container, Key, Rect, ShortcutBar } from 'wglt';
+import { ButtonSlot, Container, GUI, Key, Rect, Renderer, ShortcutBar } from 'wglt';
+import { App } from '../app';
 
 export class BottomPanel extends Container {
   readonly shortcutBar: ShortcutBar;
@@ -9,38 +10,30 @@ export class BottomPanel extends Container {
   readonly inventorySlot: ButtonSlot;
 
   constructor() {
-    super(new Rect(0, -43, 400, 43));
+    super(new Rect(0, 360 - 26, 400, 43));
 
-    this.shortcutBar = new ShortcutBar(new Rect(4, 0, 6 * 24, 28), 6);
+    this.shortcutBar = new ShortcutBar(new Rect(4, 0, 6 * 24, 28), new Rect(0, 0, 24, 24), 6);
     this.addChild(this.shortcutBar);
 
-    this.characterSlot = new ButtonSlot(new Rect(0, 3, 24, 24), Key.VK_C);
+    this.characterSlot = new ButtonSlot(new Rect(640 - 200, 0, 24, 24), Key.VK_C);
     this.addChild(this.characterSlot);
 
-    this.talentsSlot = new ButtonSlot(new Rect(0, 3, 24, 24), Key.VK_T);
+    this.talentsSlot = new ButtonSlot(new Rect(640 - 200 + 26, 0, 24, 24), Key.VK_T);
     this.addChild(this.talentsSlot);
 
-    this.inspectSlot = new ButtonSlot(new Rect(0, 3, 24, 24), Key.VK_SLASH);
+    this.inspectSlot = new ButtonSlot(new Rect(640 - 200 + 26 * 2, 0, 24, 24), Key.VK_SLASH);
     this.addChild(this.inspectSlot);
 
-    this.menuSlot = new ButtonSlot(new Rect(0, 3, 24, 24), Key.VK_Q);
+    this.menuSlot = new ButtonSlot(new Rect(640 - 200 + 26 * 3, 0, 24, 24), Key.VK_Q);
     this.addChild(this.menuSlot);
 
-    this.inventorySlot = new ButtonSlot(new Rect(100, 0, 24, 24), Key.VK_I);
+    this.inventorySlot = new ButtonSlot(new Rect(640 - 200 + 26 * 4, 0, 24, 24), Key.VK_I);
     this.addChild(this.inventorySlot);
   }
+}
 
-  // draw(app: BaseApp): void {
-  //   // Update button y-positions
-  //   // This will normally be a no-op
-  //   for (let i = 0; i < this.children.length; i++) {
-  //     this.children.get(i).rect.y = app.size.height - 28;
-
-  //     if (i > 0) {
-  //       this.children.get(i).rect.x = app.size.width - 2 - 26 * 6 + i * 26;
-  //     }
-  //   }
-
-  //   this.drawChildren(app);
-  // }
+export class BottomPanelRenderer implements Renderer<App, BottomPanel> {
+  render(gui: GUI<App>, component: BottomPanel): void {
+    gui.drawChildren(component);
+  }
 }

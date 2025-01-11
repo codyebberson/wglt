@@ -1,6 +1,8 @@
 import { ArrayList } from '../../core/arraylist';
 import { Button } from '../../core/gui/button';
+import { Container } from '../../core/gui/container';
 import { GUI } from '../../core/gui/gui';
+import { Panel } from '../../core/gui/panel';
 import { Renderer } from '../../core/gui/renderer';
 import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
@@ -16,7 +18,9 @@ export class ItemButton extends Button {
     this.containerItems = containerItems;
     this.stackItems = new ArrayList<Item>();
     this.stackItems.add(initialItem);
-    this.tooltipMessages = initialItem.tooltipMessages;
+    // this.tooltipMessages = initialItem.tooltipMessages;
+    // this.tooltip = initialItem.too
+    // this.tool
   }
 
   click(): void {
@@ -44,16 +48,33 @@ export class ItemButton extends Button {
   //   }
   // }
 
-  updateTooltip(): Message[] | undefined {
+  decorateTooltip(tooltipPanel: Panel): void {
+    let tooltipMessages: Message[] | undefined = undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
       item.onUpdateTooltip();
-      this.tooltipMessages = item.tooltipMessages;
-    } else {
-      this.tooltipMessages = undefined;
+      // this.tooltipMessages = item.tooltipMessages;
+      // if (item.tooltipMessages) {
+      //   this.tooltip = Container.fromMessages(item.tooltipMessages);
+      // }
+      tooltipMessages = item.tooltipMessages;
+      // } else {
+      //   this.tooltipMessages = undefined;
     }
-    // super.updateTooltip(tooltip);
-    return this.tooltipMessages;
+
+    if (tooltipMessages) {
+      tooltipPanel.addChild(Container.fromMessages(tooltipMessages));
+      tooltipPanel.visible = true;
+    } else {
+      tooltipPanel.visible = false;
+    }
+
+    //   // super.updateTooltip(tooltip);
+    //   return this.tooltipMessages;
+
+    // if (!this.tooltip) {
+    //   // this.tooltip = Container.fromMessages(this)
+    // }
   }
 }
 

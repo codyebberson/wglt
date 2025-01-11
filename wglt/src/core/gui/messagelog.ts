@@ -3,9 +3,12 @@ import { Container } from '../../core/gui/container';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
+import { GraphicsApp } from '../../graphics/graphicsapp';
+import { GUI } from './gui';
+import { Renderer } from './renderer';
 
 export class MessageLog extends Container {
-  private readonly messages: Message[];
+  readonly messages: Message[];
   readonly maxItems: number;
 
   constructor(rect: Rect, maxItems?: number) {
@@ -26,24 +29,20 @@ export class MessageLog extends Container {
     }
   }
 
-  // draw(app: BaseApp): void {
-  //   const pos = new Point(this.rect.x, this.rect.y);
-
-  //   if (pos.y < 0) {
-  //     // Negative y value indicates attached to bottom of screen
-  //     const bottom = app.size.height + pos.y + this.rect.height;
-  //     pos.y = bottom - this.messages.length * 10;
-  //   }
-
-  //   for (let i = 0; i < this.messages.length; i++) {
-  //     const msg = this.messages[i];
-  //     msg.draw(app, pos);
-  //     pos.x = 0;
-  //     pos.y += 10;
-  //   }
-  // }
-
   handleInput(): boolean {
     return false;
+  }
+}
+
+export class GraphicsMessageLogRenderer implements Renderer<GraphicsApp, MessageLog> {
+  render(gui: GUI<GraphicsApp>, component: MessageLog): void {
+    const app = gui.context;
+    const x = component.rect.x;
+    let y = component.rect.y;
+    for (let i = 0; i < component.messages.length; i++) {
+      const msg = component.messages[i];
+      app.drawString(x, y, msg.text ?? '', msg.fg);
+      y += 10;
+    }
   }
 }

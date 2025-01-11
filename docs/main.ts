@@ -1,12 +1,16 @@
-const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+function getIframeUrl() {
+  const hash = window.location.hash;
+  return hash.slice(1) || 'home.html';
+}
 
 function updateIframe() {
-  const hash = window.location.hash;
-  const url = hash.slice(1);
+  const url = getIframeUrl();
   if (url) {
     iframe.src = url;
   }
 }
 
-window.addEventListener('load', updateIframe);
+const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+iframe.src = getIframeUrl();
+
 window.addEventListener('hashchange', updateIframe);

@@ -7,9 +7,6 @@ import { Terminal } from '../terminal';
 export class TerminalDialogRenderer implements Renderer<Terminal, Dialog> {
   render(gui: GUI<Terminal>, component: Dialog): void {
     const app = gui.context;
-    if (!app) {
-      return;
-    }
 
     app.console.fillRect(
       component.rect.x,

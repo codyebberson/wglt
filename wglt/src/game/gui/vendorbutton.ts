@@ -1,6 +1,6 @@
 import { ArrayList } from '../../core/arraylist';
 import { Button } from '../../core/gui/button';
-import { Message } from '../../core/message';
+import { Panel } from '../../core/gui/panel';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
 import { Actor } from '../actor';
@@ -15,7 +15,7 @@ export class VendorButton extends Button {
     this.vendor = vendor;
     this.stackItems = new ArrayList<Item>();
     this.stackItems.add(initialItem);
-    this.tooltipMessages = initialItem.tooltipMessages;
+    // this.tooltipMessages = initialItem.tooltipMessages;
   }
 
   getFirstItem(): Item | undefined {
@@ -51,13 +51,13 @@ export class VendorButton extends Button {
   //   }
   // }
 
-  updateTooltip(): Message[] | undefined {
-    if (this.stackItems.length > 0) {
-      const item = this.stackItems.get(0);
-      item.onUpdateTooltip();
-      this.tooltipMessages = item.tooltipMessages;
-    }
-    // super.updateTooltip(tooltip);
-    return this.tooltipMessages;
+  decorateTooltip(tooltipPanel: Panel): void {
+    // if (this.stackItems.length > 0) {
+    //   const item = this.stackItems.get(0);
+    //   item.onUpdateTooltip();
+    //   this.tooltipMessages = item.tooltipMessages;
+    // }
+    // // super.updateTooltip(tooltip);
+    // return this.tooltipMessages;
   }
 }

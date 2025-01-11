@@ -1,14 +1,15 @@
 import { BaseApp } from '../baseapp';
 import { Point } from '../point';
+import { Rect } from '../rect';
 import { Component, ComponentConstructor } from './component';
 import { Container } from './container';
+import { Panel } from './panel';
 import { RendererMap } from './renderermap';
-import { TooltipDialog } from './tooltipdialog';
 
 export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;
   readonly renderers: RendererMap<TContext>;
-  tooltip?: TooltipDialog;
+  tooltip?: Panel;
   tooltipElement?: Component;
 
   constructor(context: TContext) {
@@ -21,19 +22,8 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     return this;
   }
 
-  // add(panel: Component): void {
-  //   this.root.addChild(panel);
-  // }
-
-  // remove(panel: Component): void {
-  //   this.root.removeChild(panel);
-  // }
-
-  // getChildAt(point: PointLike): Component | undefined {
-  //   return this.root.getChildAt(point);
-  // }
-
   handleInput(): boolean {
+    this.recalculateLayout();
     this.updateTooltip();
 
     if (this.updateDragging()) {
@@ -91,39 +81,57 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   updateTooltip(): undefined {
     const app = this.context;
 
-    if (Component.dragElement && this.tooltip) {
+    if (Component.dragElement) {
       // No tooltips while drag/drop
-      this.tooltip.visible = false;
+      this.hideTooltip();
       return;
     }
-    if (!this.tooltip?.visible) {
-      this.tooltipElement = undefined;
-    }
+
     const mouse = app.mouse;
-    if (!mouse.buttons.get(0).down && (mouse.dx !== 0 || mouse.dy !== 0)) {
-      const hoverPanel = this.getChildAt(mouse);
-      if (hoverPanel !== this) {
-        if (this.tooltipElement !== hoverPanel) {
-          // Hover element has changed
-          this.tooltipElement = hoverPanel;
-          if (!this.tooltip) {
-            this.tooltip = new TooltipDialog();
-            this.addChild(this.tooltip);
-          }
-          const hoverPanelMessages = hoverPanel?.updateTooltip();
-          if (hoverPanelMessages) {
-            this.tooltip.messages = hoverPanelMessages;
-            this.tooltip.visible = true;
-          } else {
-            this.tooltip.visible = false;
-          }
-        }
-        if (this.tooltip?.visible) {
-          // Update the tooltip to be on the mouse
-          // This is similar to WoW style tooltips.
-          this.tooltip.showAt(app, mouse.x, mouse.y);
-        }
+    if (mouse.buttons.get(0).down) {
+      // Hide tooltip when mouse is down
+      this.hideTooltip();
+      return;
+    }
+
+    if (mouse.dx === 0 && mouse.dy === 0) {
+      // No updates when mouse is stationary
+      return;
+    }
+
+    const hoverPanel = this.getChildAt(mouse);
+    if (!hoverPanel || hoverPanel === this) {
+      // If the mouse is over the GUI itself, hide the tooltip
+      this.hideTooltip();
+      return;
+    }
+
+    if (this.tooltipElement !== hoverPanel) {
+      // Hover element has changed
+      this.tooltipElement = hoverPanel;
+      if (!this.tooltip) {
+        // Create for first time
+        this.tooltip = new Panel(new Rect(0, 0, 1, 1));
+        this.addChild(this.tooltip);
+      } else {
+        // Move to front
+        this.moveChild(this.tooltip);
+        this.tooltip.removeAllChildren();
       }
+      hoverPanel.decorateTooltip(this.tooltip);
+    }
+
+    if (this.tooltip?.visible) {
+      // Update the tooltip to be on the mouse
+      // This is similar to WoW style tooltips.
+      this.tooltip.showAt(app, mouse.x, mouse.y);
+    }
+  }
+
+  hideTooltip(): void {
+    this.tooltipElement = undefined;
+    if (this.tooltip) {
+      this.tooltip.visible = false;
     }
   }
 

@@ -13,25 +13,13 @@ export class SelectInput extends Component {
 
   constructor(rect: Rect, options: SelectOption[], callback: (option: SelectOption) => void) {
     super(rect);
-    // this.title = title;
     this.options = options;
     this.callback = callback;
   }
 
-  // draw(app: BaseApp): void {
-  //   super.draw(app);
-  //   const offset = this.rect;
-  //   for (let i = 0; i < this.options.length; i++) {
-  //     const str = `${String.fromCharCode(65 + i)} - ${this.options[i].name}`;
-  //     app.drawString(offset.x + MARGIN, offset.y + MARGIN + i * LINE_HEIGHT, str);
-  //   }
-  // }
-
   handleInput(): boolean {
-    // console.log('CODY SelectInput.handleInput()');
     const app = this.root?.context;
     if (!app) {
-      console.log('CODY SelectInput.handleInput() !app');
       return false;
     }
 

@@ -3,11 +3,6 @@ import { CgaPalette, FONT_04B03, GraphicsApp, Rect } from 'wglt';
 const app = new GraphicsApp({
   size: new Rect(0, 0, 640, 360),
   font: FONT_04B03,
-  fillSourceRect: new Rect(1008, 0, 16, 16),
-  dialogRect: new Rect(0, 32, 48, 48),
-  closeButtonRect: new Rect(0, 0, 80, 45),
-  buttonRect: new Rect(0, 32, 48, 48),
-  buttonSlotRect: new Rect(0, 32, 48, 48),
 });
 
 interface MyObject {

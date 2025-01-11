@@ -1,24 +1,35 @@
-import { Message } from '../message';
 import { Point, PointLike } from '../point';
 import { Rect } from '../rect';
 import { Container } from './container';
 import { GUI } from './gui';
+import { Panel } from './panel';
 
 export abstract class Component {
   static dragElement?: Component;
   static dragOffset?: Point;
   readonly rect: Rect;
-  // root?: GUI;
+  readonly screenRect: Rect;
   parent?: Container;
   visible: boolean;
 
   constructor(rect: Rect) {
     this.rect = rect;
+    this.screenRect = rect.clone();
     this.visible = true;
   }
 
   get root(): GUI | undefined {
     return this.parent?.root;
+  }
+
+  recalculateLayout(): void {
+    if (this.parent) {
+      // We can assume that the parent's screenRect is already up-to-date
+      this.screenRect.x = this.parent.screenRect.x + this.rect.x;
+      this.screenRect.y = this.parent.screenRect.y + this.rect.y;
+      this.screenRect.width = this.rect.width;
+      this.screenRect.height = this.rect.height;
+    }
   }
 
   /**
@@ -32,8 +43,6 @@ export abstract class Component {
     // Child classes can override this method
     return false;
   }
-
-  // abstract draw(app: BaseApp): void;
 
   getChildAt(_point: PointLike): Component | undefined {
     // By default, components do not have children
@@ -56,10 +65,10 @@ export abstract class Component {
     return false;
   }
 
-  updateTooltip(): Message[] | undefined {
+  decorateTooltip(tooltipPanel: Panel): void {
     // By default, no visible tooltips
     // Inheriting classes can override this method with tooltip details
-    return undefined;
+    tooltipPanel.visible = false;
   }
 }
 

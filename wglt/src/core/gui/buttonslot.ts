@@ -2,6 +2,7 @@ import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Button } from './button';
+import { Panel } from './panel';
 
 export class ButtonSlot extends Container {
   shortcutKey?: Key;
@@ -53,14 +54,21 @@ export class ButtonSlot extends Container {
     if (button) {
       if (
         (this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
-        (this.rect.contains(mouse) && mouse.isClicked())
+        (this.screenRect.contains(mouse) && mouse.isClicked())
       ) {
         button.click();
         return true;
       }
     }
 
-    return mouse.buttons.get(0).down && this.rect.contains(mouse);
+    return mouse.buttons.get(0).down && this.screenRect.contains(mouse);
+  }
+
+  decorateTooltip(tooltipPanel: Panel): void {
+    const button = this.button;
+    if (button) {
+      button.decorateTooltip(tooltipPanel);
+    }
   }
 }
 

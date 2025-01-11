@@ -1,11 +1,16 @@
 import {
+  AutoRectRenderer,
   Button,
   ButtonSlot,
   CgaPalette,
+  Dialog,
   FONT_04B03,
   GUI,
   GraphicsApp,
-  Message,
+  GraphicsButtonRenderer,
+  GraphicsLabelRenderer,
+  Label,
+  Panel,
   Rect,
   Sprite,
 } from 'wglt';
@@ -13,46 +18,49 @@ import {
 const app = new GraphicsApp({
   size: new Rect(0, 0, 640, 360),
   font: FONT_04B03,
-  fillSourceRect: new Rect(1008, 0, 16, 16),
-  dialogRect: new Rect(0, 32, 48, 48),
-  closeButtonRect: new Rect(0, 0, 80, 45),
-  buttonRect: new Rect(0, 32, 48, 48),
-  buttonSlotRect: new Rect(0, 32, 48, 48),
 });
 
 let x = 160;
 let y = 160;
 
-const testDialogRect = new Rect(100, 100, 200, 100);
+const gui = new GUI(app);
 
-const testGui = new GUI(app);
+// Many UI elements require a "source rect", which defines where in the font image the sprite is located
+const dialogSourceRect = new Rect(0, 32, 48, 48);
 
-const testButtonSprite = new Sprite(0, 0, 16, 16);
+// Now we can register the renderer for the Dialog class
+gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(Label, new GraphicsLabelRenderer());
+gui.renderers.set(Button, new GraphicsButtonRenderer());
 
-const testButton = new Button(new Rect(10, 40, 24, 24), testButtonSprite);
-testButton.tooltipMessages = [new Message('Test button tooltip', CgaPalette.YELLOW)];
-// testGui.add(testButton);
+const testButtonSprite = new Sprite(128, 32, 16, 16);
+
+const testButton = new Button(new Rect(0, 0, 24, 24), testButtonSprite, undefined, () => {
+  const dialog = new Dialog(new Rect(100, 100, 200, 100), 'Test Dialog');
+  dialog.addChild(new Label(new Rect(10, 10, 180, 20), 'Hello world!', CgaPalette.YELLOW));
+  gui.addChild(dialog);
+});
+
+testButton.tooltip = new Label(new Rect(0, 0, 100, 20), 'Test button tooltip', CgaPalette.YELLOW);
 
 const testButtonSlot = new ButtonSlot(new Rect(10, 70, 24, 24));
 testButtonSlot.addChild(testButton);
-testGui.addChild(testButtonSlot);
+gui.addChild(testButtonSlot);
 
 app.update = () => {
-  const moveKey = app.getMovementKey();
-  if (moveKey) {
-    x += moveKey.x * 8;
-    y += moveKey.y * 8;
+  if (!gui.handleInput()) {
+    const moveKey = app.getMovementKey();
+    if (moveKey) {
+      x += moveKey.x * 8;
+      y += moveKey.y * 8;
+    }
   }
-
-  app.fillRect(0, 0, 640, 360, CgaPalette.DARK_BLUE);
-
-  // testGui.update(app);
-  testGui.handleInput();
-  testGui.draw();
 
   app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
   app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
   app.drawString(x, y, '@', CgaPalette.LIGHT_GREEN);
 
-  app.drawAutoRect(app.config.dialogRect, testDialogRect);
+  gui.draw();
 };

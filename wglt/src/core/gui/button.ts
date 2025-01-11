@@ -1,15 +1,16 @@
 import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
-import { Message } from '../../core/message';
 import { Rect } from '../../core/rect';
 import { Sprite } from '../sprite';
+import { Component } from './component';
 import { GUI } from './gui';
+import { Panel } from './panel';
 
 export class Button extends Container {
   readonly sprite: Sprite;
   shortcutKey?: Key;
   onClick?: () => void;
-  tooltipMessages?: Message[];
+  tooltip?: Component;
   draggable?: boolean;
 
   constructor(destRect: Rect, sprite: Sprite, shortcutKey?: Key, onClick?: () => void) {
@@ -19,14 +20,6 @@ export class Button extends Container {
     this.onClick = onClick;
   }
 
-  // draw(app: BaseApp): void {
-  //   const src = this.sprite;
-  //   const dst = this.rect;
-  //   const offsetX = ((dst.width - src.width) / 2) | 0;
-  //   const offsetY = ((dst.height - src.height) / 2) | 0;
-  //   src.draw(app, dst.x + offsetX, dst.y + offsetY);
-  // }
-
   handleInput(): boolean {
     const app = this.root?.context;
     if (!app) {
@@ -35,20 +28,20 @@ export class Button extends Container {
 
     const mouse = app.mouse;
 
-    if (this.draggable && this.rect.contains(mouse.start) && mouse.isDragging()) {
+    if (this.draggable && this.screenRect.contains(mouse.start) && mouse.isDragging()) {
       GUI.startDragging(app, this);
       return true;
     }
 
     if (
       (this.shortcutKey && app.isKeyPressed(this.shortcutKey)) ||
-      (this.rect.contains(mouse) && mouse.isClicked())
+      (this.screenRect.contains(mouse) && mouse.isClicked())
     ) {
       this.click();
       return true;
     }
 
-    return mouse.buttons.get(0).down && this.rect.contains(mouse);
+    return mouse.buttons.get(0).down && this.screenRect.contains(mouse);
   }
 
   click(): void {
@@ -57,9 +50,16 @@ export class Button extends Container {
     }
   }
 
-  updateTooltip(): Message[] | undefined {
-    return this.tooltipMessages;
+  decorateTooltip(tooltipPanel: Panel): void {
+    if (this.tooltip) {
+      this.tooltip.rect.x = 5;
+      this.tooltip.rect.y = 5;
+      tooltipPanel.addChild(this.tooltip);
+      tooltipPanel.rect.width = this.tooltip.rect.width + 10;
+      tooltipPanel.rect.height = this.tooltip.rect.height + 10;
+      tooltipPanel.visible = true;
+    } else {
+      tooltipPanel.visible = false;
+    }
   }
 }
-
-// const buttonClass = Button;

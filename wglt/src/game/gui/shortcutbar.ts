@@ -1,25 +1,28 @@
 import { ArrayList } from '../../core/arraylist';
 import { Container } from '../../core/gui/container';
+import { GUI } from '../../core/gui/gui';
+import { Renderer } from '../../core/gui/renderer';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
+import { GraphicsApp } from '../../graphics/graphicsapp';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
 import { ShortcutButtonSlot } from './shortcutbuttonslot';
 import { TalentButton } from './talentbutton';
 
-const DEFAULT_SPACING = 2;
-
 export class ShortcutBar extends Container {
   spacing: number;
 
-  constructor(rect: Rect, count: number, spacing?: number) {
+  constructor(rect: Rect, buttonSlotRect: Rect, count: number, spacing = 2) {
     super(rect);
-    this.spacing = spacing !== undefined ? spacing : DEFAULT_SPACING;
+    this.spacing = spacing;
 
     for (let i = 0; i < count; i++) {
       const key = `Digit${String.fromCharCode('1'.charCodeAt(0) + i)}` as Key;
-      const buttonSlot = new ShortcutButtonSlot(new Rect(0, 0, 24, 24), key);
+      const newRect = buttonSlotRect.clone();
+      newRect.x = i * (buttonSlotRect.width + spacing);
+      const buttonSlot = new ShortcutButtonSlot(newRect, key);
       this.addChild(buttonSlot);
     }
   }
@@ -69,23 +72,6 @@ export class ShortcutBar extends Container {
   }
 
   // draw(app: BaseApp): void {
-  //   // const buttonRect = (this.gui.renderer as GraphicsDialogRenderer)?.buttonSlotRect;
-  //   // if (!buttonRect) {
-  //   //   return;
-  //   // }
-
-  //   // TODO
-  //   const buttonRect = new Rect(0, 0, 24, 24);
-
-  //   for (let i = 0; i < this.children.length; i++) {
-  //     const child = this.children.get(i);
-  //     child.rect.x = this.rect.x + i * (buttonRect.width + DEFAULT_SPACING);
-  //     child.rect.y = this.rect.y;
-  //     child.rect.width = buttonRect.width;
-  //     child.rect.height = buttonRect.height;
-  //   }
-
-  //   this.drawChildren(app);
   // }
 
   private getFreeSlot(rightToLeft: boolean): ShortcutButtonSlot | undefined {
@@ -107,5 +93,11 @@ export class ShortcutBar extends Container {
       }
     }
     return undefined;
+  }
+}
+
+export class ShortcutBarRenderer implements Renderer<GraphicsApp, ShortcutBar> {
+  render(gui: GUI<GraphicsApp>, component: ShortcutBar): void {
+    gui.drawChildren(component);
   }
 }
