@@ -1,6 +1,4 @@
-import { Pico8Palette, Point } from 'wglt';
-import { Sprite } from 'wglt';
-import { AI, Actor } from 'wglt';
+import { AI, Actor, Pico8Palette, Point, Sprite } from 'wglt';
 import { Game } from '../game';
 import { Monster } from './monster';
 import { Player } from './player';

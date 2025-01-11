@@ -1,6 +1,4 @@
-import { Pico8Palette, Point } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Ability, SlideAnimation, TargetType } from 'wglt';
+import { Ability, Message, Pico8Palette, Point, SlideAnimation, Sprite, TargetType } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 
 const RANGE = 10;

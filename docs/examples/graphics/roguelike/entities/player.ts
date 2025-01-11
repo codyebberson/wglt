@@ -1,5 +1,4 @@
-import { Pico8Palette, Point } from 'wglt';
-import { Sprite } from 'wglt';
+import { Pico8Palette, Point, Sprite } from 'wglt';
 import { Game } from '../game';
 import { StatsActor } from './statsactor';
 

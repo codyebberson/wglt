@@ -1,6 +1,14 @@
-import { Pico8Palette, Point } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Ability, Actor, Entity, ProjectileAnimation, TargetType } from 'wglt';
+import {
+  Ability,
+  Actor,
+  Entity,
+  Message,
+  Pico8Palette,
+  Point,
+  ProjectileAnimation,
+  Sprite,
+  TargetType,
+} from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
 

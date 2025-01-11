@@ -1,6 +1,4 @@
-import { Rect } from 'wglt';
-import { Sprite } from 'wglt';
-import { AI } from 'wglt';
+import { AI, Rect, Sprite } from 'wglt';
 import { Game } from '../game';
 import { FlameCrawler } from './flamecrawler';
 import { Monster } from './monster';

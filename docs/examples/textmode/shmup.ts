@@ -1,5 +1,4 @@
-import { Terminal } from 'wglt';
-import { CgaPalette, Key, RNG, fromRgb } from 'wglt';
+import { CgaPalette, Key, RNG, Terminal, fromRgb } from 'wglt';
 
 interface Bullet {
   x: number;

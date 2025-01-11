@@ -1,5 +1,4 @@
-import { Sprite } from 'wglt';
-import { ItemQuality } from 'wglt';
+import { ItemQuality, Sprite } from 'wglt';
 import { Game } from '../game';
 import { Equipment } from './equipment';
 import { EquipmentSlot } from './equipmentslot';

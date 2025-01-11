@@ -1,6 +1,4 @@
-import { Pico8Palette } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Actor, Item, ItemQuality } from 'wglt';
+import { Actor, Item, ItemQuality, Message, Pico8Palette, Sprite } from 'wglt';
 import { Game } from '../game';
 
 const HEAL_AMOUNT = 4;

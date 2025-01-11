@@ -1,5 +1,4 @@
-import { Sprite } from 'wglt';
-import { Item } from 'wglt';
+import { Item, Sprite } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 

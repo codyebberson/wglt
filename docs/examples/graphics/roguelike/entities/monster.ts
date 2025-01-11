@@ -1,5 +1,4 @@
-import { Sprite } from 'wglt';
-import { Actor, BasicMonster } from 'wglt';
+import { Actor, BasicMonster, Sprite } from 'wglt';
 import { EquipmentBuilder } from '../equipment/equipmentbuilder';
 import { Game } from '../game';
 import { Gold } from '../items/gold';

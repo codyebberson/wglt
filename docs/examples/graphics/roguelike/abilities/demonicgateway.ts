@@ -1,7 +1,4 @@
-import { Pico8Palette } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Ability, TargetType } from 'wglt';
-import { TileMapCell } from 'wglt';
+import { Ability, Message, Pico8Palette, Sprite, TargetType, TileMapCell } from 'wglt';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
 import { Gateway } from '../items/gateway';

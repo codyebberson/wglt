@@ -1,6 +1,4 @@
-import { Pico8Palette } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Item } from 'wglt';
+import { Item, Message, Pico8Palette, Sprite } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
 

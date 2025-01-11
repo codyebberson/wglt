@@ -1,5 +1,4 @@
-import { Sprite } from 'wglt';
-import { Ability, Actor, Item, ItemQuality, TargetType } from 'wglt';
+import { Ability, Actor, Item, ItemQuality, Sprite, TargetType } from 'wglt';
 import { Game } from '../game';
 
 const SPRITE = new Sprite(736, 168, 16, 16);

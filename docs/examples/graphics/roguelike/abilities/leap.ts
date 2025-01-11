@@ -1,7 +1,14 @@
-import { Pico8Palette } from 'wglt';
-import { Message, Sprite } from 'wglt';
-import { Ability, Actor, SlideAnimation, Stunned, TargetType } from 'wglt';
-import { TileMapCell } from 'wglt';
+import {
+  Ability,
+  Actor,
+  Message,
+  Pico8Palette,
+  SlideAnimation,
+  Sprite,
+  Stunned,
+  TargetType,
+  TileMapCell,
+} from 'wglt';
 
 const LEAP_RANGE = 3;
 const LEAP_RADIUS = 2;
