@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "5.6.3",
-    "vite": "5.4.11",
+    "typescript": "5.7.3",
+    "vite": "6.0.7",
     "wglt": "0.7.1"
   }
 }
