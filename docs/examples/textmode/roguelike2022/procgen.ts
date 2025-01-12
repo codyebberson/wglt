@@ -1,4 +1,4 @@
-import { Rect, RNG } from 'wglt';
+import { RNG, Rect } from 'wglt';
 import { Actor } from './actor';
 import { Engine } from './engine';
 import {

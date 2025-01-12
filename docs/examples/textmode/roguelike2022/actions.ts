@@ -1,4 +1,4 @@
-import { capitalize, PointLike, serializable } from 'wglt';
+import { PointLike, capitalize, serializable } from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
@@ -18,7 +18,11 @@ export abstract class Action extends BaseComponent {
 }
 
 export abstract class ActionWithDirection extends Action {
-  constructor(actor: Actor, public dx: number, public dy: number) {
+  constructor(
+    actor: Actor,
+    public dx: number,
+    public dy: number
+  ) {
     super(actor);
   }
 }
@@ -34,16 +38,16 @@ export class MeleeAction extends ActionWithDirection {
     }
 
     const damage = this.actor.power - target.defense;
-    const attackDesc = capitalize(this.actor.name) + ' attacks ' + target.name;
+    const attackDesc = `${capitalize(this.actor.name)} attacks ${target.name}`;
     const color = this.actor === this.engine.player ? Colors.PLAYER_ATTACK : Colors.ENEMY_ATTACK;
 
     if (damage > 0) {
-      this.engine.log(attackDesc + ' for ' + damage + ' hit points!', color);
+      this.engine.log(`${attackDesc} for ${damage} hit points!`, color);
       this.engine.setPath(undefined);
       target.takeDamage(damage);
       zzfx(...hitSound);
     } else {
-      console.log(attackDesc + ' but does no damage.', color);
+      console.log(`${attackDesc} but does no damage.`, color);
     }
   }
 }
@@ -83,10 +87,11 @@ export class BumpAction extends ActionWithDirection {
     const destY = this.actor.y + this.dy;
     const target = this.gameMap.getActor(destX, destY);
     if (target) {
-      return new MeleeAction(this.actor, this.dx, this.dy).perform();
-    } else {
-      return new MovementAction(this.actor, this.dx, this.dy).perform();
+      new MeleeAction(this.actor, this.dx, this.dy).perform();
+      return;
     }
+
+    new MovementAction(this.actor, this.dx, this.dy).perform();
   }
 }
 
@@ -107,7 +112,10 @@ export class PickupAction extends Action {
 
 @serializable
 export class ItemAction extends Action {
-  constructor(actor: Actor, readonly item: Item) {
+  constructor(
+    actor: Actor,
+    readonly item: Item
+  ) {
     super(actor);
   }
 

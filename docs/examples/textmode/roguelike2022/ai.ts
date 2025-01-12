@@ -46,7 +46,10 @@ export class HostileEnemy extends BaseAI {
  */
 @serializable
 export class ConfusedEnemy extends BaseAI {
-  constructor(readonly previousAi: BaseAI, public turnsRemaining: number) {
+  constructor(
+    readonly previousAi: BaseAI,
+    public turnsRemaining: number
+  ) {
     super();
   }
 

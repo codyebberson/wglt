@@ -1,4 +1,4 @@
-import { capitalize, Color, serializable } from 'wglt';
+import { Color, capitalize, serializable } from 'wglt';
 import { BaseAI } from './ai';
 import { Colors } from './color';
 import { Entity, RenderOrder } from './entity';
@@ -84,18 +84,18 @@ export class Actor extends Entity {
     }
 
     if (logMessage) {
-      this.engine.log('You equip the ' + item.name);
+      this.engine.log(`You equip the ${item.name}`);
     }
   }
 
   unequip(item: Equipment | undefined): void {
     if (this.weapon && this.weapon === item) {
       this.weapon = undefined;
-      this.engine.log('You remove the ' + item.name);
+      this.engine.log(`You remove the ${item.name}`);
     }
     if (this.armor && this.armor === item) {
       this.armor = undefined;
-      this.engine.log('You remove the ' + item.name);
+      this.engine.log(`You remove the ${item.name}`);
     }
   }
 
@@ -165,7 +165,7 @@ export class Actor extends Entity {
     this.color = Colors.CORPSE;
     this.blocks = false;
     this.ai = undefined;
-    this.name = 'remains of ' + this.name;
+    this.name = `remains of ${this.name}`;
     this.renderOrder = RenderOrder.CORPSE;
   }
 }

@@ -23,7 +23,12 @@ export abstract class Item extends Entity {
 
 @serializable
 export class HealingItem extends Item {
-  constructor(char: string, color: Color, name: string, readonly amount: number) {
+  constructor(
+    char: string,
+    color: Color,
+    name: string,
+    readonly amount: number
+  ) {
     super(char, color, name);
   }
 
@@ -31,7 +36,10 @@ export class HealingItem extends Item {
     const amountRecovered = action.actor.heal(this.amount);
     if (amountRecovered > 0) {
       consume(action.actor, this);
-      this.engine.log(`You consume the ${this.name}, and recover ${amountRecovered} HP!`, Colors.HEALTH_RECOVERED);
+      this.engine.log(
+        `You consume the ${this.name}, and recover ${amountRecovered} HP!`,
+        Colors.HEALTH_RECOVERED
+      );
       zzfx(...healSound);
     } else {
       throw new Error('Your health is already full.');
@@ -41,7 +49,13 @@ export class HealingItem extends Item {
 
 @serializable
 export class LightningDamageItem extends Item {
-  constructor(char: string, color: Color, name: string, readonly damage: number, readonly maxRange: number) {
+  constructor(
+    char: string,
+    color: Color,
+    name: string,
+    readonly damage: number,
+    readonly maxRange: number
+  ) {
     super(char, color, name);
   }
 
@@ -61,7 +75,9 @@ export class LightningDamageItem extends Item {
     }
 
     if (target) {
-      this.engine.log(`A lightning bolt strikes the ${target.name} with a loud thunder, for ${this.damage} damage!`);
+      this.engine.log(
+        `A lightning bolt strikes the ${target.name} with a loud thunder, for ${this.damage} damage!`
+      );
       target.takeDamage(this.damage);
       consume(action.actor, this);
     } else {
@@ -72,7 +88,12 @@ export class LightningDamageItem extends Item {
 
 @serializable
 export class ConfusionItem extends Item {
-  constructor(char: string, color: Color, name: string, readonly numberOfTurns: number) {
+  constructor(
+    char: string,
+    color: Color,
+    name: string,
+    readonly numberOfTurns: number
+  ) {
     super(char, color, name);
   }
 
@@ -110,13 +131,22 @@ export class ConfusionItem extends Item {
 
 @serializable
 export class FireballDamageItem extends Item {
-  constructor(char: string, color: Color, name: string, readonly damage: number, readonly radius: number) {
+  constructor(
+    char: string,
+    color: Color,
+    name: string,
+    readonly damage: number,
+    readonly radius: number
+  ) {
     super(char, color, name);
   }
 
   getAction(consumer: Actor): Action | undefined {
     this.engine.log('Select a target location', Colors.NEEDS_TARGET);
-    this.engine.eventHandler = new AreaRangedAttackHandler(this.radius, new ItemAction(consumer, this));
+    this.engine.eventHandler = new AreaRangedAttackHandler(
+      this.radius,
+      new ItemAction(consumer, this)
+    );
     return undefined;
   }
 
