@@ -1,4 +1,5 @@
 import {
+  AppState,
   Dialog,
   GUI,
   Label,
@@ -15,11 +16,7 @@ import { MainMenu } from './mainmenu';
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
 
-export interface AppState {
-  update(): void;
-}
-
-export class App {
+export class App extends Terminal {
   readonly term: Terminal;
   readonly gui: GUI;
   state: AppState;
@@ -27,7 +24,11 @@ export class App {
   game?: Game;
 
   constructor() {
-    this.term = new Terminal('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
+    super('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // TODO: Remove this hack
+    this.term = this;
+
     this.gui = new GUI(this.term);
 
     this.gui.renderers.set(Dialog, new TerminalDialogRenderer());

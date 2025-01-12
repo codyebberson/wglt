@@ -1,5 +1,5 @@
-import { GraphicsApp, Rect, fromRgb } from 'wglt';
-import { BaseGame } from '../basegame';
+import { Rect, fromRgb } from 'wglt';
+import { Game } from '../game';
 import { Animation, AnimationFunction } from './animation';
 
 export class FadeInAnimation extends Animation {
@@ -11,8 +11,8 @@ export class FadeInAnimation extends Animation {
     super(duration, true, onDone);
   }
 
-  draw(game: BaseGame): void {
-    const app = game.app as GraphicsApp;
+  draw(game: Game): void {
+    const app = game.app;
     const src = this.fillRect;
     const x = this.countdown / this.duration;
     const alpha = Math.max(1, Math.min(255, (255.0 * x) | 0));

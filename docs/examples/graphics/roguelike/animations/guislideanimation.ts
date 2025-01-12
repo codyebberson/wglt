@@ -1,5 +1,5 @@
-import { GraphicsApp, Point, Sprite } from 'wglt';
-import { BaseGame } from '../basegame';
+import { Point, Sprite } from 'wglt';
+import { Game } from '../game';
 import { Animation } from './animation';
 
 export class GuiSlideAnimation extends Animation {
@@ -16,13 +16,10 @@ export class GuiSlideAnimation extends Animation {
     this.duration = duration;
   }
 
-  draw(game: BaseGame): void {
+  draw(game: Game): void {
     const f = this.countdown / this.duration;
     const x = f * this.start.x + (1.0 - f) * this.end.x;
     const y = f * this.start.y + (1.0 - f) * this.end.y;
-    // this.sprite.draw(game.app, x, y);
-
-    const app = game.app as GraphicsApp;
-    this.sprite.draw(app, x, y);
+    this.sprite.draw(game.app, x, y);
   }
 }

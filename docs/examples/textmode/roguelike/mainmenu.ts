@@ -1,5 +1,14 @@
-import { CgaPalette, Console, Dialog, Rect, SelectInput, SelectOption, loadImage2x } from 'wglt';
-import { App, AppState } from './app';
+import {
+  AppState,
+  CgaPalette,
+  Console,
+  Dialog,
+  Rect,
+  SelectInput,
+  SelectOption,
+  loadImage2x,
+} from 'wglt';
+import { App } from './app';
 
 let menuBg: Console | null = null;
 
@@ -7,9 +16,7 @@ loadImage2x('/menu.png', (result) => {
   menuBg = result;
 });
 
-export class MainMenu implements AppState {
-  constructor(private readonly app: App) {}
-
+export class MainMenu extends AppState<App> {
   update(): void {
     const term = this.app.term;
     const gui = this.app.gui;

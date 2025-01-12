@@ -22,7 +22,7 @@ export class Hearthstone extends Item {
   }
 
   onUse(player: Player): boolean {
-    const game = player.game as Game;
+    const game = player.game;
     game.hideAllDialogs();
     game.warpToPoint(player.home);
     return true;

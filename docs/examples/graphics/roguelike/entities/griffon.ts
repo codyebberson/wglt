@@ -20,7 +20,7 @@ class GriffonAI extends AI {
       return;
     }
 
-    const game = griffon.game as Game;
+    const game = griffon.game;
     const player = game.player as Player;
     if (!player || player.hp <= 0) {
       return;

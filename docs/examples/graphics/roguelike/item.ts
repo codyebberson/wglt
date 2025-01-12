@@ -77,7 +77,7 @@ export abstract class Item extends Entity {
     // Animate the icon going to the user's inventory slot.
     // TODO: How to expose this to library users?
     // Options:
-    //  1. Expose the notion of "inventory target" as a BaseGame constructor prop
+    //  1. Expose the notion of "inventory target" as a Game constructor prop
     //  2. Expose some kind of hook to override the pickup behavior
     // const start = new Point(this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
     // const end = new Point(this.game.app.size.width - 16, this.game.app.size.height - 24);

@@ -1,4 +1,4 @@
-import { GraphicsApp, Point, Sprite } from 'wglt';
+import { Point, Sprite } from 'wglt';
 import { Actor } from './actor';
 import { Game } from './game';
 
@@ -48,7 +48,7 @@ export class Entity extends Point {
 
   draw(): void {
     this.sprite.draw(
-      this.game.app as GraphicsApp,
+      this.game.app,
       this.pixelX - this.game.viewport.x + this.game.screenShakeOffset.x,
       this.pixelY - this.game.viewport.y + this.game.screenShakeOffset.y,
       this.flipped

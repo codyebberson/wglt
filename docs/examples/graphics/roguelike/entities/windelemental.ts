@@ -16,7 +16,7 @@ class WindElementalAI extends AI {
       return;
     }
 
-    const game = elemental.game as Game;
+    const game = elemental.game;
     const player = game.player as Player;
     if (!player || player.hp <= 0) {
       return;
@@ -60,7 +60,7 @@ class WindElementalAI extends AI {
 
   private createCrawler(x: number, y: number, dx: number, dy: number): void {
     const elemental = this.actor as WindElemental;
-    const game = elemental.game as Game;
+    const game = elemental.game;
     const player = game.player as Player;
     if (player && player.x === x && player.y === y) {
       // Ignore player's current location

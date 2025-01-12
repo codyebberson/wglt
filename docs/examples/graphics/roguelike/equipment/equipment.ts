@@ -1,6 +1,5 @@
 import { Message, Pico8Palette } from 'wglt';
 import { Player } from '../entities/player';
-import { Game } from '../game';
 import { Item } from '../item';
 import { EquipmentBuilder } from './equipmentbuilder';
 import { EquipmentSlot } from './equipmentslot';
@@ -53,7 +52,7 @@ export class Equipment extends Item {
   }
 
   onUpdateTooltip(): void {
-    const game = this.game as Game;
+    const game = this.game;
     const player = game.player as Player;
     const equipped = player.getEquipment(this.slot);
     if (equipped && equipped !== this) {

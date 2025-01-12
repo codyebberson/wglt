@@ -25,7 +25,7 @@ export abstract class Monster extends StatsActor {
   }
 
   private buildLoot(): void {
-    const game = this.game as Game;
+    const game = this.game;
 
     if (this.game.rng.nextRange(0, 6) <= 2) {
       this.inventory.add(new Gold(game, this.x, this.y));

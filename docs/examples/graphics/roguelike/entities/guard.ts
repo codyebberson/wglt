@@ -25,7 +25,7 @@ class GuardAI extends AI {
 
   doAi(): void {
     const guard = this.actor as Guard;
-    const game = guard.game as Game;
+    const game = guard.game;
     const player = game.player as Player;
 
     if (this.aggroTarget) {
@@ -40,7 +40,7 @@ class GuardAI extends AI {
 
       if (this.aggroCount === 1) {
         // First attack
-        const game = guard.game as Game;
+        const game = guard.game;
         game.log('Guard shouts for help!', Pico8Palette.BLUE);
         for (let i = 0; i < game.entities.length; i++) {
           const entity = game.entities.get(i);

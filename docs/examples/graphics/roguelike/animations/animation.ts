@@ -1,4 +1,4 @@
-import { BaseGame } from '../basegame';
+import { Game } from '../game';
 
 export type AnimationFunction = () => void;
 
@@ -17,7 +17,7 @@ export abstract class Animation {
     this.countdown--;
   }
 
-  draw(_game: BaseGame): void {
+  draw(_game: Game): void {
     // Subclasses should override this.
   }
 }

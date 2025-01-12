@@ -1,4 +1,4 @@
-import { Container, GUI, GraphicsApp, Pico8Palette, Rect, Renderer } from 'wglt';
+import { Container, GUI, Pico8Palette, Rect, Renderer } from 'wglt';
 import { App } from '../app';
 import { Player } from '../entities/player';
 import { Sentiment, StatsActor } from '../entities/statsactor';
@@ -55,7 +55,7 @@ export class EntityFramesRenderer implements Renderer<App, EntityFrames> {
     // gui.renderer.drawFrame(app, rect);
     // app.drawDialogFrame(this);
 
-    const graphicsApp = app as GraphicsApp;
+    const graphicsApp = app;
     const dialogSourceRect = new Rect(0, 32, 48, 48);
     graphicsApp.drawAutoRect(dialogSourceRect, rect);
 

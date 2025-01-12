@@ -1,7 +1,6 @@
 import { Message, Pico8Palette, Sprite, TileMapCell } from 'wglt';
 import { Ability, TargetType } from '../ability';
 import { StatsActor } from '../entities/statsactor';
-import { Game } from '../game';
 import { Gateway } from '../items/gateway';
 
 const RANGE = 10;
@@ -34,7 +33,7 @@ export class DemonicGatewayAbility implements Ability {
   }
 
   cast(caster: StatsActor, target: TileMapCell): boolean {
-    const game = caster.game as Game;
+    const game = caster.game;
     const distance = caster.distanceTo(target);
     if (distance > RANGE) {
       if (caster === game.player) {

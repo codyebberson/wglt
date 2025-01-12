@@ -17,7 +17,7 @@ class FlameCrawlerAI extends AI {
 
   doAi(): void {
     const monster = this.actor as FlameCrawler;
-    const game = monster.game as Game;
+    const game = monster.game;
     const player = game.player as Player;
     if (!player || player.hp <= 0) {
       return;

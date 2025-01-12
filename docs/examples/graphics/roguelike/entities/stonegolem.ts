@@ -20,7 +20,7 @@ class StoneGolemAI extends AI {
       return;
     }
 
-    const game = golem.game as Game;
+    const game = golem.game;
     const player = game.player as Player;
     if (!player || player.hp <= 0) {
       return;

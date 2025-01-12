@@ -16,7 +16,7 @@ class RedDragonAI extends AI {
       return;
     }
 
-    const game = dragon.game as Game;
+    const game = dragon.game;
     const player = game.player as Player;
     if (!player || player.hp <= 0) {
       return;
@@ -48,7 +48,7 @@ class RedDragonAI extends AI {
 
   private createCrawler(x: number, y: number, dx: number, dy: number): void {
     const dragon = this.actor as RedDragon;
-    const game = dragon.game as Game;
+    const game = dragon.game;
     if (game.isBlocked(x, y)) {
       // Ignore blocked
       return;

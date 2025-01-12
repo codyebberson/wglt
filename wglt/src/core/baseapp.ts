@@ -4,8 +4,8 @@ import { Mouse } from './mouse';
 import { Point } from './point';
 import { Rect } from './rect';
 
-export abstract class AppState {
-  constructor(readonly app: BaseApp) {}
+export abstract class AppState<TApp extends BaseApp = BaseApp> {
+  constructor(readonly app: TApp) {}
   abstract update(): void;
 }
 

@@ -1,5 +1,5 @@
-import { GraphicsApp, Point, Sprite } from 'wglt';
-import { BaseGame } from '../basegame';
+import { Point, Sprite } from 'wglt';
+import { Game } from '../game';
 import { Animation, AnimationFunction } from './animation';
 
 export class ProjectileAnimation extends Animation {
@@ -27,12 +27,9 @@ export class ProjectileAnimation extends Animation {
     this.position.add(this.velocity);
   }
 
-  draw(game: BaseGame): void {
+  draw(game: Game): void {
     const x = this.position.x - game.viewport.x;
     const y = this.position.y - game.viewport.y;
-    // this.sprite.draw(game.app, x, y);
-
-    const app = game.app as GraphicsApp;
-    this.sprite.draw(app, x, y);
+    this.sprite.draw(game.app, x, y);
   }
 }

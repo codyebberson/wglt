@@ -36,7 +36,7 @@ export class LightningAbility implements Ability {
   }
 
   cast(caster: StatsActor): boolean {
-    const game = caster.game as Game;
+    const game = caster.game;
     // Find closest enemy (inside a maximum range) and damage it
     const monster = this.getClosestMonster(game, caster, caster.x, caster.y, LIGHTNING_RANGE);
     if (!monster) {

@@ -22,7 +22,7 @@ export class Portal extends Item {
       return false;
     }
 
-    const game = this.game as Game;
+    const game = this.game;
     game.warpToPoint(exit);
     return true;
   }

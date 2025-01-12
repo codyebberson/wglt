@@ -50,7 +50,7 @@ export class Player extends StatsActor {
 
     if (levelUp) {
       this.recalculateMaxHp();
-      (this.game as Game).levelUpDialog.visible = true;
+      this.game.levelUpDialog.visible = true;
     }
   }
 

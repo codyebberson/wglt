@@ -154,7 +154,7 @@ export abstract class StatsActor extends Actor {
   }
 
   onDeath(attacker: StatsActor): void {
-    const game = this.game as Game;
+    const game = this.game;
     game.log(`${this.name} is dead`, Pico8Palette.LIGHT_GRAY);
     // game.entities.remove(this);
 

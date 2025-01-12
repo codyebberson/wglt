@@ -36,7 +36,7 @@ export class GrapplingHookAbility implements Ability {
   }
 
   cast(caster: StatsActor, target: TileMapCell): boolean {
-    const game = caster.game as Game;
+    const game = caster.game;
     const distance = caster.distanceTo(target);
     if (distance > RANGE) {
       if (caster === game.player) {

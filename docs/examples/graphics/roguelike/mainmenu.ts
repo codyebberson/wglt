@@ -9,12 +9,12 @@ const OPTIONS = [
   { display: 'CREDITS', hash: 'credits', enabled: true },
 ];
 
-export class MainMenu extends AppState {
+export class MainMenu extends AppState<App> {
   private selectedIndex = 0;
 
   update(): void {
     // "Continue" is only enabled if there is an active game
-    const app = this.app as App;
+    const app = this.app;
     OPTIONS[1].enabled = !!app.game;
 
     // Draw the title text

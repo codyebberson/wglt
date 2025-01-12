@@ -1,17 +1,17 @@
 import { Point, Sprite } from 'wglt';
-import { BaseGame } from '../basegame';
+import { Game } from '../game';
 import { Animation, AnimationFunction } from './animation';
 import { ProjectileAnimation } from './projectileanimation';
 
 export class ExplosionAnimation extends Animation {
-  readonly game: BaseGame;
+  readonly game: Game;
   readonly center: Point;
   readonly radius: number;
   readonly duration: number;
   readonly sprites: Sprite[];
 
   constructor(
-    game: BaseGame,
+    game: Game,
     center: Point,
     radius: number,
     duration: number,

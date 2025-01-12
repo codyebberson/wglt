@@ -1,4 +1,5 @@
 import {
+  AppState,
   CgaPalette,
   Color,
   Dialog,
@@ -13,7 +14,7 @@ import {
 } from 'wglt';
 import { Actor } from './actor';
 import { AI, BasicMonster, ConfusedMonster } from './ai';
-import { App, AppState } from './app';
+import { App } from './app';
 import { Entity } from './entity';
 import { Item } from './item';
 
@@ -56,8 +57,7 @@ const COLOR_LIGHT_WALL = fromRgb(130, 110, 50);
 const COLOR_DARK_GROUND = fromRgb(50, 50, 150);
 const COLOR_LIGHT_GROUND = fromRgb(200, 180, 50);
 
-export class Game implements AppState {
-  readonly app: App;
+export class Game extends AppState<App> {
   readonly rng: RNG;
   readonly player: Actor;
   readonly messages: { text: string; color: Color }[];
@@ -73,7 +73,7 @@ export class Game implements AppState {
   pathWalking: boolean;
 
   constructor(app: App) {
-    this.app = app;
+    super(app);
     this.rng = new RNG(Date.now());
     this.player = new Actor(this, 40, 25, '@', 'Player', CgaPalette.WHITE);
     this.player.level = 1;
