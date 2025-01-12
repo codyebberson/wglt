@@ -1,0 +1,691 @@
+import { Actor } from './actor';
+import { App } from './app';
+import { AppState } from './appstate';
+import { CompoundMessage } from './compoundmessage';
+import { Entity } from './entity';
+import { Game } from './game';
+import { Button } from './gui/button';
+import { ImagePanel } from './gui/imagepanel';
+import { ItemContainerDialog } from './gui/itemcontainerdialog';
+import { MessageLog } from './gui/messagelog';
+import { SelectDialog } from './gui/selectdialog';
+import { ShortcutBar } from './gui/shortcutbar';
+import { TalentsDialog } from './gui/talentsdialog';
+import { Keys } from './keys';
+import { Message } from './message';
+import { Pico8Colors } from './palettes/pico8colors';
+import { Rect } from './rect';
+import { RNG } from './rng';
+import { Sprite } from './sprite';
+import { Talent } from './talent';
+import { getTileId } from './tilemap/tilemap';
+import { Vec2 } from './vec2';
+
+// Size of the map
+const MAP_WIDTH = 60;
+const MAP_HEIGHT = 40;
+
+const TILE_SIZE = 16;
+const TILE_WALL = getTileId(0, 2);
+const TILE_FLOOR = getTileId(1, 2);
+const TILE_SHADOW = getTileId(10, 10);
+
+// Parameters for dungeon generator
+const ROOM_MAX_SIZE = 10;
+const ROOM_MIN_SIZE = 6;
+const MAX_ROOMS = 30;
+const MAX_ROOM_MONSTERS = 3;
+const MAX_ROOM_ITEMS = 2;
+const TORCH_RADIUS = 10;
+
+// Spell values
+const HEAL_AMOUNT = 4;
+const LIGHTNING_DAMAGE = 20;
+const LIGHTNING_RANGE = 5;
+const CONFUSE_RANGE = 8;
+const CONFUSE_NUM_TURNS = 10;
+const FIREBALL_RANGE = 10;
+const FIREBALL_RADIUS = 3;
+const FIREBALL_DAMAGE = 12;
+
+const Colors = Pico8Colors;
+
+class Fighter extends Actor {
+  constructor(game: Game, x: number, y: number, name: string, sprite: Sprite) {
+    super(game, x, y, name, sprite, true);
+  }
+
+  onAttack(target: Actor, damage: number) {
+    const attacker = this;
+    if (damage > 0) {
+      this.game.log(
+        attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.',
+        0x808080ff
+      );
+    } else {
+      this.game.log(
+        attacker.name + ' attacks ' + target.name + ' but it has no effect!',
+        0x808080ff
+      );
+    }
+  }
+}
+
+class Player extends Fighter {
+  level: number;
+  xp: number;
+  maxXp: number;
+
+  constructor(game: Game, x: number, y: number) {
+    super(game, x, y, 'Player', new Sprite(0, 16, 16, 16, 2, true));
+    this.level = 1;
+    this.xp = 0;
+    this.maxXp = 10;
+    this.zIndex = 2;
+  }
+
+  onDeath() {
+    this.game.log('You died!');
+  }
+}
+
+class Monster extends Fighter {
+  constructor(game, x, y, name, sprite) {
+    super(game, x, y, name, sprite);
+    this.hp = 20;
+    this.ai = new BasicMonster(this, calculateDamage);
+  }
+
+  onBump(player) {
+    player.attack(this, 10);
+    return true;
+  }
+
+  onDeath() {
+    const monster = this;
+    game.log(monster.name + ' is dead');
+    monster.blocks = false;
+    monster.ai = null;
+    monster.name = 'remains of ' + monster.name;
+    monster.sendToBack();
+
+    const xpGain = 10;
+    player.xp += xpGain;
+
+    while (player.xp >= player.maxXp) {
+      player.level++;
+      player.xp = 0;
+      player.maxXp *= 2;
+      game.log('You reached level ' + player.level, 0xff8000ff);
+    }
+  }
+}
+
+class Orc extends Monster {
+  constructor(game, x, y) {
+    super(game, x, y, 'Orc', new Sprite(32, 16, 16, 16, 2, true));
+  }
+}
+
+class Troll extends Monster {
+  constructor(game, x, y) {
+    super(game, x, y, 'Troll', new Sprite(64, 16, 16, 16, 2, true));
+  }
+}
+
+class Item extends Item {
+  onPickup(entity) {
+    this.game.log(entity.name + ' picked up gold coins', Colors.GREEN);
+  }
+}
+
+function createRoom(map, room) {
+  for (let y = room.y1 + 1; y < room.y2; y++) {
+    for (let x = room.x1 + 1; x < room.x2; x++) {
+      map.setTile(x, y, 0, TILE_FLOOR);
+      map.setBlocked(x, y, false);
+    }
+  }
+}
+
+function createHTunnel(map, x1, x2, y) {
+  for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+    map.setTile(x, y, 0, TILE_FLOOR);
+    map.setBlocked(x, y, false);
+  }
+}
+
+function createVTunnel(map, y1, y2, x) {
+  for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+    map.setTile(x, y, 0, TILE_FLOOR);
+    map.setBlocked(x, y, false);
+  }
+}
+
+function createMap() {
+  // Reset all FOV data
+  map.clear();
+
+  // Clear the map to all walls
+  for (let y = 0; y < MAP_HEIGHT; y++) {
+    for (let x = 0; x < MAP_WIDTH; x++) {
+      map.setTile(x, y, 0, TILE_WALL);
+      map.setAnimated(x, y, 0, false);
+      map.setBlocked(x, y, true);
+    }
+  }
+
+  // Reset field-of-view
+  map.resetFov();
+
+  const rooms = [];
+
+  for (let r = 0; r < MAX_ROOMS; r++) {
+    // Random width and height
+    const w = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
+    const h = rng.nextRange(ROOM_MIN_SIZE, ROOM_MAX_SIZE);
+
+    // Random position without going out of the boundaries of the map
+    const x = rng.nextRange(1, MAP_WIDTH - w - 2);
+    const y = rng.nextRange(1, MAP_HEIGHT - h - 2);
+
+    // "Rect" class makes rectangles easier to work with
+    const newRoom = new Rect(x, y, w, h);
+
+    // Run through the other rooms and see if they intersect with this one
+    let failed = false;
+    for (let j = 0; j < rooms.length; j++) {
+      if (newRoom.intersects(rooms[j])) {
+        failed = true;
+        break;
+      }
+    }
+
+    if (!failed) {
+      // This means there are no intersections, so this room is valid
+
+      // "paint" it to the map's tiles
+      createRoom(map, newRoom);
+
+      // Center coordinates of new room, will be useful later
+      const center = newRoom.getCenter();
+
+      if (rooms.length === 0) {
+        // This is the first room, where the player starts at
+        player.x = center.x;
+        player.y = center.y;
+        map.setTile(player.x, player.y, 1, TILE_SHADOW);
+        map.setAnimated(player.x, player.y, 0, true);
+      } else {
+        // All rooms after the first:
+        // Connect it to the previous room with a tunnel
+
+        // Center coordinates of previous room
+        const prev = rooms[rooms.length - 1].getCenter();
+
+        // Draw a coin (random number that is either 0 or 1)
+        if (rng.nextRange(0, 1) === 1) {
+          // First move horizontally, then vertically
+          createHTunnel(map, prev.x, center.x, prev.y);
+          createVTunnel(map, prev.y, center.y, center.x);
+        } else {
+          // First move vertically, then horizontally
+          createVTunnel(map, prev.y, center.y, prev.x);
+          createHTunnel(map, prev.x, center.x, center.y);
+        }
+      }
+
+      // Add some contents to this room, such as monsters
+      placeObjects(newRoom);
+
+      // Finally, append the new room to the list
+      rooms.push(newRoom);
+    }
+  }
+
+  // Create stairs at the center of the last room
+  const stairsLoc = rooms[rooms.length - 1].getCenter();
+  stairs = new Entity(
+    game,
+    stairsLoc.x,
+    stairsLoc.y,
+    'stairs',
+    new Sprite(32, 32, 16, 16, 1),
+    true
+  );
+  stairs.onBump = function () {
+    nextLevel();
+    return true;
+  };
+  game.entities.add(stairs);
+
+  // Initial FOV
+  game.resetViewport();
+  game.recomputeFov();
+}
+
+function placeObjects(room) {
+  // Choose random number of monsters
+  const numMonsters = rng.nextRange(0, MAX_ROOM_MONSTERS);
+
+  for (let i = 0; i < numMonsters; i++) {
+    // Choose random spot for this monster
+    const x = rng.nextRange(room.x1 + 1, room.x2 - 1);
+    const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
+    let monster = null;
+
+    // Only place it if the tile is not blocked
+    // 80% chance of getting an orc
+    if (rng.nextRange(0, 100) < 80) {
+      monster = new Orc(game, x, y);
+    } else {
+      monster = new Troll(game, x, y);
+    }
+
+    game.entities.add(monster);
+  }
+
+  // Choose random number of items
+  const numItems = rng.nextRange(0, MAX_ROOM_ITEMS);
+
+  for (let i = 0; i < numItems; i++) {
+    // Choose random spot for this item
+    const x = rng.nextRange(room.x1 + 1, room.x2 - 1);
+    const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
+
+    const dice = rng.nextRange(0, 100);
+    let itemName = null;
+    let itemSprite = null;
+    let itemUse = null;
+    let itemAbility = null;
+    let itemTooltips = null;
+
+    if (dice < 50) {
+      // Create a healing potion (50% chance)
+      itemName = 'healing potion';
+      itemSprite = new Sprite(128, 16, 16, 16, 1);
+      itemUse = castHeal;
+      itemTooltips = [
+        new Message('Ancient Healing Potion', Colors.BLUE),
+        new Message('Item Level 5', Colors.YELLOW),
+        new Message('Use: Restore 10 health', Colors.GREEN),
+      ];
+    } else if (dice < 50 + 20) {
+      // Create a lightning bolt scroll (20% chance)
+      itemName = 'scroll of lightning bolt';
+      itemSprite = new Sprite(144, 16, 16, 16, 1);
+      itemUse = readScroll;
+      itemAbility = new LightningAbility();
+    } else if (dice < 50 + 20 + 15) {
+      // Create a fireball scroll (15% chance)
+      itemName = 'scroll of fireball';
+      itemSprite = new Sprite(144, 16, 16, 16, 1);
+      itemUse = readScroll;
+      itemAbility = new FireballAbility();
+    } else {
+      // Create a confuse scroll (15% chance)
+      itemName = 'scroll of confusion';
+      itemSprite = new Sprite(144, 16, 16, 16, 1);
+      itemUse = readScroll;
+      itemAbility = new ConfuseAbility();
+    }
+
+    const item = new Item(game, x, y, itemName, itemSprite);
+    item.onPickup = pickupCallback;
+    item.onUse = itemUse;
+    item.ability = itemAbility;
+    item.tooltipMessages = itemTooltips;
+    game.entities.add(item);
+  }
+}
+
+function pickupCallback(entity) {
+  const item = this;
+  game.log(entity.name + ' picked up a ' + item.name, Colors.GREEN);
+}
+
+function getClosestMonster(x, y, range) {
+  let minDist = range + 1;
+  let result = null;
+  for (let i = 0; i < game.entities.length; i++) {
+    const entity = game.entities.get(i);
+    if (entity instanceof Actor && entity !== player) {
+      const dist = entity.distance(x, y);
+      if (dist < minDist) {
+        minDist = dist;
+        result = entity;
+      }
+    }
+  }
+  return result;
+}
+
+function getMonsterAt(x, y) {
+  return getClosestMonster(x, y, 0);
+}
+
+function calculateDamage(attacker, target) {
+  return 10;
+}
+
+function castHeal(caster) {
+  const item = this;
+
+  // Heal the player
+  if (caster.hp === caster.maxHp) {
+    game.log('You are already at full health.', Colors.RED);
+    return;
+  }
+
+  game.log('Your wounds start to feel better!', Colors.PINK);
+  caster.takeHeal(HEAL_AMOUNT);
+  caster.inventory.remove(item);
+  caster.ap--;
+}
+
+class LightningAbility {
+  constructor() {
+    this.name = 'Lightning';
+    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.targetType = TargetType.SELF;
+    this.cooldown = 10;
+    this.tooltipMessages = [
+      new Message('Lightning', Colors.WHITE),
+      new Message('2% of base mana', Colors.WHITE),
+      new Message('2 turn cast', Colors.WHITE),
+      new Message('Hurls a bolt of lightning at the target', Colors.YELLOW),
+      new Message('dealing 20 damage.', Colors.YELLOW),
+    ];
+  }
+
+  cast(caster) {
+    // Find closest enemy (inside a maximum range) and damage it
+    const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
+    if (!monster) {
+      game.log('No enemy is close enough to strike.', Colors.RED);
+      return false;
+    }
+
+    // Zap it!
+    game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', Colors.BLUE);
+    game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', Colors.BLUE);
+    monster.takeDamage(caster, LIGHTNING_DAMAGE);
+    caster.ap--;
+    return true;
+  }
+}
+
+class FireballAbility {
+  constructor() {
+    this.name = 'Fireball';
+    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.targetType = TargetType.TILE;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new Message('Fireball', Colors.WHITE),
+      new Message('2% of base mana', Colors.WHITE),
+      new Message('2 turn cast', Colors.WHITE),
+      new Message('Throws a fiery ball causing 10 damage', Colors.YELLOW),
+      new Message('to all enemies within 3 tiles.', Colors.YELLOW),
+    ];
+  }
+
+  cast(caster, target) {
+    const distance = caster.distanceTo(target);
+    if (distance > FIREBALL_RANGE) {
+      game.log('Target out of range.', Colors.LIGHT_GRAY);
+      return false;
+    }
+
+    const speed = 8;
+    const count = distance * (TILE_SIZE / speed);
+    const dx = (target.x * TILE_SIZE - caster.pixelX) / count;
+    const dy = (target.y * TILE_SIZE - caster.pixelY) / count;
+
+    game.addAnimation(
+      new ProjectileAnimation(
+        new Sprite(128, 32, 16, 16, 3, false),
+        new Vec2(caster.pixelX, caster.pixelY),
+        new Vec2(dx, dy),
+        count
+      )
+    );
+
+    game.addAnimation(
+      new ProjectileAnimation(
+        new Sprite(176, 32, 16, 16, 4, false, 4),
+        new Vec2(target.x * TILE_SIZE, target.y * TILE_SIZE),
+        new Vec2(0, 0),
+        16
+      )
+    );
+
+    game.log(
+      'The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!',
+      Colors.ORANGE
+    );
+
+    for (let i = game.entities.length - 1; i >= 0; i--) {
+      const entity = game.entities.get(i);
+      if (entity instanceof Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
+        game.log(
+          'The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.',
+          Colors.ORANGE
+        );
+        entity.takeDamage(caster, FIREBALL_DAMAGE);
+      }
+    }
+
+    caster.ap--;
+    return true;
+  }
+}
+
+class ConfuseAbility {
+  constructor() {
+    this.name = 'Confuse';
+    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.targetType = TargetType.ENTITY;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new Message('Confuse', Colors.WHITE),
+      new Message('2% of base mana', Colors.WHITE),
+      new Message('2 turn cast', Colors.WHITE),
+      new Message('Throws a fiery ball causing 10 damage', Colors.YELLOW),
+      new Message('to all enemies within 3 tiles.', Colors.YELLOW),
+    ];
+  }
+
+  cast(caster, target) {
+    if (caster.distanceTo(target) > CONFUSE_RANGE) {
+      game.log('Target out of range.', Colors.LIGHT_GRAY);
+      return;
+    }
+
+    target.ai = new ConfusedMonster(target);
+    game.log(
+      'The eyes of the ' + target.name + ' look vacant, as he stumbles around!',
+      Colors.GREEN
+    );
+    caster.ap--;
+    return true;
+  }
+}
+
+function readScroll() {
+  const item = this;
+  const ability = this.ability;
+  player.cast(ability, undefined, function () {
+    player.inventory.remove(item);
+  });
+}
+
+function nextLevel() {
+  game.addAnimation(new FadeOutAnimation(30)).then(() => {
+    game.log('You take a moment to rest, and recover your strength.', Colors.PINK);
+    game.log('After a rare moment of peace, you descend deeper...', Colors.RED);
+    game.entities = new ArrayList();
+    game.entities.add(player);
+    game.stopAutoWalk();
+    createMap();
+    game.addAnimation(new FadeInAnimation(30));
+  });
+}
+
+const app = new App({
+  canvas: document.querySelector('canvas'),
+  imageUrl: '../graphics.png',
+  size: new Rect(0, 0, 400, 224),
+});
+
+const game = new Game(app, {
+  tileSize: new Rect(0, 0, TILE_SIZE, TILE_SIZE),
+  mapSize: new Rect(0, 0, MAP_WIDTH, MAP_HEIGHT),
+  mapLayers: 3,
+  horizontalViewDistance: 8,
+  verticalViewDistance: 4,
+  focusMargins: new Vec2(32, 32),
+});
+
+game.targetSprite = new Sprite(0, 48, 16, 16);
+game.cooldownSprite = new Sprite(0, 160, 16, 16, 24);
+game.blackoutRect = new Rect(0, 32, 16, 16);
+game.gui.renderer.baseRect = new Rect(0, 64, 24, 24);
+game.gui.renderer.closeButtonRect = new Rect(208, 16, 16, 16);
+game.gui.renderer.buttonSlotRect = new Rect(0, 88, 24, 24);
+
+const map = game.tileMap;
+const rng = new RNG(1);
+const player = new Player(game, 30, 20);
+game.player = player;
+game.entities.add(player);
+
+game.messageLog = new MessageLog(new Rect(1, -78, 100, 50));
+game.gui.add(game.messageLog);
+game.log(
+  new CompoundMessage(
+    new Message('Welcome stranger! ', Colors.DARK_PURPLE),
+    new Message('Prepare to perish!', Colors.RED)
+  )
+);
+
+const playerStats = new Panel(new Rect(1, 1, 100, 100));
+playerStats.drawContents = () => {
+  const frameY = 0;
+  app.drawString(player.name, 1, frameY);
+
+  const hpPercent = player.hp / player.maxHp;
+  app.drawImage(0, frameY + 7, 32, 64, 32, 12);
+  app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
+  app.drawString(player.hp + '/' + player.maxHp, 3, frameY + 10);
+
+  const xpPercent = player.xp / player.maxXp;
+  app.drawImage(32, frameY + 7, 32, 64, 32, 12);
+  app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
+  app.drawString(player.xp + '/' + player.maxXp, 35, frameY + 10);
+};
+game.gui.add(playerStats);
+
+const shortcutBar = new ShortcutBar(new Rect(1, 224 - 26, 26 * 6, 26), 6);
+game.gui.add(shortcutBar);
+
+const inventoryButton = new Button(
+  new Rect(400 - 24, 224 - 24, 24, 24),
+  new Sprite(192, 16, 16, 16),
+  Keys.VK_I,
+  function () {
+    inventoryDialog.visible = !inventoryDialog.visible;
+    talentsDialog.visible = false;
+  }
+);
+inventoryButton.tooltipMessages = [
+  new Message("Traveler's Backpack", Colors.GREEN),
+  new Message('Item Level 55', Colors.YELLOW),
+  new Message('16 Slot Bag', Colors.WHITE),
+  new Message('Sell Price: 87 coins', Colors.WHITE),
+];
+game.gui.add(inventoryButton);
+
+const talentsButton = new Button(
+  new Rect(400 - 48, 224 - 24, 24, 24),
+  new Sprite(192, 16, 16, 16),
+  Keys.VK_T,
+  function () {
+    talentsDialog.visible = !talentsDialog.visible;
+    inventoryDialog.visible = false;
+  }
+);
+talentsButton.tooltipMessages = [
+  new Message('Talents', Colors.WHITE),
+  new Message('A list of all of your', Colors.YELLOW),
+  new Message("character's talents.", Colors.YELLOW),
+];
+game.gui.add(talentsButton);
+
+const inventoryDialog = new ItemContainerDialog(
+  new Rect(10, 25, 110, 110),
+  [
+    new Message("Traveler's Backpack", Colors.GREEN),
+    new Message('Click to use', Colors.LIGHT_GRAY),
+    new Message('Drag for shortcut', Colors.LIGHT_GRAY),
+  ],
+  16,
+  player.inventory
+);
+inventoryDialog.visible = false;
+game.gui.add(inventoryDialog);
+
+const talentsDialog = new TalentsDialog(
+  new Rect(10, 25, 110, 110),
+  [
+    new Message('Talents', Colors.GREEN),
+    new Message('Click to use', Colors.LIGHT_GRAY),
+    new Message('Drag for shortcut', Colors.LIGHT_GRAY),
+  ],
+  16,
+  player.talents
+);
+talentsDialog.visible = false;
+game.gui.add(talentsDialog);
+
+player.inventory.addListener({
+  onAdd: (_, item) => {
+    console.log('add item!', item);
+    shortcutBar.addItem(player.inventory, item, true);
+  },
+  onRemove: (_, talent) => {},
+});
+
+player.talents.addListener({
+  onAdd: (_, talent) => {
+    console.log('add talent!', talent);
+    shortcutBar.addTalent(talent);
+  },
+  onRemove: (_, talent) => {},
+});
+
+player.talents.add(new Talent(player, new FireballAbility()));
+player.talents.add(new Talent(player, new LightningAbility()));
+
+// Generate the map
+createMap();
+
+const mainMenu = new AppState(app);
+mainMenu.gui.renderer.baseRect = new Rect(0, 64, 24, 24);
+mainMenu.gui.add(new ImagePanel(new Rect(0, 768, 400, 224), new Rect(0, 0, 400, 224)));
+mainMenu.gui.add(
+  new SelectDialog(
+    new Rect(150, 62, 100, 100),
+    [
+      { id: 'new', name: 'NEW GAME' },
+      { id: 'continue', name: 'CONTINUE' },
+    ],
+    (choice) => {
+      if (choice.id === 'new') {
+        app.state = game;
+      }
+    }
+  )
+);
+
+app.state = mainMenu;
