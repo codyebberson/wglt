@@ -1,4 +1,5 @@
-import { Actor, ArrayList, Pico8Palette, Sprite } from 'wglt';
+import { ArrayList, Pico8Palette, Sprite } from 'wglt';
+import { Actor } from '../actor';
 import { Buff } from '../buffs/buff';
 import { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';

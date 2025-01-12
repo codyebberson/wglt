@@ -1,5 +1,5 @@
-import { Point } from '../../core/point';
-import { serializable } from '../../core/serialize';
+import { Point } from '../core/point';
+import { serializable } from '../core/serialize';
 
 @serializable
 export class TileMapCell extends Point {

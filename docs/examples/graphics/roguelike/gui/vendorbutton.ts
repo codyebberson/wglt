@@ -1,8 +1,4 @@
-import { ArrayList } from '../../core/arraylist';
-import { Button } from '../../core/gui/button';
-import { Panel } from '../../core/gui/panel';
-import { SimplePalette } from '../../core/palettes/simple';
-import { Rect } from '../../core/rect';
+import { ArrayList, Button, Panel, Rect, SimplePalette } from 'wglt';
 import { Actor } from '../actor';
 import { Item } from '../item';
 
@@ -51,7 +47,7 @@ export class VendorButton extends Button {
   //   }
   // }
 
-  decorateTooltip(tooltipPanel: Panel): void {
+  decorateTooltip(_tooltipPanel: Panel): void {
     // if (this.stackItems.length > 0) {
     //   const item = this.stackItems.get(0);
     //   item.onUpdateTooltip();

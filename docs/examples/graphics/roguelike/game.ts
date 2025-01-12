@@ -1,19 +1,12 @@
 import {
-  AnimationFunction,
   AutoRectRenderer,
-  BaseGame,
   Button,
   ButtonSlot,
   Container,
   Dialog,
-  FadeInAnimation,
-  FadeOutAnimation,
   GraphicsButtonRenderer,
   GraphicsLabelRenderer,
   GraphicsMessageLogRenderer,
-  ItemButton,
-  ItemContainerButtonSlot,
-  ItemContainerDialog,
   Label,
   Message,
   MessageLog,
@@ -21,19 +14,25 @@ import {
   Pico8Palette,
   Point,
   Rect,
-  ShortcutBar,
-  ShortcutBarRenderer,
-  ShortcutButtonSlot,
   Sprite,
-  TalentButton,
-  TalentsDialog,
 } from 'wglt';
+import { AnimationFunction } from './animations/animation';
+import { FadeInAnimation } from './animations/fadeinanimation';
+import { FadeOutAnimation } from './animations/fadeoutanimation';
 import { App } from './app';
+import { BaseGame } from './basegame';
 import { Player } from './entities/player';
 import { BottomPanel, BottomPanelRenderer } from './gui/bottompanel';
 import { CharacterDialog } from './gui/characterdialog';
 import { EntityFrames, EntityFramesRenderer } from './gui/entityframes';
+import { ItemButton } from './gui/itembutton';
+import { ItemContainerButtonSlot } from './gui/itemcontainerbuttonslot';
+import { ItemContainerDialog } from './gui/itemcontainerdialog';
 import { LevelUpDialog } from './gui/levelupdialog';
+import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
+import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
+import { TalentButton } from './gui/talentbutton';
+import { TalentsDialog } from './gui/talentsdialog';
 import { HealthPotion } from './items/healthpotion';
 import { Scroll } from './items/scroll';
 import { MapGenerator } from './mapgen/mapgen';

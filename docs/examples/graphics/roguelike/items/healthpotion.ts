@@ -1,5 +1,8 @@
-import { Actor, Item, ItemQuality, Message, Pico8Palette, Sprite } from 'wglt';
+import { Message, Pico8Palette, Sprite } from 'wglt';
+import { Actor } from '../actor';
 import { Game } from '../game';
+import { Item } from '../item';
+import { ItemQuality } from '../itemquality';
 
 const HEAL_AMOUNT = 4;
 const NAME = 'Healing Potion';

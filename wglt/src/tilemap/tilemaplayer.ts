@@ -1,4 +1,4 @@
-import { serializable } from '../../core/serialize';
+import { serializable } from '../core/serialize';
 import { getTileId } from './tilemap';
 
 @serializable

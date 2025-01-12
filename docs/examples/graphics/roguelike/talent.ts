@@ -1,7 +1,7 @@
+import { TileMapCell } from 'wglt';
 import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
-import { TileMapCell } from './tilemap/tilemapcell';
 
 export class Talent {
   readonly actor: Actor;

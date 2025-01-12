@@ -1,6 +1,7 @@
-import { Item, Sprite } from 'wglt';
+import { Sprite } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
+import { Item } from '../item';
 
 export class Portal extends Item {
   other?: Portal;

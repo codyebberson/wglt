@@ -1,10 +1,4 @@
-import { ArrayList } from '../../core/arraylist';
-import { Container } from '../../core/gui/container';
-import { GUI } from '../../core/gui/gui';
-import { Renderer } from '../../core/gui/renderer';
-import { Key } from '../../core/keys';
-import { Rect } from '../../core/rect';
-import { GraphicsApp } from '../../graphics/graphicsapp';
+import { ArrayList, Container, GUI, GraphicsApp, Key, Rect, Renderer } from 'wglt';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';

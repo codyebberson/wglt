@@ -1,5 +1,4 @@
-import { Button } from '../../core/gui/button';
-import { Rect } from '../../core/rect';
+import { Button, Rect } from 'wglt';
 import { Talent } from '../talent';
 
 export class TalentButton extends Button {

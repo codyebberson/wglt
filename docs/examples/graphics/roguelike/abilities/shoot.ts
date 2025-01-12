@@ -1,4 +1,5 @@
-import { Ability, Message, Pico8Palette, Sprite, TargetType } from 'wglt';
+import { Message, Pico8Palette, Sprite } from 'wglt';
+import { Ability, TargetType } from '../ability';
 import { StatsActor } from '../entities/statsactor';
 
 const RANGE = 8;

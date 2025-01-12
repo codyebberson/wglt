@@ -1,18 +1,12 @@
-import {
-  Ability,
-  Actor,
-  Item,
-  ItemQuality,
-  Message,
-  Pico8Palette,
-  SlideAnimation,
-  Sprite,
-  Stunned,
-  TargetType,
-  TileMapCell,
-} from 'wglt';
+import { Message, Pico8Palette, Sprite, TileMapCell } from 'wglt';
+import { Ability, TargetType } from '../ability';
+import { Actor } from '../actor';
+import { Stunned } from '../ai/stunned';
+import { SlideAnimation } from '../animations/slideanimation';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
+import { Item } from '../item';
+import { ItemQuality } from '../itemquality';
 
 const RANGE = 10;
 const SPRITE = new Sprite(832, 120, 16, 16);

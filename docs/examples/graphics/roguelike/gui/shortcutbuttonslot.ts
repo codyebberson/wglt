@@ -1,5 +1,4 @@
-import { ButtonSlot } from '../../core/gui/buttonslot';
-import { Component } from '../../core/gui/component';
+import { ButtonSlot, Component } from 'wglt';
 import { ItemButton } from './itembutton';
 import { ItemShortcutButton } from './itemshortcutbutton';
 import { TalentButton } from './talentbutton';

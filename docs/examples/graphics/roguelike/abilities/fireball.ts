@@ -1,15 +1,8 @@
-import {
-  Ability,
-  Actor,
-  ExplosionAnimation,
-  Message,
-  Pico8Palette,
-  Point,
-  ProjectileAnimation,
-  Sprite,
-  TargetType,
-  TileMapCell,
-} from 'wglt';
+import { Message, Pico8Palette, Point, Sprite, TileMapCell } from 'wglt';
+import { Ability, TargetType } from '../ability';
+import { Actor } from '../actor';
+import { ExplosionAnimation } from '../animations/explosionanimation';
+import { ProjectileAnimation } from '../animations/projectileanimation';
 import { StatsActor } from '../entities/statsactor';
 
 const FIREBALL_RANGE = 10;

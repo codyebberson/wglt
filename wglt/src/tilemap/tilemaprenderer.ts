@@ -1,4 +1,4 @@
-import { initShaderProgram } from '../../core/glutils';
+import { initShaderProgram } from '../core/glutils';
 import { TileMap } from './tilemap';
 
 const TEXTURE_SIZE = 1024;

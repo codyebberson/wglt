@@ -1,4 +1,4 @@
-import { ItemQuality, Point, Rect, Talent, TileMap, getTileId } from 'wglt';
+import { Point, Rect, TileMap, getTileId } from 'wglt';
 import { FlashHealAbility } from '../abilities/flashheal';
 import { LeapAbility } from '../abilities/leap';
 import { LightningAbility } from '../abilities/lightning';
@@ -14,6 +14,8 @@ import {
 } from '../equipment/equipmentsprites';
 import { EquipmentType } from '../equipment/equipmenttype';
 import { Game } from '../game';
+import { ItemQuality } from '../itemquality';
+import { Talent } from '../talent';
 import { Tiles } from './tiles';
 
 // Size of the map

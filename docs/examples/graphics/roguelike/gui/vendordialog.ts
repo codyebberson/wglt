@@ -1,10 +1,4 @@
-import { ArrayList } from '../../core/arraylist';
-import { ButtonSlot } from '../../core/gui/buttonslot';
-import { Dialog } from '../../core/gui/dialog';
-import { Key } from '../../core/keys';
-import { Message } from '../../core/message';
-import { SimplePalette } from '../../core/palettes/simple';
-import { Rect } from '../../core/rect';
+import { ArrayList, ButtonSlot, Dialog, Key, Message, Rect, SimplePalette } from 'wglt';
 import { Actor } from '../actor';
 import { Item } from '../item';
 import { VendorButton } from './vendorbutton';

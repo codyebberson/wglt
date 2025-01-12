@@ -1,4 +1,7 @@
-import { Ability, Actor, ConfusedMonster, Message, Pico8Palette, Sprite, TargetType } from 'wglt';
+import { Message, Pico8Palette, Sprite } from 'wglt';
+import { Ability, TargetType } from '../ability';
+import { Actor } from '../actor';
+import { ConfusedMonster } from '../ai/confusedmonster';
 
 const CONFUSE_RANGE = 8;
 const CONFUSE_SPRITE = new Sprite(128, 32, 16, 16, 3);

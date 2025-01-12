@@ -1,7 +1,8 @@
-import { Item, Sprite } from 'wglt';
+import { Sprite } from 'wglt';
 import { Player } from '../entities/player';
 import { StatsActor } from '../entities/statsactor';
 import { Game } from '../game';
+import { Item } from '../item';
 
 const SPRITE = new Sprite(432, 408, 16, 16);
 

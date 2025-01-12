@@ -1,6 +1,4 @@
-import { fromRgb } from '../../core/color';
-import { Rect } from '../../core/rect';
-import { GraphicsApp } from '../../graphics/graphicsapp';
+import { GraphicsApp, Rect, fromRgb } from 'wglt';
 import { BaseGame } from '../basegame';
 import { Animation, AnimationFunction } from './animation';
 

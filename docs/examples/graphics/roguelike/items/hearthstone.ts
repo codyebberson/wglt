@@ -1,6 +1,7 @@
-import { Item, Message, Pico8Palette, Sprite } from 'wglt';
+import { Message, Pico8Palette, Sprite } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
+import { Item } from '../item';
 
 const SPRITE = new Sprite(848, 168, 16, 16);
 

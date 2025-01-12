@@ -1,5 +1,7 @@
-import { Actor, Item, Message, Pico8Palette, Sprite } from 'wglt';
+import { Message, Pico8Palette, Sprite } from 'wglt';
+import { Actor } from '../actor';
 import { Game } from '../game';
+import { Item } from '../item';
 
 const SPRITE = new Sprite(896, 168, 16, 16);
 

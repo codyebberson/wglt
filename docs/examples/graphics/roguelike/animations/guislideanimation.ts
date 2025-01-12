@@ -1,6 +1,4 @@
-import { Point } from '../../core/point';
-import { Sprite } from '../../core/sprite';
-import { GraphicsApp } from '../../graphics/graphicsapp';
+import { GraphicsApp, Point, Sprite } from 'wglt';
 import { BaseGame } from '../basegame';
 import { Animation } from './animation';
 

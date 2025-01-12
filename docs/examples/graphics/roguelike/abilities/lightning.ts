@@ -1,15 +1,9 @@
-import {
-  Ability,
-  Actor,
-  Entity,
-  Message,
-  Pico8Palette,
-  Point,
-  ProjectileAnimation,
-  Sprite,
-  TargetType,
-} from 'wglt';
+import { Message, Pico8Palette, Point, Sprite } from 'wglt';
+import { Ability, TargetType } from '../ability';
+import { Actor } from '../actor';
+import { ProjectileAnimation } from '../animations/projectileanimation';
 import { StatsActor } from '../entities/statsactor';
+import { Entity } from '../entity';
 import { Game } from '../game';
 
 const LIGHTNING_RANGE = 5;

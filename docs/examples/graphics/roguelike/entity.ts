@@ -1,11 +1,9 @@
-import { Point } from '../core/point';
-import { Sprite } from '../core/sprite';
-import { GraphicsApp } from '../graphics/graphicsapp';
+import { GraphicsApp, Point, Sprite } from 'wglt';
 import { Actor } from './actor';
-import { BaseGame } from './basegame';
+import { Game } from './game';
 
 export class Entity extends Point {
-  readonly game: BaseGame;
+  readonly game: Game;
   readonly offset: Point;
   name: string;
   sprite: Sprite;
@@ -13,7 +11,7 @@ export class Entity extends Point {
   blocks: boolean;
   zIndex: number;
 
-  constructor(game: BaseGame, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
+  constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(x, y);
     this.game = game;
     this.offset = new Point(0, 0);

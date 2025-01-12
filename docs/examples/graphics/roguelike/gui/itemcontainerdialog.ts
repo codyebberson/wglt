@@ -1,9 +1,4 @@
-import { ArrayList } from '../../core/arraylist';
-import { ButtonSlot } from '../../core/gui/buttonslot';
-import { Dialog } from '../../core/gui/dialog';
-import { Key } from '../../core/keys';
-import { Message } from '../../core/message';
-import { Rect } from '../../core/rect';
+import { ArrayList, ButtonSlot, Dialog, Key, Message, Rect } from 'wglt';
 import { Item } from '../item';
 import { ItemButton } from './itembutton';
 import { ItemContainerButtonSlot } from './itemcontainerbuttonslot';

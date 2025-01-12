@@ -1,16 +1,13 @@
-import { ArrayList } from '../core/arraylist';
-import { Color } from '../core/color';
-import { Sprite } from '../core/sprite';
+import { ArrayList, Color, Sprite, TileMapCell } from 'wglt';
 import { Ability, TargetType } from './ability';
 import { AI } from './ai/ai';
 import { BumpAnimation } from './animations/bumpanimation';
 import { FloatingTextAnimation } from './animations/floatingtextanimation';
 import { SlideAnimation } from './animations/slideanimation';
-import { BaseGame } from './basegame';
 import { Entity } from './entity';
+import { Game } from './game';
 import { Item } from './item';
 import { Talent } from './talent';
-import { TileMapCell } from './tilemap/tilemapcell';
 
 export class Actor extends Entity {
   hp: number;
@@ -24,7 +21,7 @@ export class Actor extends Entity {
   seen: boolean;
   ai?: AI;
 
-  constructor(game: BaseGame, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
+  constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks: boolean) {
     super(game, x, y, name, sprite, blocks);
     this.hp = 100;
     this.maxHp = 100;

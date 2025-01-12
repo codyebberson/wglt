@@ -1,5 +1,5 @@
-import { Rect } from '../../core/rect';
-import { serializable } from '../../core/serialize';
+import { Rect } from '../core/rect';
+import { serializable } from '../core/serialize';
 import { TileMapCell } from './tilemapcell';
 import { TileMapLayer } from './tilemaplayer';
 

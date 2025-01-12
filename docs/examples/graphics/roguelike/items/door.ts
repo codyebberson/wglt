@@ -1,5 +1,6 @@
-import { Item, Sprite, getTileId } from 'wglt';
+import { Sprite, getTileId } from 'wglt';
 import { Game } from '../game';
+import { Item } from '../item';
 
 const TILE_OPEN_DOOR = getTileId(7, 20);
 const SPRITE = new Sprite(256, 432, 16, 16);

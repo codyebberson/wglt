@@ -1,25 +1,27 @@
-import { ArrayList } from '../core/arraylist';
-import { AppState } from '../core/baseapp';
-import { Color } from '../core/color';
-import { GUI } from '../core/gui/gui';
-import { MessageLog } from '../core/gui/messagelog';
-import { Key } from '../core/keys';
-import { Message } from '../core/message';
-import { SimplePalette } from '../core/palettes/simple';
-import { Point } from '../core/point';
-import { Rect } from '../core/rect';
-import { RNG } from '../core/rng';
-import { Sprite } from '../core/sprite';
-import { GraphicsApp } from '../graphics/graphicsapp';
+import {
+  AppState,
+  ArrayList,
+  Color,
+  computePath,
+  GraphicsApp,
+  GUI,
+  Key,
+  Message,
+  MessageLog,
+  Point,
+  Rect,
+  RNG,
+  SimplePalette,
+  Sprite,
+  TileMap,
+  TileMapCell,
+  TileMapRenderer,
+} from 'wglt';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { Animation } from './animations/animation';
 import { Entity } from './entity';
 import { Item } from './item';
-import { computePath } from './tilemap/path';
-import { TileMap } from './tilemap/tilemap';
-import { TileMapCell } from './tilemap/tilemapcell';
-import { TileMapRenderer } from './tilemap/tilemaprenderer';
 
 const MAP_SIZE = new Rect(0, 0, 512, 512);
 const MAP_LAYERS = 4;

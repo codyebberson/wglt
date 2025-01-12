@@ -1,12 +1,14 @@
-import { ArrayList } from '../../core/arraylist';
-import { Button } from '../../core/gui/button';
-import { Container } from '../../core/gui/container';
-import { GUI } from '../../core/gui/gui';
-import { Panel } from '../../core/gui/panel';
-import { Renderer } from '../../core/gui/renderer';
-import { Message } from '../../core/message';
-import { Rect } from '../../core/rect';
-import { GraphicsApp } from '../../graphics/graphicsapp';
+import {
+  ArrayList,
+  Button,
+  Container,
+  GUI,
+  GraphicsApp,
+  Message,
+  Panel,
+  Rect,
+  Renderer,
+} from 'wglt';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -79,7 +81,7 @@ export class ItemButton extends Button {
 }
 
 export class GraphicsItemButtonRenderer implements Renderer<GraphicsApp, ItemButton> {
-  render(gui: GUI<GraphicsApp>, itemButton: ItemButton): void {
+  render(_gui: GUI<GraphicsApp>, _itemButton: ItemButton): void {
     // itemButton.draw(app);
     // super.draw(app);
     // if (this.stackItems.length > 1) {

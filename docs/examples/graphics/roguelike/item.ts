@@ -1,10 +1,7 @@
-import { Color, fromRgb } from '../core/color';
-import { Message } from '../core/message';
-import { SimplePalette } from '../core/palettes/simple';
-import { Sprite } from '../core/sprite';
+import { Color, Message, SimplePalette, Sprite, fromRgb } from 'wglt';
 import { Actor } from './actor';
-import { BaseGame } from './basegame';
 import { Entity } from './entity';
+import { Game } from './game';
 import { ItemQuality } from './itemquality';
 
 const COLOR_POOR = fromRgb(0x9d, 0x9d, 0x9d);
@@ -23,7 +20,7 @@ export abstract class Item extends Entity {
   readonly gold: number;
 
   constructor(
-    game: BaseGame,
+    game: Game,
     name: string,
     sprite: Sprite,
     quality?: ItemQuality,

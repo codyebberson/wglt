@@ -1,6 +1,7 @@
-import { Item, Message, Pico8Palette } from 'wglt';
+import { Message, Pico8Palette } from 'wglt';
 import { Player } from '../entities/player';
 import { Game } from '../game';
+import { Item } from '../item';
 import { EquipmentBuilder } from './equipmentbuilder';
 import { EquipmentSlot } from './equipmentslot';
 import { EquipmentType } from './equipmenttype';
