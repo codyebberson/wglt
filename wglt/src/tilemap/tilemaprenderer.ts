@@ -42,12 +42,6 @@ const tilemapFS =
   '   gl_FragColor.a *= tile.a;' +
   '}';
 
-/**
- * @constructor
- * @param width
- * @param height
- * @param layerCount
- */
 export class TileMapRenderer {
   readonly gl: WebGLRenderingContext;
   readonly tileMap: TileMap;

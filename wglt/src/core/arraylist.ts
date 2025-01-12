@@ -13,7 +13,6 @@ export class ArrayList<T> {
   }
 
   clear(): void {
-    // this.elements.splice(0, this.elements.length);
     this.elements.length = 0;
   }
 
@@ -56,13 +55,4 @@ export class ArrayList<T> {
   [Symbol.iterator]() {
     return this.elements[Symbol.iterator]();
   }
-
-  // [Symbol.iterator]() {
-  //   var index = -1;
-  //   var data  = this._data;
-
-  //   return {
-  //     next: () => ({ value: data[++index], done: !(index in data) })
-  //   };
-  // };
 }
