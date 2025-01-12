@@ -23,6 +23,9 @@ const input = Object.fromEntries(
 
 export default defineConfig({
   base: '',
+  esbuild: {
+    target: 'es2022',
+  },
   build: {
     rollupOptions: {
       input,

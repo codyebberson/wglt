@@ -65,7 +65,7 @@ export class TileMap {
     }
   }
 
-  isOutOfRange(x: number, y: number, z: number): boolean {
+  isOutOfRange(x: number, y: number, z = 0): boolean {
     return x < 0 || x >= this.width || y < 0 || y >= this.height || z < 0 || z >= this.depth;
   }
 
@@ -75,7 +75,7 @@ export class TileMap {
     }
   }
 
-  getTile(x: number, y: number, z: number): number {
+  getTile(x: number, y: number, z = 0): number {
     if (this.isOutOfRange(x, y, z)) {
       return 0;
     }
@@ -90,14 +90,14 @@ export class TileMap {
   }
 
   isBlocked(x: number, y: number): boolean {
-    if (this.isOutOfRange(x, y, 0)) {
+    if (this.isOutOfRange(x, y)) {
       return true;
     }
     return this.grid[y][x].blocked;
   }
 
   setBlocked(x: number, y: number, blocked: boolean, blockedSight?: boolean): void {
-    if (this.isOutOfRange(x, y, 0)) {
+    if (this.isOutOfRange(x, y)) {
       return;
     }
     this.grid[y][x].blocked = blocked;
@@ -105,7 +105,7 @@ export class TileMap {
   }
 
   getCell(x: number, y: number): TileMapCell | undefined {
-    if (this.isOutOfRange(x, y, 0)) {
+    if (this.isOutOfRange(x, y)) {
       return undefined;
     }
     return this.grid[y][x];
@@ -135,7 +135,7 @@ export class TileMap {
     }
   }
 
-  isAnimated(x: number, y: number, z: number): boolean {
+  isAnimated(x: number, y: number, z = 0): boolean {
     if (this.isOutOfRange(x, y, z)) {
       return false;
     }

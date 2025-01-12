@@ -3,8 +3,11 @@ import { Point } from '../point';
 import { Rect } from '../rect';
 import { Component, ComponentConstructor } from './component';
 import { Container } from './container';
+import { Dialog } from './dialog';
 import { Panel } from './panel';
 import { RendererMap } from './renderermap';
+import { SelectInput } from './selectinput';
+import { SelectOption } from './selectoption';
 
 export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;
@@ -20,6 +23,31 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
 
   get root(): GUI<TContext> {
     return this;
+  }
+
+  /**
+   * Adds a dialog with a message and an OK button.
+   * @param title - The title of the dialog.
+   * @param options - The options to display in the dialog.
+   * @param callback - The callback to call when an option is selected.
+   */
+  addSelectDialog(
+    title: string,
+    options: SelectOption[] | string[],
+    callback: (option: SelectOption, index: number) => void
+  ): void {
+    const dialog = new Dialog(new Rect(10, 10, 60, 25), title);
+
+    const callbackWrapper = (option: SelectOption, index: number) => {
+      dialog.visible = false;
+      dialog.parent?.removeChild(dialog);
+      callback(option, index);
+    };
+
+    const selectInput = new SelectInput(new Rect(1, 1, 60, 24), options, callbackWrapper);
+    dialog.addChild(selectInput);
+
+    this.addChild(dialog);
   }
 
   handleInput(): boolean {

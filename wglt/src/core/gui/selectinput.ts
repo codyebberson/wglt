@@ -8,12 +8,22 @@ const LINE_HEIGHT = 10;
 
 export class SelectInput extends Component {
   options: SelectOption[];
-  callback: (option: SelectOption) => void;
+  callback: (option: SelectOption, index: number) => void;
   selectedIndex = -1;
 
-  constructor(rect: Rect, options: SelectOption[], callback: (option: SelectOption) => void) {
+  constructor(
+    rect: Rect,
+    options: SelectOption[] | string[],
+    callback: (option: SelectOption, index: number) => void
+  ) {
     super(rect);
-    this.options = options;
+
+    if (typeof options[0] === 'string') {
+      this.options = (options as string[]).map((name) => ({ name }));
+    } else {
+      this.options = options as SelectOption[];
+    }
+
     this.callback = callback;
   }
 
@@ -26,7 +36,7 @@ export class SelectInput extends Component {
     for (let i = 0; i < this.options.length; i++) {
       const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
       if (app.keyboard.isKeyPressed(key)) {
-        this.callback(this.options[i]);
+        this.callback(this.options[i], i);
         return true;
       }
     }
@@ -46,7 +56,7 @@ export class SelectInput extends Component {
     }
 
     if (app.keyboard.isKeyPressed(Key.VK_ENTER) && this.selectedIndex >= 0) {
-      this.callback(this.options[this.selectedIndex]);
+      this.callback(this.options[this.selectedIndex], this.selectedIndex);
       return true;
     }
 
@@ -61,7 +71,7 @@ export class SelectInput extends Component {
         const startY = offset.y + MARGIN + i * LINE_HEIGHT;
         const endY = startY + LINE_HEIGHT;
         if (mouse.y >= startY && mouse.y < endY) {
-          this.callback(this.options[i]);
+          this.callback(this.options[i], i);
         }
       }
     }
