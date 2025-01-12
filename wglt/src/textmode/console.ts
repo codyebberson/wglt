@@ -8,13 +8,6 @@ import { Chars } from './chars';
 @serializable
 export class Console {
   readonly grid: Cell[][];
-  originX: number;
-  originY: number;
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-  radius: number;
   clip?: Rect;
 
   constructor(
@@ -22,14 +15,6 @@ export class Console {
     readonly height: number
   ) {
     this.grid = [];
-    this.originX = 0;
-    this.originY = 0;
-    this.minX = 0;
-    this.maxX = 0;
-    this.minY = 0;
-    this.maxY = 0;
-    this.radius = 0;
-
     for (let y = 0; y < height; y++) {
       const row = [];
       for (let x = 0; x < width; x++) {
