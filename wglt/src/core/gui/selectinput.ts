@@ -49,12 +49,12 @@ export class SelectInput extends Component {
       return true;
     }
 
-    if (app.keyboard.isKeyPressed(Key.VK_ENTER) && this.selectedIndex >= 0) {
+    if (app.keyboard.isEnterKeyPressed() && this.selectedIndex >= 0) {
       this.callback(this.options[this.selectedIndex], this.selectedIndex);
       return true;
     }
 
-    if (app.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
+    if (app.keyboard.isEscapeKeyPressed()) {
       return true;
     }
 

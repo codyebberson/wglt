@@ -12,6 +12,8 @@ const LEFT_KEYS = [Key.VK_LEFT, Key.VK_NUMPAD4, Key.VK_H];
 const DOWN_KEYS = [Key.VK_DOWN, Key.VK_NUMPAD2, Key.VK_J];
 const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L];
 const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5];
+const ENTER_KEYS = [Key.VK_ENTER, Key.VK_NUMPAD_ENTER];
+const ESCAPE_KEYS = [Key.VK_ESCAPE];
 
 const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
   // Up
@@ -125,6 +127,14 @@ export class Keyboard {
 
   isUpRightKeyPressed(): boolean {
     return this.isKeyArrayPressed(NORTHEAST_KEYS);
+  }
+
+  isEnterKeyPressed(): boolean {
+    return this.isKeyArrayPressed(ENTER_KEYS);
+  }
+
+  isEscapeKeyPressed(): boolean {
+    return this.isKeyArrayPressed(ESCAPE_KEYS);
   }
 
   /**

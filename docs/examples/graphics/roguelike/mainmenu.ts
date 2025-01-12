@@ -1,4 +1,4 @@
-import { AppState, Key, Pico8Palette } from 'wglt';
+import { AppState, Pico8Palette } from 'wglt';
 import { App } from './app';
 
 const OPTIONS = [
@@ -40,7 +40,7 @@ export class MainMenu extends AppState<App> {
         window.location.hash = option.hash;
       }
 
-      if (i === this.selectedIndex && this.app.keyboard.isKeyPressed(Key.VK_ENTER)) {
+      if (i === this.selectedIndex && this.app.keyboard.isEnterKeyPressed()) {
         window.location.hash = option.hash;
       }
     }

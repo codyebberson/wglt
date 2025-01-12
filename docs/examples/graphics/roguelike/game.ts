@@ -604,14 +604,10 @@ export class Game extends AppState<App> {
     }
 
     if (this.isTargeting()) {
-      if (
-        this.app.keyboard.isKeyPressed(Key.VK_ENTER) ||
-        this.app.keyboard.isKeyPressed(Key.VK_NUMPAD_ENTER) ||
-        this.app.mouse.isClicked()
-      ) {
+      if (this.app.keyboard.isEnterKeyPressed() || this.app.mouse.isClicked()) {
         this.endTargeting();
       }
-      if (this.app.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
+      if (this.app.keyboard.isEscapeKeyPressed()) {
         this.cancelTargeting();
       }
       if (this.app.keyboard.isDownLeftKeyPressed()) {

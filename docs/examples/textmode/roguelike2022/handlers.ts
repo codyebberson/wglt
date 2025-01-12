@@ -85,12 +85,9 @@ export abstract class TargetingHandler extends EventHandler {
     if (moveKey) {
       this.x += moveKey.x;
       this.y += moveKey.y;
-    } else if (
-      term.keyboard.isKeyPressed(Key.VK_ENTER) ||
-      term.keyboard.isKeyPressed(Key.VK_NUMPAD_ENTER)
-    ) {
+    } else if (term.keyboard.isEnterKeyPressed()) {
       this.onSelect(this.x, this.y);
-    } else if (term.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
+    } else if (term.keyboard.isEscapeKeyPressed()) {
       this.engine.eventHandler = new MainGameEventHandler(this.engine);
     }
   }

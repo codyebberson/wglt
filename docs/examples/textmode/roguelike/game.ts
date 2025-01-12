@@ -443,10 +443,10 @@ export class Game extends AppState<App> {
     const movementKey = term.keyboard.getMovementKey();
 
     if (this.targetFunction) {
-      if (term.keyboard.isKeyPressed(Key.VK_ENTER) || term.mouse.buttons.get(0).isClicked()) {
+      if (term.keyboard.isEnterKeyPressed() || term.mouse.buttons.get(0).isClicked()) {
         this.endTargeting(this.targetCursor.x, this.targetCursor.y);
       }
-      if (term.keyboard.isKeyPressed(Key.VK_ESCAPE) || term.mouse.buttons.get(2).isClicked()) {
+      if (term.keyboard.isEscapeKeyPressed() || term.mouse.buttons.get(2).isClicked()) {
         this.cancelTargeting();
       }
       if (movementKey) {

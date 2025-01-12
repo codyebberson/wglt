@@ -56,7 +56,7 @@ term.update = () => {
         engine.handleEvents(term);
       }
     }
-    if (term.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
+    if (term.keyboard.isEscapeKeyPressed()) {
       openMainMenu();
     }
   }

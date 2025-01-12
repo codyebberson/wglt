@@ -1,4 +1,3 @@
-import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Component } from './component';
 import { Panel } from './panel';
@@ -27,7 +26,7 @@ export class Dialog extends Panel {
       return false;
     }
 
-    if (app.keyboard.isKeyPressed(Key.VK_ESCAPE)) {
+    if (app.keyboard.isEscapeKeyPressed()) {
       this.visible = false;
       return true;
     }
