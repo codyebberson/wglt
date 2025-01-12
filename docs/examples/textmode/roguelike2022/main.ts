@@ -6,6 +6,7 @@ import {
   MessageDialog,
   Rect,
   SelectInput,
+  SelectOption,
   Terminal,
   TerminalDialogRenderer,
   TerminalLabelRenderer,
@@ -70,7 +71,7 @@ term.update = () => {
 };
 
 function openMainMenu() {
-  gui.addSelectDialog(
+  addSelectDialog(
     'Main Menu',
     ['New Game', 'Continue', 'Save Game', 'Load Game'],
     (_name, index) => {
@@ -113,7 +114,7 @@ function setEngine(newEngine: Engine): void {
 
 function openUseMenu(engine: Engine) {
   const player = engine.player;
-  gui.addSelectDialog(
+  addSelectDialog(
     'Select an item to use',
     player.inventory.map((i) => i.name + (player.isEquipped(i) ? ' (equipped)' : '')),
     (_name, selected) => {
@@ -126,7 +127,7 @@ function openUseMenu(engine: Engine) {
 
 function openDropMenu(engine: Engine) {
   const player = engine.player;
-  gui.addSelectDialog(
+  addSelectDialog(
     'Select an item to drop',
     player.inventory.map((i) => i.name),
     (_name, selected) => {
@@ -150,7 +151,7 @@ function openMessageLog(_engine: Engine) {
 }
 
 export function openLevelUpMenu(player: Actor): void {
-  gui.addSelectDialog(
+  addSelectDialog(
     'Level up! Select an attribute to increase.',
     [
       `Constitution (+20 HP, from ${player.maxHp})`,
@@ -192,4 +193,43 @@ function openCharacterScreen(_engine: Engine) {
   //   )
   // );
   zzfx(...menuBlipSound);
+}
+
+/**
+ * Adds a dialog with a message and an OK button.
+ * @param title - The title of the dialog.
+ * @param options - The options to display in the dialog.
+ * @param callback - The callback to call when an option is selected.
+ */
+function addSelectDialog(
+  title: string,
+  options: string[],
+  callback: (option: SelectOption, index: number) => void
+): void {
+  let width = title.length;
+  for (let i = 0; i < options.length; i++) {
+    width = Math.max(width, options[i].length + 8);
+  }
+
+  const height = options.length + 4;
+  const rect = new Rect(
+    Math.floor((SCREEN_WIDTH - width) / 2),
+    Math.floor((SCREEN_HEIGHT - height) / 2),
+    width,
+    height
+  );
+
+  const dialog = new Dialog(rect, title);
+
+  const callbackWrapper = (option: SelectOption, index: number) => {
+    dialog.visible = false;
+    dialog.parent?.removeChild(dialog);
+    callback(option, index);
+  };
+
+  const selectItems = options.map((name) => ({ name }));
+  const selectInput = new SelectInput(new Rect(2, 2, width, height), selectItems, callbackWrapper);
+  dialog.addChild(selectInput);
+
+  gui.addChild(dialog);
 }

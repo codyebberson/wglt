@@ -13,17 +13,11 @@ export class SelectInput extends Component {
 
   constructor(
     rect: Rect,
-    options: SelectOption[] | string[],
+    options: SelectOption[],
     callback: (option: SelectOption, index: number) => void
   ) {
     super(rect);
-
-    if (typeof options[0] === 'string') {
-      this.options = (options as string[]).map((name) => ({ name }));
-    } else {
-      this.options = options as SelectOption[];
-    }
-
+    this.options = options as SelectOption[];
     this.callback = callback;
   }
 

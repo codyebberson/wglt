@@ -1,4 +1,5 @@
 import { Rect } from '../../core/rect';
+import { serializable } from '../../core/serialize';
 import { TileMapCell } from './tilemapcell';
 import { TileMapLayer } from './tilemaplayer';
 
@@ -16,12 +17,7 @@ export function getTileId(tileX: number, tileY: number): number {
   return tileY * 64 + tileX;
 }
 
-/**
- * @constructor
- * @param width
- * @param height
- * @param layerCount
- */
+@serializable
 export class TileMap {
   readonly width: number;
   readonly height: number;

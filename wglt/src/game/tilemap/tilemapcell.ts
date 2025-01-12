@@ -1,11 +1,11 @@
 import { Point } from '../../core/point';
+import { serializable } from '../../core/serialize';
 
+@serializable
 export class TileMapCell extends Point {
   blocked: boolean;
   blockedSight: boolean;
   visible: boolean;
-  // blockedSight: boolean;
-  // explored: boolean;
   explored: boolean;
   pathId: number;
   g: number;

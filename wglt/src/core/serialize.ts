@@ -11,6 +11,11 @@ interface ReferencePlaceholder {
   $ref: number;
 }
 
+interface ArrayViewPlaceholder {
+  $type: string;
+  $data: string;
+}
+
 const classDefinitions = new Map<string, ObjectConstructor>();
 
 /**
@@ -35,6 +40,9 @@ export function serialize(obj: unknown): string {
   return JSON.stringify({ instances, root });
 
   function replace(input: unknown): unknown {
+    if (ArrayBuffer.isView(input)) {
+      return replaceArrayView(input);
+    }
     if (Array.isArray(input)) {
       return replaceArray(input);
     }
@@ -42,6 +50,14 @@ export function serialize(obj: unknown): string {
       return replaceObject(input as Record<string, unknown>);
     }
     return input;
+  }
+
+  function replaceArrayView(input: ArrayBufferView): ArrayViewPlaceholder {
+    const uint8View = new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+    return {
+      $type: input.constructor.name,
+      $data: btoa(String.fromCharCode.apply(null, Array.from(uint8View))),
+    };
   }
 
   function replaceArray(input: unknown[]): unknown[] {
@@ -109,6 +125,9 @@ export function deserialize(str: string): unknown {
   return replace(input.root);
 
   function replace(input: unknown): unknown {
+    if (isDataView(input)) {
+      return replaceArrayView(input);
+    }
     if (Array.isArray(input)) {
       return replaceArray(input);
     }
@@ -116,6 +135,22 @@ export function deserialize(str: string): unknown {
       return replaceObject(input as Record<string, unknown>);
     }
     return input;
+  }
+
+  function replaceArrayView(input: ArrayViewPlaceholder): ArrayBufferView {
+    const uint8View = new Uint8Array(input.$data.length);
+    for (let i = 0; i < input.$data.length; i++) {
+      uint8View[i] = input.$data.charCodeAt(i);
+    }
+
+    const arrayBuffer = uint8View.buffer;
+
+    const ctor = (globalThis as Record<string, unknown>)[input.$type];
+    if (typeof ctor !== 'function') {
+      throw new Error(`${input.$type} constructor not found`);
+    }
+
+    return new (ctor as new (buffer: ArrayBuffer) => ArrayBufferView)(arrayBuffer);
   }
 
   function replaceArray(input: unknown[]): unknown[] {
@@ -140,6 +175,10 @@ export function deserialize(str: string): unknown {
       input[key] = replace(value);
     }
   }
+}
+
+function isDataView(value: unknown): value is ArrayViewPlaceholder {
+  return !!(value && typeof value === 'object' && '$type' in value && '$data' in value);
 }
 
 function isRef(value: unknown): value is ReferencePlaceholder {

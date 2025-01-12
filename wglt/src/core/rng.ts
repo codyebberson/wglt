@@ -20,7 +20,7 @@ const LOWER_MASK = 0x7fffffff; /* least significant r bits */
 
 @serializable
 export class RNG {
-  private readonly mt: number[];
+  private readonly mt: Uint32Array;
   private mti: number;
 
   /**
@@ -29,7 +29,7 @@ export class RNG {
    * @param seed The integer seed.
    */
   constructor(seed?: number) {
-    this.mt = new Array(N); /* the array for the state vector */
+    this.mt = new Uint32Array(N); /* the array for the state vector */
     this.mti = N + 1; /* mti==N+1 means mt[N] is not initialized */
     this.setSeed(seed || 1);
   }

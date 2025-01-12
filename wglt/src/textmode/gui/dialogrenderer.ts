@@ -29,7 +29,7 @@ export class TerminalDialogRenderer implements Renderer<Terminal, Dialog> {
       app.console.drawString(
         component.rect.x + 2,
         component.rect.y,
-        component.title,
+        ` ${component.title} `,
         SimplePalette.YELLOW
       );
     }

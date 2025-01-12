@@ -19,7 +19,6 @@ export * from './core/gui/renderer';
 export * from './core/gui/renderermap';
 export * from './core/gui/selectinput';
 export * from './core/gui/selectoption';
-export * from './core/gui/selectoptionrenderer';
 export * from './core/input';
 export * from './core/keyboard';
 export * from './core/keys';

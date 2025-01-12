@@ -1,10 +1,7 @@
+import { serializable } from '../../core/serialize';
 import { getTileId } from './tilemap';
 
-/**
- * @constructor
- * @param width
- * @param height
- */
+@serializable
 export class TileMapLayer {
   readonly width: number;
   readonly height: number;
