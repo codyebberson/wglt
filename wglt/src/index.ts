@@ -89,3 +89,5 @@ export * from './textmode/gui/labelrenderer';
 export * from './textmode/gui/selectinputrenderer';
 export * from './textmode/image';
 export * from './textmode/terminal';
+export * from './zzfx/zzfx';
+export * from './zzfx/zzfxm';

@@ -2,7 +2,7 @@
  * ZzFX Music Renderer v2.0.3 by Keith Clark and Frank Force
  */
 
-import { zzfxG, zzfxR } from 'wglt';
+import { zzfxG, zzfxR } from './zzfx';
 
 /**
  * @property {Number} 0 - Channel instrument

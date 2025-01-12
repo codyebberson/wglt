@@ -1,11 +1,10 @@
-import { PointLike, capitalize, serializable } from 'wglt';
+import { PointLike, capitalize, serializable, zzfx } from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
 import { Item } from './item';
 import { hitSound, nextLevelSound, pickupSound, walkSound } from './sounds';
 import { removeFromArray } from './utils';
-import { zzfx } from './zzfx/zzfx';
 
 export abstract class Action extends BaseComponent {
   target?: PointLike;

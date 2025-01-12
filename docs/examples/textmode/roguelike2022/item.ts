@@ -1,4 +1,4 @@
-import { Color, serializable } from 'wglt';
+import { Color, serializable, zzfx } from 'wglt';
 import { Action, ItemAction } from './actions';
 import { Actor } from './actor';
 import { BaseAI, ConfusedEnemy } from './ai';
@@ -7,7 +7,6 @@ import { Entity, RenderOrder } from './entity';
 import { AreaRangedAttackHandler, SingleRangedAttackHandler } from './handlers';
 import { healSound } from './sounds';
 import { removeFromArray } from './utils';
-import { zzfx } from './zzfx/zzfx';
 
 export abstract class Item extends Entity {
   constructor(char: string, color: Color, name: string) {

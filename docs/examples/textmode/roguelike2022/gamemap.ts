@@ -17,8 +17,6 @@ import { Item } from './item';
 
 @serializable
 export class GameMap extends BaseComponent {
-  // private tileMap: Tile[][];
-  // private console: Console;
   private tileMap: TileMap;
   level = 0;
   stairsLocation = new Point(0, 0);
@@ -31,14 +29,10 @@ export class GameMap extends BaseComponent {
   ) {
     super(engine);
 
-    // this.tileMap = [];
-    // this.console = new Console(width, height);
     this.tileMap = new TileMap(width, height);
 
     for (let y = 0; y < height; y++) {
-      // this.tileMap.push([]);
       for (let x = 0; x < width; x++) {
-        // this.tileMap[y].push(wall);
         this.makeWall(x, y);
       }
     }
@@ -75,23 +69,18 @@ export class GameMap extends BaseComponent {
   makeStairs(x: number, y: number): void {
     this.makeFloor(x, y);
     this.stairsLocation = new Point(x, y);
-    // this.tileMap[y][x] = stairs;
   }
 
   updateFov(x: number, y: number): void {
-    // this.console.computeFov(x, y, 8);
-    // this.console.updateExplored();
     this.tileMap.computeFov(x, y, 8);
     this.tileMap.updateExplored();
   }
 
   isVisible(x: number, y: number): boolean {
-    // return this.console.isVisible(x, y);
     return this.tileMap.isVisible(x, y);
   }
 
   isWall(x: number, y: number): boolean {
-    // return this.console.isBlocked(x, y);
     return this.tileMap.isBlocked(x, y);
   }
 
@@ -109,13 +98,11 @@ export class GameMap extends BaseComponent {
 
   computePath(start: PointLike, end: PointLike): TileMapCell[] | undefined {
     return computePath(this.tileMap, start, end, 1000);
-    // return this.tileMap.
   }
 
   render(term: Console): void {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        // const tile = this.tileMap[y][x];
         const tile = this.tileMap.getTile(x, y, 0);
         if (this.isVisible(x, y)) {
           // term.drawCell(x, y, tile.light);
@@ -161,20 +148,11 @@ export class GameMap extends BaseComponent {
   }
 
   private makeWall(x: number, y: number): void {
-    // this.tileMap[y][x] = wall;
-    // this.console.setBlocked(x, y, true);
-    // this.console.setBlockedSight(x, y, true);
-
     this.tileMap.setTile(x, y, 0, 1);
     this.tileMap.setBlocked(x, y, true, true);
-    // this.tileMap.setBlockedSight(x, y, true);
   }
 
   private makeFloor(x: number, y: number): void {
-    // this.tileMap[y][x] = floor;
-    // this.console.setBlocked(x, y, false);
-    // this.console.setBlockedSight(x, y, false);
-
     this.tileMap.setTile(x, y, 0, 0);
     this.tileMap.setBlocked(x, y, false, false);
   }
