@@ -7,7 +7,7 @@
     "build": "turbo run build",
     "clean": "turbo run clean",
     "dev": "npm run dev --workspace=docs",
-    "fix": "biome check --write .",
+    "fix": "biome check --write --unsafe .",
     "lint": "biome check .",
     "preview": "npm run preview --workspace=docs",
     "test": "turbo run test"

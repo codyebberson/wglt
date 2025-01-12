@@ -14,7 +14,12 @@
     "rules": {
       "recommended": true,
       "style": {
+        "noParameterAssign": "off",
         "useImportType": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noSparseArray": "off"
       }
     }
   },
@@ -26,6 +31,6 @@
     }
   },
   "files": {
-    "ignore": [".turbo", "dist"]
+    "ignore": [".turbo", "dist", "zzfx"]
   }
 }
