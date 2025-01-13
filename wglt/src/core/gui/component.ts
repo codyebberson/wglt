@@ -10,6 +10,7 @@ export abstract class Component {
   readonly rect: Rect;
   readonly screenRect: Rect;
   parent?: Container;
+  render?(gui: GUI): void;
   visible: boolean;
 
   constructor(rect: Rect) {

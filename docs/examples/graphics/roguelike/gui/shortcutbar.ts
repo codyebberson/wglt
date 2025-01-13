@@ -14,9 +14,15 @@ export class ShortcutBar extends Container {
 
     for (let i = 0; i < count; i++) {
       const key = `Digit${String.fromCharCode('1'.charCodeAt(0) + i)}` as Key;
-      const newRect = buttonSlotRect.clone();
-      newRect.x = i * (buttonSlotRect.width + spacing);
-      const buttonSlot = new ShortcutButtonSlot(newRect, key);
+      const buttonSlot = new ShortcutButtonSlot(
+        new Rect(
+          i * (buttonSlotRect.width + spacing),
+          0,
+          buttonSlotRect.width,
+          buttonSlotRect.height
+        ),
+        key
+      );
       this.addChild(buttonSlot);
     }
   }
@@ -64,9 +70,6 @@ export class ShortcutBar extends Container {
     }
     return false;
   }
-
-  // draw(app: BaseApp): void {
-  // }
 
   private getFreeSlot(rightToLeft: boolean): ShortcutButtonSlot | undefined {
     if (rightToLeft) {

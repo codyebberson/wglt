@@ -1,4 +1,6 @@
-import { Button, Rect } from 'wglt';
+import { Button, Container, GUI, GraphicsButtonRenderer, Rect } from 'wglt';
+import { App } from '../app';
+import { Palette } from '../palette';
 import { Talent } from '../talent';
 
 export class TalentButton extends Button {
@@ -9,44 +11,38 @@ export class TalentButton extends Button {
     super(rect, talent.ability.sprite);
     this.talent = talent;
     this.shortcut = !!shortcut;
-    // this.tooltipMessages = talent.ability.tooltipMessages;
+    this.tooltip = Container.fromMessages(talent.ability.tooltipMessages);
     this.draggable = true;
   }
 
   click(): void {
     this.talent.use();
   }
+}
 
-  // draw(app: BaseApp): void {
-  //   super.draw(app);
+export class TalentButtonRenderer extends GraphicsButtonRenderer {
+  render(gui: GUI<App>, component: TalentButton): void {
+    super.render(gui, component);
 
-  //   if (this.talent.cooldown > 0) {
-  //     const game = this.talent.actor.game;
-  //     const cooldownSprite = game.cooldownSprite;
-  //     if (cooldownSprite) {
-  //       const percent = 1.0 - this.talent.cooldown / this.talent.ability.cooldown;
-  //       const frame = Math.round(percent * cooldownSprite.frames);
-  //       const u = cooldownSprite.x + frame * cooldownSprite.width;
-  //       const v = cooldownSprite.y;
-  //       const x = (this.rect.x + (this.rect.width - cooldownSprite.width) / 2) | 0;
-  //       const y = (this.rect.y + (this.rect.height - cooldownSprite.height) / 2) | 0;
-  //       game.app.drawImage(x, y, u, v, cooldownSprite.width, cooldownSprite.height);
+    const app = gui.context;
+    const talent = component.talent;
+    const rect = component.screenRect;
+    const game = talent.actor.game;
+    const cooldownSprite = game.cooldownSprite;
 
-  //       const cx = (this.rect.x + this.rect.width / 2) | 0;
-  //       const cy = (this.rect.y + this.rect.height / 2) | 0;
-  //       game.app.drawCenteredString(
-  //         cx + 1,
-  //         cy - 2,
-  //         this.talent.cooldown.toString(),
-  //         SimplePalette.BLACK
-  //       );
-  //       game.app.drawCenteredString(
-  //         cx,
-  //         cy - 3,
-  //         this.talent.cooldown.toString(),
-  //         SimplePalette.WHITE
-  //       );
-  //     }
-  //   }
-  // }
+    if (talent.cooldown > 0 && cooldownSprite) {
+      const percent = 1.0 - talent.cooldown / talent.ability.cooldown;
+      const frame = Math.round(percent * cooldownSprite.frames);
+      const u = cooldownSprite.x + frame * cooldownSprite.width;
+      const v = cooldownSprite.y;
+      const x = (rect.x + (rect.width - cooldownSprite.width) / 2) | 0;
+      const y = (rect.y + (rect.height - cooldownSprite.height) / 2) | 0;
+      app.drawImage(x, y, u, v, cooldownSprite.width, cooldownSprite.height);
+
+      const cx = (rect.x + rect.width / 2) | 0;
+      const cy = (rect.y + rect.height / 2) | 0;
+      app.drawCenteredString(cx + 1, cy - 2, talent.cooldown.toString(), Palette.BLACK);
+      app.drawCenteredString(cx, cy - 3, talent.cooldown.toString(), Palette.WHITE);
+    }
+  }
 }

@@ -56,6 +56,11 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
       return;
     }
 
+    if (component.render) {
+      component.render(this);
+      return;
+    }
+
     const componentClass = component.constructor as ComponentConstructor<T>;
     const renderer = this.renderers.get(componentClass);
     if (!renderer) {

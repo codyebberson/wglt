@@ -32,7 +32,7 @@ import { ItemContainerDialog } from './gui/itemcontainerdialog';
 import { ItemShortcutButton } from './gui/itemshortcutbutton';
 import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
 import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
-import { TalentButton } from './gui/talentbutton';
+import { TalentButton, TalentButtonRenderer } from './gui/talentbutton';
 import { TalentsDialog } from './gui/talentsdialog';
 import { createMap } from './mapgen';
 import { Palette } from './palette';
@@ -40,29 +40,31 @@ import { Talent } from './talent';
 
 const app = new App({
   imageUrl: '/graphics2.png',
-  size: new Rect(0, 0, 400, 224),
+  size: new Rect(0, 0, 640, 360),
   font: FONT_04B03,
 });
 
 const dialogSourceRect = new Rect(0, 64, 24, 24);
 
 const gui = new GUI(app);
-// gui.renderers.set(BottomPanel, new BottomPanelRenderer());
-// gui.renderers.set(EntityFrames, new EntityFramesRenderer());
+
+// Standard components
 gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(Label, new GraphicsLabelRenderer());
 gui.renderers.set(Button, new GraphicsButtonRenderer());
-gui.renderers.set(TalentButton, new GraphicsButtonRenderer());
+gui.renderers.set(SelectInput, new GraphicsSelectInputRenderer());
+gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
+
+// Custom components
+gui.renderers.set(TalentButton, new TalentButtonRenderer());
 gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
 gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
 gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(ItemButton, new GraphicsButtonRenderer());
 gui.renderers.set(ItemShortcutButton, new GraphicsButtonRenderer());
-gui.renderers.set(SelectInput, new GraphicsSelectInputRenderer());
 
 const game = new Game(app, gui);
 
@@ -84,24 +86,24 @@ game.log(
 );
 
 const playerStats = new Panel(new Rect(1, 1, 100, 20));
-// playerStats.drawContents = () => {
-//   const frameY = 0;
-//   app.drawString(1, frameY, player.name);
+playerStats.render = () => {
+  const frameY = 0;
+  app.drawString(1, frameY, player.name);
 
-//   const hpPercent = player.hp / player.maxHp;
-//   app.drawImage(0, frameY + 7, 32, 64, 32, 12);
-//   app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
-//   app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
+  const hpPercent = player.hp / player.maxHp;
+  app.drawImage(0, frameY + 7, 32, 64, 32, 12);
+  app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
+  app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
-//   const xpPercent = player.xp / player.maxXp;
-//   app.drawImage(32, frameY + 7, 32, 64, 32, 12);
-//   app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
-//   app.drawString(35, frameY + 10, `${player.xp}/${player.maxXp}`);
-// };
+  const xpPercent = player.xp / player.maxXp;
+  app.drawImage(32, frameY + 7, 32, 64, 32, 12);
+  app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
+  app.drawString(35, frameY + 10, `${player.xp}/${player.maxXp}`);
+};
 gui.addChild(playerStats);
 
 const buttonSlotRect = new Rect(0, 88, 24, 24);
-const shortcutBar = new ShortcutBar(new Rect(1, 224 - 26, 26 * 6, 26), buttonSlotRect, 6);
+const shortcutBar = new ShortcutBar(new Rect(1, 360 - 26, 26 * 6, 26), buttonSlotRect, 6);
 gui.addChild(shortcutBar);
 
 const inventoryButton = new Button(
