@@ -26,10 +26,10 @@ import { Player } from './actors/player';
 import { App } from './app';
 import { CompoundMessage } from './compoundmessage';
 import { Game } from './game';
-import { ItemButton } from './gui/itembutton';
+import { ItemButton, ItemButtonRenderer } from './gui/itembutton';
 import { ItemContainerButtonSlot } from './gui/itemcontainerbuttonslot';
 import { ItemContainerDialog } from './gui/itemcontainerdialog';
-import { ItemShortcutButton } from './gui/itemshortcutbutton';
+import { ItemShortcutButton, ItemShortcutButtonRenderer } from './gui/itemshortcutbutton';
 import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
 import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
 import { TalentButton, TalentButtonRenderer } from './gui/talentbutton';
@@ -38,19 +38,23 @@ import { createMap } from './mapgen';
 import { Palette } from './palette';
 import { Talent } from './talent';
 
+const WIDTH = 640;
+const HEIGHT = 360;
+
 const app = new App({
   imageUrl: '/graphics2.png',
-  size: new Rect(0, 0, 640, 360),
+  size: new Rect(0, 0, WIDTH, HEIGHT),
   font: FONT_04B03,
 });
 
 const dialogSourceRect = new Rect(0, 64, 24, 24);
+const buttonSlotRect = new Rect(0, 88, 24, 24);
 
 const gui = new GUI(app);
 
 // Standard components
 gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ButtonSlot, new AutoRectRenderer(buttonSlotRect));
 gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(Label, new GraphicsLabelRenderer());
 gui.renderers.set(Button, new GraphicsButtonRenderer());
@@ -60,11 +64,11 @@ gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
 // Custom components
 gui.renderers.set(TalentButton, new TalentButtonRenderer());
 gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
-gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(buttonSlotRect));
 gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ItemButton, new GraphicsButtonRenderer());
-gui.renderers.set(ItemShortcutButton, new GraphicsButtonRenderer());
+gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(buttonSlotRect));
+gui.renderers.set(ItemButton, new ItemButtonRenderer());
+gui.renderers.set(ItemShortcutButton, new ItemShortcutButtonRenderer());
 
 const game = new Game(app, gui);
 
@@ -76,7 +80,7 @@ const player = new Player(game, 30, 20);
 game.player = player;
 game.entities.add(player);
 
-game.messageLog = new MessageLog(new Rect(1, -78, 100, 50));
+game.messageLog = new MessageLog(new Rect(1, HEIGHT - 78, 100, 50));
 gui.addChild(game.messageLog);
 game.log(
   new CompoundMessage(
@@ -102,12 +106,11 @@ playerStats.render = () => {
 };
 gui.addChild(playerStats);
 
-const buttonSlotRect = new Rect(0, 88, 24, 24);
-const shortcutBar = new ShortcutBar(new Rect(1, 360 - 26, 26 * 6, 26), buttonSlotRect, 6);
+const shortcutBar = new ShortcutBar(new Rect(1, HEIGHT - 26, 26 * 6, 26), buttonSlotRect, 6);
 gui.addChild(shortcutBar);
 
 const inventoryButton = new Button(
-  new Rect(400 - 24, 224 - 24, 24, 24),
+  new Rect(WIDTH - 24, HEIGHT - 24, 24, 24),
   new Sprite(192, 16, 16, 16),
   Key.VK_I,
   () => {
@@ -124,7 +127,7 @@ inventoryButton.tooltip = Container.fromMessages([
 gui.addChild(inventoryButton);
 
 const talentsButton = new Button(
-  new Rect(400 - 48, 224 - 24, 24, 24),
+  new Rect(WIDTH - 48, HEIGHT - 24, 24, 24),
   new Sprite(192, 16, 16, 16),
   Key.VK_T,
   () => {
@@ -167,7 +170,6 @@ gui.addChild(talentsDialog);
 
 player.inventory.addListener({
   onAdd: (_, item) => {
-    console.log('add item!', item);
     shortcutBar.addItem(player.inventory, item, true);
   },
   onRemove: (_, _talent) => {},
@@ -175,7 +177,6 @@ player.inventory.addListener({
 
 player.talents.addListener({
   onAdd: (_, talent) => {
-    console.log('add talent!', talent);
     shortcutBar.addTalent(talent);
   },
   onRemove: (_, _talent) => {},

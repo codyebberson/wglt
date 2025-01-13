@@ -7,10 +7,12 @@ import { TalentButton } from './talentbutton';
 
 export class ShortcutBar extends Container {
   spacing: number;
+  slotRect: Rect;
 
   constructor(rect: Rect, buttonSlotRect: Rect, count: number, spacing = 2) {
     super(rect);
     this.spacing = spacing;
+    this.slotRect = buttonSlotRect;
 
     for (let i = 0; i < count; i++) {
       const key = getKeyForDigit(i + 1);
@@ -27,13 +29,15 @@ export class ShortcutBar extends Container {
     }
   }
 
-  addTalent(talent: Talent, rightToLeft?: boolean): void {
+  addTalent(talent: Talent, rightToLeft = false): void {
     if (this.containsTalent(talent)) {
       return;
     }
-    const slot = this.getFreeSlot(!!rightToLeft);
+    const slot = this.getFreeSlot(rightToLeft);
     if (slot) {
-      slot.addChild(new TalentButton(slot.rect.clone(), talent, true));
+      slot.addChild(
+        new TalentButton(new Rect(0, 0, this.slotRect.width, this.slotRect.height), talent, true)
+      );
     }
   }
 
@@ -47,13 +51,19 @@ export class ShortcutBar extends Container {
     return false;
   }
 
-  addItem(items: ArrayList<Item>, item: Item, rightToLeft?: boolean): void {
+  addItem(items: ArrayList<Item>, item: Item, rightToLeft = false): void {
     if (this.containsItem(item)) {
       return;
     }
-    const slot = this.getFreeSlot(!!rightToLeft);
+    const slot = this.getFreeSlot(rightToLeft);
     if (slot) {
-      slot.addChild(new ItemShortcutButton(slot.rect.clone(), items, item));
+      slot.addChild(
+        new ItemShortcutButton(
+          new Rect(0, 0, this.slotRect.width, this.slotRect.height),
+          items,
+          item
+        )
+      );
     }
   }
 

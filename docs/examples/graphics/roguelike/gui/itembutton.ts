@@ -3,12 +3,12 @@ import {
   Button,
   Container,
   GUI,
-  GraphicsApp,
+  GraphicsButtonRenderer,
   Message,
   Panel,
   Rect,
-  Renderer,
 } from 'wglt';
+import { App } from '../app';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -20,9 +20,10 @@ export class ItemButton extends Button {
     this.containerItems = containerItems;
     this.stackItems = new ArrayList<Item>();
     this.stackItems.add(initialItem);
-    // this.tooltipMessages = initialItem.tooltipMessages;
-    // this.tooltip = initialItem.too
-    // this.tool
+    this.tooltip = initialItem.tooltipMessages
+      ? Container.fromMessages(initialItem.tooltipMessages)
+      : undefined;
+    this.draggable = true;
   }
 
   click(): void {
@@ -41,27 +42,11 @@ export class ItemButton extends Button {
     }
   }
 
-  // draw(app: BaseApp): void {
-  //   super.draw(app);
-
-  //   if (this.stackItems.length > 1) {
-  //     const dst = this.rect;
-  //     app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
-  //   }
-  // }
-
   decorateTooltip(tooltipPanel: Panel): void {
     let tooltipMessages: Message[] | undefined = undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
-      // item.onUpdateTooltip();
-      // this.tooltipMessages = item.tooltipMessages;
-      // if (item.tooltipMessages) {
-      //   this.tooltip = Container.fromMessages(item.tooltipMessages);
-      // }
       tooltipMessages = item.tooltipMessages;
-      // } else {
-      //   this.tooltipMessages = undefined;
     }
 
     if (tooltipMessages) {
@@ -70,23 +55,19 @@ export class ItemButton extends Button {
     } else {
       tooltipPanel.visible = false;
     }
-
-    //   // super.updateTooltip(tooltip);
-    //   return this.tooltipMessages;
-
-    // if (!this.tooltip) {
-    //   // this.tooltip = Container.fromMessages(this)
-    // }
   }
 }
 
-export class GraphicsItemButtonRenderer implements Renderer<GraphicsApp, ItemButton> {
-  render(_gui: GUI<GraphicsApp>, _itemButton: ItemButton): void {
-    // itemButton.draw(app);
-    // super.draw(app);
-    // if (this.stackItems.length > 1) {
-    //   const dst = this.rect;
-    //   app.drawRightString(dst.x2 - 3, dst.y2 - 10, this.stackItems.length.toString());
-    // }
+export class ItemButtonRenderer extends GraphicsButtonRenderer {
+  render(gui: GUI<App>, component: ItemButton): void {
+    super.render(gui, component);
+
+    const app = gui.context;
+    const stackItems = component.stackItems;
+
+    if (stackItems.length > -1) {
+      const dst = component.screenRect;
+      app.drawRightString(dst.x2 - 3, dst.y2 - 10, stackItems.length.toString());
+    }
   }
 }
