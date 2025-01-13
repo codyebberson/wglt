@@ -1,7 +1,7 @@
-import {GUI} from '../gui';
-import {Vec2} from '../vec2';
+import { GUI } from '../gui';
+import { Vec2 } from '../vec2';
 
-import {SelectOption} from './selectoption';
+import { SelectOption } from './selectoption';
 
 export interface SelectOptionRenderer {
   getHeight(option: SelectOption, selected: boolean): number;

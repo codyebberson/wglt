@@ -1,6 +1,6 @@
+import { Color } from './color';
 import { Rect } from './rect';
 import { Vec2 } from './vec2';
-import { Color } from './color';
 
 export interface GameOptions {
   tileSize?: Rect;

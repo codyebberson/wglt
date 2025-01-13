@@ -1,7 +1,7 @@
-import {Color} from './color';
 import { App } from './app';
-import { Vec2 } from './vec2';
+import { Color } from './color';
 import { Font } from './font';
+import { Vec2 } from './vec2';
 
 export class Message {
   readonly text: string;

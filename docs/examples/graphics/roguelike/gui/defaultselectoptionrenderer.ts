@@ -5,7 +5,7 @@ import { SelectOption } from './selectoption';
 import { SelectOptionRenderer } from './selectoptionrenderer';
 
 export class DefaultSelectOptionRenderer implements SelectOptionRenderer {
-  getHeight(option: SelectOption, selected: boolean) {
+  getHeight(_option: SelectOption, _selected: boolean) {
     return 10;
   }
 

@@ -1,4 +1,3 @@
-
 /**
  * Creates a "prim" level.
  *
@@ -8,42 +7,42 @@
  * There are a fixed number of health potions and bombs randomly scattered.
  */
 function createPrimLevel(width, height, wallTile, emptyTile) {
-    var frontiers = [[1, 1, 1, 1]];
-    var lastX = 0;
-    var lastY = 0;
+  const frontiers = [[1, 1, 1, 1]];
+  let lastX = 0;
+  let lastY = 0;
 
-    let result = new Console(width, height);
-    result.brush = wallTile;
-    result.fillRect(0, 0, width, height);
+  const result = new Console(width, height);
+  result.brush = wallTile;
+  result.fillRect(0, 0, width, height);
 
-    while (frontiers.length > 0) {
-        var r = Math.floor(Math.random() * frontiers.length);
-        var f = frontiers.splice(r, 1)[0];
-        var x = f[2];
-        var y = f[3];
-        if (result.getCell(x, y).charCode === wallTile.charCode) {
-            result.drawCell(x, y, emptyTile);
-            result.drawCell(f[0], f[1], emptyTile);
-            lastX = x;
-            lastY = y;
+  while (frontiers.length > 0) {
+    const r = Math.floor(Math.random() * frontiers.length);
+    const f = frontiers.splice(r, 1)[0];
+    const x = f[2];
+    const y = f[3];
+    if (result.getCell(x, y).charCode === wallTile.charCode) {
+      result.drawCell(x, y, emptyTile);
+      result.drawCell(f[0], f[1], emptyTile);
+      lastX = x;
+      lastY = y;
 
-            if (x >= 3 && result.getCell(x - 2, y).charCode === wallTile.charCode) {
-                frontiers.push([x - 1, y, x - 2, y]);
-            }
+      if (x >= 3 && result.getCell(x - 2, y).charCode === wallTile.charCode) {
+        frontiers.push([x - 1, y, x - 2, y]);
+      }
 
-            if (y >= 3 && result.getCell(x, y - 2).charCode === wallTile.charCode) {
-                frontiers.push([x, y - 1, x, y - 2]);
-            }
+      if (y >= 3 && result.getCell(x, y - 2).charCode === wallTile.charCode) {
+        frontiers.push([x, y - 1, x, y - 2]);
+      }
 
-            if (x < width - 3 && result.getCell(x + 2, y).charCode === wallTile.charCode) {
-                frontiers.push([x + 1, y, x + 2, y]);
-            }
+      if (x < width - 3 && result.getCell(x + 2, y).charCode === wallTile.charCode) {
+        frontiers.push([x + 1, y, x + 2, y]);
+      }
 
-            if (y < height - 3 && result.getCell(x, y + 2).charCode === wallTile.charCode) {
-                frontiers.push([x, y + 1, x, y + 2]);
-            }
-        }
+      if (y < height - 3 && result.getCell(x, y + 2).charCode === wallTile.charCode) {
+        frontiers.push([x, y + 1, x, y + 2]);
+      }
     }
+  }
 
-    return result;
+  return result;
 }

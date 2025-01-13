@@ -1,5 +1,4 @@
-
-import {Input} from './input';
+import { Input } from './input';
 
 /**
  * Number of keys to track.
@@ -20,8 +19,8 @@ export class Keyboard {
       this.keys[i] = new Input();
     }
 
-    el.addEventListener('keydown', e => this.setKey(e as KeyboardEvent, true));
-    el.addEventListener('keyup', e => this.setKey(e as KeyboardEvent, false));
+    el.addEventListener('keydown', (e) => this.setKey(e as KeyboardEvent, true));
+    el.addEventListener('keyup', (e) => this.setKey(e as KeyboardEvent, false));
   }
 
   private setKey(e: KeyboardEvent, state: boolean) {

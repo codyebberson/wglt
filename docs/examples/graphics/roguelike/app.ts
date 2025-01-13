@@ -1,13 +1,13 @@
-import {AppOptions} from './appoptions';
-import {AppState} from './appstate';
-import {Color} from './color';
-import {Font, FONT_04B03} from './font';
-import {Keyboard} from './keyboard';
-import {Mouse} from './mouse';
-import {Rect} from './rect';
-import {RenderSet} from './renderset';
-import {Vec2} from './vec2';
-import { Keys, Key } from './keys';
+import { AppOptions } from './appoptions';
+import { AppState } from './appstate';
+import { Color } from './color';
+import { FONT_04B03, Font } from './font';
+import { Keyboard } from './keyboard';
+import { Key, Keys } from './keys';
+import { Mouse } from './mouse';
+import { Rect } from './rect';
+import { RenderSet } from './renderset';
+import { Vec2 } from './vec2';
 
 const DEFAULT_WIDTH = 400;
 const DEFAULT_HEIGHT = 224;
@@ -45,7 +45,7 @@ export class App {
       throw new Error('Null or missing canvas element');
     }
 
-    const gl = canvas.getContext('webgl', {alpha: false, antialias: false});
+    const gl = canvas.getContext('webgl', { alpha: false, antialias: false });
     if (!gl) {
       throw new Error('Could not get WebGL context');
     }
@@ -101,9 +101,15 @@ export class App {
 
     this.scaleFactor = 1.0;
     if (width > height) {
-      this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMajorAxis), Math.round(height / minMinorAxis)));
+      this.scaleFactor = Math.max(
+        1,
+        Math.min(Math.round(width / minMajorAxis), Math.round(height / minMinorAxis))
+      );
     } else {
-      this.scaleFactor = Math.max(1, Math.min(Math.round(width / minMinorAxis), Math.round(height / minMajorAxis)));
+      this.scaleFactor = Math.max(
+        1,
+        Math.min(Math.round(width / minMinorAxis), Math.round(height / minMajorAxis))
+      );
     }
 
     this.size.width = Math.round(width / this.scaleFactor);
@@ -115,8 +121,8 @@ export class App {
     this.canvas.height = this.size.height;
     this.canvas.style.left = '0';
     this.canvas.style.top = '0';
-    this.canvas.style.width = width + 'px';
-    this.canvas.style.height = height + 'px';
+    this.canvas.style.width = `${width}px`;
+    this.canvas.style.height = `${height}px`;
   }
 
   /**
@@ -164,7 +170,17 @@ export class App {
    * @param {number=} dw Optional destination width.
    * @param {number=} dh Optional destination height.
    */
-  drawImage(x: number, y: number, u: number, v: number, w: number, h: number, color?: Color, dw?: number, dh?: number) {
+  drawImage(
+    x: number,
+    y: number,
+    u: number,
+    v: number,
+    w: number,
+    h: number,
+    color?: Color,
+    dw?: number,
+    dh?: number
+  ) {
     this.renderSet.drawImage(x, y, u, v, w, h, color, dw, dh);
   }
 
@@ -204,13 +220,13 @@ export class App {
 
   isKeyDown(keyCode: number) {
     const key = this.keyboard.getKey(keyCode);
-    return key && key.down;
+    return key?.down;
   }
 
   isKeyPressed(keyCode: number) {
     const key = this.keyboard.getKey(keyCode);
     const count = key ? key.downCount : 0;
-    return count === 1 || (count > 30);
+    return count === 1 || count > 30;
   }
 
   isDownLeftKeyPressed() {

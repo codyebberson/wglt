@@ -1,4 +1,3 @@
-
 export type Key = number;
 
 export class Keys {

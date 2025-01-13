@@ -1,4 +1,3 @@
-
 import { App } from './app';
 import { Input } from './input';
 import { Rect } from './rect';
@@ -120,8 +119,8 @@ export class Mouse extends Input {
       rect = new Rect(0, Math.floor(excess / 2), rect.width, actualHeight);
     }
 
-    this.x = (this.app.size.width * (clientX - rect.left) / rect.width) | 0;
-    this.y = (this.app.size.height * (clientY - rect.top) / rect.height) | 0;
+    this.x = ((this.app.size.width * (clientX - rect.left)) / rect.width) | 0;
+    this.y = ((this.app.size.height * (clientY - rect.top)) / rect.height) | 0;
   }
 
   private handleMouseWheel(e: Event) {

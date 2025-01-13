@@ -1,16 +1,13 @@
-
-import {App} from './app';
-import {DialogRenderer} from './gui/dialogrenderer';
-import {ItemShortcutButton} from './gui/itemshortcutbutton';
-import {Panel} from './gui/panel';
-import {TalentButton} from './gui/talentbutton';
-import {Mouse} from './mouse';
-import {Rect} from './rect';
-import {Vec2} from './vec2';
+import { App } from './app';
+import { DialogRenderer } from './gui/dialogrenderer';
 import { ItemButton } from './gui/itembutton';
-import { Serializable } from './serializable';
+import { ItemShortcutButton } from './gui/itemshortcutbutton';
+import { Panel } from './gui/panel';
+import { TalentButton } from './gui/talentbutton';
+import { Mouse } from './mouse';
+import { Rect } from './rect';
+import { Vec2 } from './vec2';
 
-@Serializable('GUI')
 export class GUI {
   readonly app: App;
   readonly renderer: DialogRenderer;
@@ -33,7 +30,7 @@ export class GUI {
     this.rootPanel.remove(panel);
   }
 
-  getPanelAt(point: Vec2|Mouse) {
+  getPanelAt(point: Vec2 | Mouse) {
     return this.rootPanel.getPanelAt(point);
   }
 
@@ -72,7 +69,7 @@ export class GUI {
     } else {
       // End the drag
       const target = this.rootPanel.getPanelAt(mouse);
-      if (target && target.onDrop(dragElement)) {
+      if (target?.onDrop(dragElement)) {
         // Found a valid drop target
         dragElement.rect.x = target.rect.x;
         dragElement.rect.y = target.rect.y;
@@ -85,7 +82,11 @@ export class GUI {
         if (dragElement.parent) {
           dragElement.parent.remove(dragElement);
         }
-      } else if (dragElement instanceof TalentButton && dragElement.shortcut && target === this.rootPanel) {
+      } else if (
+        dragElement instanceof TalentButton &&
+        dragElement.shortcut &&
+        target === this.rootPanel
+      ) {
         // Destroy the shortcut
         if (dragElement.parent) {
           dragElement.parent.remove(dragElement);

@@ -1,4 +1,4 @@
-import { getTileId } from "./tilemap";
+import { getTileId } from './tilemap';
 
 /**
  * @constructor

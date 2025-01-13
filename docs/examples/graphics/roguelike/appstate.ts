@@ -1,5 +1,5 @@
-import {App} from './app';
-import {GUI} from './gui';
+import { App } from './app';
+import { GUI } from './gui';
 
 export class AppState {
   readonly app: App;

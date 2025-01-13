@@ -26,11 +26,10 @@ export class ShortcutButtonSlot extends ButtonSlot {
       if (panel.shortcut) {
         // Move the existing shortcut
         return true;
-      } else {
-        // Create a shortcut to the talent
-        this.add(new TalentButton(this.rect.clone(), panel.talent, true));
-        return false;
       }
+      // Create a shortcut to the talent
+      this.add(new TalentButton(this.rect.clone(), panel.talent, true));
+      return false;
     }
 
     if (panel instanceof ItemShortcutButton || (panel instanceof TalentButton && panel.shortcut)) {

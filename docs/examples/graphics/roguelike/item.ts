@@ -1,8 +1,12 @@
+import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
 import { Message } from './message';
 
 export class Item extends Entity {
+  onPickup?: (user: Actor, item: Item) => void;
+  onUse?: (user: Actor, item: Item) => void;
+  ability?: Ability;
   tooltipMessages?: Message[];
 
   /**
@@ -24,11 +28,11 @@ export class Item extends Entity {
     return true;
   }
 
-  onPickup(_user: Actor) {}
+  // onPickup(_user: Actor) {}
 
-  onUse(_user: Actor): boolean {
-    return false;
-  }
+  // onUse(_user: Actor): boolean {
+  //   return false;
+  // }
 
   onUpdateTooltip() {}
 }

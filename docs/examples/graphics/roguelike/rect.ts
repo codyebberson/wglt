@@ -1,5 +1,5 @@
-import {Mouse} from './mouse';
-import {Vec2} from './vec2';
+import { Mouse } from './mouse';
+import { Vec2 } from './vec2';
 
 export class Rect extends Vec2 {
   width: number;
@@ -47,14 +47,14 @@ export class Rect extends Vec2 {
   }
 
   getCenter() {
-    return new Vec2(this.x + (this.width / 2) | 0, this.y + (this.height / 2) | 0);
+    return new Vec2((this.x + this.width / 2) | 0, (this.y + this.height / 2) | 0);
   }
 
   intersects(other: Rect) {
     return this.x <= other.x2 && this.x2 >= other.x && this.y <= other.y2 && this.y2 >= other.y;
   }
 
-  contains(point: Vec2|Mouse) {
+  contains(point: Vec2 | Mouse) {
     return point.x >= this.x && point.x <= this.x2 && point.y >= this.y && point.y <= this.y2;
   }
 }

@@ -1,4 +1,4 @@
-import { Vec2 } from "../vec2";
+import { Vec2 } from '../vec2';
 
 export class TileMapCell extends Vec2 {
   blocked: boolean;

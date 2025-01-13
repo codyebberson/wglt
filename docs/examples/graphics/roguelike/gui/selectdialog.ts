@@ -24,7 +24,7 @@ export class SelectDialog extends Dialog {
     super.drawContents();
     const offset = this.rect;
     for (let i = 0; i < this.options.length; i++) {
-      const str = String.fromCharCode(65 + i) + ' - ' + this.options[i].name;
+      const str = `${String.fromCharCode(65 + i)} - ${this.options[i].name}`;
       this.gui.app.drawString(str, offset.x + MARGIN, offset.y + MARGIN + i * LINE_HEIGHT);
     }
   }

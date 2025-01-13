@@ -1,4 +1,3 @@
-
 /**
  * The ExtendedTexture class "extends" WebGLTexture and
  * provides additional helper properties.
@@ -19,7 +18,11 @@ export interface ExtendedTexture {
 /**
  * Initialize a shader program, so WebGL knows how to draw our data
  */
-export function initShaderProgram(gl: WebGLRenderingContext, vsSource: string, fsSource: string): WebGLProgram {
+export function initShaderProgram(
+  gl: WebGLRenderingContext,
+  vsSource: string,
+  fsSource: string
+): WebGLProgram {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
   const shaderProgram = gl.createProgram() as WebGLProgram;
@@ -61,7 +64,17 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
   const srcFormat = gl.RGBA;
   const srcType = gl.UNSIGNED_BYTE;
   const pixel = new Uint8Array([0, 0, 0, 255]);
-  gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    level,
+    internalFormat,
+    width,
+    height,
+    border,
+    srcFormat,
+    srcType,
+    pixel
+  );
 
   const image = new Image();
   image.onload = () => {

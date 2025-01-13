@@ -1,28 +1,27 @@
-import {Ability, TargetType} from './ability';
-import {Actor} from './actor';
-import {Animation} from './animations/animation';
-import {App} from './app';
-import {AppState} from './appstate';
-import {Color} from './color';
-import {StandardColors} from './palettes/standardcolors';
-import {Entity} from './entity';
-import {GameOptions} from './gameoptions';
-import {MessageLog} from './gui/messagelog';
-import {Panel} from './gui/panel';
-import {TooltipDialog} from './gui/tooltipdialog';
-import {Keys} from './keys';
-import {computePath} from './path';
-import {Rect} from './rect';
-import {RNG} from './rng';
-import {Sprite} from './sprite';
-import {Vec2} from './vec2';
+import { Ability, TargetType } from './ability';
+import { Actor } from './actor';
+import { Animation } from './animations/animation';
+import { App } from './app';
+import { AppState } from './appstate';
 import { ArrayList } from './arraylist';
-import { Serializable } from './serializable';
-import { TileMapCell } from './tilemap/tilemapcell';
-import { TileMap } from './tilemap/tilemap';
-import { TileMapRenderer } from './tilemap/tilemaprenderer';
-import { Message } from './message';
+import { Color } from './color';
+import { Entity } from './entity';
+import { GameOptions } from './gameoptions';
+import { MessageLog } from './gui/messagelog';
+import { Panel } from './gui/panel';
+import { TooltipDialog } from './gui/tooltipdialog';
 import { Item } from './item';
+import { Keys } from './keys';
+import { Message } from './message';
+import { StandardColors } from './palettes/standardcolors';
+import { computePath } from './path';
+import { Rect } from './rect';
+import { RNG } from './rng';
+import { Sprite } from './sprite';
+import { TileMap } from './tilemap/tilemap';
+import { TileMapCell } from './tilemap/tilemapcell';
+import { TileMapRenderer } from './tilemap/tilemaprenderer';
+import { Vec2 } from './vec2';
 
 const DEFAULT_MAP_SIZE = new Rect(0, 0, 256, 256);
 const DEFAULT_MAP_LAYERS = 1;
@@ -30,7 +29,6 @@ const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 const DEFAULT_VIEW_DISTANCE = 13;
 
-@Serializable('Game')
 export class Game extends AppState {
   readonly viewport: Rect;
   readonly viewportFocus: Vec2;
@@ -46,12 +44,12 @@ export class Game extends AppState {
   blocked: boolean;
   messageLog?: MessageLog;
   targetAbility?: Ability;
-  targetCallback?: Function;
+  targetCallback?: () => void;
   targetSprite?: Sprite;
   targetTile?: TileMapCell;
   path?: TileMapCell[];
   pathIndex: number;
-  onUpdate?: Function;
+  onUpdate?: () => void;
   tileMap: TileMap;
   tileMapRenderer: TileMapRenderer;
   player?: Actor;
@@ -99,7 +97,7 @@ export class Game extends AppState {
     return this.tileMap.tileSize;
   }
 
-  log(message: string|Message, color?: Color) {
+  log(message: string | Message, color?: Color) {
     if (this.messageLog) {
       this.messageLog.add(message, color);
     }
@@ -258,9 +256,8 @@ export class Game extends AppState {
               this.handlePlayerInput();
             }
             break;
-          } else {
-            this.doAi(currEntity);
           }
+          this.doAi(currEntity);
         }
         if (currEntity.ap <= 0) {
           // Turn is over
@@ -367,7 +364,7 @@ export class Game extends AppState {
     return !!this.targetAbility;
   }
 
-  startTargeting(ability: Ability, callback?: Function) {
+  startTargeting(ability: Ability, callback?: () => void) {
     this.targetAbility = ability;
     this.targetCallback = callback;
     if (this.player) {
@@ -423,7 +420,7 @@ export class Game extends AppState {
       let dy = 0;
       if (this.app.isDownLeftKeyPressed()) {
         dx = -1;
-        dy = 1
+        dy = 1;
       }
       if (this.app.isDownKeyPressed()) {
         dy = 1;
@@ -580,11 +577,10 @@ export class Game extends AppState {
             // If this is the first stop, go ahead and bump
             this.stopAutoWalk();
             return other.onBump(player);
-          } else {
-            // Otherwise stop and make player confirm
-            this.stopAutoWalk();
-            return true;
           }
+          // Otherwise stop and make player confirm
+          this.stopAutoWalk();
+          return true;
         }
 
         // Otherwise, this is keyboard input, so go ahead and bump
@@ -621,8 +617,16 @@ export class Game extends AppState {
     let visibleMaxY = (player.y + 1) * tileHeight;
 
     // Find the bounds of the visible area.
-    for (let y = player.y - this.verticalViewDistance; y <= player.y + this.verticalViewDistance; y++) {
-      for (let x = player.x - this.horizontalViewDistance; x <= player.x + this.horizontalViewDistance; x++) {
+    for (
+      let y = player.y - this.verticalViewDistance;
+      y <= player.y + this.verticalViewDistance;
+      y++
+    ) {
+      for (
+        let x = player.x - this.horizontalViewDistance;
+        x <= player.x + this.horizontalViewDistance;
+        x++
+      ) {
         if (map.isVisible(x, y)) {
           visibleMinX = Math.min(visibleMinX, x * tileWidth);
           visibleMinY = Math.min(visibleMinY, y * tileHeight);
@@ -663,7 +667,7 @@ export class Game extends AppState {
 
     // Find the center of the bounds of all visible actors
 
-    if ((visibleMaxX - visibleMinX) <= (this.viewport.width - 2 * this.focusMargins.x)) {
+    if (visibleMaxX - visibleMinX <= this.viewport.width - 2 * this.focusMargins.x) {
       // The entire visible range fits in the viewport, so center it
       this.viewportFocus.x = Math.round((visibleMinX + visibleMaxX) / 2.0);
     } else {
@@ -671,7 +675,7 @@ export class Game extends AppState {
       this.viewportFocus.x = Math.round((minX + maxX) / 2.0);
     }
 
-    if ((visibleMaxY - visibleMinY) <= (this.viewport.height - 2 * this.focusMargins.y)) {
+    if (visibleMaxY - visibleMinY <= this.viewport.height - 2 * this.focusMargins.y) {
       // The entire visible range fits in the viewport, so center it
       this.viewportFocus.y = Math.round((visibleMinY + visibleMaxY) / 2.0);
     } else {
@@ -763,7 +767,12 @@ export class Game extends AppState {
       return;
     }
 
-    this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance, this.verticalViewDistance);
+    this.tileMap.computeFov(
+      this.player.x,
+      this.player.y,
+      this.horizontalViewDistance,
+      this.verticalViewDistance
+    );
 
     // Determine which entities are visible
     for (let i = 0; i < this.entities.length; i++) {

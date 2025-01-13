@@ -1,4 +1,3 @@
-
 export class Input {
   down: boolean;
   downCount: number;

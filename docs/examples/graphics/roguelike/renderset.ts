@@ -1,7 +1,6 @@
-
-import {Color} from './color';
-import {Font} from './font';
-import {createTexture, ExtendedTexture, initShaderProgram} from './glutils';
+import { Color } from './color';
+import { Font } from './font';
+import { ExtendedTexture, createTexture, initShaderProgram } from './glutils';
 import { Vec2 } from './vec2';
 
 /**
@@ -14,47 +13,40 @@ import { Vec2 } from './vec2';
  */
 const BUFFER_SIZE = 65536;
 
-const spriteVertexShader = 'uniform vec2 u_viewportSize;' +
-    'attribute vec2 a_position;' +
-    'attribute vec2 a_texCoord;' +
-    'attribute vec4 a_color;' +
-    'varying vec2 v_texCoord;' +
-    'varying vec4 v_color;' +
-    'void main() {' +
+const spriteVertexShader =
+  'uniform vec2 u_viewportSize;' +
+  'attribute vec2 a_position;' +
+  'attribute vec2 a_texCoord;' +
+  'attribute vec4 a_color;' +
+  'varying vec2 v_texCoord;' +
+  'varying vec4 v_color;' +
+  'void main() {' +
+  // convert the rectangle from pixels to 0.0 to 1.0
+  'vec2 zeroToOne = a_position / u_viewportSize;' +
+  // convert from 0->1 to 0->2
+  'vec2 zeroToTwo = zeroToOne * 2.0;' +
+  // convert from 0->2 to -1->+1 (clipspace)
+  'vec2 clipSpace = zeroToTwo - 1.0;' +
+  'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);' +
+  // pass the texCoord to the fragment shader
+  // The GPU will interpolate this value between points.
+  'v_texCoord = a_texCoord;' +
+  'v_color = a_color;' +
+  '}';
 
-    // convert the rectangle from pixels to 0.0 to 1.0
-    'vec2 zeroToOne = a_position / u_viewportSize;' +
-
-    // convert from 0->1 to 0->2
-    'vec2 zeroToTwo = zeroToOne * 2.0;' +
-
-    // convert from 0->2 to -1->+1 (clipspace)
-    'vec2 clipSpace = zeroToTwo - 1.0;' +
-
-    'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);' +
-
-    // pass the texCoord to the fragment shader
-    // The GPU will interpolate this value between points.
-    'v_texCoord = a_texCoord;' +
-    'v_color = a_color;' +
-    '}';
-
-const spriteFragmentShader = 'precision highp float;' +
-
-    // our texture
-    'uniform sampler2D u_image;' +
-
-    // the texCoords passed in from the vertex shader.
-    'varying vec2 v_texCoord;' +
-
-    // the color overrides passed in from the vertex shader.
-    'varying vec4 v_color;' +
-
-    'void main() {' +
-    'gl_FragColor = texture2D(u_image, v_texCoord);' +
-    'if (gl_FragColor.a < 0.1) discard;' +
-    'if (v_color.a != 0.0) gl_FragColor = v_color;' +
-    '}';
+const spriteFragmentShader =
+  'precision highp float;' +
+  // our texture
+  'uniform sampler2D u_image;' +
+  // the texCoords passed in from the vertex shader.
+  'varying vec2 v_texCoord;' +
+  // the color overrides passed in from the vertex shader.
+  'varying vec4 v_color;' +
+  'void main() {' +
+  'gl_FragColor = texture2D(u_image, v_texCoord);' +
+  'if (gl_FragColor.a < 0.1) discard;' +
+  'if (v_color.a != 0.0) gl_FragColor = v_color;' +
+  '}';
 
 export class RenderSet {
   readonly font: Font;
@@ -83,7 +75,10 @@ export class RenderSet {
     const program = initShaderProgram(gl, spriteVertexShader, spriteFragmentShader);
 
     this.program = program;
-    this.viewportSizeLocation = gl.getUniformLocation(program, 'u_viewportSize') as WebGLUniformLocation;
+    this.viewportSizeLocation = gl.getUniformLocation(
+      program,
+      'u_viewportSize'
+    ) as WebGLUniformLocation;
     this.positionLocation = gl.getAttribLocation(program, 'a_position');
     this.texcoordLocation = gl.getAttribLocation(program, 'a_texCoord');
     this.colorLocation = gl.getAttribLocation(program, 'a_color');
@@ -108,7 +103,7 @@ export class RenderSet {
    * @param {number=} color Optional color.
    */
   drawCenteredString(str: string, x: number, y: number, color?: Color) {
-    const x2 = x - (this.font.getStringWidth(str) / 2) | 0;
+    const x2 = (x - this.font.getStringWidth(str) / 2) | 0;
     this.drawString(str, x2, y, color);
   }
 
@@ -187,8 +182,16 @@ export class RenderSet {
    * @param {number=} dh Optional destination height.
    */
   drawImage(
-      x: number, y: number, u: number, v: number, w: number, h: number, optColor?: Color, optDw?: number,
-      optDh?: number) {
+    x: number,
+    y: number,
+    u: number,
+    v: number,
+    w: number,
+    h: number,
+    optColor?: Color,
+    optDw?: number,
+    optDh?: number
+  ) {
     const spriteTexture = this.spriteTexture;
     if (!spriteTexture.loaded) {
       return;
@@ -270,12 +273,12 @@ export class RenderSet {
 
       // Tell the position attribute how to get data out of positionBuffer
       // (ARRAY_BUFFER)
-      const size = 2;           // 2 components per iteration
-      const type = gl.FLOAT;    // the data is 32bit floats
-      const normalize = false;  // don't normalize the data
-      const stride = 0;         // 0 = move forward size * sizeof(type) each iteration
-                                // to get the next position
-      const offset = 0;         // start at the beginning of the buffer
+      const size = 2; // 2 components per iteration
+      const type = gl.FLOAT; // the data is 32bit floats
+      const normalize = false; // don't normalize the data
+      const stride = 0; // 0 = move forward size * sizeof(type) each iteration
+      // to get the next position
+      const offset = 0; // start at the beginning of the buffer
       gl.vertexAttribPointer(this.positionLocation, size, type, normalize, stride, offset);
     }
 
@@ -287,12 +290,12 @@ export class RenderSet {
 
       // Tell the position attribute how to get data out of positionBuffer
       // (ARRAY_BUFFER)
-      const size = 2;           // 2 components per iteration
-      const type = gl.FLOAT;    // the data is 32bit floats
-      const normalize = false;  // don't normalize the data
-      const stride = 0;         // 0 = move forward size * sizeof(type) each iteration
-                                // to get the next position
-      const offset = 0;         // start at the beginning of the buffer
+      const size = 2; // 2 components per iteration
+      const type = gl.FLOAT; // the data is 32bit floats
+      const normalize = false; // don't normalize the data
+      const stride = 0; // 0 = move forward size * sizeof(type) each iteration
+      // to get the next position
+      const offset = 0; // start at the beginning of the buffer
       gl.vertexAttribPointer(this.texcoordLocation, size, type, normalize, stride, offset);
     }
 
@@ -304,12 +307,12 @@ export class RenderSet {
 
       // Tell the position attribute how to get data out of positionBuffer
       // (ARRAY_BUFFER)
-      const size = 4;                 // 4 components per iteration
-      const type = gl.UNSIGNED_BYTE;  // the data is 8-bit unsigned bytes
-      const normalize = true;         // Normalize from 0-255 to 0.0-1.0
-      const stride = 0;               // 0 = move forward size * sizeof(type) each iteration
-                                      // to get the next position
-      const offset = 0;               // start at the beginning of the buffer
+      const size = 4; // 4 components per iteration
+      const type = gl.UNSIGNED_BYTE; // the data is 8-bit unsigned bytes
+      const normalize = true; // Normalize from 0-255 to 0.0-1.0
+      const stride = 0; // 0 = move forward size * sizeof(type) each iteration
+      // to get the next position
+      const offset = 0; // start at the beginning of the buffer
       gl.vertexAttribPointer(this.colorLocation, size, type, normalize, stride, offset);
     }
 

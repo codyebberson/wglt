@@ -1,6 +1,6 @@
-import { TileMapCell } from "./tilemapcell";
-import { Rect } from "../rect";
-import { TileMapLayer } from "./tilemaplayer";
+import { Rect } from '../rect';
+import { TileMapCell } from './tilemapcell';
+import { TileMapLayer } from './tilemaplayer';
 
 /**
  * Returns the numeric tile ID for a given tile.
@@ -66,9 +66,7 @@ export class TileMap {
   }
 
   isOutOfRange(x: number, y: number, z: number) {
-    return x < 0 || x >= this.width ||
-        y < 0 || y >= this.height ||
-        z < 0 || z >= this.depth;
+    return x < 0 || x >= this.width || y < 0 || y >= this.height || z < 0 || z >= this.depth;
   }
 
   clear() {
@@ -103,7 +101,7 @@ export class TileMap {
       return;
     }
     this.grid[y][x].blocked = blocked;
-    this.grid[y][x].blockedSight = (blockedSight !== undefined) ? blockedSight : blocked;
+    this.grid[y][x].blockedSight = blockedSight !== undefined ? blockedSight : blocked;
   }
 
   getCell(x: number, y: number) {
@@ -114,7 +112,12 @@ export class TileMap {
   }
 
   isVisible(x: number, y: number) {
-    if (x < this.visibleRect.x1 || x >= this.visibleRect.x2 || y < this.visibleRect.y1 || y >= this.visibleRect.y2) {
+    if (
+      x < this.visibleRect.x1 ||
+      x >= this.visibleRect.x2 ||
+      y < this.visibleRect.y1 ||
+      y >= this.visibleRect.y2
+    ) {
       return false;
     }
     return this.grid[y][x].visible;
@@ -122,7 +125,7 @@ export class TileMap {
 
   isSeen(x: number, y: number) {
     const cell = this.getCell(x, y);
-    return cell && cell.seen;
+    return cell?.seen;
   }
 
   setSeen(x: number, y: number, seen: boolean) {
@@ -207,13 +210,19 @@ export class TileMap {
     let endSlope;
     let previousEndSlope;
 
-    for (y = this.originY + deltaY; y >= this.visibleRect.y1 && y < this.visibleRect.y2;
-      y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration) {
+    for (
+      y = this.originY + deltaY;
+      y >= this.visibleRect.y1 && y < this.visibleRect.y2;
+      y += deltaY, obstaclesInLastLine = totalObstacles, ++iteration
+    ) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
-      for (processedCell = Math.floor(minSlope * iteration + 0.5), x = this.originX + (processedCell * deltaX);
+      for (
+        processedCell = Math.floor(minSlope * iteration + 0.5),
+          x = this.originX + processedCell * deltaX;
         processedCell <= iteration && x >= this.visibleRect.x1 && x < this.visibleRect.x2;
-        x += deltaX, ++processedCell, previousEndSlope = endSlope) {
+        x += deltaX, ++processedCell, previousEndSlope = endSlope
+      ) {
         visible = true;
         extended = false;
         centreSlope = processedCell / iteration;
@@ -221,8 +230,13 @@ export class TileMap {
         endSlope = centreSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
-          if (!(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
-            !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
+          if (
+            !(this.grid[y - deltaY][x].visible && !this.grid[y - deltaY][x].blockedSight) &&
+            !(
+              this.grid[y - deltaY][x - deltaX].visible &&
+              !this.grid[y - deltaY][x - deltaX].blockedSight
+            )
+          ) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
@@ -236,11 +250,10 @@ export class TileMap {
                   if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
-                  } else {
-                    startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-                    endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-                    extended = true;
                   }
+                  startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+                  endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+                  extended = true;
                 }
               }
             }
@@ -283,13 +296,19 @@ export class TileMap {
     let endSlope;
     let previousEndSlope;
 
-    for (x = this.originX + deltaX; x >= this.visibleRect.x1 && x < this.visibleRect.x2;
-      x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration) {
+    for (
+      x = this.originX + deltaX;
+      x >= this.visibleRect.x1 && x < this.visibleRect.x2;
+      x += deltaX, obstaclesInLastLine = totalObstacles, ++iteration
+    ) {
       halfSlope = 0.5 / iteration;
       previousEndSlope = -1;
-      for (processedCell = Math.floor(minSlope * iteration + 0.5), y = this.originY + (processedCell * deltaY);
+      for (
+        processedCell = Math.floor(minSlope * iteration + 0.5),
+          y = this.originY + processedCell * deltaY;
         processedCell <= iteration && y >= this.visibleRect.y1 && y < this.visibleRect.y2;
-        y += deltaY, ++processedCell, previousEndSlope = endSlope) {
+        y += deltaY, ++processedCell, previousEndSlope = endSlope
+      ) {
         visible = true;
         extended = false;
         centreSlope = processedCell / iteration;
@@ -297,8 +316,13 @@ export class TileMap {
         endSlope = centreSlope + halfSlope;
 
         if (obstaclesInLastLine > 0) {
-          if (!(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
-            !(this.grid[y - deltaY][x - deltaX].visible && !this.grid[y - deltaY][x - deltaX].blockedSight)) {
+          if (
+            !(this.grid[y][x - deltaX].visible && !this.grid[y][x - deltaX].blockedSight) &&
+            !(
+              this.grid[y - deltaY][x - deltaX].visible &&
+              !this.grid[y - deltaY][x - deltaX].blockedSight
+            )
+          ) {
             visible = false;
           } else {
             for (let idx = 0; idx < obstaclesInLastLine && visible; ++idx) {
@@ -312,11 +336,10 @@ export class TileMap {
                   if (startSlope >= startSlopes[idx] && endSlope <= endSlopes[idx]) {
                     visible = false;
                     break;
-                  } else {
-                    startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
-                    endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
-                    extended = true;
                   }
+                  startSlopes[idx] = Math.min(startSlopes[idx], startSlope);
+                  endSlopes[idx] = Math.max(endSlopes[idx], endSlope);
+                  extended = true;
                 }
               }
             }

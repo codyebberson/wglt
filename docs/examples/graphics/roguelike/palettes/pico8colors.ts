@@ -1,5 +1,4 @@
-
-import {fromRgb} from '../color';
+import { fromRgb } from '../color';
 
 /**
  * https://www.romanzolotarev.com/pico-8-color-palette/

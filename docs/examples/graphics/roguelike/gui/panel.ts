@@ -109,7 +109,7 @@ export class Panel {
     return this.gui && this.gui.dragElement === this;
   }
 
-  onDrop(panel: Panel) {
+  onDrop(_panel: Panel) {
     return false;
   }
 

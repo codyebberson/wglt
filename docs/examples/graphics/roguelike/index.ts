@@ -1,4 +1,10 @@
+import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
+import { BasicMonster } from './ai/basicmonster';
+import { ConfusedMonster } from './ai/confusedmonster';
+import { FadeInAnimation } from './animations/fadeinanimation';
+import { FadeOutAnimation } from './animations/fadeoutanimation';
+import { ProjectileAnimation } from './animations/projectileanimation';
 import { App } from './app';
 import { AppState } from './appstate';
 import { CompoundMessage } from './compoundmessage';
@@ -8,9 +14,11 @@ import { Button } from './gui/button';
 import { ImagePanel } from './gui/imagepanel';
 import { ItemContainerDialog } from './gui/itemcontainerdialog';
 import { MessageLog } from './gui/messagelog';
+import { Panel } from './gui/panel';
 import { SelectDialog } from './gui/selectdialog';
 import { ShortcutBar } from './gui/shortcutbar';
 import { TalentsDialog } from './gui/talentsdialog';
+import { Item } from './item';
 import { Keys } from './keys';
 import { Message } from './message';
 import { Pico8Colors } from './palettes/pico8colors';
@@ -18,7 +26,7 @@ import { Rect } from './rect';
 import { RNG } from './rng';
 import { Sprite } from './sprite';
 import { Talent } from './talent';
-import { getTileId } from './tilemap/tilemap';
+import { TileMap, getTileId } from './tilemap/tilemap';
 import { Vec2 } from './vec2';
 
 // Size of the map
@@ -36,14 +44,14 @@ const ROOM_MIN_SIZE = 6;
 const MAX_ROOMS = 30;
 const MAX_ROOM_MONSTERS = 3;
 const MAX_ROOM_ITEMS = 2;
-const TORCH_RADIUS = 10;
+// const TORCH_RADIUS = 10;
 
 // Spell values
 const HEAL_AMOUNT = 4;
 const LIGHTNING_DAMAGE = 20;
 const LIGHTNING_RANGE = 5;
 const CONFUSE_RANGE = 8;
-const CONFUSE_NUM_TURNS = 10;
+// const CONFUSE_NUM_TURNS = 10;
 const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
@@ -56,17 +64,10 @@ class Fighter extends Actor {
   }
 
   onAttack(target: Actor, damage: number) {
-    const attacker = this;
     if (damage > 0) {
-      this.game.log(
-        attacker.name + ' attacks ' + target.name + ' for ' + damage + ' hit points.',
-        0x808080ff
-      );
+      this.game.log(`${this.name} attacks ${target.name} for ${damage} hit points.`, 0x808080ff);
     } else {
-      this.game.log(
-        attacker.name + ' attacks ' + target.name + ' but it has no effect!',
-        0x808080ff
-      );
+      this.game.log(`${this.name} attacks ${target.name} but it has no effect!`, 0x808080ff);
     }
   }
 }
@@ -90,24 +91,23 @@ class Player extends Fighter {
 }
 
 class Monster extends Fighter {
-  constructor(game, x, y, name, sprite) {
+  constructor(game: Game, x: number, y: number, name: string, sprite: Sprite) {
     super(game, x, y, name, sprite);
     this.hp = 20;
     this.ai = new BasicMonster(this, calculateDamage);
   }
 
-  onBump(player) {
+  onBump(player: Actor) {
     player.attack(this, 10);
     return true;
   }
 
   onDeath() {
-    const monster = this;
-    game.log(monster.name + ' is dead');
-    monster.blocks = false;
-    monster.ai = null;
-    monster.name = 'remains of ' + monster.name;
-    monster.sendToBack();
+    game.log(`${this.name} is dead`);
+    this.blocks = false;
+    this.ai = undefined;
+    this.name = `remains of ${this.name}`;
+    this.sendToBack();
 
     const xpGain = 10;
     player.xp += xpGain;
@@ -116,30 +116,30 @@ class Monster extends Fighter {
       player.level++;
       player.xp = 0;
       player.maxXp *= 2;
-      game.log('You reached level ' + player.level, 0xff8000ff);
+      game.log(`You reached level ${player.level}`, 0xff8000ff);
     }
   }
 }
 
 class Orc extends Monster {
-  constructor(game, x, y) {
+  constructor(game: Game, x: number, y: number) {
     super(game, x, y, 'Orc', new Sprite(32, 16, 16, 16, 2, true));
   }
 }
 
 class Troll extends Monster {
-  constructor(game, x, y) {
+  constructor(game: Game, x: number, y: number) {
     super(game, x, y, 'Troll', new Sprite(64, 16, 16, 16, 2, true));
   }
 }
 
-class Item extends Item {
-  onPickup(entity) {
-    this.game.log(entity.name + ' picked up gold coins', Colors.GREEN);
-  }
-}
+// class Item extends Item {
+//   onPickup(entity) {
+//     this.game.log(`${entity.name} picked up gold coins`, Colors.GREEN);
+//   }
+// }
 
-function createRoom(map, room) {
+function createRoom(map: TileMap, room: Rect) {
   for (let y = room.y1 + 1; y < room.y2; y++) {
     for (let x = room.x1 + 1; x < room.x2; x++) {
       map.setTile(x, y, 0, TILE_FLOOR);
@@ -148,14 +148,14 @@ function createRoom(map, room) {
   }
 }
 
-function createHTunnel(map, x1, x2, y) {
+function createHTunnel(map: TileMap, x1: number, x2: number, y: number) {
   for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
     map.setTile(x, y, 0, TILE_FLOOR);
     map.setBlocked(x, y, false);
   }
 }
 
-function createVTunnel(map, y1, y2, x) {
+function createVTunnel(map: TileMap, y1: number, y2: number, x: number) {
   for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
     map.setTile(x, y, 0, TILE_FLOOR);
     map.setBlocked(x, y, false);
@@ -245,7 +245,7 @@ function createMap() {
 
   // Create stairs at the center of the last room
   const stairsLoc = rooms[rooms.length - 1].getCenter();
-  stairs = new Entity(
+  const stairs = new Entity(
     game,
     stairsLoc.x,
     stairsLoc.y,
@@ -253,7 +253,7 @@ function createMap() {
     new Sprite(32, 32, 16, 16, 1),
     true
   );
-  stairs.onBump = function () {
+  stairs.onBump = () => {
     nextLevel();
     return true;
   };
@@ -264,7 +264,7 @@ function createMap() {
   game.recomputeFov();
 }
 
-function placeObjects(room) {
+function placeObjects(room: Rect) {
   // Choose random number of monsters
   const numMonsters = rng.nextRange(0, MAX_ROOM_MONSTERS);
 
@@ -272,7 +272,7 @@ function placeObjects(room) {
     // Choose random spot for this monster
     const x = rng.nextRange(room.x1 + 1, room.x2 - 1);
     const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
-    let monster = null;
+    let monster = undefined;
 
     // Only place it if the tile is not blocked
     // 80% chance of getting an orc
@@ -294,11 +294,11 @@ function placeObjects(room) {
     const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
 
     const dice = rng.nextRange(0, 100);
-    let itemName = null;
-    let itemSprite = null;
-    let itemUse = null;
-    let itemAbility = null;
-    let itemTooltips = null;
+    let itemName = undefined;
+    let itemSprite = undefined;
+    let itemUse: ((actor: Actor, item: Item) => void) | undefined = undefined;
+    let itemAbility = undefined;
+    let itemTooltips = undefined;
 
     if (dice < 50) {
       // Create a healing potion (50% chance)
@@ -339,14 +339,13 @@ function placeObjects(room) {
   }
 }
 
-function pickupCallback(entity) {
-  const item = this;
-  game.log(entity.name + ' picked up a ' + item.name, Colors.GREEN);
+function pickupCallback(entity: Actor, item: Item) {
+  game.log(`${entity.name} picked up a ${item.name}`, Colors.GREEN);
 }
 
-function getClosestMonster(x, y, range) {
+function getClosestMonster(x: number, y: number, range: number) {
   let minDist = range + 1;
-  let result = null;
+  let result = undefined;
   for (let i = 0; i < game.entities.length; i++) {
     const entity = game.entities.get(i);
     if (entity instanceof Actor && entity !== player) {
@@ -360,17 +359,15 @@ function getClosestMonster(x, y, range) {
   return result;
 }
 
-function getMonsterAt(x, y) {
-  return getClosestMonster(x, y, 0);
-}
+// function getMonsterAt(x, y) {
+//   return getClosestMonster(x, y, 0);
+// }
 
-function calculateDamage(attacker, target) {
+function calculateDamage(_attacker: Actor, _target: unknown) {
   return 10;
 }
 
-function castHeal(caster) {
-  const item = this;
-
+function castHeal(caster: Actor, item: Item) {
   // Heal the player
   if (caster.hp === caster.maxHp) {
     game.log('You are already at full health.', Colors.RED);
@@ -383,7 +380,15 @@ function castHeal(caster) {
   caster.ap--;
 }
 
-class LightningAbility {
+class LightningAbility implements Ability {
+  name: string;
+  sprite: Sprite;
+  targetType: TargetType;
+  cooldown: number;
+  tooltipMessages: Message[];
+  minRange = 1;
+  maxRange = 25;
+
   constructor() {
     this.name = 'Lightning';
     this.sprite = new Sprite(128, 32, 16, 16, 3);
@@ -398,7 +403,7 @@ class LightningAbility {
     ];
   }
 
-  cast(caster) {
+  cast(caster: Actor): boolean {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
     if (!monster) {
@@ -407,15 +412,23 @@ class LightningAbility {
     }
 
     // Zap it!
-    game.log('A lightning bolt strikes the ' + monster.name + ' with a loud thunder!', Colors.BLUE);
-    game.log('The damage is ' + LIGHTNING_DAMAGE + ' hit points', Colors.BLUE);
+    game.log(`A lightning bolt strikes the ${monster.name} with a loud thunder!`, Colors.BLUE);
+    game.log(`The damage is ${LIGHTNING_DAMAGE} hit points`, Colors.BLUE);
     monster.takeDamage(caster, LIGHTNING_DAMAGE);
     caster.ap--;
     return true;
   }
 }
 
-class FireballAbility {
+class FireballAbility implements Ability {
+  name: string;
+  sprite: Sprite;
+  targetType: TargetType;
+  cooldown: number;
+  tooltipMessages: Message[];
+  minRange = 1;
+  maxRange = 25;
+
   constructor() {
     this.name = 'Fireball';
     this.sprite = new Sprite(128, 32, 16, 16, 3);
@@ -430,7 +443,7 @@ class FireballAbility {
     ];
   }
 
-  cast(caster, target) {
+  cast(caster: Actor, target: Actor): boolean {
     const distance = caster.distanceTo(target);
     if (distance > FIREBALL_RANGE) {
       game.log('Target out of range.', Colors.LIGHT_GRAY);
@@ -461,7 +474,7 @@ class FireballAbility {
     );
 
     game.log(
-      'The fireball explodes, burning everything within ' + FIREBALL_RADIUS + ' tiles!',
+      `The fireball explodes, burning everything within ${FIREBALL_RADIUS} tiles!`,
       Colors.ORANGE
     );
 
@@ -469,7 +482,7 @@ class FireballAbility {
       const entity = game.entities.get(i);
       if (entity instanceof Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
         game.log(
-          'The ' + entity.name + ' gets burned for ' + FIREBALL_DAMAGE + ' hit points.',
+          `The ${entity.name} gets burned for ${FIREBALL_DAMAGE} hit points.`,
           Colors.ORANGE
         );
         entity.takeDamage(caster, FIREBALL_DAMAGE);
@@ -482,6 +495,14 @@ class FireballAbility {
 }
 
 class ConfuseAbility {
+  name: string;
+  sprite: Sprite;
+  targetType: TargetType;
+  cooldown: number;
+  tooltipMessages: Message[];
+  minRange = 1;
+  maxRange = 25;
+
   constructor() {
     this.name = 'Confuse';
     this.sprite = new Sprite(128, 32, 16, 16, 3);
@@ -496,26 +517,22 @@ class ConfuseAbility {
     ];
   }
 
-  cast(caster, target) {
+  cast(caster: Actor, target: Actor): boolean {
     if (caster.distanceTo(target) > CONFUSE_RANGE) {
       game.log('Target out of range.', Colors.LIGHT_GRAY);
-      return;
+      return false;
     }
 
     target.ai = new ConfusedMonster(target);
-    game.log(
-      'The eyes of the ' + target.name + ' look vacant, as he stumbles around!',
-      Colors.GREEN
-    );
+    game.log(`The eyes of the ${target.name} look vacant, as he stumbles around!`, Colors.GREEN);
     caster.ap--;
     return true;
   }
 }
 
-function readScroll() {
-  const item = this;
-  const ability = this.ability;
-  player.cast(ability, undefined, function () {
+function readScroll(_caster: Actor, item: Item) {
+  const ability = item.ability as Ability;
+  player.cast(ability, undefined, () => {
     player.inventory.remove(item);
   });
 }
@@ -524,7 +541,6 @@ function nextLevel() {
   game.addAnimation(new FadeOutAnimation(30)).then(() => {
     game.log('You take a moment to rest, and recover your strength.', Colors.PINK);
     game.log('After a rare moment of peace, you descend deeper...', Colors.RED);
-    game.entities = new ArrayList();
     game.entities.add(player);
     game.stopAutoWalk();
     createMap();
@@ -532,10 +548,12 @@ function nextLevel() {
   });
 }
 
+console.log('CODY START');
 const app = new App({
   canvas: document.querySelector('canvas'),
-  imageUrl: '../graphics.png',
+  imageUrl: '/graphics2.png',
   size: new Rect(0, 0, 400, 224),
+  fillWindow: false,
 });
 
 const game = new Game(app, {
@@ -577,12 +595,12 @@ playerStats.drawContents = () => {
   const hpPercent = player.hp / player.maxHp;
   app.drawImage(0, frameY + 7, 32, 64, 32, 12);
   app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
-  app.drawString(player.hp + '/' + player.maxHp, 3, frameY + 10);
+  app.drawString(`${player.hp}/${player.maxHp}`, 3, frameY + 10);
 
   const xpPercent = player.xp / player.maxXp;
   app.drawImage(32, frameY + 7, 32, 64, 32, 12);
   app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
-  app.drawString(player.xp + '/' + player.maxXp, 35, frameY + 10);
+  app.drawString(`${player.xp}/${player.maxXp}`, 35, frameY + 10);
 };
 game.gui.add(playerStats);
 
@@ -593,7 +611,7 @@ const inventoryButton = new Button(
   new Rect(400 - 24, 224 - 24, 24, 24),
   new Sprite(192, 16, 16, 16),
   Keys.VK_I,
-  function () {
+  () => {
     inventoryDialog.visible = !inventoryDialog.visible;
     talentsDialog.visible = false;
   }
@@ -610,7 +628,7 @@ const talentsButton = new Button(
   new Rect(400 - 48, 224 - 24, 24, 24),
   new Sprite(192, 16, 16, 16),
   Keys.VK_T,
-  function () {
+  () => {
     talentsDialog.visible = !talentsDialog.visible;
     inventoryDialog.visible = false;
   }
@@ -653,7 +671,7 @@ player.inventory.addListener({
     console.log('add item!', item);
     shortcutBar.addItem(player.inventory, item, true);
   },
-  onRemove: (_, talent) => {},
+  onRemove: (_, _talent) => {},
 });
 
 player.talents.addListener({
@@ -661,7 +679,7 @@ player.talents.addListener({
     console.log('add talent!', talent);
     shortcutBar.addTalent(talent);
   },
-  onRemove: (_, talent) => {},
+  onRemove: (_, _talent) => {},
 });
 
 player.talents.add(new Talent(player, new FireballAbility()));

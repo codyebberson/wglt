@@ -165,13 +165,13 @@ export class Actor extends Entity {
   }
 
   pickup(item: Item) {
-    item.onPickup(this);
+    item.onPickup?.(this, item);
     this.inventory.add(item);
     this.game.entities.remove(item);
   }
 
   use(item: Item) {
-    return item.onUse(this);
+    return item.onUse?.(this, item);
   }
 
   cast(ability: Ability, target?: Entity | TileMapCell, callback?: () => void) {

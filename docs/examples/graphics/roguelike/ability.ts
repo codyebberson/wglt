@@ -5,9 +5,9 @@ import { Sprite } from './sprite';
 import { TileMapCell } from './tilemap/tilemapcell';
 
 export enum TargetType {
-  SELF,
-  ENTITY,
-  TILE
+  SELF = 0,
+  ENTITY = 1,
+  TILE = 2,
 }
 
 export interface Ability {

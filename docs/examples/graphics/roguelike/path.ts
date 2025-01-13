@@ -1,7 +1,6 @@
-
-import { Vec2 } from './vec2';
 import { TileMap } from './tilemap/tilemap';
 import { TileMapCell } from './tilemap/tilemapcell';
+import { Vec2 } from './vec2';
 
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
@@ -40,7 +39,11 @@ export function computePath(map: TileMap, source: Vec2, dest: Vec2, maxDist: num
       if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
         const v = map.grid[y][x];
         const alt = u.g + costs[i];
-        if (alt < v.g && alt <= maxDist && ((x === dest.x && y === dest.y) || !map.grid[y][x].blocked)) {
+        if (
+          alt < v.g &&
+          alt <= maxDist &&
+          ((x === dest.x && y === dest.y) || !map.grid[y][x].blocked)
+        ) {
           v.g = alt;
           v.prev = u;
           q.push(v);
@@ -55,7 +58,7 @@ function clearDijkstra(map: TileMap, dest: Vec2) {
   for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       const cell = map.grid[y][x];
-      cell.g = Infinity;
+      cell.g = Number.POSITIVE_INFINITY;
       cell.h = Math.min(Math.abs(x - dest.x), Math.abs(y - dest.y));
       cell.prev = null;
     }
@@ -65,11 +68,11 @@ function clearDijkstra(map: TileMap, dest: Vec2) {
 function getMinCell(q: TileMapCell[]): TileMapCell {
   let bestCell = null;
   let bestIndex = -1;
-  let minDist = Infinity;
+  let minDist = Number.POSITIVE_INFINITY;
 
   for (let i = 0; i < q.length; i++) {
     const cell = q[i];
-    if (cell.g !== Infinity && cell.g + cell.h < minDist) {
+    if (cell.g !== Number.POSITIVE_INFINITY && cell.g + cell.h < minDist) {
       bestCell = cell;
       bestIndex = i;
       minDist = cell.g + cell.h;

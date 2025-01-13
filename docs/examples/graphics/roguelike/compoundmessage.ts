@@ -1,7 +1,7 @@
 import { App } from './app';
-import { Vec2 } from './vec2';
-import { Message } from './message';
 import { Font } from './font';
+import { Message } from './message';
+import { Vec2 } from './vec2';
 
 export class CompoundMessage extends Message {
   readonly messages: Message[];
