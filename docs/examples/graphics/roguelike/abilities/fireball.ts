@@ -1,0 +1,85 @@
+import { Message, Point, Sprite } from 'wglt';
+import { Ability, TargetType } from '../ability';
+import { Actor } from '../actor';
+import { ProjectileAnimation } from '../animations/projectileanimation';
+import { Game } from '../game';
+import { Palette } from '../palette';
+
+const TILE_SIZE = 16;
+const FIREBALL_RANGE = 10;
+const FIREBALL_RADIUS = 3;
+const FIREBALL_DAMAGE = 12;
+
+export class FireballAbility implements Ability {
+  name: string;
+  sprite: Sprite;
+  targetType: TargetType;
+  cooldown: number;
+  tooltipMessages: Message[];
+  minRange = 1;
+  maxRange = 25;
+
+  constructor(readonly game: Game) {
+    this.name = 'Fireball';
+    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.targetType = TargetType.TILE;
+    this.cooldown = 20;
+    this.tooltipMessages = [
+      new Message('Fireball', Palette.WHITE),
+      new Message('2% of base mana', Palette.WHITE),
+      new Message('2 turn cast', Palette.WHITE),
+      new Message('Throws a fiery ball causing 10 damage', Palette.YELLOW),
+      new Message('to all enemies within 3 tiles.', Palette.YELLOW),
+    ];
+  }
+
+  cast(caster: Actor, target: Actor): boolean {
+    const distance = caster.distanceTo(target);
+    if (distance > FIREBALL_RANGE) {
+      this.game.log('Target out of range.', Palette.LIGHT_GRAY);
+      return false;
+    }
+
+    const speed = 8;
+    const count = distance * (TILE_SIZE / speed);
+    const dx = (target.x * TILE_SIZE - caster.pixelX) / count;
+    const dy = (target.y * TILE_SIZE - caster.pixelY) / count;
+
+    this.game.addAnimation(
+      new ProjectileAnimation(
+        new Sprite(128, 32, 16, 16, 3, false),
+        new Point(caster.pixelX, caster.pixelY),
+        new Point(dx, dy),
+        count
+      )
+    );
+
+    this.game.addAnimation(
+      new ProjectileAnimation(
+        new Sprite(176, 32, 16, 16, 4, false, 4),
+        new Point(target.x * TILE_SIZE, target.y * TILE_SIZE),
+        new Point(0, 0),
+        16
+      )
+    );
+
+    this.game.log(
+      `The fireball explodes, burning everything within ${FIREBALL_RADIUS} tiles!`,
+      Palette.ORANGE
+    );
+
+    for (let i = this.game.entities.length - 1; i >= 0; i--) {
+      const entity = this.game.entities.get(i);
+      if (entity instanceof Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
+        this.game.log(
+          `The ${entity.name} gets burned for ${FIREBALL_DAMAGE} hit points.`,
+          Palette.ORANGE
+        );
+        entity.takeDamage(caster, FIREBALL_DAMAGE);
+      }
+    }
+
+    caster.ap--;
+    return true;
+  }
+}

@@ -54,7 +54,7 @@ export class ItemButton extends Button {
     let tooltipMessages: Message[] | undefined = undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
-      item.onUpdateTooltip();
+      // item.onUpdateTooltip();
       // this.tooltipMessages = item.tooltipMessages;
       // if (item.tooltipMessages) {
       //   this.tooltip = Container.fromMessages(item.tooltipMessages);

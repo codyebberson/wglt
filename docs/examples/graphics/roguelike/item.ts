@@ -2,12 +2,18 @@ import { Message } from 'wglt';
 import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
+import { Palette } from './palette';
 
-export class Item extends Entity {
-  onPickup?: (user: Actor, item: Item) => void;
-  onUse?: (user: Actor, item: Item) => void;
+export abstract class Item extends Entity {
   ability?: Ability;
   tooltipMessages?: Message[];
+
+  onPickup(entity: Actor, item: Item): void {
+    this.game.log(`${entity.name} picked up a ${item.name}`, Palette.GREEN);
+  }
+
+  abstract onUse(user: Actor, item: Item): void;
+  abstract onUpdateTooltip(): void;
 
   /**
    * Returns true if this item can be stacked with the other item
@@ -27,6 +33,4 @@ export class Item extends Entity {
     player.moveToward(this.x, this.y);
     return true;
   }
-
-  onUpdateTooltip() {}
 }

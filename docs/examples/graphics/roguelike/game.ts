@@ -708,6 +708,22 @@ export class Game extends AppState<App> {
     return undefined;
   }
 
+  getClosestMonster(x: number, y: number, range: number) {
+    let minDist = range + 1;
+    let result = undefined;
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities.get(i);
+      if (entity instanceof Actor && entity !== this.player) {
+        const dist = entity.distance(x, y);
+        if (dist < minDist) {
+          minDist = dist;
+          result = entity;
+        }
+      }
+    }
+    return result;
+  }
+
   recomputeFov() {
     if (!this.player) {
       // FOV requires a player and a tile map
@@ -715,6 +731,8 @@ export class Game extends AppState<App> {
     }
 
     this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance);
+    this.tileMap.updateExplored();
+    this.tileMap.dirty = true;
 
     // Determine which entities are visible
     for (let i = 0; i < this.entities.length; i++) {
