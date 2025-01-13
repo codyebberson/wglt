@@ -4,7 +4,6 @@ import {
   Color,
   Component,
   GUI,
-  Key,
   Message,
   MessageLog,
   Point,
@@ -359,42 +358,11 @@ export class Game extends AppState<App> {
       this.cursor.y = ((this.viewport.y + mouse.y) / this.tileMap.tileSize.height) | 0;
     }
 
-    if (
-      this.app.keyboard.isKeyDown(Key.VK_SHIFT_LEFT) ||
-      this.app.keyboard.isKeyDown(Key.VK_SHIFT_RIGHT)
-    ) {
-      let dx = 0;
-      let dy = 0;
-      if (this.app.keyboard.isDownLeftKeyPressed()) {
-        dx = -1;
-        dy = 1;
-      }
-      if (this.app.keyboard.isDownKeyPressed()) {
-        dy = 1;
-      }
-      if (this.app.keyboard.isDownRightKeyPressed()) {
-        dx = 1;
-        dy = 1;
-      }
-      if (this.app.keyboard.isLeftKeyPressed()) {
-        dx = -1;
-      }
-      if (this.app.keyboard.isRightKeyPressed()) {
-        dx = 1;
-      }
-      if (this.app.keyboard.isUpLeftKeyPressed()) {
-        dx = -1;
-        dy = -1;
-      }
-      if (this.app.keyboard.isUpKeyPressed()) {
-        dy = -1;
-      }
-      if (this.app.keyboard.isUpRightKeyPressed()) {
-        dx = 1;
-        dy = -1;
-      }
-      this.viewportFocus.x -= dx * this.tileMap.tileSize.height;
-      this.viewportFocus.y -= dy * this.tileMap.tileSize.height;
+    const moveKey = this.app.keyboard.getMovementKey();
+
+    if (this.app.keyboard.isShiftKeyPressed() && moveKey) {
+      this.viewportFocus.x -= moveKey.x * this.tileMap.tileSize.height;
+      this.viewportFocus.y -= moveKey.y * this.tileMap.tileSize.height;
       return;
     }
 
@@ -405,33 +373,9 @@ export class Game extends AppState<App> {
       if (this.app.keyboard.isEscapeKeyPressed()) {
         this.cancelTargeting();
       }
-      if (this.app.keyboard.isDownLeftKeyPressed()) {
-        this.cursor.x--;
-        this.cursor.y++;
-      }
-      if (this.app.keyboard.isDownKeyPressed()) {
-        this.cursor.y++;
-      }
-      if (this.app.keyboard.isDownRightKeyPressed()) {
-        this.cursor.x++;
-        this.cursor.y++;
-      }
-      if (this.app.keyboard.isLeftKeyPressed()) {
-        this.cursor.x--;
-      }
-      if (this.app.keyboard.isRightKeyPressed()) {
-        this.cursor.x++;
-      }
-      if (this.app.keyboard.isUpLeftKeyPressed()) {
-        this.cursor.x--;
-        this.cursor.y--;
-      }
-      if (this.app.keyboard.isUpKeyPressed()) {
-        this.cursor.y--;
-      }
-      if (this.app.keyboard.isUpRightKeyPressed()) {
-        this.cursor.x++;
-        this.cursor.y--;
+      if (moveKey) {
+        this.cursor.x += moveKey.x;
+        this.cursor.y += moveKey.y;
       }
       return;
     }
@@ -468,32 +412,8 @@ export class Game extends AppState<App> {
       return;
     }
 
-    if (this.app.keyboard.isDownLeftKeyPressed() && this.tryMoveOrAttack(-1, 1)) {
-      return;
-    }
-    if (this.app.keyboard.isDownKeyPressed() && this.tryMoveOrAttack(0, 1)) {
-      return;
-    }
-    if (this.app.keyboard.isDownRightKeyPressed() && this.tryMoveOrAttack(1, 1)) {
-      return;
-    }
-    if (this.app.keyboard.isLeftKeyPressed() && this.tryMoveOrAttack(-1, 0)) {
-      return;
-    }
-    if (this.app.keyboard.isRightKeyPressed() && this.tryMoveOrAttack(1, 0)) {
-      return;
-    }
-    if (this.app.keyboard.isUpLeftKeyPressed() && this.tryMoveOrAttack(-1, -1)) {
-      return;
-    }
-    if (this.app.keyboard.isUpKeyPressed() && this.tryMoveOrAttack(0, -1)) {
-      return;
-    }
-    if (this.app.keyboard.isUpRightKeyPressed() && this.tryMoveOrAttack(1, -1)) {
-      return;
-    }
-    if (this.app.keyboard.isWaitKeyPressed()) {
-      this.player.ap = 0;
+    if (moveKey) {
+      this.tryMoveOrAttack(moveKey.x, moveKey.y);
     }
   }
 
@@ -503,10 +423,16 @@ export class Game extends AppState<App> {
    * Returns false on failure (unable to move or attack).
    * @param dx The x direction to move.
    * @param dy The y direction to move.
+   * @returns True if the player moved or attacked, false otherwise.
    */
-  tryMoveOrAttack(dx: number, dy: number) {
+  tryMoveOrAttack(dx: number, dy: number): boolean {
     const player = this.player;
     if (!player) {
+      return false;
+    }
+
+    if (dx === 0 && dy === 0) {
+      player.ap = 0;
       return false;
     }
 

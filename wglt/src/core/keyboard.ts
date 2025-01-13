@@ -14,6 +14,7 @@ const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L];
 const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5];
 const ENTER_KEYS = [Key.VK_ENTER, Key.VK_NUMPAD_ENTER];
 const ESCAPE_KEYS = [Key.VK_ESCAPE];
+const SHIFT_KEYS = [Key.VK_SHIFT_LEFT, Key.VK_SHIFT_RIGHT];
 
 const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
   // Up
@@ -135,6 +136,10 @@ export class Keyboard {
 
   isEscapeKeyPressed(): boolean {
     return this.isKeyArrayPressed(ESCAPE_KEYS);
+  }
+
+  isShiftKeyPressed(): boolean {
+    return this.isKeyArrayPressed(SHIFT_KEYS);
   }
 
   /**
