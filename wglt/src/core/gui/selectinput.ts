@@ -1,5 +1,5 @@
-import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
+import { getKeyForLetterByIndex } from '../keys';
 import { Component } from './component';
 import { SelectOption } from './selectoption';
 
@@ -28,7 +28,7 @@ export class SelectInput extends Component {
     }
 
     for (let i = 0; i < this.options.length; i++) {
-      const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
+      const key = getKeyForLetterByIndex(i);
       if (app.keyboard.isKeyPressed(key)) {
         this.callback(this.options[i], i);
         return true;

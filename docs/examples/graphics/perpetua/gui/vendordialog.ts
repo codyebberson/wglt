@@ -1,4 +1,12 @@
-import { ArrayList, ButtonSlot, Dialog, Key, Message, Rect, SimplePalette } from 'wglt';
+import {
+  ArrayList,
+  ButtonSlot,
+  Dialog,
+  Message,
+  Rect,
+  SimplePalette,
+  getKeyForLetterByIndex,
+} from 'wglt';
 import { Actor } from '../actor';
 import { Item } from '../item';
 import { VendorButton } from './vendorbutton';
@@ -17,7 +25,7 @@ export class VendorDialog extends Dialog {
 
     for (let i = 0; i < PAGE_SIZE; i++) {
       // Slots are repositioned at render time
-      const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
+      const key = getKeyForLetterByIndex(i);
       this.addChild(new ButtonSlot(new Rect(0, 0, 24, 24), key));
     }
 

@@ -1,4 +1,4 @@
-import { ArrayList, ButtonSlot, Dialog, Key, Message, Rect } from 'wglt';
+import { ArrayList, ButtonSlot, Dialog, Message, Rect, getKeyForLetterByIndex } from 'wglt';
 import { Talent } from '../talent';
 import { TalentButton } from './talentbutton';
 
@@ -20,7 +20,7 @@ export class TalentsDialog extends Dialog {
 
     for (let i = 0; i < capacity; i++) {
       // Slots are repositioned at render time
-      const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
+      const key = getKeyForLetterByIndex(i);
       this.addChild(new ButtonSlot(new Rect(0, 0, 24, 24), key));
     }
   }

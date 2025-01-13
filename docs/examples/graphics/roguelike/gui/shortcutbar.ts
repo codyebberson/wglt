@@ -1,4 +1,4 @@
-import { ArrayList, Container, GUI, GraphicsApp, Key, Rect, Renderer } from 'wglt';
+import { ArrayList, Container, GUI, GraphicsApp, Rect, Renderer, getKeyForDigit } from 'wglt';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
@@ -13,7 +13,7 @@ export class ShortcutBar extends Container {
     this.spacing = spacing;
 
     for (let i = 0; i < count; i++) {
-      const key = `Digit${String.fromCharCode('1'.charCodeAt(0) + i)}` as Key;
+      const key = getKeyForDigit(i + 1);
       const buttonSlot = new ShortcutButtonSlot(
         new Rect(
           i * (buttonSlotRect.width + spacing),

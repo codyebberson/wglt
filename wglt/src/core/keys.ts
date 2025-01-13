@@ -115,3 +115,21 @@ export enum Key {
   VK_QUOTE = 'Quote',
   VK_META = 'OSLeft',
 }
+
+/**
+ * Returns a key for the letter at the given index.
+ * @param index - The index of the letter to get the key for.
+ * @returns The key for the letter at the given index.
+ */
+export function getKeyForLetterByIndex(index: number): Key {
+  return `Key${String.fromCharCode('A'.charCodeAt(0) + index)}` as Key;
+}
+
+/**
+ * Returns a key for the given digit.
+ * @param digit - The digit to get the key for.
+ * @returns The key for the given digit.
+ */
+export function getKeyForDigit(digit: number): Key {
+  return `Digit${digit}` as Key;
+}

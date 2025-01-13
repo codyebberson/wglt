@@ -1,4 +1,4 @@
-import { ArrayList, ButtonSlot, Dialog, Key, Message, Rect } from 'wglt';
+import { ArrayList, ButtonSlot, Dialog, Message, Rect, getKeyForLetterByIndex } from 'wglt';
 import { Item } from '../item';
 import { ItemButton } from './itembutton';
 import { ItemContainerButtonSlot } from './itemcontainerbuttonslot';
@@ -22,7 +22,7 @@ export class ItemContainerDialog extends Dialog {
     let i = 0;
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
-        const key = `Key${String.fromCharCode('A'.charCodeAt(0) + i)}` as Key;
+        const key = getKeyForLetterByIndex(i);
         this.addChild(new ItemContainerButtonSlot(new Rect(4 + x * 26, 10 + y * 26, 24, 24), key));
         i++;
       }
