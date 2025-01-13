@@ -1,16 +1,13 @@
+import { ArrayList, Color, Sprite, TileMapCell } from 'wglt';
 import { Ability, TargetType } from './ability';
 import { AI } from './ai/ai';
 import { BumpAnimation } from './animations/bumpanimation';
 import { FloatingTextAnimation } from './animations/floatingtextanimation';
 import { SlideAnimation } from './animations/slideanimation';
-import { ArrayList } from './arraylist';
-import { Color } from './color';
 import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';
-import { Sprite } from './sprite';
 import { Talent } from './talent';
-import { TileMapCell } from './tilemap/tilemapcell';
 
 export class Actor extends Entity {
   hp: number;
@@ -186,7 +183,7 @@ export class Actor extends Entity {
     }
   }
 
-  addFloatingText(str: string, color: Color) {
+  addFloatingText(str: string, color: Color): void {
     this.game.animations.push(new FloatingTextAnimation(this, str, color));
   }
 

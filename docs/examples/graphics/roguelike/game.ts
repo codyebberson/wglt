@@ -1,27 +1,28 @@
+import {
+  AppState,
+  ArrayList,
+  Color,
+  Component,
+  GUI,
+  Key,
+  Message,
+  MessageLog,
+  Point,
+  RNG,
+  Rect,
+  Sprite,
+  TileMap,
+  TileMapCell,
+  TileMapRenderer,
+  computePath,
+} from 'wglt';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { Animation } from './animations/animation';
 import { App } from './app';
-import { AppState } from './appstate';
-import { ArrayList } from './arraylist';
-import { Color } from './color';
 import { Entity } from './entity';
-import { GameOptions } from './gameoptions';
-import { MessageLog } from './gui/messagelog';
-import { Panel } from './gui/panel';
-import { TooltipDialog } from './gui/tooltipdialog';
 import { Item } from './item';
-import { Keys } from './keys';
-import { Message } from './message';
-import { StandardColors } from './palettes/standardcolors';
-import { computePath } from './path';
-import { Rect } from './rect';
-import { RNG } from './rng';
-import { Sprite } from './sprite';
-import { TileMap } from './tilemap/tilemap';
-import { TileMapCell } from './tilemap/tilemapcell';
-import { TileMapRenderer } from './tilemap/tilemaprenderer';
-import { Vec2 } from './vec2';
+import { Palette } from './palette';
 
 const DEFAULT_MAP_SIZE = new Rect(0, 0, 256, 256);
 const DEFAULT_MAP_LAYERS = 1;
@@ -29,14 +30,13 @@ const DEFAULT_TILE_WIDTH = 16;
 const DEFAULT_TILE_HEIGHT = 16;
 const DEFAULT_VIEW_DISTANCE = 13;
 
-export class Game extends AppState {
+export class Game extends AppState<App> {
   readonly viewport: Rect;
-  readonly viewportFocus: Vec2;
-  readonly focusMargins: Vec2;
+  readonly viewportFocus: Point;
+  readonly focusMargins: Point;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
-  readonly cursor: Vec2;
-  readonly tooltip: TooltipDialog;
+  readonly cursor: Point;
   readonly rng: RNG;
   readonly damageColor: Color;
   readonly healColor: Color;
@@ -54,30 +54,41 @@ export class Game extends AppState {
   tileMapRenderer: TileMapRenderer;
   player?: Actor;
   cooldownSprite?: Sprite;
-  tooltipElement?: Panel;
+  tooltipElement?: Component;
   blackoutRect?: Rect;
   horizontalViewDistance: number;
   verticalViewDistance: number;
   zoom: number;
 
-  constructor(app: App, options: GameOptions) {
+  constructor(
+    app: App,
+    readonly gui: GUI<App>
+  ) {
+    const options = {
+      tileSize: new Rect(0, 0, 16, 16),
+      mapSize: new Rect(0, 0, 60, 40),
+      mapLayers: 3,
+      horizontalViewDistance: 8,
+      verticalViewDistance: 4,
+      focusMargins: new Point(32, 32),
+    };
+
     super(app);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);
-    this.viewportFocus = new Vec2(0, 0);
-    this.focusMargins = options.focusMargins || new Vec2(0, 0);
+    this.viewportFocus = new Point(0, 0);
+    this.focusMargins = options.focusMargins || new Point(0, 0);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
     this.blocked = false;
-    this.cursor = new Vec2(-1, -1);
-    this.tooltip = new TooltipDialog();
+    this.cursor = new Point(-1, -1);
     this.rng = new RNG();
     this.pathIndex = 0;
-    this.horizontalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
-    this.verticalViewDistance = options.viewDistance || DEFAULT_VIEW_DISTANCE;
+    this.horizontalViewDistance = DEFAULT_VIEW_DISTANCE;
+    this.verticalViewDistance = DEFAULT_VIEW_DISTANCE;
     this.zoom = 1.0;
-    this.damageColor = options.damageColor || StandardColors.RED;
-    this.healColor = options.healColor || StandardColors.GREEN;
+    this.damageColor = Palette.RED;
+    this.healColor = Palette.GREEN;
 
     if (options.horizontalViewDistance) {
       this.horizontalViewDistance = options.horizontalViewDistance;
@@ -99,7 +110,7 @@ export class Game extends AppState {
 
   log(message: string | Message, color?: Color) {
     if (this.messageLog) {
-      this.messageLog.add(message, color);
+      this.messageLog.addMessage(message, color);
     }
   }
 
@@ -109,10 +120,6 @@ export class Game extends AppState {
   }
 
   update() {
-    Sprite.updateGlobalAnimations();
-    this.updateTooltip();
-    this.updateZoom();
-
     if (!this.gui.handleInput()) {
       this.updateAnimations();
       this.updateEntities();
@@ -133,69 +140,6 @@ export class Game extends AppState {
     }
 
     this.gui.draw();
-  }
-
-  private updateTooltip() {
-    if (this.gui.dragElement) {
-      // No tooltips while drag/drop
-      this.tooltip.visible = false;
-      return;
-    }
-
-    if (!this.tooltip.visible) {
-      this.tooltipElement = undefined;
-    }
-
-    const mouse = this.app.mouse;
-    const longPress = mouse.isLongPress();
-
-    if ((!mouse.down && (mouse.dx !== 0 || mouse.dy !== 0)) || longPress) {
-      const hoverPanel = this.gui.getPanelAt(mouse);
-      if (this.tooltipElement !== hoverPanel) {
-        // Hover element has changed
-        this.tooltipElement = hoverPanel;
-        if (hoverPanel) {
-          hoverPanel.updateTooltip(this.tooltip);
-          if (longPress) {
-            window.navigator.vibrate(100);
-          }
-        }
-      }
-
-      if (this.tooltip.visible) {
-        if (!this.tooltip.gui) {
-          // If this is the first time we're showing the tooltip,
-          // make sure it is in the GUI system.
-          this.gui.add(this.tooltip);
-        }
-
-        // Update the tooltip to be on the mouse
-        // This is similar to WoW style tooltips.
-        this.tooltip.showAt(mouse.x, mouse.y);
-
-        // On mobile devices, the tooltip is modal
-        this.tooltip.modal = this.app.mobile;
-      }
-    }
-  }
-
-  private updateZoom() {
-    if (this.app.mouse.wheelDelta !== 0) {
-      const center = this.viewport.getCenter();
-      this.viewportFocus.x = center.x;
-      this.viewportFocus.y = center.y;
-
-      if (this.app.mouse.wheelDelta > 0) {
-        this.zoom *= 0.5;
-      } else {
-        this.zoom *= 2.0;
-      }
-
-      this.viewport.width = (this.zoom * this.app.size.width) | 0;
-      this.viewport.height = (this.zoom * this.app.size.height) | 0;
-      this.viewport.x = center.x - ((this.app.size.width / this.zoom / 2) | 0);
-      this.viewport.y = center.y - ((this.app.size.height / this.zoom / 2) | 0);
-    }
   }
 
   private updateAnimations() {
@@ -410,39 +354,42 @@ export class Game extends AppState {
     }
 
     const mouse = this.app.mouse;
-    if (mouse.down || mouse.dx !== 0 || mouse.dy !== 0) {
+    if (mouse.buttons.get(0).down || mouse.dx !== 0 || mouse.dy !== 0) {
       this.cursor.x = ((this.viewport.x + mouse.x) / this.tileMap.tileSize.width) | 0;
       this.cursor.y = ((this.viewport.y + mouse.y) / this.tileMap.tileSize.height) | 0;
     }
 
-    if (this.app.isKeyDown(Keys.VK_SHIFT)) {
+    if (
+      this.app.keyboard.isKeyDown(Key.VK_SHIFT_LEFT) ||
+      this.app.keyboard.isKeyDown(Key.VK_SHIFT_RIGHT)
+    ) {
       let dx = 0;
       let dy = 0;
-      if (this.app.isDownLeftKeyPressed()) {
+      if (this.app.keyboard.isDownLeftKeyPressed()) {
         dx = -1;
         dy = 1;
       }
-      if (this.app.isDownKeyPressed()) {
+      if (this.app.keyboard.isDownKeyPressed()) {
         dy = 1;
       }
-      if (this.app.isDownRightKeyPressed()) {
+      if (this.app.keyboard.isDownRightKeyPressed()) {
         dx = 1;
         dy = 1;
       }
-      if (this.app.isLeftKeyPressed()) {
+      if (this.app.keyboard.isLeftKeyPressed()) {
         dx = -1;
       }
-      if (this.app.isRightKeyPressed()) {
+      if (this.app.keyboard.isRightKeyPressed()) {
         dx = 1;
       }
-      if (this.app.isUpLeftKeyPressed()) {
+      if (this.app.keyboard.isUpLeftKeyPressed()) {
         dx = -1;
         dy = -1;
       }
-      if (this.app.isUpKeyPressed()) {
+      if (this.app.keyboard.isUpKeyPressed()) {
         dy = -1;
       }
-      if (this.app.isUpRightKeyPressed()) {
+      if (this.app.keyboard.isUpRightKeyPressed()) {
         dx = 1;
         dy = -1;
       }
@@ -452,37 +399,37 @@ export class Game extends AppState {
     }
 
     if (this.isTargeting()) {
-      if (this.app.isKeyPressed(Keys.VK_ENTER) || this.app.mouse.isClicked()) {
+      if (this.app.keyboard.isEnterKeyPressed() || this.app.mouse.isClicked()) {
         this.endTargeting();
       }
-      if (this.app.isKeyPressed(Keys.VK_ESCAPE)) {
+      if (this.app.keyboard.isEscapeKeyPressed()) {
         this.cancelTargeting();
       }
-      if (this.app.isDownLeftKeyPressed()) {
+      if (this.app.keyboard.isDownLeftKeyPressed()) {
         this.cursor.x--;
         this.cursor.y++;
       }
-      if (this.app.isDownKeyPressed()) {
+      if (this.app.keyboard.isDownKeyPressed()) {
         this.cursor.y++;
       }
-      if (this.app.isDownRightKeyPressed()) {
+      if (this.app.keyboard.isDownRightKeyPressed()) {
         this.cursor.x++;
         this.cursor.y++;
       }
-      if (this.app.isLeftKeyPressed()) {
+      if (this.app.keyboard.isLeftKeyPressed()) {
         this.cursor.x--;
       }
-      if (this.app.isRightKeyPressed()) {
+      if (this.app.keyboard.isRightKeyPressed()) {
         this.cursor.x++;
       }
-      if (this.app.isUpLeftKeyPressed()) {
+      if (this.app.keyboard.isUpLeftKeyPressed()) {
         this.cursor.x--;
         this.cursor.y--;
       }
-      if (this.app.isUpKeyPressed()) {
+      if (this.app.keyboard.isUpKeyPressed()) {
         this.cursor.y--;
       }
-      if (this.app.isUpRightKeyPressed()) {
+      if (this.app.keyboard.isUpRightKeyPressed()) {
         this.cursor.x++;
         this.cursor.y--;
       }
@@ -521,31 +468,31 @@ export class Game extends AppState {
       return;
     }
 
-    if (this.app.isDownLeftKeyPressed() && this.tryMoveOrAttack(-1, 1)) {
+    if (this.app.keyboard.isDownLeftKeyPressed() && this.tryMoveOrAttack(-1, 1)) {
       return;
     }
-    if (this.app.isDownKeyPressed() && this.tryMoveOrAttack(0, 1)) {
+    if (this.app.keyboard.isDownKeyPressed() && this.tryMoveOrAttack(0, 1)) {
       return;
     }
-    if (this.app.isDownRightKeyPressed() && this.tryMoveOrAttack(1, 1)) {
+    if (this.app.keyboard.isDownRightKeyPressed() && this.tryMoveOrAttack(1, 1)) {
       return;
     }
-    if (this.app.isLeftKeyPressed() && this.tryMoveOrAttack(-1, 0)) {
+    if (this.app.keyboard.isLeftKeyPressed() && this.tryMoveOrAttack(-1, 0)) {
       return;
     }
-    if (this.app.isRightKeyPressed() && this.tryMoveOrAttack(1, 0)) {
+    if (this.app.keyboard.isRightKeyPressed() && this.tryMoveOrAttack(1, 0)) {
       return;
     }
-    if (this.app.isUpLeftKeyPressed() && this.tryMoveOrAttack(-1, -1)) {
+    if (this.app.keyboard.isUpLeftKeyPressed() && this.tryMoveOrAttack(-1, -1)) {
       return;
     }
-    if (this.app.isUpKeyPressed() && this.tryMoveOrAttack(0, -1)) {
+    if (this.app.keyboard.isUpKeyPressed() && this.tryMoveOrAttack(0, -1)) {
       return;
     }
-    if (this.app.isUpRightKeyPressed() && this.tryMoveOrAttack(1, -1)) {
+    if (this.app.keyboard.isUpRightKeyPressed() && this.tryMoveOrAttack(1, -1)) {
       return;
     }
-    if (this.app.isWaitKeyPressed()) {
+    if (this.app.keyboard.isWaitKeyPressed()) {
       this.player.ap = 0;
     }
   }
@@ -767,12 +714,7 @@ export class Game extends AppState {
       return;
     }
 
-    this.tileMap.computeFov(
-      this.player.x,
-      this.player.y,
-      this.horizontalViewDistance,
-      this.verticalViewDistance
-    );
+    this.tileMap.computeFov(this.player.x, this.player.y, this.horizontalViewDistance);
 
     // Determine which entities are visible
     for (let i = 0; i < this.entities.length; i++) {
@@ -787,7 +729,7 @@ export class Game extends AppState {
         if (!entity.seen) {
           // Spotted a new entity, stop auto walking
           entity.seen = true;
-          this.player.addFloatingText('!', StandardColors.WHITE);
+          this.player.addFloatingText('!', Palette.WHITE);
           this.stopAutoWalk();
 
           this.viewportFocus.x = ((this.player.centerPixelX + entity.centerPixelX) / 2) | 0;

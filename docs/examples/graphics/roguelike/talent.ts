@@ -1,7 +1,7 @@
+import { TileMapCell } from 'wglt';
 import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
-import { TileMapCell } from './tilemap/tilemapcell';
 
 export class Talent {
   readonly actor: Actor;
@@ -16,7 +16,7 @@ export class Talent {
     this.cooldown = 0;
   }
 
-  use(target?: Entity | TileMapCell) {
+  use(target?: Entity | TileMapCell): boolean {
     if (this.cooldown > 0) {
       // Ability still on cooldown
       return false;

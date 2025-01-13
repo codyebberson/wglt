@@ -1,12 +1,10 @@
+import { Point, SelectOption, Sprite } from 'wglt';
 import { Actor } from './actor';
 import { Game } from './game';
-import { SelectOption } from './gui/selectoption';
-import { Sprite } from './sprite';
-import { Vec2 } from './vec2';
 
-export class Entity extends Vec2 implements SelectOption {
+export class Entity extends Point implements SelectOption {
   readonly game: Game;
-  readonly offset: Vec2;
+  readonly offset: Point;
   name: string;
   sprite: Sprite;
   blocks: boolean;
@@ -15,7 +13,7 @@ export class Entity extends Vec2 implements SelectOption {
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks = false) {
     super(x, y);
     this.game = game;
-    this.offset = new Vec2(0, 0);
+    this.offset = new Point(0, 0);
     this.name = name;
     this.sprite = sprite;
     this.blocks = blocks;
@@ -38,15 +36,15 @@ export class Entity extends Vec2 implements SelectOption {
     return (this.pixelY + this.sprite.height / 2) | 0;
   }
 
-  distanceTo(other: Vec2) {
+  distanceTo(other: Point): number {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }
 
-  distance(x: number, y: number) {
+  distance(x: number, y: number): number {
     return Math.hypot(x - this.x, y - this.y);
   }
 
-  draw() {
+  draw(): void {
     this.sprite.draw(
       this.game.app,
       this.pixelX - this.game.viewport.x,

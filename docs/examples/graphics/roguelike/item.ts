@@ -1,7 +1,7 @@
+import { Message } from 'wglt';
 import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
-import { Message } from './message';
 
 export class Item extends Entity {
   onPickup?: (user: Actor, item: Item) => void;
@@ -27,12 +27,6 @@ export class Item extends Entity {
     player.moveToward(this.x, this.y);
     return true;
   }
-
-  // onPickup(_user: Actor) {}
-
-  // onUse(_user: Actor): boolean {
-  //   return false;
-  // }
 
   onUpdateTooltip() {}
 }

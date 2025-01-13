@@ -4,11 +4,13 @@ import { Font } from '../core/font';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
+import { Sprite } from '../core/sprite';
 import { RenderSet } from './renderset';
 
 export interface GraphicsAppConfig {
   readonly size: Rect;
   readonly font: Font;
+  readonly imageUrl?: string;
 }
 
 export class GraphicsApp extends BaseApp {
@@ -18,7 +20,9 @@ export class GraphicsApp extends BaseApp {
     const canvas = document.querySelector('canvas') as HTMLCanvasElement;
     const mouse = new Mouse(canvas, config.size.width, config.size.height);
     super(canvas, config.size, config.font, mouse);
-    this.renderSet = new RenderSet(this.gl, '/graphics.png', this.font);
+
+    const imageUrl = config.imageUrl || '/graphics.png';
+    this.renderSet = new RenderSet(this.gl, imageUrl, this.font);
   }
 
   startFrame(): void {
@@ -28,6 +32,9 @@ export class GraphicsApp extends BaseApp {
     this.renderSet.positionArrayIndex = 0;
     this.renderSet.texcoordArrayIndex = 0;
     this.renderSet.colorArrayIndex = 0;
+
+    // Update global sprite frame
+    Sprite.updateGlobalAnimations();
   }
 
   endFrame(): void {

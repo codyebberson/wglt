@@ -1,8 +1,6 @@
+import { Message, Sprite, TileMapCell } from 'wglt';
 import { Actor } from './actor';
 import { Entity } from './entity';
-import { Message } from './message';
-import { Sprite } from './sprite';
-import { TileMapCell } from './tilemap/tilemapcell';
 
 export enum TargetType {
   SELF = 0,

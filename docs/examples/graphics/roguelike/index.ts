@@ -1,3 +1,29 @@
+import {
+  AppState,
+  AutoRectRenderer,
+  Button,
+  ButtonSlot,
+  Container,
+  Dialog,
+  FONT_04B03,
+  GUI,
+  GraphicsButtonRenderer,
+  GraphicsLabelRenderer,
+  GraphicsMessageLogRenderer,
+  GraphicsSelectInputRenderer,
+  Key,
+  Label,
+  Message,
+  MessageLog,
+  Panel,
+  Point,
+  RNG,
+  Rect,
+  SelectInput,
+  Sprite,
+  TileMap,
+  getTileId,
+} from 'wglt';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { BasicMonster } from './ai/basicmonster';
@@ -6,28 +32,19 @@ import { FadeInAnimation } from './animations/fadeinanimation';
 import { FadeOutAnimation } from './animations/fadeoutanimation';
 import { ProjectileAnimation } from './animations/projectileanimation';
 import { App } from './app';
-import { AppState } from './appstate';
 import { CompoundMessage } from './compoundmessage';
 import { Entity } from './entity';
 import { Game } from './game';
-import { Button } from './gui/button';
-import { ImagePanel } from './gui/imagepanel';
+import { ItemButton } from './gui/itembutton';
+import { ItemContainerButtonSlot } from './gui/itemcontainerbuttonslot';
 import { ItemContainerDialog } from './gui/itemcontainerdialog';
-import { MessageLog } from './gui/messagelog';
-import { Panel } from './gui/panel';
-import { SelectDialog } from './gui/selectdialog';
-import { ShortcutBar } from './gui/shortcutbar';
+import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
+import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
+import { TalentButton } from './gui/talentbutton';
 import { TalentsDialog } from './gui/talentsdialog';
 import { Item } from './item';
-import { Keys } from './keys';
-import { Message } from './message';
-import { Pico8Colors } from './palettes/pico8colors';
-import { Rect } from './rect';
-import { RNG } from './rng';
-import { Sprite } from './sprite';
+import { Palette } from './palette';
 import { Talent } from './talent';
-import { TileMap, getTileId } from './tilemap/tilemap';
-import { Vec2 } from './vec2';
 
 // Size of the map
 const MAP_WIDTH = 60;
@@ -55,8 +72,6 @@ const CONFUSE_RANGE = 8;
 const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
-
-const Colors = Pico8Colors;
 
 class Fighter extends Actor {
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite) {
@@ -135,11 +150,11 @@ class Troll extends Monster {
 
 // class Item extends Item {
 //   onPickup(entity) {
-//     this.game.log(`${entity.name} picked up gold coins`, Colors.GREEN);
+//     this.game.log(`${entity.name} picked up gold coins`, Palette.GREEN);
 //   }
 // }
 
-function createRoom(map: TileMap, room: Rect) {
+function createRoom(map: TileMap, room: Rect): void {
   for (let y = room.y1 + 1; y < room.y2; y++) {
     for (let x = room.x1 + 1; x < room.x2; x++) {
       map.setTile(x, y, 0, TILE_FLOOR);
@@ -148,14 +163,14 @@ function createRoom(map: TileMap, room: Rect) {
   }
 }
 
-function createHTunnel(map: TileMap, x1: number, x2: number, y: number) {
+function createHTunnel(map: TileMap, x1: number, x2: number, y: number): void {
   for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
     map.setTile(x, y, 0, TILE_FLOOR);
     map.setBlocked(x, y, false);
   }
 }
 
-function createVTunnel(map: TileMap, y1: number, y2: number, x: number) {
+function createVTunnel(map: TileMap, y1: number, y2: number, x: number): void {
   for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
     map.setTile(x, y, 0, TILE_FLOOR);
     map.setBlocked(x, y, false);
@@ -306,9 +321,9 @@ function placeObjects(room: Rect) {
       itemSprite = new Sprite(128, 16, 16, 16, 1);
       itemUse = castHeal;
       itemTooltips = [
-        new Message('Ancient Healing Potion', Colors.BLUE),
-        new Message('Item Level 5', Colors.YELLOW),
-        new Message('Use: Restore 10 health', Colors.GREEN),
+        new Message('Ancient Healing Potion', Palette.BLUE),
+        new Message('Item Level 5', Palette.YELLOW),
+        new Message('Use: Restore 10 health', Palette.GREEN),
       ];
     } else if (dice < 50 + 20) {
       // Create a lightning bolt scroll (20% chance)
@@ -340,7 +355,7 @@ function placeObjects(room: Rect) {
 }
 
 function pickupCallback(entity: Actor, item: Item) {
-  game.log(`${entity.name} picked up a ${item.name}`, Colors.GREEN);
+  game.log(`${entity.name} picked up a ${item.name}`, Palette.GREEN);
 }
 
 function getClosestMonster(x: number, y: number, range: number) {
@@ -370,11 +385,11 @@ function calculateDamage(_attacker: Actor, _target: unknown) {
 function castHeal(caster: Actor, item: Item) {
   // Heal the player
   if (caster.hp === caster.maxHp) {
-    game.log('You are already at full health.', Colors.RED);
+    game.log('You are already at full health.', Palette.RED);
     return;
   }
 
-  game.log('Your wounds start to feel better!', Colors.PINK);
+  game.log('Your wounds start to feel better!', Palette.PINK);
   caster.takeHeal(HEAL_AMOUNT);
   caster.inventory.remove(item);
   caster.ap--;
@@ -395,11 +410,11 @@ class LightningAbility implements Ability {
     this.targetType = TargetType.SELF;
     this.cooldown = 10;
     this.tooltipMessages = [
-      new Message('Lightning', Colors.WHITE),
-      new Message('2% of base mana', Colors.WHITE),
-      new Message('2 turn cast', Colors.WHITE),
-      new Message('Hurls a bolt of lightning at the target', Colors.YELLOW),
-      new Message('dealing 20 damage.', Colors.YELLOW),
+      new Message('Lightning', Palette.WHITE),
+      new Message('2% of base mana', Palette.WHITE),
+      new Message('2 turn cast', Palette.WHITE),
+      new Message('Hurls a bolt of lightning at the target', Palette.YELLOW),
+      new Message('dealing 20 damage.', Palette.YELLOW),
     ];
   }
 
@@ -407,13 +422,13 @@ class LightningAbility implements Ability {
     // Find closest enemy (inside a maximum range) and damage it
     const monster = getClosestMonster(caster.x, caster.y, LIGHTNING_RANGE);
     if (!monster) {
-      game.log('No enemy is close enough to strike.', Colors.RED);
+      game.log('No enemy is close enough to strike.', Palette.RED);
       return false;
     }
 
     // Zap it!
-    game.log(`A lightning bolt strikes the ${monster.name} with a loud thunder!`, Colors.BLUE);
-    game.log(`The damage is ${LIGHTNING_DAMAGE} hit points`, Colors.BLUE);
+    game.log(`A lightning bolt strikes the ${monster.name} with a loud thunder!`, Palette.BLUE);
+    game.log(`The damage is ${LIGHTNING_DAMAGE} hit points`, Palette.BLUE);
     monster.takeDamage(caster, LIGHTNING_DAMAGE);
     caster.ap--;
     return true;
@@ -435,18 +450,18 @@ class FireballAbility implements Ability {
     this.targetType = TargetType.TILE;
     this.cooldown = 20;
     this.tooltipMessages = [
-      new Message('Fireball', Colors.WHITE),
-      new Message('2% of base mana', Colors.WHITE),
-      new Message('2 turn cast', Colors.WHITE),
-      new Message('Throws a fiery ball causing 10 damage', Colors.YELLOW),
-      new Message('to all enemies within 3 tiles.', Colors.YELLOW),
+      new Message('Fireball', Palette.WHITE),
+      new Message('2% of base mana', Palette.WHITE),
+      new Message('2 turn cast', Palette.WHITE),
+      new Message('Throws a fiery ball causing 10 damage', Palette.YELLOW),
+      new Message('to all enemies within 3 tiles.', Palette.YELLOW),
     ];
   }
 
   cast(caster: Actor, target: Actor): boolean {
     const distance = caster.distanceTo(target);
     if (distance > FIREBALL_RANGE) {
-      game.log('Target out of range.', Colors.LIGHT_GRAY);
+      game.log('Target out of range.', Palette.LIGHT_GRAY);
       return false;
     }
 
@@ -458,8 +473,8 @@ class FireballAbility implements Ability {
     game.addAnimation(
       new ProjectileAnimation(
         new Sprite(128, 32, 16, 16, 3, false),
-        new Vec2(caster.pixelX, caster.pixelY),
-        new Vec2(dx, dy),
+        new Point(caster.pixelX, caster.pixelY),
+        new Point(dx, dy),
         count
       )
     );
@@ -467,15 +482,15 @@ class FireballAbility implements Ability {
     game.addAnimation(
       new ProjectileAnimation(
         new Sprite(176, 32, 16, 16, 4, false, 4),
-        new Vec2(target.x * TILE_SIZE, target.y * TILE_SIZE),
-        new Vec2(0, 0),
+        new Point(target.x * TILE_SIZE, target.y * TILE_SIZE),
+        new Point(0, 0),
         16
       )
     );
 
     game.log(
       `The fireball explodes, burning everything within ${FIREBALL_RADIUS} tiles!`,
-      Colors.ORANGE
+      Palette.ORANGE
     );
 
     for (let i = game.entities.length - 1; i >= 0; i--) {
@@ -483,7 +498,7 @@ class FireballAbility implements Ability {
       if (entity instanceof Actor && entity.distanceTo(target) <= FIREBALL_RADIUS) {
         game.log(
           `The ${entity.name} gets burned for ${FIREBALL_DAMAGE} hit points.`,
-          Colors.ORANGE
+          Palette.ORANGE
         );
         entity.takeDamage(caster, FIREBALL_DAMAGE);
       }
@@ -509,22 +524,22 @@ class ConfuseAbility {
     this.targetType = TargetType.ENTITY;
     this.cooldown = 20;
     this.tooltipMessages = [
-      new Message('Confuse', Colors.WHITE),
-      new Message('2% of base mana', Colors.WHITE),
-      new Message('2 turn cast', Colors.WHITE),
-      new Message('Throws a fiery ball causing 10 damage', Colors.YELLOW),
-      new Message('to all enemies within 3 tiles.', Colors.YELLOW),
+      new Message('Confuse', Palette.WHITE),
+      new Message('2% of base mana', Palette.WHITE),
+      new Message('2 turn cast', Palette.WHITE),
+      new Message('Throws a fiery ball causing 10 damage', Palette.YELLOW),
+      new Message('to all enemies within 3 tiles.', Palette.YELLOW),
     ];
   }
 
   cast(caster: Actor, target: Actor): boolean {
     if (caster.distanceTo(target) > CONFUSE_RANGE) {
-      game.log('Target out of range.', Colors.LIGHT_GRAY);
+      game.log('Target out of range.', Palette.LIGHT_GRAY);
       return false;
     }
 
     target.ai = new ConfusedMonster(target);
-    game.log(`The eyes of the ${target.name} look vacant, as he stumbles around!`, Colors.GREEN);
+    game.log(`The eyes of the ${target.name} look vacant, as he stumbles around!`, Palette.GREEN);
     caster.ap--;
     return true;
   }
@@ -539,8 +554,8 @@ function readScroll(_caster: Actor, item: Item) {
 
 function nextLevel() {
   game.addAnimation(new FadeOutAnimation(30)).then(() => {
-    game.log('You take a moment to rest, and recover your strength.', Colors.PINK);
-    game.log('After a rare moment of peace, you descend deeper...', Colors.RED);
+    game.log('You take a moment to rest, and recover your strength.', Palette.PINK);
+    game.log('After a rare moment of peace, you descend deeper...', Palette.RED);
     game.entities.add(player);
     game.stopAutoWalk();
     createMap();
@@ -548,29 +563,39 @@ function nextLevel() {
   });
 }
 
-console.log('CODY START');
 const app = new App({
-  canvas: document.querySelector('canvas'),
   imageUrl: '/graphics2.png',
   size: new Rect(0, 0, 400, 224),
-  fillWindow: false,
+  font: FONT_04B03,
 });
 
-const game = new Game(app, {
-  tileSize: new Rect(0, 0, TILE_SIZE, TILE_SIZE),
-  mapSize: new Rect(0, 0, MAP_WIDTH, MAP_HEIGHT),
-  mapLayers: 3,
-  horizontalViewDistance: 8,
-  verticalViewDistance: 4,
-  focusMargins: new Vec2(32, 32),
-});
+const dialogSourceRect = new Rect(0, 64, 24, 24);
+
+const gui = new GUI(app);
+// gui.renderers.set(BottomPanel, new BottomPanelRenderer());
+// gui.renderers.set(EntityFrames, new EntityFramesRenderer());
+gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(Label, new GraphicsLabelRenderer());
+gui.renderers.set(Button, new GraphicsButtonRenderer());
+gui.renderers.set(TalentButton, new GraphicsButtonRenderer());
+gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
+gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
+gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ItemButton, new GraphicsButtonRenderer());
+gui.renderers.set(SelectInput, new GraphicsSelectInputRenderer());
+
+const game = new Game(app, gui);
 
 game.targetSprite = new Sprite(0, 48, 16, 16);
 game.cooldownSprite = new Sprite(0, 160, 16, 16, 24);
 game.blackoutRect = new Rect(0, 32, 16, 16);
-game.gui.renderer.baseRect = new Rect(0, 64, 24, 24);
-game.gui.renderer.closeButtonRect = new Rect(208, 16, 16, 16);
-game.gui.renderer.buttonSlotRect = new Rect(0, 88, 24, 24);
+// gui.renderer.baseRect = new Rect(0, 64, 24, 24);
+// gui.renderer.closeButtonRect = new Rect(208, 16, 16, 16);
+// gui.renderer.buttonSlotRect = new Rect(0, 88, 24, 24);
 
 const map = game.tileMap;
 const rng = new RNG(1);
@@ -579,92 +604,93 @@ game.player = player;
 game.entities.add(player);
 
 game.messageLog = new MessageLog(new Rect(1, -78, 100, 50));
-game.gui.add(game.messageLog);
+gui.addChild(game.messageLog);
 game.log(
   new CompoundMessage(
-    new Message('Welcome stranger! ', Colors.DARK_PURPLE),
-    new Message('Prepare to perish!', Colors.RED)
+    new Message('Welcome stranger! ', Palette.DARK_PURPLE),
+    new Message('Prepare to perish!', Palette.RED)
   )
 );
 
 const playerStats = new Panel(new Rect(1, 1, 100, 100));
-playerStats.drawContents = () => {
-  const frameY = 0;
-  app.drawString(player.name, 1, frameY);
+// playerStats.drawContents = () => {
+//   const frameY = 0;
+//   app.drawString(1, frameY, player.name);
 
-  const hpPercent = player.hp / player.maxHp;
-  app.drawImage(0, frameY + 7, 32, 64, 32, 12);
-  app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
-  app.drawString(`${player.hp}/${player.maxHp}`, 3, frameY + 10);
+//   const hpPercent = player.hp / player.maxHp;
+//   app.drawImage(0, frameY + 7, 32, 64, 32, 12);
+//   app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
+//   app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
-  const xpPercent = player.xp / player.maxXp;
-  app.drawImage(32, frameY + 7, 32, 64, 32, 12);
-  app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
-  app.drawString(`${player.xp}/${player.maxXp}`, 35, frameY + 10);
-};
-game.gui.add(playerStats);
+//   const xpPercent = player.xp / player.maxXp;
+//   app.drawImage(32, frameY + 7, 32, 64, 32, 12);
+//   app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
+//   app.drawString(35, frameY + 10, `${player.xp}/${player.maxXp}`);
+// };
+gui.addChild(playerStats);
 
-const shortcutBar = new ShortcutBar(new Rect(1, 224 - 26, 26 * 6, 26), 6);
-game.gui.add(shortcutBar);
+const buttonSlotRect = new Rect(0, 88, 24, 24);
+const shortcutBar = new ShortcutBar(new Rect(1, 224 - 26, 26 * 6, 26), buttonSlotRect, 6);
+gui.addChild(shortcutBar);
 
 const inventoryButton = new Button(
   new Rect(400 - 24, 224 - 24, 24, 24),
   new Sprite(192, 16, 16, 16),
-  Keys.VK_I,
+  Key.VK_I,
   () => {
     inventoryDialog.visible = !inventoryDialog.visible;
     talentsDialog.visible = false;
   }
 );
-inventoryButton.tooltipMessages = [
-  new Message("Traveler's Backpack", Colors.GREEN),
-  new Message('Item Level 55', Colors.YELLOW),
-  new Message('16 Slot Bag', Colors.WHITE),
-  new Message('Sell Price: 87 coins', Colors.WHITE),
-];
-game.gui.add(inventoryButton);
+inventoryButton.tooltip = Container.fromMessages([
+  new Message("Traveler's Backpack", Palette.GREEN),
+  new Message('Item Level 55', Palette.YELLOW),
+  new Message('16 Slot Bag', Palette.WHITE),
+  new Message('Sell Price: 87 coins', Palette.WHITE),
+]);
+gui.addChild(inventoryButton);
 
 const talentsButton = new Button(
   new Rect(400 - 48, 224 - 24, 24, 24),
   new Sprite(192, 16, 16, 16),
-  Keys.VK_T,
+  Key.VK_T,
   () => {
     talentsDialog.visible = !talentsDialog.visible;
     inventoryDialog.visible = false;
   }
 );
-talentsButton.tooltipMessages = [
-  new Message('Talents', Colors.WHITE),
-  new Message('A list of all of your', Colors.YELLOW),
-  new Message("character's talents.", Colors.YELLOW),
-];
-game.gui.add(talentsButton);
+talentsButton.tooltip = Container.fromMessages([
+  new Message('Talents', Palette.WHITE),
+  new Message('A list of all of your', Palette.YELLOW),
+  new Message("character's talents.", Palette.YELLOW),
+]);
+gui.addChild(talentsButton);
 
 const inventoryDialog = new ItemContainerDialog(
   new Rect(10, 25, 110, 110),
   [
-    new Message("Traveler's Backpack", Colors.GREEN),
-    new Message('Click to use', Colors.LIGHT_GRAY),
-    new Message('Drag for shortcut', Colors.LIGHT_GRAY),
+    new Message("Traveler's Backpack", Palette.GREEN),
+    new Message('Click to use', Palette.LIGHT_GRAY),
+    new Message('Drag for shortcut', Palette.LIGHT_GRAY),
   ],
   16,
   player.inventory
 );
 inventoryDialog.visible = false;
-game.gui.add(inventoryDialog);
+gui.addChild(inventoryDialog);
 
 const talentsDialog = new TalentsDialog(
   new Rect(10, 25, 110, 110),
   [
-    new Message('Talents', Colors.GREEN),
-    new Message('Click to use', Colors.LIGHT_GRAY),
-    new Message('Drag for shortcut', Colors.LIGHT_GRAY),
+    new Message('Talents', Palette.GREEN),
+    new Message('Click to use', Palette.LIGHT_GRAY),
+    new Message('Drag for shortcut', Palette.LIGHT_GRAY),
   ],
   16,
   player.talents
 );
 talentsDialog.visible = false;
-game.gui.add(talentsDialog);
+gui.addChild(talentsDialog);
 
 player.inventory.addListener({
   onAdd: (_, item) => {
@@ -688,21 +714,39 @@ player.talents.add(new Talent(player, new LightningAbility()));
 // Generate the map
 createMap();
 
-const mainMenu = new AppState(app);
-mainMenu.gui.renderer.baseRect = new Rect(0, 64, 24, 24);
-mainMenu.gui.add(new ImagePanel(new Rect(0, 768, 400, 224), new Rect(0, 0, 400, 224)));
-mainMenu.gui.add(
-  new SelectDialog(
+class MainMenu extends AppState<App> {
+  constructor(
+    app: App,
+    readonly gui: GUI<App>
+  ) {
+    super(app);
+  }
+
+  update(): void {
+    this.gui.handleInput();
+    this.gui.draw();
+  }
+}
+
+const mainMenu = new MainMenu(app, gui);
+// mainMenu.gui.renderer.baseRect = new Rect(0, 64, 24, 24);
+// mainMenu.gui.add(new ImagePanel(new Rect(0, 768, 400, 224), new Rect(0, 0, 400, 224)));
+mainMenu.gui.addChild(
+  new Dialog(
     new Rect(150, 62, 100, 100),
-    [
-      { id: 'new', name: 'NEW GAME' },
-      { id: 'continue', name: 'CONTINUE' },
-    ],
-    (choice) => {
-      if (choice.id === 'new') {
-        app.state = game;
+    'Main Menu',
+    new SelectInput(
+      new Rect(0, 0, 100, 100),
+      [
+        { id: 'new', name: 'NEW GAME' },
+        { id: 'continue', name: 'CONTINUE' },
+      ],
+      (choice) => {
+        if (choice.id === 'new') {
+          app.state = game;
+        }
       }
-    }
+    )
   )
 );
 

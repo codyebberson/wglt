@@ -1,39 +1,37 @@
-import { ArrayList } from '../arraylist';
+import { ArrayList, Container, GUI, GraphicsApp, Key, Rect, Renderer } from 'wglt';
 import { Item } from '../item';
-import { Keys } from '../keys';
-import { Rect } from '../rect';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
-import { Panel } from './panel';
 import { ShortcutButtonSlot } from './shortcutbuttonslot';
 import { TalentButton } from './talentbutton';
 
-const DEFAULT_SPACING = 2;
-
-export class ShortcutBar extends Panel {
+export class ShortcutBar extends Container {
   spacing: number;
 
-  constructor(rect: Rect, count: number, spacing?: number) {
+  constructor(rect: Rect, buttonSlotRect: Rect, count: number, spacing = 2) {
     super(rect);
-    this.spacing = spacing !== undefined ? spacing : DEFAULT_SPACING;
+    this.spacing = spacing;
 
     for (let i = 0; i < count; i++) {
-      const buttonSlot = new ShortcutButtonSlot(new Rect(0, 0, 24, 24), Keys.VK_1 + i);
-      this.add(buttonSlot);
+      const key = `Digit${String.fromCharCode('1'.charCodeAt(0) + i)}` as Key;
+      const newRect = buttonSlotRect.clone();
+      newRect.x = i * (buttonSlotRect.width + spacing);
+      const buttonSlot = new ShortcutButtonSlot(newRect, key);
+      this.addChild(buttonSlot);
     }
   }
 
-  addTalent(talent: Talent, rightToLeft?: boolean) {
+  addTalent(talent: Talent, rightToLeft?: boolean): void {
     if (this.containsTalent(talent)) {
       return;
     }
     const slot = this.getFreeSlot(!!rightToLeft);
     if (slot) {
-      slot.add(new TalentButton(slot.rect.clone(), talent, true));
+      slot.addChild(new TalentButton(slot.rect.clone(), talent, true));
     }
   }
 
-  containsTalent(talent: Talent) {
+  containsTalent(talent: Talent): boolean {
     for (let i = 0; i < this.children.length; i++) {
       const slot = this.children.get(i) as ShortcutButtonSlot;
       if (slot.button && slot.button instanceof TalentButton && slot.button.talent === talent) {
@@ -43,17 +41,17 @@ export class ShortcutBar extends Panel {
     return false;
   }
 
-  addItem(items: ArrayList<Item>, item: Item, rightToLeft?: boolean) {
+  addItem(items: ArrayList<Item>, item: Item, rightToLeft?: boolean): void {
     if (this.containsItem(item)) {
       return;
     }
     const slot = this.getFreeSlot(!!rightToLeft);
     if (slot) {
-      slot.add(new ItemShortcutButton(slot.rect.clone(), items, item));
+      slot.addChild(new ItemShortcutButton(slot.rect.clone(), items, item));
     }
   }
 
-  containsItem(item: Item) {
+  containsItem(item: Item): boolean {
     for (let i = 0; i < this.children.length; i++) {
       const slot = this.children.get(i) as ShortcutButtonSlot;
       if (
@@ -67,28 +65,10 @@ export class ShortcutBar extends Panel {
     return false;
   }
 
-  drawContents() {
-    if (!this.gui) {
-      return;
-    }
+  // draw(app: BaseApp): void {
+  // }
 
-    const buttonRect = this.gui.renderer.buttonSlotRect;
-    if (!buttonRect) {
-      return;
-    }
-
-    for (let i = 0; i < this.children.length; i++) {
-      const child = this.children.get(i);
-      child.rect.x = this.rect.x + i * (buttonRect.width + DEFAULT_SPACING);
-      child.rect.y = this.rect.y;
-      child.rect.width = buttonRect.width;
-      child.rect.height = buttonRect.height;
-    }
-
-    this.drawChildren();
-  }
-
-  private getFreeSlot(rightToLeft: boolean) {
+  private getFreeSlot(rightToLeft: boolean): ShortcutButtonSlot | undefined {
     if (rightToLeft) {
       // Right to left
       for (let i = this.children.length - 1; i >= 0; i--) {
@@ -107,5 +87,11 @@ export class ShortcutBar extends Panel {
       }
     }
     return undefined;
+  }
+}
+
+export class ShortcutBarRenderer implements Renderer<GraphicsApp, ShortcutBar> {
+  render(gui: GUI<GraphicsApp>, component: ShortcutBar): void {
+    gui.drawChildren(component);
   }
 }

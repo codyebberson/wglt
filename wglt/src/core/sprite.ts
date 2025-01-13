@@ -4,6 +4,7 @@ import { GraphicsApp } from '../graphics/graphicsapp';
 const DEFAULT_TICKS_PER_FRAME = 20;
 
 export class Sprite extends Rect {
+  static globalAnimIndex = 0;
   private animFrame: number;
   private animDelay: number;
 
@@ -22,6 +23,9 @@ export class Sprite extends Rect {
   }
 
   draw(app: GraphicsApp, x: number, y: number, flipped = false): void {
+    // TODO: is this correct? how to reconcile with animFrame?
+    this.animFrame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
+
     const u = this.x + this.animFrame * this.width;
     const v = this.y;
 
@@ -55,5 +59,9 @@ export class Sprite extends Rect {
       this.loop,
       this.ticksPerFrame
     );
+  }
+
+  static updateGlobalAnimations() {
+    Sprite.globalAnimIndex++;
   }
 }

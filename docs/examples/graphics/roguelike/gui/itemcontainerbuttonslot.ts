@@ -1,9 +1,12 @@
-import { ButtonSlot } from './buttonslot';
+import { ButtonSlot, Component } from 'wglt';
 import { ItemButton } from './itembutton';
-import { Panel } from './panel';
 
 export class ItemContainerButtonSlot extends ButtonSlot {
-  onDrop(panel: Panel) {
-    return panel instanceof ItemButton;
+  onDrop(component: Component): boolean {
+    if (component instanceof ItemButton) {
+      this.moveChild(component);
+      return true;
+    }
+    return false;
   }
 }

@@ -1,4 +1,4 @@
-import { fromRgb } from '../color';
+import { fromRgb } from 'wglt';
 import { Game } from '../game';
 import { Animation } from './animation';
 

@@ -1,39 +1,43 @@
-import { ButtonSlot } from './buttonslot';
+import { ButtonSlot, Component } from 'wglt';
 import { ItemButton } from './itembutton';
 import { ItemShortcutButton } from './itemshortcutbutton';
-import { Panel } from './panel';
 import { TalentButton } from './talentbutton';
 
 export class ShortcutButtonSlot extends ButtonSlot {
-  onDrop(panel: Panel) {
+  onDrop(component: Component): boolean {
     if (this.children.length > 0) {
       // Already has a button
       // TODO: Add ability to replace an existing shortcut
       return false;
     }
 
-    if (panel instanceof ItemButton) {
-      const itemButton = panel as ItemButton;
+    if (component instanceof ItemButton) {
+      const itemButton = component as ItemButton;
       const containerItems = itemButton.containerItems;
       const shortcutItem = itemButton.stackItems.get(0);
-      this.add(new ItemShortcutButton(this.rect.clone(), containerItems, shortcutItem));
+      this.addChild(new ItemShortcutButton(this.rect.clone(), containerItems, shortcutItem));
       // Even though the operation was successful,
       // return false because we don't want to move the original button
       return false;
     }
 
-    if (panel instanceof TalentButton) {
-      if (panel.shortcut) {
+    if (component instanceof TalentButton) {
+      if (component.shortcut) {
         // Move the existing shortcut
+        this.moveChild(component);
         return true;
       }
       // Create a shortcut to the talent
-      this.add(new TalentButton(this.rect.clone(), panel.talent, true));
+      this.addChild(new TalentButton(this.rect.clone(), component.talent, true));
       return false;
     }
 
-    if (panel instanceof ItemShortcutButton || (panel instanceof TalentButton && panel.shortcut)) {
+    if (
+      component instanceof ItemShortcutButton ||
+      (component instanceof TalentButton && component.shortcut)
+    ) {
       // Move button
+      this.moveChild(component);
       return true;
     }
 
