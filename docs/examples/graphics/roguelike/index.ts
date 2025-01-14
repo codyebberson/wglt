@@ -1,5 +1,4 @@
 import {
-  AppState,
   AutoRectRenderer,
   Button,
   ButtonSlot,
@@ -34,6 +33,7 @@ import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
 import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
 import { TalentButton, TalentButtonRenderer } from './gui/talentbutton';
 import { TalentsDialog } from './gui/talentsdialog';
+import { MainMenu } from './mainmenu';
 import { createMap } from './mapgen';
 import { Palette } from './palette';
 import { Sprites } from './sprites';
@@ -93,14 +93,14 @@ playerStats.render = () => {
   app.drawString(1, frameY, player.name);
 
   const hpPercent = player.hp / player.maxHp;
-  app.drawImage(0, frameY + 7, 32, 64, 32, 12);
-  app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 28));
+  app.drawImage(0, frameY + 7, 32, 64, 40, 12);
+  app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 36));
   app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
   const xpPercent = player.xp / player.maxXp;
-  app.drawImage(32, frameY + 7, 32, 64, 32, 12);
-  app.drawImage(34, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 28));
-  app.drawString(35, frameY + 10, `${player.xp}/${player.maxXp}`);
+  app.drawImage(40, frameY + 7, 32, 64, 40, 12);
+  app.drawImage(42, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 36));
+  app.drawString(43, frameY + 10, `${player.xp}/${player.maxXp}`);
 };
 gui.addChild(playerStats);
 
@@ -186,40 +186,8 @@ player.talents.add(new Talent(player, new LightningAbility(game)));
 // Generate the map
 createMap(game);
 
-class MainMenu extends AppState<App> {
-  constructor(
-    app: App,
-    readonly gui: GUI<App>
-  ) {
-    super(app);
-  }
-
-  update(): void {
-    this.gui.handleInput();
-    this.gui.draw();
-  }
-}
-
-const mainMenu = new MainMenu(app, gui);
-// mainMenu.gui.renderer.baseRect = new Rect(0, 64, 24, 24);
-// mainMenu.gui.add(new ImagePanel(new Rect(0, 768, 400, 224), new Rect(0, 0, 400, 224)));
-mainMenu.gui.addChild(
-  new Dialog(
-    new Rect(150, 62, 100, 50),
-    'Main Menu',
-    new SelectInput(
-      new Rect(150, 62, 100, 50),
-      [
-        { id: 'new', name: 'NEW GAME' },
-        { id: 'continue', name: 'CONTINUE' },
-      ],
-      (choice) => {
-        if (choice.id === 'new') {
-          app.state = game;
-        }
-      }
-    )
-  )
-);
+const mainMenu = new MainMenu(app, gui, () => {
+  app.state = game;
+});
 
 app.state = mainMenu;
