@@ -49,10 +49,3 @@ export class ButtonSlot extends Container {
     }
   }
 }
-
-export function getShortcutKeyDisplay(key: Key): string {
-  if (key === Key.VK_SLASH) {
-    return '?';
-  }
-  return key.replace('Key', '').replace('Digit', '').replace('Numpad', '');
-}

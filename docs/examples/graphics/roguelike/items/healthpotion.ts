@@ -17,7 +17,7 @@ export class HealthPotion extends Item {
     ];
   }
 
-  onUse(caster: Actor, item: Item): void {
+  onUse(caster: Actor): void {
     if (caster.hp === caster.maxHp) {
       this.game.log('You are already at full health.', Palette.RED);
       return;
@@ -25,7 +25,7 @@ export class HealthPotion extends Item {
 
     this.game.log('Your wounds start to feel better!', Palette.PINK);
     caster.takeHeal(HEAL_AMOUNT);
-    caster.inventory.remove(item);
+    caster.inventory.remove(this);
     caster.ap--;
   }
 

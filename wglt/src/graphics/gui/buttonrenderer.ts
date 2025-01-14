@@ -1,4 +1,4 @@
-import { Button } from '../../core/gui/button';
+import { Button, getShortcutKeyDisplay } from '../../core/gui/button';
 import { GUI } from '../../core/gui/gui';
 import { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
@@ -19,5 +19,13 @@ export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {
     y += ((destRect.height - sourceRect.height) / 2) | 0;
 
     app.drawImage(x, y, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+
+    if (component.shortcutKey) {
+      app.drawRightString(
+        x + sourceRect.width - 2,
+        y + 2,
+        getShortcutKeyDisplay(component.shortcutKey)
+      );
+    }
   }
 }

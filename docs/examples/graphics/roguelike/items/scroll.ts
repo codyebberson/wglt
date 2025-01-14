@@ -1,25 +1,23 @@
-import { Message } from 'wglt';
 import { Ability } from '../ability';
 import { Actor } from '../actor';
 import { Game } from '../game';
 import { Item } from '../item';
-import { Palette } from '../palette';
 
 export class Scroll extends Item {
-  constructor(game: Game, x: number, y: number, ability: Ability) {
+  constructor(
+    game: Game,
+    x: number,
+    y: number,
+    readonly ability: Ability
+  ) {
     super(game, x, y, `scroll of ${ability.name}`, ability.sprite);
-
-    this.tooltipMessages = [
-      new Message('Ancient Healing Potion', Palette.BLUE),
-      new Message('Item Level 5', Palette.YELLOW),
-      new Message('Use: Restore 10 health', Palette.GREEN),
-    ];
+    this.tooltipMessages = ability.tooltipMessages;
   }
 
-  onUse(caster: Actor, item: Item): void {
-    const ability = item.ability as Ability;
+  onUse(caster: Actor): void {
+    const ability = this.ability;
     caster.cast(ability, undefined, () => {
-      caster.inventory.remove(item);
+      caster.inventory.remove(this);
     });
   }
 

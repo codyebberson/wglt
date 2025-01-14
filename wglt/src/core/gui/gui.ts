@@ -9,6 +9,7 @@ import { RendererMap } from './renderermap';
 export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;
   readonly renderers: RendererMap<TContext>;
+  readonly rendererWarnings: Set<string>;
   tooltip?: Panel;
   tooltipElement?: Component;
 
@@ -16,6 +17,7 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     super(context.size);
     this.context = context;
     this.renderers = new RendererMap<TContext>();
+    this.rendererWarnings = new Set();
   }
 
   get root(): GUI<TContext> {
@@ -63,12 +65,17 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
 
     const componentClass = component.constructor as ComponentConstructor<T>;
     const renderer = this.renderers.get(componentClass);
-    if (!renderer) {
-      console.error(`No renderer for component: ${componentClass.name}`);
-      return;
+    if (renderer) {
+      renderer.render(this, component);
+    } else {
+      if (!this.rendererWarnings.has(componentClass.name)) {
+        console.error(`No renderer for component: ${componentClass.name}`);
+        this.rendererWarnings.add(componentClass.name);
+      }
+      if (component instanceof Container) {
+        this.drawChildren(component);
+      }
     }
-
-    renderer.render(this, component);
   }
 
   drawChildren(container: Container): void {

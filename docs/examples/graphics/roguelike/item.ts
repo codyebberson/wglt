@@ -1,18 +1,16 @@
 import { Message } from 'wglt';
-import { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
 import { Palette } from './palette';
 
 export abstract class Item extends Entity {
-  ability?: Ability;
   tooltipMessages?: Message[];
 
-  onPickup(entity: Actor, item: Item): void {
-    this.game.log(`${entity.name} picked up a ${item.name}`, Palette.GREEN);
+  onPickup(entity: Actor): void {
+    this.game.log(`${entity.name} picked up a ${this.name}`, Palette.GREEN);
   }
 
-  abstract onUse(user: Actor, item: Item): void;
+  abstract onUse(user: Actor): void;
   abstract onUpdateTooltip(): void;
 
   /**

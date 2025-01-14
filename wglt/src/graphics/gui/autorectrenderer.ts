@@ -5,7 +5,7 @@ import { Renderer } from '../../core/gui/renderer';
 import { Rect } from '../../core/rect';
 import { GraphicsApp } from '../graphicsapp';
 
-export class AutoRectRenderer implements Renderer<GraphicsApp, Component> {
+export class AutoRectRenderer<T extends Component = Component> implements Renderer<GraphicsApp, T> {
   constructor(readonly sourceRect: Rect) {}
 
   render(gui: GUI<GraphicsApp>, component: Component): void {

@@ -42,7 +42,7 @@ export class Actor extends Entity {
     }
   }
 
-  move(dx: number, dy: number, slideCount?: number) {
+  move(dx: number, dy: number, slideCount = 4) {
     const destX = this.x + dx;
     const destY = this.y + dy;
 
@@ -69,10 +69,9 @@ export class Actor extends Entity {
     this.offset.y = -dy * this.game.tileSize.height;
 
     // Now create the slide animation
-    const count = slideCount || 4;
-    const xSpeed = this.game.tileSize.width / count;
-    const ySpeed = this.game.tileSize.height / count;
-    this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, count));
+    const xSpeed = this.game.tileSize.width / slideCount;
+    const ySpeed = this.game.tileSize.height / slideCount;
+    this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, slideCount));
     this.game.blocked = true;
     return true;
   }
@@ -162,13 +161,13 @@ export class Actor extends Entity {
   }
 
   pickup(item: Item) {
-    item.onPickup?.(this, item);
+    item.onPickup(this);
     this.inventory.add(item);
     this.game.entities.remove(item);
   }
 
   use(item: Item) {
-    return item.onUse?.(this, item);
+    return item.onUse(this);
   }
 
   cast(ability: Ability, target?: Entity | TileMapCell, callback?: () => void) {

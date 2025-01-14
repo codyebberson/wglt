@@ -383,6 +383,10 @@ export class Game extends AppState<App> {
     if (mouse.isClicked()) {
       const tx = ((this.viewport.x + mouse.x) / this.tileMap.tileSize.width) | 0;
       const ty = ((this.viewport.y + mouse.y) / this.tileMap.tileSize.height) | 0;
+      if (this.player.x === tx && this.player.y === ty) {
+        this.player.ap = 0;
+        return;
+      }
       const target = this.tileMap.getCell(tx, ty);
       if (target && target !== this.targetTile) {
         this.targetTile = target;

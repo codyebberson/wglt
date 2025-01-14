@@ -8,6 +8,7 @@ import {
   FONT_04B03,
   GUI,
   GraphicsButtonRenderer,
+  GraphicsButtonSlotRenderer,
   GraphicsLabelRenderer,
   GraphicsMessageLogRenderer,
   GraphicsSelectInputRenderer,
@@ -54,8 +55,9 @@ const gui = new GUI(app);
 
 // Standard components
 gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ButtonSlot, new AutoRectRenderer(buttonSlotRect));
-gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
+gui.renderers.set(ButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
+gui.renderers.set(Panel, new AutoRectRenderer(buttonSlotRect));
+// gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(Label, new GraphicsLabelRenderer());
 gui.renderers.set(Button, new GraphicsButtonRenderer());
 gui.renderers.set(SelectInput, new GraphicsSelectInputRenderer());
@@ -64,9 +66,9 @@ gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
 // Custom components
 gui.renderers.set(TalentButton, new TalentButtonRenderer());
 gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
-gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(buttonSlotRect));
+gui.renderers.set(ShortcutButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
 gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(buttonSlotRect));
+gui.renderers.set(ItemContainerButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
 gui.renderers.set(ItemButton, new ItemButtonRenderer());
 gui.renderers.set(ItemShortcutButton, new ItemShortcutButtonRenderer());
 

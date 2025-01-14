@@ -38,6 +38,7 @@ export * from './core/utils';
 export * from './graphics/graphicsapp';
 export * from './graphics/gui/autorectrenderer';
 export * from './graphics/gui/buttonrenderer';
+export * from './graphics/gui/buttonslotrenderer';
 export * from './graphics/gui/dialogrenderer';
 export * from './graphics/gui/labelrenderer';
 export * from './graphics/gui/selectinputrenderer';

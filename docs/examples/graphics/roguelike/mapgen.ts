@@ -1,4 +1,6 @@
 import { RNG, Rect, Sprite, TileMap, getTileId } from 'wglt';
+import { ConfuseAbility } from './abilities/confuse';
+import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
 import { Orc, Troll } from './actors/monster';
 import { Player } from './actors/player';
@@ -8,10 +10,8 @@ import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';
 import { HealthPotion } from './items/healthpotion';
-import { Palette } from './palette';
 import { Scroll } from './items/scroll';
-import { FireballAbility } from './abilities/fireball';
-import { ConfuseAbility } from './abilities/confuse';
+import { Palette } from './palette';
 
 // Size of the map
 const MAP_WIDTH = 60;
@@ -19,7 +19,6 @@ const MAP_HEIGHT = 40;
 
 const TILE_WALL = getTileId(0, 2);
 const TILE_FLOOR = getTileId(1, 2);
-const TILE_SHADOW = getTileId(10, 10);
 
 // Parameters for dungeon generator
 const ROOM_MAX_SIZE = 10;
@@ -108,8 +107,6 @@ export function createMap(game: Game): void {
         // This is the first room, where the player starts at
         player.x = center.x;
         player.y = center.y;
-        map.setTile(player.x, player.y, 1, TILE_SHADOW);
-        map.setAnimated(player.x, player.y, 0, true);
       } else {
         // All rooms after the first:
         // Connect it to the previous room with a tunnel
@@ -188,52 +185,22 @@ function placeObjects(game: Game, room: Rect): void {
     const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
 
     const dice = rng.nextRange(0, 100);
-    // let itemName = undefined;
-    // let itemSprite = undefined;
-    // let itemUse: ((actor: Actor, item: Item) => void) | undefined = undefined;
-    // let itemAbility = undefined;
-    // let itemTooltips = undefined;
     let item: Item;
 
     if (dice < 50) {
       // Create a healing potion (50% chance)
-      // itemName = 'healing potion';
-      // itemSprite = new Sprite(128, 16, 16, 16, 1);
-      // itemUse = castHeal;
-      // itemTooltips = [
-      //   new Message('Ancient Healing Potion', Palette.BLUE),
-      //   new Message('Item Level 5', Palette.YELLOW),
-      //   new Message('Use: Restore 10 health', Palette.GREEN),
-      // ];
       item = new HealthPotion(game, x, y);
     } else if (dice < 50 + 20) {
       // Create a lightning bolt scroll (20% chance)
-      // itemName = 'scroll of lightning bolt';
-      // itemSprite = new Sprite(144, 16, 16, 16, 1);
-      // itemUse = readScroll;
-      // itemAbility = new LightningAbility();
       item = new Scroll(game, x, y, new LightningAbility(game));
     } else if (dice < 50 + 20 + 15) {
       // Create a fireball scroll (15% chance)
-      // itemName = 'scroll of fireball';
-      // itemSprite = new Sprite(144, 16, 16, 16, 1);
-      // itemUse = readScroll;
-      // itemAbility = new FireballAbility();
       item = new Scroll(game, x, y, new FireballAbility(game));
     } else {
       // Create a confuse scroll (15% chance)
-      // itemName = 'scroll of confusion';
-      // itemSprite = new Sprite(144, 16, 16, 16, 1);
-      // itemUse = readScroll;
-      // itemAbility = new ConfuseAbility();
       item = new Scroll(game, x, y, new ConfuseAbility(game));
     }
 
-    // const item = new Item(game, x, y, itemName, itemSprite);
-    // item.onPickup = pickupCallback;
-    // item.onUse = itemUse;
-    // item.ability = itemAbility;
-    // item.tooltipMessages = itemTooltips;
     game.entities.add(item);
   }
 }
