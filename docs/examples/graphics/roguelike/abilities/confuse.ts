@@ -4,6 +4,7 @@ import { Actor } from '../actor';
 import { ConfusedMonster } from '../ai/confusedmonster';
 import { Game } from '../game';
 import { Palette } from '../palette';
+import { Sprites } from '../sprites';
 
 const CONFUSE_RANGE = 8;
 
@@ -18,7 +19,7 @@ export class ConfuseAbility {
 
   constructor(readonly game: Game) {
     this.name = 'Confuse';
-    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.sprite = Sprites.CONFUSE_ICON;
     this.targetType = TargetType.ENTITY;
     this.cooldown = 20;
     this.tooltipMessages = [

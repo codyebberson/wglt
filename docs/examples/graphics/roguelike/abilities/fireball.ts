@@ -4,6 +4,7 @@ import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
 import { Game } from '../game';
 import { Palette } from '../palette';
+import { Sprites } from '../sprites';
 
 const TILE_SIZE = 16;
 const FIREBALL_RANGE = 10;
@@ -21,7 +22,7 @@ export class FireballAbility implements Ability {
 
   constructor(readonly game: Game) {
     this.name = 'Fireball';
-    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.sprite = Sprites.FIREBALL_ICON;
     this.targetType = TargetType.TILE;
     this.cooldown = 20;
     this.tooltipMessages = [
@@ -47,7 +48,7 @@ export class FireballAbility implements Ability {
 
     this.game.addAnimation(
       new ProjectileAnimation(
-        new Sprite(128, 32, 16, 16, 3, false),
+        Sprites.FIREBALL_ANIMATION,
         new Point(caster.pixelX, caster.pixelY),
         new Point(dx, dy),
         count
@@ -56,7 +57,7 @@ export class FireballAbility implements Ability {
 
     this.game.addAnimation(
       new ProjectileAnimation(
-        new Sprite(176, 32, 16, 16, 4, false, 4),
+        Sprites.EXPLOSION_ANIMATION,
         new Point(target.x * TILE_SIZE, target.y * TILE_SIZE),
         new Point(0, 0),
         16

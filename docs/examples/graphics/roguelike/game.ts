@@ -22,6 +22,7 @@ import { App } from './app';
 import { Entity } from './entity';
 import { Item } from './item';
 import { Palette } from './palette';
+import { Sprites } from './sprites';
 
 const DEFAULT_MAP_SIZE = new Rect(0, 0, 256, 256);
 const DEFAULT_MAP_LAYERS = 1;
@@ -44,7 +45,6 @@ export class Game extends AppState<App> {
   messageLog?: MessageLog;
   targetAbility?: Ability;
   targetCallback?: () => void;
-  targetSprite?: Sprite;
   targetTile?: TileMapCell;
   path?: TileMapCell[];
   pathIndex: number;
@@ -52,9 +52,7 @@ export class Game extends AppState<App> {
   tileMap: TileMap;
   tileMapRenderer: TileMapRenderer;
   player?: Actor;
-  cooldownSprite?: Sprite;
   tooltipElement?: Component;
-  blackoutRect?: Rect;
   horizontalViewDistance: number;
   verticalViewDistance: number;
   zoom: number;
@@ -113,9 +111,9 @@ export class Game extends AppState<App> {
     }
   }
 
-  addAnimation(animation: Animation) {
+  addAnimation(animation: Animation): Animation {
     this.animations.push(animation);
-    return animation.promise;
+    return animation;
   }
 
   update() {
@@ -157,7 +155,7 @@ export class Game extends AppState<App> {
     // Remove completed animations
     for (let i = this.animations.length - 1; i >= 0; i--) {
       if (this.animations[i].isDone()) {
-        this.animations[i].promise.resolve();
+        this.animations[i].callback?.();
         this.animations.splice(i, 1);
       }
     }
@@ -272,10 +270,10 @@ export class Game extends AppState<App> {
   }
 
   private drawTargeting() {
-    if (this.isTargeting() && this.targetSprite) {
+    if (this.isTargeting()) {
       const x = this.cursor.x * this.tileMap.tileSize.width - this.viewport.x;
       const y = this.cursor.y * this.tileMap.tileSize.height - this.viewport.y;
-      this.targetSprite.draw(this.app, x, y);
+      Sprites.TARGET.draw(this.app, x, y);
     }
   }
 

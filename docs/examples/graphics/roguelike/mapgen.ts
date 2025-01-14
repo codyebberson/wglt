@@ -1,4 +1,4 @@
-import { RNG, Rect, Sprite, TileMap, getTileId } from 'wglt';
+import { RNG, Rect, TileMap, getTileId } from 'wglt';
 import { ConfuseAbility } from './abilities/confuse';
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
@@ -12,6 +12,7 @@ import { Item } from './item';
 import { HealthPotion } from './items/healthpotion';
 import { Scroll } from './items/scroll';
 import { Palette } from './palette';
+import { Sprites } from './sprites';
 
 // Size of the map
 const MAP_WIDTH = 60;
@@ -136,14 +137,7 @@ export function createMap(game: Game): void {
 
   // Create stairs at the center of the last room
   const stairsLoc = rooms[rooms.length - 1].getCenter();
-  const stairs = new Entity(
-    game,
-    stairsLoc.x,
-    stairsLoc.y,
-    'stairs',
-    new Sprite(32, 32, 16, 16, 1),
-    true
-  );
+  const stairs = new Entity(game, stairsLoc.x, stairsLoc.y, 'stairs', Sprites.STAIRS, true);
   stairs.onBump = () => {
     nextLevel(game);
     return true;
@@ -208,7 +202,7 @@ function placeObjects(game: Game, room: Rect): void {
 function nextLevel(game: Game): void {
   const player = game.player as Player;
 
-  game.addAnimation(new FadeOutAnimation(30)).then(() => {
+  game.addAnimation(new FadeOutAnimation(30)).onDone(() => {
     game.log('You take a moment to rest, and recover your strength.', Palette.PINK);
     game.log('After a rare moment of peace, you descend deeper...', Palette.RED);
     game.entities.add(player);

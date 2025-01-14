@@ -19,7 +19,6 @@ import {
   Panel,
   Rect,
   SelectInput,
-  Sprite,
 } from 'wglt';
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
@@ -37,6 +36,7 @@ import { TalentButton, TalentButtonRenderer } from './gui/talentbutton';
 import { TalentsDialog } from './gui/talentsdialog';
 import { createMap } from './mapgen';
 import { Palette } from './palette';
+import { Sprites } from './sprites';
 import { Talent } from './talent';
 
 const WIDTH = 640;
@@ -74,10 +74,6 @@ gui.renderers.set(ItemShortcutButton, new ItemShortcutButtonRenderer());
 
 const game = new Game(app, gui);
 
-game.targetSprite = new Sprite(0, 48, 16, 16);
-game.cooldownSprite = new Sprite(0, 160, 16, 16, 24);
-game.blackoutRect = new Rect(0, 32, 16, 16);
-
 const player = new Player(game, 30, 20);
 game.player = player;
 game.entities.add(player);
@@ -113,7 +109,7 @@ gui.addChild(shortcutBar);
 
 const inventoryButton = new Button(
   new Rect(WIDTH - 24, HEIGHT - 24, 24, 24),
-  new Sprite(192, 16, 16, 16),
+  Sprites.BAG,
   Key.VK_I,
   () => {
     inventoryDialog.visible = !inventoryDialog.visible;
@@ -130,7 +126,7 @@ gui.addChild(inventoryButton);
 
 const talentsButton = new Button(
   new Rect(WIDTH - 48, HEIGHT - 24, 24, 24),
-  new Sprite(192, 16, 16, 16),
+  Sprites.BAG,
   Key.VK_T,
   () => {
     talentsDialog.visible = !talentsDialog.visible;

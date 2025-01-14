@@ -1,14 +1,15 @@
-import { Message, Sprite } from 'wglt';
+import { Message } from 'wglt';
 import { Actor } from '../actor';
 import { Game } from '../game';
 import { Item } from '../item';
 import { Palette } from '../palette';
+import { Sprites } from '../sprites';
 
 const HEAL_AMOUNT = 4;
 
 export class HealthPotion extends Item {
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 'healing potion', new Sprite(128, 16, 16, 16, 1));
+    super(game, x, y, 'healing potion', Sprites.HEALTH_POTION);
 
     this.tooltipMessages = [
       new Message('Ancient Healing Potion', Palette.BLUE),

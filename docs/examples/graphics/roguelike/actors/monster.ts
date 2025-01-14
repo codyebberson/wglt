@@ -2,6 +2,7 @@ import { Sprite } from 'wglt';
 import { Actor } from '../actor';
 import { BasicMonster } from '../ai/basicmonster';
 import { Game } from '../game';
+import { Sprites } from '../sprites';
 import { Fighter } from './fighter';
 import { Player } from './player';
 
@@ -39,13 +40,13 @@ export class Monster extends Fighter {
 
 export class Orc extends Monster {
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 'Orc', new Sprite(32, 16, 16, 16, 2, true));
+    super(game, x, y, 'Orc', Sprites.ORC);
   }
 }
 
 export class Troll extends Monster {
   constructor(game: Game, x: number, y: number) {
-    super(game, x, y, 'Troll', new Sprite(64, 16, 16, 16, 2, true));
+    super(game, x, y, 'Troll', Sprites.TROLL);
   }
 }
 

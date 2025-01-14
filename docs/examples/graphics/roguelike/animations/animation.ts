@@ -1,24 +1,26 @@
 import { Game } from '../game';
-import { AnimationPromise } from './animationpromise';
 
 export abstract class Animation {
-  readonly promise: AnimationPromise;
   countdown: number;
   blocking: boolean;
+  callback?: () => void;
 
   constructor(countdown: number, blocking: boolean) {
-    this.promise = new AnimationPromise();
     this.countdown = countdown;
     this.blocking = blocking;
   }
 
-  isDone() {
+  onDone(callback: () => void): void {
+    this.callback = callback;
+  }
+
+  isDone(): boolean {
     return this.countdown <= 0;
   }
 
-  update() {
+  update(): void {
     this.countdown--;
   }
 
-  draw(_game: Game) {}
+  draw(_game: Game): void {}
 }

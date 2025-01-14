@@ -1,6 +1,7 @@
 import { Button, Container, GUI, GraphicsButtonRenderer, Rect } from 'wglt';
 import { App } from '../app';
 import { Palette } from '../palette';
+import { Sprites } from '../sprites';
 import { Talent } from '../talent';
 
 export class TalentButton extends Button {
@@ -27,8 +28,7 @@ export class TalentButtonRenderer extends GraphicsButtonRenderer {
     const app = gui.context;
     const talent = component.talent;
     const rect = component.screenRect;
-    const game = talent.actor.game;
-    const cooldownSprite = game.cooldownSprite;
+    const cooldownSprite = Sprites.COOLDOWN;
 
     if (talent.cooldown > 0 && cooldownSprite) {
       const percent = 1.0 - talent.cooldown / talent.ability.cooldown;

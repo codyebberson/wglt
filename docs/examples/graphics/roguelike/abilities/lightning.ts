@@ -3,6 +3,7 @@ import { Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { Game } from '../game';
 import { Palette } from '../palette';
+import { Sprites } from '../sprites';
 
 const LIGHTNING_DAMAGE = 20;
 const LIGHTNING_RANGE = 5;
@@ -18,7 +19,7 @@ export class LightningAbility implements Ability {
 
   constructor(readonly game: Game) {
     this.name = 'Lightning';
-    this.sprite = new Sprite(128, 32, 16, 16, 3);
+    this.sprite = Sprites.LIGHTNING_ICON;
     this.targetType = TargetType.SELF;
     this.cooldown = 10;
     this.tooltipMessages = [

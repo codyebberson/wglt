@@ -1,5 +1,6 @@
 import { fromRgb } from 'wglt';
 import { Game } from '../game';
+import { BLACKOUT } from '../sprites';
 import { Animation } from './animation';
 
 export class FadeInAnimation extends Animation {
@@ -11,10 +12,7 @@ export class FadeInAnimation extends Animation {
   }
 
   draw(game: Game) {
-    const src = game.blackoutRect;
-    if (!src) {
-      return;
-    }
+    const src = BLACKOUT;
     const x = this.countdown / this.duration;
     const alpha = Math.max(1, Math.min(255, (255.0 * x) | 0));
     const color = fromRgb(0, 0, 0, alpha);
