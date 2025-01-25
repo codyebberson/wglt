@@ -101,11 +101,11 @@ export class Game extends AppState<App> {
     this.tileMapRenderer = new TileMapRenderer(app.gl, this.tileMap);
   }
 
-  get tileSize() {
+  get tileSize(): Rect {
     return this.tileMap.tileSize;
   }
 
-  log(message: string | Message, color?: Color) {
+  log(message: string | Message, color?: Color): void {
     if (this.messageLog) {
       this.messageLog.addMessage(message, color);
     }
@@ -116,7 +116,7 @@ export class Game extends AppState<App> {
     return animation;
   }
 
-  update() {
+  update(): void {
     if (!this.gui.handleInput()) {
       this.updateAnimations();
       this.updateEntities();
@@ -139,7 +139,7 @@ export class Game extends AppState<App> {
     this.gui.draw();
   }
 
-  private updateAnimations() {
+  private updateAnimations(): void {
     // Reset blocked
     this.blocked = false;
 
@@ -161,7 +161,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private updateEntities() {
+  private updateEntities(): void {
     if (this.player && this.player.hp <= 0) {
       // Player is dead.  Do nothing.
       return;
@@ -213,7 +213,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  resetViewport() {
+  resetViewport(): void {
     if (!this.player) {
       return;
     }
@@ -223,7 +223,7 @@ export class Game extends AppState<App> {
     this.viewport.y = this.viewportFocus.y - ((this.app.size.height / this.zoom / 2) | 0);
   }
 
-  private updateViewport() {
+  private updateViewport(): void {
     this.viewport.width = this.app.size.width / this.zoom;
     this.viewport.height = this.app.size.height / this.zoom;
 
@@ -235,7 +235,7 @@ export class Game extends AppState<App> {
       this.viewportFocus.y = this.viewport.y + ((this.viewport.height / 2) | 0);
     } else {
       // Drift viewport toward focus
-      const driftRate = 0.05;
+      const driftRate = 0.2;
       const focusLeftX = this.viewportFocus.x - ((this.app.size.width / this.zoom / 2) | 0);
       if (focusLeftX !== this.viewport.x) {
         let dx = driftRate * focusLeftX - driftRate * this.viewport.x;
@@ -260,7 +260,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private drawTileMap() {
+  private drawTileMap(): void {
     if (this.app.renderSet.spriteTexture.loaded) {
       const x = ((this.viewport.x / this.zoom) | 0) * this.zoom;
       const y = ((this.viewport.y / this.zoom) | 0) * this.zoom;
@@ -269,7 +269,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private drawTargeting() {
+  private drawTargeting(): void {
     if (this.isTargeting()) {
       const x = this.cursor.x * this.tileMap.tileSize.width - this.viewport.x;
       const y = this.cursor.y * this.tileMap.tileSize.height - this.viewport.y;
@@ -277,7 +277,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private drawEntities() {
+  private drawEntities(): void {
     for (let z = 0; z < 3; z++) {
       for (let i = 0; i < this.entities.length; i++) {
         const entity = this.entities.get(i);
@@ -288,7 +288,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private drawAnimations() {
+  private drawAnimations(): void {
     let blockingCount = 0;
     for (let i = 0; i < this.animations.length; i++) {
       const animation = this.animations[i];
@@ -301,11 +301,11 @@ export class Game extends AppState<App> {
     }
   }
 
-  isTargeting() {
+  isTargeting(): boolean {
     return !!this.targetAbility;
   }
 
-  startTargeting(ability: Ability, callback?: () => void) {
+  startTargeting(ability: Ability, callback?: () => void): void {
     this.targetAbility = ability;
     this.targetCallback = callback;
     if (this.player) {
@@ -314,7 +314,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private endTargeting() {
+  private endTargeting(): void {
     if (this.player && this.targetAbility) {
       const targetType = this.targetAbility.targetType;
       let target = null;
@@ -334,12 +334,12 @@ export class Game extends AppState<App> {
     this.cancelTargeting();
   }
 
-  cancelTargeting() {
+  cancelTargeting(): void {
     this.targetAbility = undefined;
     this.targetCallback = undefined;
   }
 
-  private handlePlayerInput() {
+  private handlePlayerInput(): void {
     if (!this.player || this.blocked) {
       return;
     }
@@ -476,7 +476,7 @@ export class Game extends AppState<App> {
     return player.move(dx, dy);
   }
 
-  private recalculateViewportFocus() {
+  private recalculateViewportFocus(): void {
     const player = this.player;
     if (!player) {
       return;
@@ -559,7 +559,7 @@ export class Game extends AppState<App> {
     }
   }
 
-  private doAi(entity: Actor) {
+  private doAi(entity: Actor): void {
     if (!entity.ai) {
       // No AI - do nothing
       entity.ap = 0;
@@ -573,7 +573,7 @@ export class Game extends AppState<App> {
     entity.ap = 0;
   }
 
-  private nextTurn() {
+  private nextTurn(): void {
     if (this.turnIndex < this.entities.length) {
       const currEntity = this.entities.get(this.turnIndex);
       currEntity.endTurn();
@@ -598,12 +598,12 @@ export class Game extends AppState<App> {
     }
   }
 
-  stopAutoWalk() {
+  stopAutoWalk(): void {
     this.path = undefined;
     this.targetTile = undefined;
   }
 
-  isBlocked(x: number, y: number) {
+  isBlocked(x: number, y: number): boolean {
     if (this.tileMap.isBlocked(x, y)) {
       return true;
     }
@@ -616,7 +616,7 @@ export class Game extends AppState<App> {
     return false;
   }
 
-  getEntityAt(x: number, y: number) {
+  getEntityAt(x: number, y: number): Entity | undefined {
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities.get(i);
       if (entity.x === x && entity.y === y) {
@@ -626,7 +626,7 @@ export class Game extends AppState<App> {
     return undefined;
   }
 
-  getActorAt(x: number, y: number) {
+  getActorAt(x: number, y: number): Actor | undefined {
     for (let i = 0; i < this.entities.length; i++) {
       const other = this.entities.get(i);
       if (other instanceof Actor && other.x === x && other.y === y) {
@@ -636,7 +636,7 @@ export class Game extends AppState<App> {
     return undefined;
   }
 
-  getClosestMonster(x: number, y: number, range: number) {
+  getClosestMonster(x: number, y: number, range: number): Actor | undefined {
     let minDist = range + 1;
     let result = undefined;
     for (let i = 0; i < this.entities.length; i++) {
@@ -652,7 +652,7 @@ export class Game extends AppState<App> {
     return result;
   }
 
-  recomputeFov() {
+  recomputeFov(): void {
     if (!this.player) {
       // FOV requires a player and a tile map
       return;

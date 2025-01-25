@@ -32,7 +32,6 @@ import { ItemShortcutButton, ItemShortcutButtonRenderer } from './gui/itemshortc
 import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
 import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
 import { TalentButton, TalentButtonRenderer } from './gui/talentbutton';
-import { TalentsDialog } from './gui/talentsdialog';
 import { MainMenu } from './mainmenu';
 import { createMap } from './mapgen';
 import { Palette } from './palette';
@@ -76,7 +75,6 @@ const game = new Game(app, gui);
 
 const player = new Player(game, 30, 20);
 game.player = player;
-game.entities.add(player);
 
 game.messageLog = new MessageLog(new Rect(1, HEIGHT - 78, 100, 50));
 gui.addChild(game.messageLog);
@@ -107,38 +105,19 @@ gui.addChild(playerStats);
 const shortcutBar = new ShortcutBar(new Rect(1, HEIGHT - 26, 26 * 6, 26), buttonSlotRect, 6);
 gui.addChild(shortcutBar);
 
-const inventoryButton = new Button(
-  new Rect(WIDTH - 24, HEIGHT - 24, 24, 24),
-  Sprites.BAG,
-  Key.VK_I,
-  () => {
-    inventoryDialog.visible = !inventoryDialog.visible;
-    talentsDialog.visible = false;
-  }
-);
+const inventoryButtonSlot = new ButtonSlot(new Rect(WIDTH - 8 - 26, HEIGHT - 26, 24, 24), Key.VK_I);
+gui.addChild(inventoryButtonSlot);
+
+const inventoryButton = new Button(new Rect(0, 0, 24, 24), Sprites.BAG, undefined, () => {
+  inventoryDialog.visible = !inventoryDialog.visible;
+});
 inventoryButton.tooltip = Container.fromMessages([
   new Message("Traveler's Backpack", Palette.GREEN),
   new Message('Item Level 55', Palette.YELLOW),
   new Message('16 Slot Bag', Palette.WHITE),
   new Message('Sell Price: 87 coins', Palette.WHITE),
 ]);
-gui.addChild(inventoryButton);
-
-const talentsButton = new Button(
-  new Rect(WIDTH - 48, HEIGHT - 24, 24, 24),
-  Sprites.BAG,
-  Key.VK_T,
-  () => {
-    talentsDialog.visible = !talentsDialog.visible;
-    inventoryDialog.visible = false;
-  }
-);
-talentsButton.tooltip = Container.fromMessages([
-  new Message('Talents', Palette.WHITE),
-  new Message('A list of all of your', Palette.YELLOW),
-  new Message("character's talents.", Palette.YELLOW),
-]);
-gui.addChild(talentsButton);
+inventoryButtonSlot.addChild(inventoryButton);
 
 const inventoryDialog = new ItemContainerDialog(
   new Rect(10, 25, 110, 110),
@@ -152,19 +131,6 @@ const inventoryDialog = new ItemContainerDialog(
 );
 inventoryDialog.visible = false;
 gui.addChild(inventoryDialog);
-
-const talentsDialog = new TalentsDialog(
-  new Rect(10, 25, 110, 110),
-  [
-    new Message('Talents', Palette.GREEN),
-    new Message('Click to use', Palette.LIGHT_GRAY),
-    new Message('Drag for shortcut', Palette.LIGHT_GRAY),
-  ],
-  16,
-  player.talents
-);
-talentsDialog.visible = false;
-gui.addChild(talentsDialog);
 
 player.inventory.addListener({
   onAdd: (_, item) => {

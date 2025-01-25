@@ -32,7 +32,7 @@ export class Actor extends Entity {
     this.seen = false;
   }
 
-  startTurn() {
+  startTurn(): void {
     this.ap = this.maxAp;
     for (let j = 0; j < this.talents.length; j++) {
       const talent = this.talents.get(j);
@@ -42,11 +42,9 @@ export class Actor extends Entity {
     }
   }
 
-  move(dx: number, dy: number, slideCount = 4) {
+  move(dx: number, dy: number, slideCount = 4): boolean {
     const destX = this.x + dx;
     const destY = this.y + dy;
-
-    // TODO: Enforce diagonal vs cardinal movement?
 
     if (this.blocks) {
       // If this actor blocks (default), then check for walls and entities
@@ -76,11 +74,11 @@ export class Actor extends Entity {
     return true;
   }
 
-  moveTo(destX: number, destY: number, slideCount?: number) {
+  moveTo(destX: number, destY: number, slideCount?: number): boolean {
     return this.move(destX - this.x, destY - this.y, slideCount);
   }
 
-  moveToward(targetX: number, targetY: number, slideCount?: number) {
+  moveToward(targetX: number, targetY: number, slideCount?: number): boolean {
     const dx = targetX - this.x;
     const dy = targetY - this.y;
 
@@ -127,7 +125,7 @@ export class Actor extends Entity {
     return false;
   }
 
-  attack(target: Actor, damage: number) {
+  attack(target: Actor, damage: number): void {
     if (target === this) {
       return;
     }
@@ -139,12 +137,12 @@ export class Actor extends Entity {
     this.game.blocked = true;
   }
 
-  takeHeal(heal: number) {
+  takeHeal(heal: number): void {
     this.hp = Math.min(this.hp + heal, this.maxHp);
     this.addFloatingText(heal.toString(), this.game.healColor);
   }
 
-  takeDamage(attacker: Actor, damage: number) {
+  takeDamage(attacker: Actor, damage: number): void {
     if (this.hp <= 0) {
       // Already dead
       return;
@@ -160,17 +158,17 @@ export class Actor extends Entity {
     }
   }
 
-  pickup(item: Item) {
+  pickup(item: Item): void {
     item.onPickup(this);
     this.inventory.add(item);
     this.game.entities.remove(item);
   }
 
-  use(item: Item) {
-    return item.onUse(this);
+  use(item: Item): void {
+    item.onUse(this);
   }
 
-  cast(ability: Ability, target?: Entity | TileMapCell, callback?: () => void) {
+  cast(ability: Ability, target?: Entity | TileMapCell, callback?: () => void): void {
     if (ability.targetType === TargetType.SELF || target) {
       if (ability.cast(this, target)) {
         if (callback) {
@@ -186,7 +184,7 @@ export class Actor extends Entity {
     this.game.animations.push(new FloatingTextAnimation(this, str, color));
   }
 
-  onAttack(_target: Actor, _damage: number) {}
+  onAttack(_target: Actor, _damage: number): void {}
 
-  onDeath(_attacker: Actor) {}
+  onDeath(_attacker: Actor): void {}
 }

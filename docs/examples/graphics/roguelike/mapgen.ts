@@ -57,6 +57,10 @@ export function createMap(game: Game): void {
   const map = game.tileMap;
   const player = game.player as Player;
 
+  // Clear all entities
+  game.entities.clear();
+  game.entities.add(player);
+
   // Reset all FOV data
   map.clear();
 
