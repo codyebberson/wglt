@@ -86,7 +86,7 @@ game.log(
 );
 
 const playerStats = new Panel(new Rect(1, 1, 100, 20));
-playerStats.render = () => {
+playerStats.render = (): void => {
   const frameY = 0;
   app.drawString(1, frameY, player.name);
 
@@ -133,17 +133,17 @@ inventoryDialog.visible = false;
 gui.addChild(inventoryDialog);
 
 player.inventory.addListener({
-  onAdd: (_, item) => {
+  onAdd: (_, item): void => {
     shortcutBar.addItem(player.inventory, item, true);
   },
-  onRemove: (_, _talent) => {},
+  onRemove: (_, _talent): void => {},
 });
 
 player.talents.addListener({
-  onAdd: (_, talent) => {
+  onAdd: (_, talent): void => {
     shortcutBar.addTalent(talent);
   },
-  onRemove: (_, _talent) => {},
+  onRemove: (_, _talent): void => {},
 });
 
 player.talents.add(new Talent(player, new FireballAbility(game)));

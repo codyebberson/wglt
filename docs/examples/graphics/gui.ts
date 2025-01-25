@@ -49,7 +49,7 @@ const testButtonSlot = new ButtonSlot(new Rect(10, 70, 24, 24));
 testButtonSlot.addChild(testButton);
 gui.addChild(testButtonSlot);
 
-app.update = () => {
+app.update = (): void => {
   if (!gui.handleInput()) {
     const moveKey = app.keyboard.getMovementKey();
     if (moveKey) {

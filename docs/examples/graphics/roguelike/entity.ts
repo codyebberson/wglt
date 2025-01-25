@@ -52,11 +52,11 @@ export class Entity extends Point implements SelectOption {
     );
   }
 
-  startTurn() {}
+  startTurn(): void {}
 
-  endTurn() {}
+  endTurn(): void {}
 
-  sendToBack() {}
+  sendToBack(): void {}
 
   /**
    * Handles when another actor bumps this entity.
@@ -64,7 +64,7 @@ export class Entity extends Point implements SelectOption {
    * Returns false on failure (bump is rejected).
    * @param bumper The actor that bumped this entity.
    */
-  onBump(_bumper: Actor) {
+  onBump(_bumper: Actor): boolean {
     return false;
   }
 }

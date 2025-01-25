@@ -15,7 +15,7 @@ export class BumpAnimation extends Animation {
     this.dy = target.y - entity.y;
   }
 
-  update() {
+  update(): void {
     const t = DURATION - this.countdown;
 
     if (t >= 0 && t < 4) {

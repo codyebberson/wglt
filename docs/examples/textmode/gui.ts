@@ -24,7 +24,7 @@ gui.renderers.set(SelectInput, new TerminalSelectInputRenderer());
 let x = 10;
 let y = 15;
 
-term.update = () => {
+term.update = (): void => {
   if (!gui.handleInput()) {
     if (term.keyboard.isKeyDown(Key.VK_UP)) {
       y--;

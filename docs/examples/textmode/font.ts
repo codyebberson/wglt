@@ -10,7 +10,7 @@ term.fillRect(0, 0, 80, 25, CgaPalette.DARK_BLUE);
 let x = 10;
 let y = 10;
 
-term.update = () => {
+term.update = (): void => {
   const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     x += moveKey.x;

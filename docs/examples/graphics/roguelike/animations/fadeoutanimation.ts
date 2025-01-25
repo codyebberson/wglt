@@ -11,7 +11,7 @@ export class FadeOutAnimation extends Animation {
     this.duration = duration;
   }
 
-  draw(game: Game) {
+  draw(game: Game): void {
     const src = BLACKOUT;
     const x = 1.0 - this.countdown / this.duration;
     const alpha = Math.max(1, Math.min(255, (255.0 * x) | 0));

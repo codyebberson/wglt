@@ -10,7 +10,7 @@ const sprite = new Sprite(576, 240, 16, 16, 2);
 let x = 160;
 let y = 160;
 
-app.update = () => {
+app.update = (): void => {
   const moveKey = app.keyboard.getMovementKey();
   if (moveKey) {
     x += moveKey.x * 8;

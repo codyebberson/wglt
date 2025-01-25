@@ -102,7 +102,7 @@ function movePlayer(dx: number, dy: number): void {
   computeFov();
 }
 
-term.update = () => {
+term.update = (): void => {
   const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     movePlayer(moveKey.x, moveKey.y);

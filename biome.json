@@ -13,6 +13,9 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "nursery": {
+        "useExplicitType": "error"
+      },
       "style": {
         "noParameterAssign": "off",
         "useImportType": "off"

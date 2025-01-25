@@ -66,7 +66,7 @@ export class Engine extends BaseComponent {
     }
   }
 
-  handleEvents(term: Terminal) {
+  handleEvents(term: Terminal): void {
     if (this.player.hp > 0) {
       this.eventHandler.handleEvents(term);
     }

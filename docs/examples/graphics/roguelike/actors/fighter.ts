@@ -7,7 +7,7 @@ export class Fighter extends Actor {
     super(game, x, y, name, sprite, true);
   }
 
-  onAttack(target: Actor, damage: number) {
+  onAttack(target: Actor, damage: number): void {
     if (damage > 0) {
       this.game.log(`${this.name} attacks ${target.name} for ${damage} hit points.`, 0x808080ff);
     } else {

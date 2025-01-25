@@ -1,6 +1,6 @@
 const iframe = document.querySelector('iframe') as HTMLIFrameElement;
 
-function updateIframe() {
+function updateIframe(): void {
   iframe.src = window.location.hash.slice(1) || 'home.html';
 }
 

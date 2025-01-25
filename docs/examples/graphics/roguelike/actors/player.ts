@@ -15,7 +15,7 @@ export class Player extends Fighter {
     this.zIndex = 2;
   }
 
-  onDeath() {
+  onDeath(): void {
     this.game.log('You died!');
   }
 }

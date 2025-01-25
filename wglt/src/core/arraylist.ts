@@ -52,7 +52,7 @@ export class ArrayList<T> {
     this.listeners.push(listener);
   }
 
-  [Symbol.iterator]() {
+  [Symbol.iterator](): ArrayIterator<T> {
     return this.elements[Symbol.iterator]();
   }
 }

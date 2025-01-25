@@ -18,7 +18,7 @@ export class FloatingTextAnimation extends Animation {
     this.color = color || Palette.WHITE;
   }
 
-  draw(game: Game) {
+  draw(game: Game): void {
     const frame = DURATION - this.countdown;
     const x = this.actor.pixelX + ((this.actor.sprite.width / 2) | 0) - game.viewport.x;
     const y = this.actor.pixelY - 3 - game.viewport.y;

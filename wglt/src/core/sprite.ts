@@ -61,7 +61,7 @@ export class Sprite extends Rect {
     );
   }
 
-  static updateGlobalAnimations() {
+  static updateGlobalAnimations(): void {
     Sprite.globalAnimIndex++;
   }
 }

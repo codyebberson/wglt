@@ -315,27 +315,27 @@ export class Game extends AppState<App> {
       if (choice === 'heal') {
         // Create a healing potion
         item = new Item(this, x, y, '!', 'Healing Potion', CgaPalette.DARK_MAGENTA);
-        item.useFunction = (item) => this.castHeal(item);
+        item.useFunction = (item): void => this.castHeal(item);
       } else if (choice === 'lightning') {
         // Create a lightning bolt scroll
         item = new Item(this, x, y, '#', 'Scroll of Lightning Bolt', CgaPalette.YELLOW);
-        item.useFunction = (item) => this.castLightning(item);
+        item.useFunction = (item): void => this.castLightning(item);
       } else if (choice === 'fireball') {
         // Create a fireball scroll
         item = new Item(this, x, y, '#', 'Scroll of Fireball', CgaPalette.YELLOW);
-        item.useFunction = (item) => this.castFireball(item);
+        item.useFunction = (item): void => this.castFireball(item);
       } else if (choice === 'confuse') {
         // Create a confuse scroll
         item = new Item(this, x, y, '#', 'Scroll of Confusion', CgaPalette.YELLOW);
-        item.useFunction = (item) => this.castConfuse(item);
+        item.useFunction = (item): void => this.castConfuse(item);
       } else if (choice === 'sword') {
         // Create a sword
         item = new Item(this, x, y, '/', 'Sword', CgaPalette.LIGHT_CYAN);
-        item.useFunction = (item) => this.player.equip(item);
+        item.useFunction = (item): void => this.player.equip(item);
       } else if (choice === 'shield') {
         // Create a shield
         item = new Item(this, x, y, '[', 'Shield', CgaPalette.BROWN);
-        item.useFunction = (item) => this.player.equip(item);
+        item.useFunction = (item): void => this.player.equip(item);
       }
 
       if (item) {

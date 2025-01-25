@@ -269,21 +269,21 @@ export class Game extends AppState<App> {
     this.levelUpDialog = levelUpDialog;
 
     player.inventory.addListener({
-      onAdd: (_, item) => {
+      onAdd: (_, item): void => {
         if (!(item instanceof HealthPotion) && !(item instanceof Scroll)) {
           // Only add health potions and scrolls
           return;
         }
         bottomPanel.shortcutBar.addItem(player.inventory, item, true);
       },
-      onRemove: () => undefined,
+      onRemove: (): void => undefined,
     });
 
     player.talents.addListener({
-      onAdd: (_, talent) => {
+      onAdd: (_, talent): void => {
         bottomPanel.shortcutBar.addTalent(talent);
       },
-      onRemove: () => undefined,
+      onRemove: (): void => undefined,
     });
 
     // Generate the map

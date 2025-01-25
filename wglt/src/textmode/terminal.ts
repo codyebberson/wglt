@@ -251,7 +251,7 @@ export class Terminal extends BaseApp {
     );
 
     const image = new Image();
-    image.onload = () => {
+    image.onload = (): void => {
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

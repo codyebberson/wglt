@@ -47,8 +47,8 @@ export abstract class StatsActor extends Actor {
     this.buffs = [];
 
     this.equipment.addListener({
-      onAdd: (_, item) => this.addEquipment(item),
-      onRemove: (_, item) => this.removeEquipment(item),
+      onAdd: (_, item): void => this.addEquipment(item),
+      onRemove: (_, item): void => this.removeEquipment(item),
     });
   }
 

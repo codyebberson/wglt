@@ -15,8 +15,8 @@ export class ItemContainerDialog extends Dialog {
     this.items = items;
 
     items.addListener({
-      onAdd: (_, item) => this.addItem(item),
-      onRemove: (_, item) => this.removeItem(item),
+      onAdd: (_, item): void => this.addItem(item),
+      onRemove: (_, item): void => this.removeItem(item),
     });
 
     let i = 0;

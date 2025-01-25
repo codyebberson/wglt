@@ -15,7 +15,7 @@ const term = new Terminal('canvas', w, h);
 
 const rng = new RNG();
 
-term.update = () => {
+term.update = (): void => {
   // Update bottom rows
   for (let y = h - 1; y >= 1; y--) {
     for (let x = 0; x < w; x++) {

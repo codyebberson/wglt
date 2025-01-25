@@ -35,8 +35,8 @@ export class VendorDialog extends Dialog {
     }
 
     this.items.addListener({
-      onAdd: (_, item) => this.addItem(item),
-      onRemove: (_, item) => this.removeItem(item),
+      onAdd: (_, item): void => this.addItem(item),
+      onRemove: (_, item): void => this.removeItem(item),
     });
 
     this.messages = [new Message('How are ya?', SimplePalette.WHITE)];

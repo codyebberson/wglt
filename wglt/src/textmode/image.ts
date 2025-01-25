@@ -14,7 +14,7 @@ const PATTERNS = [
 
 export function loadImage(url: string, callback: (img: Console) => void): void {
   const img = new Image();
-  img.onload = () => {
+  img.onload = (): void => {
     const w = img.width;
     const h = img.height;
     const data = getImageData(img);
@@ -35,7 +35,7 @@ export function loadImage(url: string, callback: (img: Console) => void): void {
 
 export function loadImage2x(url: string, callback: (img: Console) => void): void {
   const img = new Image();
-  img.onload = () => {
+  img.onload = (): void => {
     const w = img.width;
     const h = img.height;
     const data = getImageData(img);

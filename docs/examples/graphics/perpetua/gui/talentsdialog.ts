@@ -14,8 +14,8 @@ export class TalentsDialog extends Dialog {
     this.talents = talents;
 
     talents.addListener({
-      onAdd: (_, talent) => this.addItem(talent),
-      onRemove: (_, talent) => this.removeItem(talent),
+      onAdd: (_, talent): void => this.addItem(talent),
+      onRemove: (_, talent): void => this.removeItem(talent),
     });
 
     for (let i = 0; i < capacity; i++) {

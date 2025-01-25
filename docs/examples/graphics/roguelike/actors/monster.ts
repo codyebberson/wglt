@@ -13,12 +13,12 @@ export class Monster extends Fighter {
     this.ai = new BasicMonster(this, calculateDamage);
   }
 
-  onBump(player: Actor) {
+  onBump(player: Actor): boolean {
     player.attack(this, 10);
     return true;
   }
 
-  onDeath() {
+  onDeath(): void {
     this.game.log(`${this.name} is dead`);
     this.blocks = false;
     this.ai = undefined;
@@ -50,6 +50,6 @@ export class Troll extends Monster {
   }
 }
 
-function calculateDamage(_attacker: Actor, _target: unknown) {
+function calculateDamage(_attacker: Actor, _target: unknown): number {
   return 10;
 }

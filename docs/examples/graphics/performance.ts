@@ -16,7 +16,7 @@ const objects: MyObject[] = [];
 
 const gravity = 0.1;
 
-app.update = () => {
+app.update = (): void => {
   if (app.mouse.buttons.get(0).down) {
     for (let i = 0; i < 100; i++) {
       objects.push({

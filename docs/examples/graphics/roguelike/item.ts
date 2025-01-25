@@ -22,11 +22,11 @@ export abstract class Item extends Entity {
    *
    * @param other Other item to stack with.
    */
-  isStackable(other: Item) {
+  isStackable(other: Item): boolean {
     return this.name === other.name;
   }
 
-  onBump(player: Actor) {
+  onBump(player: Actor): boolean {
     player.pickup(this);
     player.moveToward(this.x, this.y);
     return true;

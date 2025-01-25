@@ -16,12 +16,12 @@ export class ProjectileAnimation extends Animation {
     this.duration = duration;
   }
 
-  update() {
+  update(): void {
     super.update();
     this.position.add(this.velocity);
   }
 
-  draw(game: Game) {
+  draw(game: Game): void {
     const x = this.position.x - game.viewport.x;
     const y = this.position.y - game.viewport.y;
     this.sprite.draw(game.app, x, y);

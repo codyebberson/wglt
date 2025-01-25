@@ -13,7 +13,7 @@ export class SlideAnimation extends Animation {
     this.dy = dy;
   }
 
-  update() {
+  update(): void {
     this.countdown--;
     if (this.countdown >= 0) {
       this.entity.offset.x += this.dx;

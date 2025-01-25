@@ -11,7 +11,7 @@ export class ConfusedMonster extends AI {
     this.oldAi = actor.ai;
   }
 
-  doAi() {
+  doAi(): void {
     if (this.numTurns > 0) {
       // Still confused...
       // Move in a random direction, and decrease the number of turns confused

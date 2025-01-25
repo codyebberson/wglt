@@ -18,8 +18,8 @@ export class CharacterDialog extends Dialog {
     }
 
     player.equipment.addListener({
-      onAdd: (_, item) => this.addItem(item),
-      onRemove: (_, item) => this.removeItem(item),
+      onAdd: (_, item): void => this.addItem(item),
+      onRemove: (_, item): void => this.removeItem(item),
     });
   }
 

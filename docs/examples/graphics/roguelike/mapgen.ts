@@ -142,7 +142,7 @@ export function createMap(game: Game): void {
   // Create stairs at the center of the last room
   const stairsLoc = rooms[rooms.length - 1].getCenter();
   const stairs = new Entity(game, stairsLoc.x, stairsLoc.y, 'stairs', Sprites.STAIRS, true);
-  stairs.onBump = () => {
+  stairs.onBump = (): boolean => {
     nextLevel(game);
     return true;
   };

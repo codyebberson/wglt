@@ -11,7 +11,7 @@ loadImage2x('/starry2x.png', (result) => {
   img = result;
 });
 
-term.update = () => {
+term.update = (): void => {
   const moveKey = term.keyboard.getMovementKey();
   if (moveKey) {
     x += moveKey.x;

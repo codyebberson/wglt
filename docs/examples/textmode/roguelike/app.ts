@@ -39,7 +39,7 @@ export class App extends Terminal {
     this.mainMenu = new MainMenu(this);
     this.state = this.mainMenu;
 
-    this.term.update = () => this.state.update();
+    this.term.update = (): void => this.state.update();
   }
 
   newGame(): void {

@@ -41,7 +41,7 @@ let engine: Engine | undefined = undefined;
 
 openMainMenu();
 
-term.update = () => {
+term.update = (): void => {
   if (!gui.handleInput()) {
     if (engine) {
       if (term.keyboard.isKeyPressed(Key.VK_I)) {
@@ -70,7 +70,7 @@ term.update = () => {
   gui.draw();
 };
 
-function openMainMenu() {
+function openMainMenu(): void {
   addSelectDialog(
     'Main Menu',
     ['New Game', 'Continue', 'Save Game', 'Load Game'],
@@ -112,7 +112,7 @@ function setEngine(newEngine: Engine): void {
   term.console.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, Colors.WHITE, Colors.BLACK);
 }
 
-function openUseMenu(engine: Engine) {
+function openUseMenu(engine: Engine): void {
   const player = engine.player;
   addSelectDialog(
     'Select an item to use',
@@ -125,7 +125,7 @@ function openUseMenu(engine: Engine) {
   zzfx(...menuBlipSound);
 }
 
-function openDropMenu(engine: Engine) {
+function openDropMenu(engine: Engine): void {
   const player = engine.player;
   addSelectDialog(
     'Select an item to drop',
@@ -138,7 +138,7 @@ function openDropMenu(engine: Engine) {
   zzfx(...menuBlipSound);
 }
 
-function openMessageLog(_engine: Engine) {
+function openMessageLog(_engine: Engine): void {
   // gui.addChild(
   //   new ScrollableMessageDialog(
   //     new Rect(2, 2, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 4),
@@ -176,7 +176,7 @@ export function openLevelUpMenu(player: Actor): void {
   zzfx(...menuBlipSound);
 }
 
-function openCharacterScreen(_engine: Engine) {
+function openCharacterScreen(_engine: Engine): void {
   // const player = engine.player;
   // gui.addChild(
   //   new MessageDialog(
@@ -221,7 +221,7 @@ function addSelectDialog(
 
   const dialog = new Dialog(rect, title);
 
-  const callbackWrapper = (option: SelectOption, index: number) => {
+  const callbackWrapper = (option: SelectOption, index: number): void => {
     dialog.visible = false;
     dialog.parent?.removeChild(dialog);
     callback(option, index);

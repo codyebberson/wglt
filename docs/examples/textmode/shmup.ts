@@ -86,7 +86,7 @@ function scheduleWave(): void {
 
 scheduleWave();
 
-term.update = () => {
+term.update = (): void => {
   const waveTime = time - wave.startTime;
 
   const moveKey = term.keyboard.getMovementKey();

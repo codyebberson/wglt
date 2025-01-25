@@ -11,7 +11,7 @@ export class BasicMonster extends AI {
     this.damageFunc = damageFunc;
   }
 
-  doAi() {
+  doAi(): void {
     const monster = this.actor;
     const player = monster.game.player;
     if (!player) {
