@@ -71,89 +71,101 @@ gui.renderers.set(ItemContainerButtonSlot, new GraphicsButtonSlotRenderer(button
 gui.renderers.set(ItemButton, new ItemButtonRenderer());
 gui.renderers.set(ItemShortcutButton, new ItemShortcutButtonRenderer());
 
-const game = new Game(app, gui);
+function newGame(): Game {
+  const game = new Game(app, gui);
 
-const player = new Player(game, 30, 20);
-game.player = player;
+  const player = new Player(game, 30, 20);
+  game.player = player;
 
-game.messageLog = new MessageLog(new Rect(1, HEIGHT - 78, 100, 50));
-gui.addChild(game.messageLog);
-game.log(
-  new CompoundMessage(
-    new Message('Welcome stranger! ', Palette.DARK_PURPLE),
-    new Message('Prepare to perish!', Palette.RED)
-  )
-);
+  game.messageLog = new MessageLog(new Rect(1, HEIGHT - 78, 100, 50));
+  gui.addChild(game.messageLog);
+  game.log(
+    new CompoundMessage(
+      new Message('Welcome stranger! ', Palette.DARK_PURPLE),
+      new Message('Prepare to perish!', Palette.RED)
+    )
+  );
 
-const playerStats = new Panel(new Rect(1, 1, 100, 20));
-playerStats.render = (): void => {
-  const frameY = 0;
-  app.drawString(1, frameY, player.name);
+  const playerStats = new Panel(new Rect(1, 1, 100, 20));
+  playerStats.render = (): void => {
+    // const player = app.game?.player;
+    // if (!player) {
+    //   return;
+    // }
 
-  const hpPercent = player.hp / player.maxHp;
-  app.drawImage(0, frameY + 7, 32, 64, 40, 12);
-  app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 36));
-  app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
+    const frameY = 0;
+    app.drawString(1, frameY, player.name);
 
-  const xpPercent = player.xp / player.maxXp;
-  app.drawImage(40, frameY + 7, 32, 64, 40, 12);
-  app.drawImage(42, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 36));
-  app.drawString(43, frameY + 10, `${player.xp}/${player.maxXp}`);
-};
-gui.addChild(playerStats);
+    const hpPercent = player.hp / player.maxHp;
+    app.drawImage(0, frameY + 7, 32, 64, 40, 12);
+    app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 36));
+    app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
-const shortcutBar = new ShortcutBar(new Rect(1, HEIGHT - 26, 26 * 6, 26), buttonSlotRect, 6);
-gui.addChild(shortcutBar);
+    const xpPercent = player.xp / player.maxXp;
+    app.drawImage(40, frameY + 7, 32, 64, 40, 12);
+    app.drawImage(42, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 36));
+    app.drawString(43, frameY + 10, `${player.xp}/${player.maxXp}`);
+  };
+  gui.addChild(playerStats);
 
-const inventoryButtonSlot = new ButtonSlot(new Rect(WIDTH - 8 - 26, HEIGHT - 26, 24, 24), Key.VK_I);
-gui.addChild(inventoryButtonSlot);
+  const shortcutBar = new ShortcutBar(new Rect(1, HEIGHT - 26, 26 * 6, 26), buttonSlotRect, 6);
+  gui.addChild(shortcutBar);
 
-const inventoryButton = new Button(new Rect(0, 0, 24, 24), Sprites.BAG, undefined, () => {
-  inventoryDialog.visible = !inventoryDialog.visible;
-});
-inventoryButton.tooltip = Container.fromMessages([
-  new Message("Traveler's Backpack", Palette.GREEN),
-  new Message('Item Level 55', Palette.YELLOW),
-  new Message('16 Slot Bag', Palette.WHITE),
-  new Message('Sell Price: 87 coins', Palette.WHITE),
-]);
-inventoryButtonSlot.addChild(inventoryButton);
+  const inventoryButtonSlot = new ButtonSlot(
+    new Rect(WIDTH - 8 - 26, HEIGHT - 26, 24, 24),
+    Key.VK_I
+  );
+  gui.addChild(inventoryButtonSlot);
 
-const inventoryDialog = new ItemContainerDialog(
-  new Rect(10, 25, 110, 110),
-  [
+  const inventoryButton = new Button(new Rect(0, 0, 24, 24), Sprites.BAG, undefined, () => {
+    inventoryDialog.visible = !inventoryDialog.visible;
+  });
+  inventoryButton.tooltip = Container.fromMessages([
     new Message("Traveler's Backpack", Palette.GREEN),
-    new Message('Click to use', Palette.LIGHT_GRAY),
-    new Message('Drag for shortcut', Palette.LIGHT_GRAY),
-  ],
-  16,
-  player.inventory
-);
-inventoryDialog.visible = false;
-gui.addChild(inventoryDialog);
+    new Message('Item Level 55', Palette.YELLOW),
+    new Message('16 Slot Bag', Palette.WHITE),
+    new Message('Sell Price: 87 coins', Palette.WHITE),
+  ]);
+  inventoryButtonSlot.addChild(inventoryButton);
 
-player.inventory.addListener({
-  onAdd: (_, item): void => {
-    shortcutBar.addItem(player.inventory, item, true);
-  },
-  onRemove: (_, _talent): void => {},
-});
+  const inventoryDialog = new ItemContainerDialog(
+    new Rect(10, 25, 110, 110),
+    [
+      new Message("Traveler's Backpack", Palette.GREEN),
+      new Message('Click to use', Palette.LIGHT_GRAY),
+      new Message('Drag for shortcut', Palette.LIGHT_GRAY),
+    ],
+    16,
+    player.inventory
+  );
+  inventoryDialog.visible = false;
+  gui.addChild(inventoryDialog);
 
-player.talents.addListener({
-  onAdd: (_, talent): void => {
-    shortcutBar.addTalent(talent);
-  },
-  onRemove: (_, _talent): void => {},
-});
+  player.inventory.addListener({
+    onAdd: (_, item): void => {
+      shortcutBar.addItem(player.inventory, item, true);
+    },
+    onRemove: (_, _talent): void => {},
+  });
 
-player.talents.add(new Talent(player, new FireballAbility(game)));
-player.talents.add(new Talent(player, new LightningAbility(game)));
+  player.talents.addListener({
+    onAdd: (_, talent): void => {
+      shortcutBar.addTalent(talent);
+    },
+    onRemove: (_, _talent): void => {},
+  });
 
-// Generate the map
-createMap(game);
+  player.talents.add(new Talent(player, new FireballAbility(game)));
+  player.talents.add(new Talent(player, new LightningAbility(game)));
+
+  // Generate the map
+  createMap(game);
+
+  return game;
+}
 
 const mainMenu = new MainMenu(app, gui, () => {
-  app.state = game;
+  app.state = newGame();
 });
 
 app.state = mainMenu;

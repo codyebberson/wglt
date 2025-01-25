@@ -17,6 +17,7 @@ import {
 } from 'wglt';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
+import { Player } from './actors/player';
 import { Animation } from './animations/animation';
 import { App } from './app';
 import { Entity } from './entity';
@@ -51,7 +52,7 @@ export class Game extends AppState<App> {
   onUpdate?: () => void;
   tileMap: TileMap;
   tileMapRenderer: TileMapRenderer;
-  player?: Actor;
+  player?: Player;
   tooltipElement?: Component;
   horizontalViewDistance: number;
   verticalViewDistance: number;
