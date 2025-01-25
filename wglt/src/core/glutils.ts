@@ -1,22 +1,20 @@
 /**
  * The ExtendedTexture class "extends" WebGLTexture and
  * provides additional helper properties.
- *
- * It is not actually a class, as we are really just dynamically
- * adding properties to a WebGLTexture object.
- *
- * Previously this was actually a class, and actually extended WebGLTexture.
- * However, that caused type errors with Jest.
- * This works well enough.
  */
-export interface ExtendedTexture {
+export interface ExtendedTexture extends WebGLTexture {
   loaded: boolean;
   width: number;
   height: number;
 }
 
 /**
- * Initialize a shader program, so WebGL knows how to draw our data
+ * Initialize a shader program, so WebGL knows how to draw our data.
+ *
+ * @param gl - WebGL rendering context.
+ * @param vsSource - Vertex shader source code.
+ * @param fsSource - Fragment shader source code.
+ * @returns The shader program.
  */
 export function initShaderProgram(
   gl: WebGLRenderingContext,
@@ -29,26 +27,54 @@ export function initShaderProgram(
   gl.attachShader(shaderProgram, vertexShader);
   gl.attachShader(shaderProgram, fragmentShader);
   gl.linkProgram(shaderProgram);
+
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    const info = gl.getProgramInfoLog(shaderProgram);
+    gl.deleteProgram(shaderProgram);
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
+    throw new Error(`Shader program linking failed: ${info}`);
+  }
+
   return shaderProgram;
 }
 
 /**
- * Creates a shader of the given type, uploads the source and
- * compiles it.
+ * Creates a shader of the given type, uploads the source and compiles it.
+ *
+ * @param gl - WebGL rendering context.
+ * @param type - Shader type.
+ * @param source - Shader source code.
+ * @returns The shader.
  */
 export function loadShader(gl: WebGLRenderingContext, type: GLenum, source: string): WebGLShader {
   const shader = gl.createShader(type) as WebGLShader;
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const info = gl.getShaderInfoLog(shader);
+    gl.deleteShader(shader);
+    throw new Error(`Shader compilation failed: ${info}`);
+  }
+
   return shader;
 }
 
 /**
  * Initialize a texture and load an image.
  * When the image finished loading copy it into the texture.
+ *
+ * @param gl - WebGL rendering context.
+ * @param url - URL of the image to load.
+ * @returns The texture.
  */
 export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedTexture {
   const texture = gl.createTexture() as ExtendedTexture;
+  texture.loaded = false;
+  texture.width = 0;
+  texture.height = 0;
+
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   // Because images have to be download over the internet
@@ -77,6 +103,11 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
   );
 
   const image = new Image();
+
+  image.onerror = (): void => {
+    throw new Error(`Failed to load texture: ${url}`);
+  };
+
   image.onload = (): void => {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
@@ -89,6 +120,7 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
     texture.width = image.width;
     texture.height = image.height;
   };
+
   image.src = url;
 
   return texture;
