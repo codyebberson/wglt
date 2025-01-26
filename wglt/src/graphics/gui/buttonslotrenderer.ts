@@ -10,8 +10,8 @@ export class GraphicsButtonSlotRenderer extends AutoRectRenderer<ButtonSlot> {
 
     if (component.shortcutKey) {
       gui.context.drawRightString(
-        component.screenRect.x + component.screenRect.width - 2,
-        component.screenRect.y + 2,
+        component.screenRect.x + component.screenRect.width - 3,
+        component.screenRect.y + 3,
         getShortcutKeyDisplay(component.shortcutKey)
       );
     }

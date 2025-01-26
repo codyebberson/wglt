@@ -14,16 +14,11 @@ import { IBM_BIOS_FONT_DATA_URL } from './font';
 import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
 export interface TerminalOptions {
-  fontUrl?: string;
-  font?: MonospacedFont;
-  movementKeys?: Partial<Record<Key, Point>>;
-  maxFps?: number;
+  readonly fontUrl?: string;
+  readonly font?: MonospacedFont;
+  readonly movementKeys?: Partial<Record<Key, Point>>;
+  readonly maxFps?: number;
 }
-
-const DEFAULT_OPTIONS: TerminalOptions = {
-  fontUrl: IBM_BIOS_FONT_DATA_URL,
-  font: FONT_IBM_BIOS,
-};
 
 export class Terminal extends BaseApp {
   readonly console: Console;
@@ -56,14 +51,14 @@ export class Terminal extends BaseApp {
     canvasOrSelector: HTMLCanvasElement | string,
     width: number,
     height: number,
-    options: TerminalOptions = DEFAULT_OPTIONS
+    options?: TerminalOptions
   ) {
     const canvas =
       typeof canvasOrSelector === 'string'
         ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
         : canvasOrSelector;
 
-    const font = options.font ?? FONT_IBM_BIOS;
+    const font = options?.font ?? FONT_IBM_BIOS;
     const pixelWidth = width * font.glyphSize.width;
     const pixelHeight = height * font.glyphSize.height;
 
@@ -138,7 +133,7 @@ export class Terminal extends BaseApp {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexArray, gl.STATIC_DRAW);
 
-    this.texture = createTexture(gl, options.fontUrl ?? IBM_BIOS_FONT_DATA_URL);
+    this.texture = createTexture(gl, options?.fontUrl ?? IBM_BIOS_FONT_DATA_URL);
 
     this.lastRenderTime = 0;
     this.renderDelta = 0;
