@@ -3,52 +3,58 @@ import { TileMap } from './tilemap';
 
 const TEXTURE_SIZE = 1024;
 
-// Shader
-const tilemapVS =
-  'precision highp float;' +
-  'attribute vec2 position;' +
-  'attribute vec2 texture;' +
-  'varying vec2 pixelCoord;' +
-  'varying vec2 texCoord;' +
-  'uniform vec2 viewOffset;' +
-  'uniform vec2 viewportSize;' +
-  'uniform vec2 tileSize;' +
-  'uniform vec2 mapSize;' +
-  'void main(void) {' +
-  '   pixelCoord = (texture * viewportSize) + viewOffset;' +
-  '   texCoord = pixelCoord / mapSize / tileSize;' +
-  '   gl_Position = vec4(position, 0.0, 1.0);' +
-  '}';
+const VS_SOURCE = `#version 300 es
+precision highp float;
 
-const tilemapFS =
-  // biome-ignore lint/style/useTemplate: <explanation>
-  'precision highp float;' +
-  'varying vec2 pixelCoord;' +
-  'varying vec2 texCoord;' +
-  'uniform vec2 tileSize;' +
-  'uniform float animFrame;' +
-  'uniform sampler2D tiles;' +
-  'uniform sampler2D sprites;' +
-  'void main(void) {' +
-  '   vec4 tile = texture2D(tiles, texCoord);' +
-  '   if(tile.x == 0.0 && tile.y == 0.0) { discard; }' +
-  '   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;' +
-  '   if(tile.z != 0.0) spriteOffset.x += animFrame * tileSize.x;' +
-  '   vec2 spriteCoord = mod(pixelCoord, tileSize);' +
-  '   gl_FragColor = texture2D(sprites, (spriteOffset + spriteCoord) / ' +
-  TEXTURE_SIZE +
-  '.0);' +
-  '   if (gl_FragColor.a == 0.0) discard;' +
-  '   gl_FragColor.a *= tile.a;' +
-  '}';
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 texture;
+
+uniform vec2 viewOffset;
+uniform vec2 viewportSize;
+uniform vec2 tileSize;
+uniform vec2 mapSize;
+
+out vec2 pixelCoord;
+out vec2 texCoord;
+
+void main(void) {
+   pixelCoord = (texture * viewportSize) + viewOffset;
+   texCoord = pixelCoord / mapSize / tileSize;
+   gl_Position = vec4(position, 0.0, 1.0);
+}`;
+
+const FS_SOURCE = `#version 300 es
+precision highp float;
+
+in vec2 pixelCoord;
+in vec2 texCoord;
+
+uniform vec2 tileSize;
+uniform float animFrame;
+uniform sampler2D tiles;
+uniform sampler2D sprites;
+
+out vec4 fragColor;
+
+void main(void) {
+   vec4 tile = texture(tiles, texCoord);
+   if(tile.x == 0.0 && tile.y == 0.0) { discard; }
+   vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;
+   if(tile.z != 0.0) spriteOffset.x += animFrame * tileSize.x;
+   vec2 spriteCoord = mod(pixelCoord, tileSize);
+   fragColor = texture(sprites, (spriteOffset + spriteCoord) / ${TEXTURE_SIZE}.0);
+   if (fragColor.a == 0.0) discard;
+   fragColor.a *= tile.a;
+}`;
 
 export class TileMapRenderer {
-  readonly gl: WebGLRenderingContext;
-  readonly tileMap: TileMap;
-  private readonly quadVertBuffer: WebGLBuffer;
-  private readonly tilemapShader: WebGLShader;
-  private readonly positionAttribute: number;
-  private readonly textureAttribute: number;
+  private readonly gl: WebGL2RenderingContext;
+  private readonly tileMap: TileMap;
+  private readonly vao: WebGLVertexArrayObject;
+  private readonly program: WebGLProgram;
+  private readonly layerTextures: WebGLTexture[];
+
+  // Uniforms
   private readonly viewportSizeUniform: WebGLUniformLocation;
   private readonly viewOffsetUniform: WebGLUniformLocation;
   private readonly mapSizeUniform: WebGLUniformLocation;
@@ -56,55 +62,57 @@ export class TileMapRenderer {
   private readonly animFrameUniform: WebGLUniformLocation;
   private readonly tileSamplerUniform: WebGLUniformLocation;
   private readonly spriteSamplerUniform: WebGLUniformLocation;
-  private readonly layerTextures: WebGLTexture[];
 
-  constructor(gl: WebGLRenderingContext, tileMap: TileMap) {
+  constructor(gl: WebGL2RenderingContext, tileMap: TileMap) {
     this.gl = gl;
     this.tileMap = tileMap;
 
-    const quadVerts = [
-      // x   y   u  v
-      -1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0, -1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 0, 0,
-    ];
+    // Create shader program first
+    this.program = initShaderProgram(gl, VS_SOURCE, FS_SOURCE);
 
-    this.quadVertBuffer = gl.createBuffer() as WebGLBuffer;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.quadVertBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(quadVerts), gl.STATIC_DRAW);
-
-    this.tilemapShader = initShaderProgram(gl, tilemapVS, tilemapFS);
-    this.positionAttribute = gl.getAttribLocation(this.tilemapShader, 'position');
-    this.textureAttribute = gl.getAttribLocation(this.tilemapShader, 'texture');
+    // Get uniform locations
     this.viewportSizeUniform = gl.getUniformLocation(
-      this.tilemapShader,
+      this.program,
       'viewportSize'
     ) as WebGLUniformLocation;
     this.viewOffsetUniform = gl.getUniformLocation(
-      this.tilemapShader,
+      this.program,
       'viewOffset'
     ) as WebGLUniformLocation;
-    this.mapSizeUniform = gl.getUniformLocation(
-      this.tilemapShader,
-      'mapSize'
-    ) as WebGLUniformLocation;
-    this.tileSizeUniform = gl.getUniformLocation(
-      this.tilemapShader,
-      'tileSize'
-    ) as WebGLUniformLocation;
+    this.mapSizeUniform = gl.getUniformLocation(this.program, 'mapSize') as WebGLUniformLocation;
+    this.tileSizeUniform = gl.getUniformLocation(this.program, 'tileSize') as WebGLUniformLocation;
     this.animFrameUniform = gl.getUniformLocation(
-      this.tilemapShader,
+      this.program,
       'animFrame'
     ) as WebGLUniformLocation;
-    this.tileSamplerUniform = gl.getUniformLocation(
-      this.tilemapShader,
-      'tiles'
-    ) as WebGLUniformLocation;
+    this.tileSamplerUniform = gl.getUniformLocation(this.program, 'tiles') as WebGLUniformLocation;
     this.spriteSamplerUniform = gl.getUniformLocation(
-      this.tilemapShader,
+      this.program,
       'sprites'
     ) as WebGLUniformLocation;
 
-    this.layerTextures = new Array(tileMap.depth);
+    // Create and setup VAO
+    this.vao = gl.createVertexArray() as WebGLVertexArrayObject;
+    gl.bindVertexArray(this.vao);
 
+    // Setup quad vertices
+    const quadVerts = new Float32Array([
+      // x   y   u  v
+      -1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0, -1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 0, 0,
+    ]);
+
+    const quadBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, quadVerts, gl.STATIC_DRAW);
+
+    // Set up vertex attributes
+    gl.enableVertexAttribArray(0); // position
+    gl.enableVertexAttribArray(1); // texture
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 16, 0);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 16, 8);
+
+    // Create layer textures
+    this.layerTextures = new Array(tileMap.depth);
     for (let i = 0; i < tileMap.depth; i++) {
       const texture = gl.createTexture() as WebGLTexture;
       const imageData = tileMap.layers[i].imageData;
@@ -122,7 +130,6 @@ export class TileMapRenderer {
         imageData
       );
 
-      // MUST be filtered with NEAREST or tile lookup fails
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -130,6 +137,11 @@ export class TileMapRenderer {
 
       this.layerTextures[i] = texture;
     }
+
+    // Cleanup
+    gl.bindVertexArray(null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindTexture(gl.TEXTURE_2D, null);
   }
 
   draw(x: number, y: number, width: number, height: number, animFrame?: number): void {
@@ -139,20 +151,16 @@ export class TileMapRenderer {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    gl.useProgram(this.tilemapShader);
+    gl.useProgram(this.program);
+    gl.bindVertexArray(this.vao);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.quadVertBuffer);
-
-    gl.enableVertexAttribArray(this.positionAttribute);
-    gl.enableVertexAttribArray(this.textureAttribute);
-    gl.vertexAttribPointer(this.positionAttribute, 2, gl.FLOAT, false, 16, 0);
-    gl.vertexAttribPointer(this.textureAttribute, 2, gl.FLOAT, false, 16, 8);
-
+    // Set uniforms
     gl.uniform2f(this.viewOffsetUniform, x, y);
     gl.uniform2f(this.viewportSizeUniform, width, height);
     gl.uniform2f(this.tileSizeUniform, tileMap.tileSize.width, tileMap.tileSize.height);
     gl.uniform1f(this.animFrameUniform, animFrame || 0);
 
+    // Set up textures
     gl.activeTexture(gl.TEXTURE0);
     gl.uniform1i(this.spriteSamplerUniform, 0);
 
@@ -164,10 +172,11 @@ export class TileMapRenderer {
     const maxX = Math.max(tileMap.visibleRect.x2, tileMap.prevVisibleRect.x2);
     const maxY = Math.max(tileMap.visibleRect.y2, tileMap.prevVisibleRect.y2);
 
-    // Draw each layer of the map
+    // Draw each layer
     for (let i = 0; i < tileMap.depth; i++) {
       const layer = tileMap.layers[i];
       const texture = this.layerTextures[i];
+
       gl.uniform2f(this.mapSizeUniform, tileMap.width, tileMap.height);
       gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -193,6 +202,12 @@ export class TileMapRenderer {
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
+
+    // Cleanup
+    gl.bindVertexArray(null);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.useProgram(null);
+
     tileMap.dirty = false;
   }
 }

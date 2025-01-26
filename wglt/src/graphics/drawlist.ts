@@ -5,8 +5,7 @@ const BUFFER_SIZE = 65536;
 const ELEMENTS_PER_INSTANCE = 9;
 const INSTANCE_STRIDE = 36; // bytes
 
-// Update vertex shader for instancing
-const VERTEX_SHADER_SRC = `#version 300 es
+const VS_SOURCE = `#version 300 es
 uniform vec2 u_viewportSize;
 
 // Quad vertices (same for all instances)
@@ -42,8 +41,7 @@ void main() {
   );
 }`;
 
-// Fragment shader needs minor updates for WebGL 2
-const FRAGMENT_SHADER_SRC = `#version 300 es
+const FS_SOURCE = `#version 300 es
 precision highp float;
 
 uniform sampler2D u_image;
@@ -130,7 +128,7 @@ export class DrawList {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.instanceBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, this.instanceData, gl.DYNAMIC_DRAW); // Allocate full size upfront
 
-    this.program = initShaderProgram(gl, VERTEX_SHADER_SRC, FRAGMENT_SHADER_SRC);
+    this.program = initShaderProgram(gl, VS_SOURCE, FS_SOURCE);
 
     this.viewportSizeLocation = gl.getUniformLocation(
       this.program,
