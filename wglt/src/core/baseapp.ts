@@ -19,6 +19,8 @@ export abstract class BaseApp {
   readonly gl: WebGL2RenderingContext;
   readonly center: Point;
   readonly keyboard: Keyboard;
+  private readonly boundLoop: () => void;
+  lastFrameDuration = 0;
   update?: () => void;
   state?: AppState;
 
@@ -51,7 +53,8 @@ export abstract class BaseApp {
     this.canvas.tabIndex = 0;
     this.canvas.focus();
 
-    requestAnimationFrame(() => this.renderLoop());
+    this.boundLoop = this.renderLoop.bind(this);
+    requestAnimationFrame(this.boundLoop);
   }
 
   private renderLoop(): void {
@@ -62,7 +65,8 @@ export abstract class BaseApp {
     this.update?.();
     this.state?.update();
     this.endFrame();
-    requestAnimationFrame(() => this.renderLoop());
+    this.lastFrameDuration = performance.now() - t;
+    requestAnimationFrame(this.boundLoop);
   }
 
   abstract startFrame(time: number): void;

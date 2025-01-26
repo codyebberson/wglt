@@ -57,6 +57,7 @@ app.update = (): void => {
   }
 
   app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
-  app.drawString(1, 10, 'Click to add objects', CgaPalette.YELLOW);
-  app.drawString(1, 40, `Object count: ${objects.length}`, CgaPalette.YELLOW);
+  app.drawString(1, 11, 'Click to add objects', CgaPalette.YELLOW);
+  app.drawString(1, 21, `Object count: ${objects.length}`, CgaPalette.YELLOW);
+  app.drawString(1, 31, `Frame time: ${app.lastFrameDuration.toFixed(2)} ms`, CgaPalette.YELLOW);
 };
