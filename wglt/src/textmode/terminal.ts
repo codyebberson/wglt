@@ -1,6 +1,7 @@
 import { BaseApp } from '../core/baseapp';
 import { Color } from '../core/color';
 import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
+import { createTexture, initShaderProgram } from '../core/glutils';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
@@ -75,17 +76,8 @@ export class Terminal extends BaseApp {
     this.pixelHeight = pixelHeight;
 
     const gl = this.gl;
-    const program = gl.createProgram();
-    if (!program) {
-      throw new Error('Unable to initialize WebGL. Your browser may not support it.');
-    }
 
-    this.program = program;
-
-    gl.attachShader(program, this.buildShader(gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE));
-    gl.attachShader(program, this.buildShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE));
-    gl.linkProgram(program);
-    gl.useProgram(program);
+    this.program = initShaderProgram(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
 
     this.positionAttribLocation = this.getAttribLocation('a');
     this.textureAttribLocation = this.getAttribLocation('b');
@@ -146,7 +138,7 @@ export class Terminal extends BaseApp {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexArray, gl.STATIC_DRAW);
 
-    this.texture = this.loadTexture(options.fontUrl ?? IBM_BIOS_FONT_DATA_URL);
+    this.texture = createTexture(gl, options.fontUrl ?? IBM_BIOS_FONT_DATA_URL);
 
     this.lastRenderTime = 0;
     this.renderDelta = 0;
@@ -201,72 +193,6 @@ export class Terminal extends BaseApp {
     }
   }
 
-  private buildShader(type: number, source: string): WebGLShader {
-    const gl = this.gl;
-    const sh = gl.createShader(type);
-    if (!sh) {
-      throw new Error('An error occurred compiling the shader: ');
-    }
-    gl.shaderSource(sh, source);
-    gl.compileShader(sh);
-    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-      throw new Error(`An error occurred compiling the shader: ${gl.getShaderInfoLog(sh)}`);
-    }
-    return sh;
-  }
-
-  /**
-   * Initialize a texture and load an image.
-   * When the image finished loading copy it into the texture.
-   * @param url - The texture image URL.
-   */
-  private loadTexture(url: string): WebGLTexture {
-    const gl = this.gl;
-    const texture = gl.createTexture() as WebGLTexture;
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-
-    // Because images have to be download over the internet
-    // they might take a moment until they are ready.
-    // Until then put a single pixel in the texture so we can
-    // use it immediately. When the image has finished downloading
-    // we'll update the texture with the contents of the image.
-    const level = 0;
-    const internalFormat = gl.RGBA;
-    const width = 1;
-    const height = 1;
-    const border = 0;
-    const srcFormat = gl.RGBA;
-    const srcType = gl.UNSIGNED_BYTE;
-    const pixel = new Uint8Array([0, 0, 0, 255]); // opaque black
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      level,
-      internalFormat,
-      width,
-      height,
-      border,
-      srcFormat,
-      srcType,
-      pixel
-    );
-
-    const image = new Image();
-    image.onload = (): void => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    };
-    image.src = url;
-
-    return texture;
-  }
-
-  //
-  // Draw the scene.
-  //
   private render(): void {
     const gl = this.gl;
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -417,6 +343,7 @@ export class Terminal extends BaseApp {
   ): void {
     this.console.drawConsole(dstX, dstY, srcConsole, srcX, srcY, srcWidth, srcHeight, blendMode);
   }
+
   drawString(
     x: number,
     y: number,
