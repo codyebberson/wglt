@@ -42,7 +42,6 @@ export * from './graphics/gui/buttonslotrenderer';
 export * from './graphics/gui/dialogrenderer';
 export * from './graphics/gui/labelrenderer';
 export * from './graphics/gui/selectinputrenderer';
-export * from './graphics/renderset';
 export * from './textmode/blendmode';
 export * from './textmode/boxutils';
 export * from './textmode/cell';

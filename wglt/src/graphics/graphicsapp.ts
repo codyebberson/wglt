@@ -5,7 +5,7 @@ import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
-import { RenderSet } from './renderset';
+import { DrawList } from './drawlist';
 
 export interface GraphicsAppConfig {
   readonly size: Rect;
@@ -14,7 +14,7 @@ export interface GraphicsAppConfig {
 }
 
 export class GraphicsApp extends BaseApp {
-  readonly renderSet: RenderSet;
+  private readonly drawList: DrawList;
 
   constructor(readonly config: GraphicsAppConfig) {
     const canvas = document.querySelector('canvas') as HTMLCanvasElement;
@@ -22,23 +22,18 @@ export class GraphicsApp extends BaseApp {
     super(canvas, config.size, config.font, mouse);
 
     const imageUrl = config.imageUrl || '/graphics.png';
-    this.renderSet = new RenderSet(this.gl, imageUrl, this.font);
+    this.drawList = new DrawList(this.gl, imageUrl);
   }
 
   startFrame(): void {
     this.resetGl();
-
-    // Reset sprite index buffers
-    this.renderSet.positionArrayIndex = 0;
-    this.renderSet.texcoordArrayIndex = 0;
-    this.renderSet.colorArrayIndex = 0;
 
     // Update global sprite frame
     Sprite.updateGlobalAnimations();
   }
 
   endFrame(): void {
-    this.renderSet.flush(this.size.width, this.size.height);
+    this.drawList.flush(this.size.width, this.size.height);
   }
 
   private resetGl(): void {
@@ -46,11 +41,6 @@ export class GraphicsApp extends BaseApp {
     gl.viewport(0, 0, this.size.width, this.size.height);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    // Reset sprite index buffers
-    this.renderSet.positionArrayIndex = 0;
-    this.renderSet.texcoordArrayIndex = 0;
-    this.renderSet.colorArrayIndex = 0;
   }
 
   /**
@@ -76,19 +66,41 @@ export class GraphicsApp extends BaseApp {
     dw?: number,
     dh?: number
   ): void {
-    this.renderSet.drawImage(x, y, u, v, w, h, color, dw, dh);
+    this.drawList.drawImage(x, y, u, v, w, h, color, dw, dh);
   }
 
   /**
    * Draws a string.
-   * @param x The x-coordinate of the top-left corner.
-   * @param y The y-coordinate of the top-left corner.
+   * @param x0 The x-coordinate of the top-left corner.
+   * @param y0 The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(x: number, y: number, str: string, color?: Color, out?: Point): void {
-    this.renderSet.drawString(str, x, y, color, out);
+  drawString(x0: number, y0: number, str: string, color?: Color, out?: Point): void {
+    const lines = str.split('\n');
+    const height = this.font.getHeight();
+    let x = x0;
+    let y = y0;
+    for (let i = 0; i < lines.length; i++) {
+      if (i > 0) {
+        x = x0;
+        y += height;
+      }
+      for (let j = 0; j < lines[i].length; j++) {
+        const charCode = lines[i].charCodeAt(j);
+        if (this.font.isInRange(charCode)) {
+          const offset = this.font.getOffset(charCode);
+          const width = this.font.getWidth(charCode);
+          this.drawImage(x, y, offset, 0, width, height, color);
+          x += width;
+        }
+      }
+    }
+    if (out) {
+      out.x = x;
+      out.y = y;
+    }
   }
 
   /**
@@ -99,7 +111,8 @@ export class GraphicsApp extends BaseApp {
    * @param color Optional color.
    */
   drawCenteredString(x: number, y: number, str: string, color?: Color): void {
-    this.renderSet.drawCenteredString(str, x, y, color);
+    const x2 = (x - this.font.getStringWidth(str) / 2) | 0;
+    this.drawString(x2, y, str, color);
   }
 
   /**
@@ -110,7 +123,24 @@ export class GraphicsApp extends BaseApp {
    * @param color Optional color.
    */
   drawRightString(x: number, y: number, str: string, color?: Color): void {
-    this.renderSet.drawRightString(str, x, y, color);
+    const x2 = x - this.font.getStringWidth(str);
+    this.drawString(x2, y, str, color);
+  }
+
+  /**
+   * Draws a character.
+   * @param c The ASCII character code.
+   * @param x The x-coordinate of the top-left corner.
+   * @param y The y-coordinate of the top-left corner.
+   * @param color Optional color.
+   */
+  drawChar(c: number, x: number, y: number, color?: Color): void {
+    if (this.font.isInRange(c)) {
+      const offset = this.font.getOffset(c);
+      const width = this.font.getWidth(c);
+      const height = this.font.getHeight();
+      this.drawImage(x, y, offset, 0, width, height, color);
+    }
   }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {
