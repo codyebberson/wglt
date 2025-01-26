@@ -9,6 +9,7 @@ export class Entity extends Point implements SelectOption {
   sprite: Sprite;
   blocks: boolean;
   zIndex: number;
+  flipped: boolean;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks = false) {
     super(x, y);
@@ -18,6 +19,7 @@ export class Entity extends Point implements SelectOption {
     this.sprite = sprite;
     this.blocks = blocks;
     this.zIndex = 1;
+    this.flipped = false;
   }
 
   get pixelX(): number {
@@ -48,7 +50,8 @@ export class Entity extends Point implements SelectOption {
     this.sprite.draw(
       this.game.app,
       this.pixelX - this.game.viewport.x,
-      this.pixelY - this.game.viewport.y
+      this.pixelY - this.game.viewport.y,
+      this.flipped
     );
   }
 

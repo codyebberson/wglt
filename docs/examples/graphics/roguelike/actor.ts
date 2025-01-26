@@ -66,6 +66,13 @@ export class Actor extends Entity {
     this.offset.x = -dx * this.game.tileSize.width;
     this.offset.y = -dy * this.game.tileSize.height;
 
+    // Update the x-axis flip
+    if (dx < 0) {
+      this.flipped = true;
+    } else if (dx > 0) {
+      this.flipped = false;
+    }
+
     // Now create the slide animation
     const xSpeed = this.game.tileSize.width / slideCount;
     const ySpeed = this.game.tileSize.height / slideCount;
@@ -133,6 +140,14 @@ export class Actor extends Entity {
     this.onAttack(target, damage);
     target.takeDamage(this, damage);
     this.ap--;
+
+    // Update the x-axis flip
+    if (target.x < this.x) {
+      this.flipped = true;
+    } else if (target.x > this.x) {
+      this.flipped = false;
+    }
+
     this.game.animations.push(new BumpAnimation(this, target));
     this.game.blocked = true;
   }
