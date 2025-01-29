@@ -88,11 +88,6 @@ function newGame(): Game {
 
   const playerStats = new Panel(new Rect(1, 1, 100, 20));
   playerStats.render = (): void => {
-    // const player = app.game?.player;
-    // if (!player) {
-    //   return;
-    // }
-
     const frameY = 0;
     app.drawString(1, frameY, player.name);
 

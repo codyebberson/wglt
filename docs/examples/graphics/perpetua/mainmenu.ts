@@ -18,8 +18,8 @@ export class MainMenu extends AppState<App> {
     OPTIONS[1].enabled = !!app.game;
 
     // Draw the title text
-    app.drawCenteredString(this.app.center.x + 1, 33, 'KOPI LUWAK DUNGEON', Pico8Palette.BLACK);
-    app.drawCenteredString(this.app.center.x, 32, 'KOPI LUWAK DUNGEON');
+    app.drawCenteredString(this.app.center.x + 1, 33, 'WGLT ROGUELIKE DEMO', Pico8Palette.BLACK);
+    app.drawCenteredString(this.app.center.x, 32, 'WGLT ROGUELIKE DEMO');
 
     // Draw the menu options
     const mouse = this.app.mouse;
