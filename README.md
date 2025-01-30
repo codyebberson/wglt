@@ -1,17 +1,32 @@
-# WGLT - WebGL Terminal
+# WGLT - WebGL Toolkit
 
-- Fast, lightweight, terminal emulator using WebGL
-- MIT license
-- ~30kb minified JS, ~10kb gzipped
+- Fast, lightweight game engine using WebGL2
+- Support for both ASCII and tile-based games
+- 100% TypeScript with full type definitions
+- MIT license open source
 - No external dependencies
 
 ## What is it?
 
-WGLT is a JavaScript/TypeScript library for creating ASCII games in the browser.
+WGLT is a JavaScript/TypeScript library for creating games in the browser, with special focus on roguelikes and turn-based games.
 
-WGLT is absurdly overoptimized for performance, using WebGL for minimal CPU.
+WGLT offers two modes:
 
-WGLT is modelled after [libtcod](https://github.com/libtcod/libtcod) and [rot.js](https://ondras.github.io/rot.js/hp/).
+- Traditional ASCII games using a high-performance terminal emulator
+- Modern tile-based games with sprite support and animation
+
+WGLT is absurdly overoptimized for performance, using WebGL2 for minimal CPU usage:
+
+- Blazing fast sprite rendering with instanced draw calls
+- Efficient tilemap rendering with specialized shaders
+- Smart batching for both text and graphics
+
+WGLT draws inspiration from libtcod and rot.js while providing modern features:
+
+- Built-in GUI system with drag-and-drop support
+- Sophisticated state serialization
+- Flexible component architecture
+- Rich set of roguelike utilities (FOV, pathfinding, etc)
 
 ## Install
 
