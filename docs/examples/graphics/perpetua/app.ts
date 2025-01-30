@@ -17,6 +17,7 @@ export class App extends GraphicsApp {
   constructor() {
     super({
       size: new Rect(0, 0, 640, 360),
+      imageUrl: '/perpetua.png',
       font: FONT_04B03,
     });
     this.mainMenu = new MainMenu(this);

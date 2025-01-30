@@ -1,4 +1,4 @@
-// Collection of sprites from graphics2.png
+// Collection of sprites from graphics.png
 
 import { Rect, Sprite } from 'wglt';
 

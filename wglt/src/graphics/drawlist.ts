@@ -170,8 +170,8 @@ export class DrawList {
     const baseIdx = this.instanceCount * ELEMENTS_PER_INSTANCE;
 
     // Destination rectangle
-    this.instanceDataF32[baseIdx + 0] = x;
-    this.instanceDataF32[baseIdx + 1] = y;
+    this.instanceDataF32[baseIdx + 0] = x | 0;
+    this.instanceDataF32[baseIdx + 1] = y | 0;
     this.instanceDataF32[baseIdx + 2] = dw ?? w;
     this.instanceDataF32[baseIdx + 3] = dh ?? h;
 

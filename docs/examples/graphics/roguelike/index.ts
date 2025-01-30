@@ -42,7 +42,6 @@ const WIDTH = 640;
 const HEIGHT = 360;
 
 const app = new App({
-  imageUrl: '/graphics2.png',
   size: new Rect(0, 0, WIDTH, HEIGHT),
   font: FONT_04B03,
 });

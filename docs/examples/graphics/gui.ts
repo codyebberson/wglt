@@ -25,8 +25,10 @@ let y = 160;
 
 const gui = new GUI(app);
 
-// Many UI elements require a "source rect", which defines where in the font image the sprite is located
-const dialogSourceRect = new Rect(0, 32, 48, 48);
+// Many UI elements require a "source rect", which defines where in the source image the sprite is located.
+// This is the source rect for the dialog box in graphics.png
+// It is an "auto rect", which means it will intelligently scale the image while preserving the corners
+const dialogSourceRect = new Rect(0, 64, 24, 24);
 
 // Now we can register the renderer for the Dialog class
 gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));

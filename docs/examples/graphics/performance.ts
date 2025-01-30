@@ -53,7 +53,7 @@ app.update = (): void => {
       obj.dx *= -1;
     }
 
-    app.drawImage(obj.x, obj.y, 0, 272, 16, 16);
+    app.drawImage(obj.x, obj.y, 0, 16, 16, 16);
   }
 
   app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);

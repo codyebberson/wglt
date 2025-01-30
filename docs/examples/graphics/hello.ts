@@ -5,7 +5,9 @@ const app = new GraphicsApp({
   font: FONT_04B03,
 });
 
-const sprite = new Sprite(576, 240, 16, 16, 2);
+// This is the hero sprite in graphics.png
+// The animation sequence starts at x=0, y=16, width=16, height=16, and has 2 frames
+const sprite = new Sprite(0, 16, 16, 16, 2);
 
 let x = 160;
 let y = 160;
