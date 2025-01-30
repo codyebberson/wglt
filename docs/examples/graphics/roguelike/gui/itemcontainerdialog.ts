@@ -23,7 +23,7 @@ export class ItemContainerDialog extends Dialog {
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
         const key = getKeyForLetterByIndex(i);
-        this.addChild(new ItemContainerButtonSlot(new Rect(4 + x * 26, 10 + y * 26, 24, 24), key));
+        this.addChild(new ItemContainerButtonSlot(new Rect(4 + x * 26, 4 + y * 26, 24, 24), key));
         i++;
       }
     }
@@ -38,7 +38,7 @@ export class ItemContainerDialog extends Dialog {
 
     const freeSlot = this.getNextFreeSlot();
     if (freeSlot) {
-      freeSlot.addChild(new ItemButton(freeSlot.rect.clone(), this.items, item));
+      freeSlot.addChild(new ItemButton(new Rect(0, 0, 24, 24), this.items, item));
     }
   }
 

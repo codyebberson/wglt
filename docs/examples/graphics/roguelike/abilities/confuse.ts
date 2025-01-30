@@ -1,5 +1,5 @@
 import { Message, Sprite } from 'wglt';
-import { TargetType } from '../ability';
+import { Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ConfusedMonster } from '../ai/confusedmonster';
 import { Game } from '../game';
@@ -8,7 +8,7 @@ import { Sprites } from '../sprites';
 
 const CONFUSE_RANGE = 8;
 
-export class ConfuseAbility {
+export class ConfuseAbility implements Ability {
   name: string;
   sprite: Sprite;
   targetType: TargetType;
