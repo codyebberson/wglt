@@ -196,9 +196,9 @@ export class Game extends AppState<App> {
       const px = this.player.centerPixelX;
       const py = this.player.centerPixelY;
 
-      // Calculate margins
-      const mx = Math.round(this.viewport.width / 3);
-      const my = Math.round(this.viewport.height / 3);
+      // Calculate margins, 1/4 of the screen size
+      const mx = Math.round(this.viewport.width / 4);
+      const my = Math.round(this.viewport.height / 4);
 
       if (px - mx < this.viewport.x) {
         this.viewport.x = px - mx;
