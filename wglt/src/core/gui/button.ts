@@ -3,7 +3,6 @@ import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Sprite } from '../sprite';
 import { Component } from './component';
-import { GUI } from './gui';
 import { Panel } from './panel';
 
 export class Button extends Container {
@@ -21,7 +20,12 @@ export class Button extends Container {
   }
 
   handleInput(): boolean {
-    const app = this.root?.context;
+    const gui = this.root;
+    if (!gui) {
+      return false;
+    }
+
+    const app = gui.context;
     if (!app) {
       return false;
     }
@@ -29,7 +33,7 @@ export class Button extends Container {
     const mouse = app.mouse;
 
     if (this.draggable && this.screenRect.contains(mouse.start) && mouse.isDragging()) {
-      GUI.startDragging(app, this);
+      gui.startDragging(app, this);
       return true;
     }
 

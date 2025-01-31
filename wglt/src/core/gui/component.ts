@@ -1,12 +1,10 @@
-import { Point, PointLike } from '../point';
+import { PointLike } from '../point';
 import { Rect } from '../rect';
 import { Container } from './container';
 import { GUI } from './gui';
 import { Panel } from './panel';
 
 export abstract class Component {
-  static dragElement?: Component;
-  static dragOffset?: Point;
   readonly rect: Rect;
   readonly screenRect: Rect;
   parent?: Container;
@@ -57,7 +55,7 @@ export abstract class Component {
   }
 
   isDragging(): boolean {
-    return Component.dragElement === this;
+    return this.root?.dragElement === this;
   }
 
   onDrop(_dest: Component): boolean {

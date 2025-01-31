@@ -12,6 +12,9 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly rendererWarnings: Set<string>;
   tooltip?: Panel;
   tooltipElement?: Component;
+  onDragStart?: (component: Component) => void;
+  dragElement?: Component;
+  dragOffset?: Point;
 
   constructor(context: TContext) {
     super(context.size);
@@ -36,14 +39,11 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   }
 
   draw(): void {
-    // this.root.draw(app);
-    // this.drawComponent(this);
     this.drawChildren(this);
 
-    if (Component.dragElement) {
+    if (this.dragElement) {
       // Draw drag element on top of everything else
-      // Component.dragElement.draw(app);
-      this.drawComponent(Component.dragElement);
+      this.drawComponent(this.dragElement);
     }
   }
 
@@ -93,7 +93,7 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   updateTooltip(): undefined {
     const app = this.context;
 
-    if (Component.dragElement) {
+    if (this.dragElement) {
       // No tooltips while drag/drop
       this.hideTooltip();
       return;
@@ -147,20 +147,17 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     }
   }
 
-  static startDragging(app: BaseApp, component: Component): void {
+  startDragging(app: BaseApp, component: Component): void {
     const mouse = app.mouse;
-    Component.dragElement = component;
-    Component.dragOffset = new Point(
-      mouse.start.x - component.rect.x,
-      mouse.start.y - component.rect.y
-    );
+    this.dragElement = component;
+    this.dragOffset = new Point(mouse.start.x - component.rect.x, mouse.start.y - component.rect.y);
   }
 
   private updateDragging(): boolean {
     const app = this.context;
     const mouse = app.mouse;
-    const dragElement = Component.dragElement;
-    const dragOffset = Component.dragOffset;
+    const dragElement = this.dragElement;
+    const dragOffset = this.dragOffset;
     if (!dragElement || !dragOffset) {
       return false;
     }
@@ -180,8 +177,8 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
         dragElement.rect.y = mouse.start.y - dragOffset.y;
       }
 
-      Component.dragElement = undefined;
-      Component.dragOffset = undefined;
+      this.dragElement = undefined;
+      this.dragOffset = undefined;
     }
 
     return true;

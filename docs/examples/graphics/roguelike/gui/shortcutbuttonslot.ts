@@ -11,11 +11,19 @@ export class ShortcutButtonSlot extends ButtonSlot {
       return false;
     }
 
+    if (component instanceof ItemShortcutButton) {
+      // Move the existing shortcut
+      component.rect.x = 0;
+      component.rect.y = 0;
+      this.moveChild(component);
+      return true;
+    }
+
     if (component instanceof ItemButton) {
       const itemButton = component as ItemButton;
       const containerItems = itemButton.containerItems;
       const shortcutItem = itemButton.stackItems.get(0);
-      this.addChild(new ItemShortcutButton(this.rect.clone(), containerItems, shortcutItem));
+      this.addChild(new ItemShortcutButton(component.rect.clone(), containerItems, shortcutItem));
       // Even though the operation was successful,
       // return false because we don't want to move the original button
       return false;
@@ -24,11 +32,13 @@ export class ShortcutButtonSlot extends ButtonSlot {
     if (component instanceof TalentButton) {
       if (component.shortcut) {
         // Move the existing shortcut
+        component.rect.x = 0;
+        component.rect.y = 0;
         this.moveChild(component);
         return true;
       }
       // Create a shortcut to the talent
-      this.addChild(new TalentButton(this.rect.clone(), component.talent, true));
+      this.addChild(new TalentButton(component.rect.clone(), component.talent, true));
       return false;
     }
 

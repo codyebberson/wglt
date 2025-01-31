@@ -53,27 +53,7 @@ export class Container extends Component {
     return undefined;
   }
 
-  // draw(app: BaseApp): void {
-  //   this.drawChildren(app);
-  // }
-
-  // drawChildren(app: BaseApp): void {
-  //   for (let i = 0; i < this.children.length; i++) {
-  //     const child = this.children.get(i);
-  //     if (!child.visible) {
-  //       // Ignore hidden elements
-  //       continue;
-  //     }
-  //     child.draw(app);
-  //   }
-  // }
-
   recalculateLayout(): void {
-    // if (this.parent) {
-    //   // We can assume that the parent's screenRect is already up-to-date
-    //   this.screenRect.x = this.parent.rect.x + this.rect.x;
-    //   this.screenRect.y = this.parent.rect.y + this.rect.y;
-    // }
     super.recalculateLayout();
     for (let i = 0; i < this.children.length; i++) {
       this.children.get(i).recalculateLayout();
