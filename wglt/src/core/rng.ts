@@ -31,11 +31,10 @@ export class RNG {
   constructor(seed?: number) {
     this.mt = new Uint32Array(N); /* the array for the state vector */
     this.mti = N + 1; /* mti==N+1 means mt[N] is not initialized */
-    this.setSeed(seed || 1);
+    this.setSeed(seed ?? Date.now());
   }
 
   setSeed(s: number): void {
-    // this.state = seed;
     this.mt[0] = s >>> 0;
     for (this.mti = 1; this.mti < N; this.mti++) {
       const s = this.mt[this.mti - 1] ^ (this.mt[this.mti - 1] >>> 30);

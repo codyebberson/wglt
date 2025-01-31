@@ -28,7 +28,7 @@ const MAX_ROOMS = 30;
 const MAX_ROOM_MONSTERS = 3;
 const MAX_ROOM_ITEMS = 2;
 
-const rng = new RNG(1);
+const rng = new RNG();
 
 function createRoom(map: TileMap, room: Rect): void {
   for (let y = room.y1 + 1; y < room.y2; y++) {

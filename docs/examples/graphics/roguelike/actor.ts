@@ -7,6 +7,7 @@ import { SlideAnimation } from './animations/slideanimation';
 import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';
+import { Palette } from './palette';
 import { Talent } from './talent';
 
 export class Actor extends Entity {
@@ -154,7 +155,7 @@ export class Actor extends Entity {
 
   takeHeal(heal: number): void {
     this.hp = Math.min(this.hp + heal, this.maxHp);
-    this.addFloatingText(heal.toString(), this.game.healColor);
+    this.addFloatingText(heal.toString(), Palette.GREEN);
   }
 
   takeDamage(attacker: Actor, damage: number): void {
@@ -164,7 +165,7 @@ export class Actor extends Entity {
     }
 
     this.hp -= damage;
-    this.addFloatingText(damage.toString(), this.game.damageColor);
+    this.addFloatingText(damage.toString(), Palette.RED);
 
     if (this.hp <= 0) {
       this.hp = 0;

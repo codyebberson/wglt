@@ -55,7 +55,6 @@ const gui = new GUI(app);
 gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(ButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
 gui.renderers.set(Panel, new AutoRectRenderer(buttonSlotRect));
-// gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(Label, new GraphicsLabelRenderer());
 gui.renderers.set(Button, new GraphicsButtonRenderer());
 gui.renderers.set(SelectInput, new GraphicsSelectInputRenderer());

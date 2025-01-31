@@ -74,7 +74,7 @@ export class Game extends AppState<App> {
 
   constructor(app: App) {
     super(app);
-    this.rng = new RNG(Date.now());
+    this.rng = new RNG();
     this.player = new Actor(this, 40, 25, '@', 'Player', CgaPalette.WHITE);
     this.player.level = 1;
     this.player.hp = 100;

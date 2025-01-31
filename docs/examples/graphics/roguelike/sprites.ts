@@ -2,6 +2,8 @@
 
 import { Rect, Sprite } from 'wglt';
 
+export const TILE_SIZE = 16;
+
 export const BLACKOUT = new Rect(0, 32, 16, 16);
 
 export const Sprites = {

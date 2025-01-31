@@ -4,9 +4,8 @@ import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
 import { Game } from '../game';
 import { Palette } from '../palette';
-import { Sprites } from '../sprites';
+import { Sprites, TILE_SIZE } from '../sprites';
 
-const TILE_SIZE = 16;
 const FIREBALL_RANGE = 10;
 const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
@@ -46,23 +45,25 @@ export class FireballAbility implements Ability {
     const dx = (target.x * TILE_SIZE - caster.pixelX) / count;
     const dy = (target.y * TILE_SIZE - caster.pixelY) / count;
 
-    this.game.addAnimation(
-      new ProjectileAnimation(
-        Sprites.FIREBALL_ANIMATION,
-        new Point(caster.pixelX, caster.pixelY),
-        new Point(dx, dy),
-        count
+    this.game
+      .addAnimation(
+        new ProjectileAnimation(
+          Sprites.FIREBALL_ANIMATION,
+          new Point(caster.pixelX, caster.pixelY),
+          new Point(dx, dy),
+          count
+        )
       )
-    );
-
-    this.game.addAnimation(
-      new ProjectileAnimation(
-        Sprites.EXPLOSION_ANIMATION,
-        new Point(target.x * TILE_SIZE, target.y * TILE_SIZE),
-        new Point(0, 0),
-        16
-      )
-    );
+      .onDone(() =>
+        this.game.addAnimation(
+          new ProjectileAnimation(
+            Sprites.EXPLOSION_ANIMATION,
+            new Point(target.x * TILE_SIZE, target.y * TILE_SIZE),
+            new Point(0, 0),
+            32
+          )
+        )
+      );
 
     this.game.log(
       `The fireball explodes, burning everything within ${FIREBALL_RADIUS} tiles!`,

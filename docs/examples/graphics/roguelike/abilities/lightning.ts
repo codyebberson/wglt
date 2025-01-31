@@ -1,9 +1,10 @@
-import { Message, Sprite } from 'wglt';
+import { Message, Point, Sprite } from 'wglt';
 import { Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
+import { ProjectileAnimation } from '../animations/projectileanimation';
 import { Game } from '../game';
 import { Palette } from '../palette';
-import { Sprites } from '../sprites';
+import { Sprites, TILE_SIZE } from '../sprites';
 
 const LIGHTNING_DAMAGE = 20;
 const LIGHTNING_RANGE = 5;
@@ -40,13 +41,26 @@ export class LightningAbility implements Ability {
     }
 
     // Zap it!
-    this.game.log(
-      `A lightning bolt strikes the ${monster.name} with a loud thunder!`,
-      Palette.BLUE
-    );
-    this.game.log(`The damage is ${LIGHTNING_DAMAGE} hit points`, Palette.BLUE);
-    monster.takeDamage(caster, LIGHTNING_DAMAGE);
-    caster.ap--;
+
+    this.game
+      .addAnimation(
+        new ProjectileAnimation(
+          Sprites.FIREBALL_ANIMATION,
+          new Point(monster.x * TILE_SIZE, monster.y * TILE_SIZE),
+          new Point(0, 0),
+          16
+        )
+      )
+      .onDone(() => {
+        this.game.log(
+          `A lightning bolt strikes the ${monster.name} with a loud thunder!`,
+          Palette.BLUE
+        );
+        this.game.log(`The damage is ${LIGHTNING_DAMAGE} hit points`, Palette.BLUE);
+        monster.takeDamage(caster, LIGHTNING_DAMAGE);
+        caster.ap--;
+      });
+
     return true;
   }
 }
