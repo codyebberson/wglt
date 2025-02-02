@@ -2,14 +2,14 @@
   "name": "root",
   "version": "2.0.0",
   "private": true,
-  "workspaces": ["wglt", "docs"],
+  "workspaces": ["packages/*"],
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
-    "dev": "npm run dev --workspace=docs",
+    "dev": "npm run dev --workspace=wglt-docs",
     "fix": "biome check --write --unsafe .",
     "lint": "biome check .",
-    "preview": "npm run preview --workspace=docs",
+    "preview": "npm run preview --workspace=wlgt-docs",
     "test": "turbo run test"
   },
   "devDependencies": {
