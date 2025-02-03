@@ -2,20 +2,24 @@ import { readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
-const htmlFiles: string[] = ['./index.html', './home.html'];
+const ignoredDirs = ['node_modules', '.git', '.turbo', 'dist', 'build', 'out', 'public'];
+const htmlFiles: string[] = [];
 
-function findFiles(dir: string): void {
+function findHtmlFiles(dir = '.'): void {
   for (const file of readdirSync(dir)) {
+    if (ignoredDirs.includes(file)) {
+      continue;
+    }
     const path = join(dir, file);
     if (statSync(path).isDirectory()) {
-      findFiles(path);
+      findHtmlFiles(path);
     } else if (file.endsWith('.html')) {
       htmlFiles.push(path.replaceAll('\\', '/'));
     }
   }
 }
 
-findFiles('./examples');
+findHtmlFiles();
 
 const input = Object.fromEntries(
   htmlFiles.map((file) => [file.replace('./', ''), resolve(__dirname, file)])

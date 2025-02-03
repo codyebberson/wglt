@@ -2,9 +2,6 @@
   "name": "create-wglt",
   "version": "2.0.0-beta.1",
   "sideEffects": false,
-  "bin": {
-    "medplum": "./dist/main.js"
-  },
   "files": ["dist"],
   "type": "module",
   "scripts": {
