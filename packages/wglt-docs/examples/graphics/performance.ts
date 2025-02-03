@@ -18,7 +18,7 @@ const gravity = 0.1;
 
 app.update = (): void => {
   if (app.mouse.buttons.get(0).down) {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 100 && objects.length < 65000; i++) {
       objects.push({
         x: app.mouse.x,
         y: app.mouse.y,
