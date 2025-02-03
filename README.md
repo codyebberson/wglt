@@ -30,18 +30,16 @@ WGLT draws inspiration from libtcod and rot.js while providing modern features:
 
 ## Install
 
-### Install with npm (recommended)
+Create a new project:
 
-Add dependency to your package.json:
+```bash
+npm init wglt
+```
+
+Or, add dependency to existing project:
 
 ```bash
 npm i -D wglt
-```
-
-Import library:
-
-```typescript
-import { Colors, Terminal } from "wglt";
 ```
 
 ## Usage
@@ -70,48 +68,3 @@ term.update = () => {
   term.drawString(x, y, "@");
 };
 ```
-
-## Limitations
-
-WGLT is a minimalist library. It is intended to be small, lightweight, and fast. It serves the very narrow use case of minimalist ASCII or ANSI games in the web browser.
-
-By default, WGLT uses the original IBM CGA Character set, thick variant, dumped from addresses 0x1800-0x1fff the 5788005 IBM Character Generator ROM.
-
-I do not have intentions to include support for formatted text (i.e., bold or underline), extended character sets, emoji, etc. While I am flattered by those feature requests, I suggest you look at alternate libraries such as:
-
-- [rot.js](https://ondras.github.io/rot.js/hp/)
-- [Phaser](https://phaser.io/)
-- [PixiJS](https://pixijs.com/)
-- [Kontra.js](https://github.com/straker/kontra)
-- [LittleJS](https://github.com/KilledByAPixel/LittleJS)
-- [Kaboom](https://kaboomjs.com/)
-
-## Fonts
-
-WGLT supports custom font images, and provides built in support for standard fonts:
-
-- [x] IBM CGA Character
-- [ ] IBM VGA 9x14 (MS-DOS)
-- [ ] Commodore 64
-- [ ] ZX Spectrum
-- [ ] Amstrad CPC 464
-
-## Palettes
-
-WGLT supports full 32-bit color, and also provides constants for standard palettes:
-
-- [x] CGA
-- [x] Commodore 64
-- [x] "Colodore"
-- [x] PICO 8
-
-## CRT Filter
-
-By default, WGLT renders crisp pixels. WGLT also provides an optional CRT filter with the following effects:
-
-- [x] Scanlines
-- [x] Curvature
-- [x] Vignette (darker in the corners and around the edges)
-- [x] Chromatic aberration (RGB independent offsets)
-- [ ] Bloom
-- [ ] Interference animation

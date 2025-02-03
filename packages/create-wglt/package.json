@@ -1,0 +1,19 @@
+{
+  "name": "create-wglt",
+  "version": "2.0.0-beta.1",
+  "sideEffects": false,
+  "bin": {
+    "medplum": "./dist/main.js"
+  },
+  "files": ["dist"],
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.10"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
