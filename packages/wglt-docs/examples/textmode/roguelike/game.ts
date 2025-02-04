@@ -472,37 +472,22 @@ export class Game extends AppState<App> {
       }
     }
     if (term.keyboard.isKeyPressed(Key.VK_I)) {
-      if (this.player.inventory.length === 0) {
-        // TODO
-        // this.app.gui.add(new MessageDialog('ALERT', 'Inventory is empty'));
-      } else {
-        const options = this.player.inventory.map((item) => {
-          // if (item.equipped) {
-          //   return `${item.name} (on ${item.slot})`;
-          // }
-          // return item.name;
-          let text = item.name;
-          if (item.equipped) {
-            text += ` (on ${item.slot})`;
-          }
-          return { name: text };
-        });
+      const options = this.player.inventory.map((item) => {
+        let text = item.name;
+        if (item.equipped) {
+          text += ` (on ${item.slot})`;
+        }
+        return { name: text };
+      });
 
-        const dialog = new Dialog(new Rect(20, 10, 40, 20), 'INVENTORY');
-        dialog.addChild(
-          new SelectInput(new Rect(1, 1, 40, 20), options, (choice) => {
-            dialog.close();
-            this.useInventory(options.findIndex((option) => option === choice));
-          })
-        );
-        this.app.gui.addChild(dialog);
-
-        // this.app.gui.addChild(
-        //   new SelectDialog(new Rect(10, 10, 20, 20), 'INVENTORY', options, (choice) =>
-        //     this.useInventory(options.findIndex((option) => option === choice))
-        //   )
-        // );
-      }
+      const dialog = new Dialog(new Rect(20, 10, 40, 20), 'INVENTORY');
+      dialog.addChild(
+        new SelectInput(new Rect(1, 1, 40, 20), options, (choice) => {
+          dialog.close();
+          this.useInventory(options.findIndex((option) => option === choice));
+        })
+      );
+      this.app.gui.addChild(dialog);
     }
     if (term.keyboard.isKeyPressed(Key.VK_C)) {
       // TODO

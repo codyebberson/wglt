@@ -7,6 +7,11 @@ import { Terminal } from '../terminal';
 export class TerminalSelectInputRenderer implements Renderer<Terminal, SelectInput> {
   render(gui: GUI<Terminal>, input: SelectInput): void {
     const terminal = gui.context;
+
+    // Set the margin and line height
+    input.margin = 0;
+    input.lineHeight = 1;
+
     const x = input.screenRect.x;
     const y = input.screenRect.y;
 

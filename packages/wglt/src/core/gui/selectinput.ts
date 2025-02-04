@@ -3,13 +3,12 @@ import { getKeyForLetterByIndex } from '../keys';
 import { Component } from './component';
 import { SelectOption } from './selectoption';
 
-const MARGIN = 4;
-const LINE_HEIGHT = 10;
-
 export class SelectInput extends Component {
   options: SelectOption[];
   callback: (option: SelectOption, index: number) => void;
   selectedIndex = -1;
+  margin = 4;
+  lineHeight = 10;
 
   constructor(
     rect: Rect,
@@ -59,11 +58,11 @@ export class SelectInput extends Component {
     }
 
     const mouse = app.mouse;
-    const offset = this.rect;
+    const offset = this.screenRect;
     if (mouse.isClicked() && mouse.x >= offset.x1 && mouse.x < offset.x2) {
       for (let i = 0; i < this.options.length; i++) {
-        const startY = offset.y + MARGIN + i * LINE_HEIGHT;
-        const endY = startY + LINE_HEIGHT;
+        const startY = offset.y + this.margin + i * this.lineHeight;
+        const endY = startY + this.lineHeight;
         if (mouse.y >= startY && mouse.y < endY) {
           this.callback(this.options[i], i);
         }
