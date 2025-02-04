@@ -56,8 +56,6 @@ export class Actor extends Entity {
     const destX = this.x + dx;
     const destY = this.y + dy;
 
-    // TODO: Enforce diagonal vs cardinal movement?
-
     if (this.blocks) {
       // If this actor blocks (default), then check for walls and entities
       if (this.game.isBlocked(destX, destY)) {

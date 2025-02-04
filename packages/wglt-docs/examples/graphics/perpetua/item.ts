@@ -62,8 +62,6 @@ export abstract class Item extends Entity {
   }
 
   onPickup(entity: Actor): void {
-    // TODO: Add a message log to the game
-    // How to expose formatted text options to library users?
     this.game.log(
       new Message(`${entity.name} picked up [${this.name}]`, this.getColor(this.quality))
     );

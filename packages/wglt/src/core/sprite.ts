@@ -5,8 +5,7 @@ const DEFAULT_TICKS_PER_FRAME = 20;
 
 export class Sprite extends Rect {
   static globalAnimIndex = 0;
-  private animFrame: number;
-  private animDelay: number;
+  private animFrame = 0;
 
   constructor(
     x: number,
@@ -18,12 +17,9 @@ export class Sprite extends Rect {
     readonly ticksPerFrame = DEFAULT_TICKS_PER_FRAME
   ) {
     super(x, y, width, height);
-    this.animFrame = 0;
-    this.animDelay = 0;
   }
 
   draw(app: GraphicsApp, x: number, y: number, flipped = false): void {
-    // TODO: is this correct? how to reconcile with animFrame?
     this.animFrame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
 
     const u = this.x + this.animFrame * this.width;
@@ -33,19 +29,6 @@ export class Sprite extends Rect {
       app.drawImage(x + this.width, y, u, v, this.width, this.height, undefined, -this.width);
     } else {
       app.drawImage(x, y, u, v, this.width, this.height);
-    }
-
-    this.animDelay++;
-    if (this.frames > 1 && this.animDelay > this.ticksPerFrame) {
-      this.animDelay = 0;
-      this.animFrame++;
-      if (this.animFrame >= this.frames) {
-        if (this.loop) {
-          this.animFrame = 0;
-        } else {
-          this.animFrame = this.frames - 1;
-        }
-      }
     }
   }
 
