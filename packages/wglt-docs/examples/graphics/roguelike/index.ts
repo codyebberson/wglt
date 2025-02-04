@@ -23,7 +23,6 @@ import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
 import { Player } from './actors/player';
 import { App } from './app';
-import { CompoundMessage } from './compoundmessage';
 import { Game } from './game';
 import { ItemButton, ItemButtonRenderer } from './gui/itembutton';
 import { ItemContainerButtonSlot } from './gui/itemcontainerbuttonslot';
@@ -77,12 +76,8 @@ function newGame(): Game {
 
   game.messageLog = new MessageLog(new Rect(1, HEIGHT - 78, 100, 50));
   gui.addChild(game.messageLog);
-  game.log(
-    new CompoundMessage(
-      new Message('Welcome stranger! ', Palette.DARK_PURPLE),
-      new Message('Prepare to perish!', Palette.RED)
-    )
-  );
+  game.log('Welcome stranger!', Palette.DARK_PURPLE);
+  game.log('Prepare to perish!', Palette.RED);
 
   const playerStats = new Panel(new Rect(1, 1, 100, 20));
   playerStats.render = (): void => {
