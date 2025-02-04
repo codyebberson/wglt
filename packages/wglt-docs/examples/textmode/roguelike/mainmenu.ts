@@ -18,7 +18,7 @@ loadImage2x('/menu.png', (result) => {
 
 export class MainMenu extends AppState<App> {
   update(): void {
-    const term = this.app.term;
+    const term = this.app;
     const gui = this.app.gui;
 
     if (gui.children.length === 0) {

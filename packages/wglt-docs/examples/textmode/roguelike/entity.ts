@@ -47,7 +47,7 @@ export class Entity {
 
   draw(): void {
     if (this.game.map.isVisible(this.x, this.y)) {
-      this.game.app.term.drawString(this.x, this.y, this.char, this.color);
+      this.game.app.drawString(this.x, this.y, this.char, this.color);
     }
   }
 }

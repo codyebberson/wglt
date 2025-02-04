@@ -359,15 +359,15 @@ export class Game extends AppState<App> {
     const barWidth = Math.round((value / maximum) * totalWidth);
 
     // Render the background first
-    this.app.term.fillRect(x, y, totalWidth, 1, backColor);
+    this.app.fillRect(x, y, totalWidth, 1, backColor);
 
     // Now render the bar on top
     if (barWidth > 0) {
-      this.app.term.fillRect(x, y, barWidth, 1, barColor);
+      this.app.fillRect(x, y, barWidth, 1, barColor);
     }
 
     // Finally, some centered text with the values
-    this.app.term.drawCenteredString(
+    this.app.drawCenteredString(
       x + totalWidth / 2,
       y,
       `${name}: ${value}/${maximum}`,
@@ -376,8 +376,8 @@ export class Game extends AppState<App> {
   }
 
   getNamesUnderMouse(): string {
-    const x = this.app.term.mouse.x;
-    const y = this.app.term.mouse.y;
+    const x = this.app.mouse.x;
+    const y = this.app.mouse.y;
 
     if (!this.map.isVisible(x, y)) {
       return '';
@@ -435,11 +435,11 @@ export class Game extends AppState<App> {
       return;
     }
 
-    const term = this.app.term;
     if (this.app.gui.handleInput()) {
       return;
     }
 
+    const term = this.app;
     const movementKey = term.keyboard.getMovementKey();
 
     if (this.targetFunction) {
@@ -739,7 +739,7 @@ export class Game extends AppState<App> {
   }
 
   renderAll(): void {
-    const term = this.app.term;
+    const term = this.app;
 
     if (this.fovRecompute) {
       this.map.computeFov(this.player.x, this.player.y, TORCH_RADIUS);
