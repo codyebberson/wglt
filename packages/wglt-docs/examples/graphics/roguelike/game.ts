@@ -4,6 +4,7 @@ import {
   Color,
   Component,
   GUI,
+  GraphicsApp,
   Message,
   MessageLog,
   Point,
@@ -19,7 +20,6 @@ import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { Player } from './actors/player';
 import { Animation } from './animations/animation';
-import { App } from './app';
 import { Entity } from './entity';
 import { Item } from './item';
 import { Palette } from './palette';
@@ -30,7 +30,7 @@ const MAP_HEIGHT = 40;
 const TILE_SIZE = 16;
 const VIEW_DISTANCE = 16;
 
-export class Game extends AppState<App> {
+export class Game extends AppState<GraphicsApp> {
   readonly viewport: Rect;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
@@ -51,8 +51,8 @@ export class Game extends AppState<App> {
   tooltipElement?: Component;
 
   constructor(
-    app: App,
-    readonly gui: GUI<App>
+    app: GraphicsApp,
+    readonly gui: GUI<GraphicsApp>
   ) {
     super(app);
     this.viewport = new Rect(0, 0, app.size.width, app.size.height);

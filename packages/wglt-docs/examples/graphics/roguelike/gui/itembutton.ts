@@ -3,12 +3,12 @@ import {
   Button,
   Container,
   GUI,
+  GraphicsApp,
   GraphicsButtonRenderer,
   Message,
   Panel,
   Rect,
 } from 'wglt';
-import { App } from '../app';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -59,7 +59,7 @@ export class ItemButton extends Button {
 }
 
 export class ItemButtonRenderer extends GraphicsButtonRenderer {
-  render(gui: GUI<App>, component: ItemButton): void {
+  render(gui: GUI<GraphicsApp>, component: ItemButton): void {
     super.render(gui, component);
 
     const app = gui.context;

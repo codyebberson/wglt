@@ -1,5 +1,4 @@
-import { Button, Container, GUI, GraphicsButtonRenderer, Rect } from 'wglt';
-import { App } from '../app';
+import { Button, Container, GUI, GraphicsApp, GraphicsButtonRenderer, Rect } from 'wglt';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';
 import { Talent } from '../talent';
@@ -22,7 +21,7 @@ export class TalentButton extends Button {
 }
 
 export class TalentButtonRenderer extends GraphicsButtonRenderer {
-  render(gui: GUI<App>, component: TalentButton): void {
+  render(gui: GUI<GraphicsApp>, component: TalentButton): void {
     super.render(gui, component);
 
     const app = gui.context;

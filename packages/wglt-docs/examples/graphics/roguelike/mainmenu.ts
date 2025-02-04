@@ -1,5 +1,4 @@
-import { AppState, GUI } from 'wglt';
-import { App } from './app';
+import { AppState, GUI, GraphicsApp } from 'wglt';
 import { Palette } from './palette';
 
 const OPTIONS = [
@@ -10,12 +9,12 @@ const OPTIONS = [
   { display: 'CREDITS', hash: 'credits', enabled: true },
 ];
 
-export class MainMenu extends AppState<App> {
+export class MainMenu extends AppState<GraphicsApp> {
   private selectedIndex = 0;
 
   constructor(
-    app: App,
-    readonly gui: GUI<App>,
+    app: GraphicsApp,
+    readonly gui: GUI<GraphicsApp>,
     readonly onNewGame: () => void
   ) {
     super(app);

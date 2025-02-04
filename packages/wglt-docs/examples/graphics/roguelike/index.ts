@@ -6,6 +6,7 @@ import {
   Dialog,
   FONT_04B03,
   GUI,
+  GraphicsApp,
   GraphicsButtonRenderer,
   GraphicsButtonSlotRenderer,
   GraphicsLabelRenderer,
@@ -22,7 +23,6 @@ import {
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
 import { Player } from './actors/player';
-import { App } from './app';
 import { Game } from './game';
 import { ItemButton, ItemButtonRenderer } from './gui/itembutton';
 import { ItemContainerButtonSlot } from './gui/itemcontainerbuttonslot';
@@ -40,7 +40,7 @@ import { Talent } from './talent';
 const WIDTH = 640;
 const HEIGHT = 360;
 
-const app = new App({
+const app = new GraphicsApp({
   size: new Rect(0, 0, WIDTH, HEIGHT),
   font: FONT_04B03,
 });
