@@ -217,7 +217,6 @@ export class MapGenerator {
     const rng = this.game.rng;
     // const pos = new Point(rng.nextRange(0, map.width), rng.nextRange(0, map.height));
     const pos = new Point(256, 280);
-    console.log('start pos', pos.x, pos.y);
     const dir = new Point(1, 0);
 
     for (let i = 0; i < length; i++) {
@@ -249,11 +248,9 @@ export class MapGenerator {
       pos.y += dir.y;
 
       if (pos.x < 0 || pos.x >= map.width || pos.y < 0 || pos.y >= map.height) {
-        console.log('out of bounds pos', pos.x, pos.y);
         break;
       }
     }
-    console.log('end pos', pos.x, pos.y);
   }
 
   private touchUp(map: TileMap): void {

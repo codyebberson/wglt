@@ -224,6 +224,8 @@ function addSelectDialog(
   const callbackWrapper = (option: SelectOption, index: number): void => {
     dialog.visible = false;
     dialog.parent?.removeChild(dialog);
+    term.keyboard.clear();
+    term.mouse.buttons.clear();
     callback(option, index);
   };
 

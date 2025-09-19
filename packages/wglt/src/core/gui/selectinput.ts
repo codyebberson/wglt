@@ -26,44 +26,50 @@ export class SelectInput extends Component {
       return false;
     }
 
+    const mouse = app.mouse;
+    const keyboard = app.keyboard;
+
     for (let i = 0; i < this.options.length; i++) {
       const key = getKeyForLetterByIndex(i);
-      if (app.keyboard.isKeyPressed(key)) {
+      if (keyboard.isKeyPressed(key)) {
+        keyboard.clear();
         this.callback(this.options[i], i);
         return true;
       }
     }
 
-    if (app.keyboard.isUpKeyPressed()) {
+    if (keyboard.isUpKeyPressed()) {
       if (this.selectedIndex > 0) {
         this.selectedIndex--;
       }
       return true;
     }
 
-    if (app.keyboard.isDownKeyPressed()) {
+    if (keyboard.isDownKeyPressed()) {
       if (this.selectedIndex < this.options.length - 1) {
         this.selectedIndex++;
       }
       return true;
     }
 
-    if (app.keyboard.isEnterKeyPressed() && this.selectedIndex >= 0) {
+    if (keyboard.isEnterKeyPressed() && this.selectedIndex >= 0) {
+      keyboard.clear();
       this.callback(this.options[this.selectedIndex], this.selectedIndex);
       return true;
     }
 
-    if (app.keyboard.isEscapeKeyPressed()) {
+    if (keyboard.isEscapeKeyPressed()) {
+      keyboard.clear();
       return true;
     }
 
-    const mouse = app.mouse;
     const offset = this.screenRect;
     if (mouse.isClicked() && mouse.x >= offset.x1 && mouse.x < offset.x2) {
       for (let i = 0; i < this.options.length; i++) {
         const startY = offset.y + this.margin + i * this.lineHeight;
         const endY = startY + this.lineHeight;
         if (mouse.y >= startY && mouse.y < endY) {
+          mouse.buttons.clear();
           this.callback(this.options[i], i);
         }
       }

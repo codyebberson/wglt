@@ -18,6 +18,7 @@
       },
       "style": {
         "noParameterAssign": "off",
+        "useBlockStatements": "error",
         "useImportType": "off"
       },
       "suspicious": {

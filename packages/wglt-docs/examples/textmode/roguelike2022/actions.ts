@@ -46,7 +46,7 @@ export class MeleeAction extends ActionWithDirection {
       target.takeDamage(damage);
       zzfx(...hitSound);
     } else {
-      console.log(`${attackDesc} but does no damage.`, color);
+      this.engine.log(`${attackDesc} but does no damage.`, color);
     }
   }
 }
