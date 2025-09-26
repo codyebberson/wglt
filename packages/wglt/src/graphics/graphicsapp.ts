@@ -78,35 +78,35 @@ export class GraphicsApp extends BaseApp {
 
   /**
    * Draws a string.
-   * @param x0 The x-coordinate of the top-left corner.
-   * @param y0 The y-coordinate of the top-left corner.
+   * @param x The x-coordinate of the top-left corner.
+   * @param y The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(x0: number, y0: number, str: string, color?: Color, out?: Point): void {
+  drawString(x: number, y: number, str: string, color?: Color, out?: Point): void {
     const lines = str.split('\n');
     const height = this.font.getHeight();
-    let x = x0;
-    let y = y0;
+    let xi = x;
+    let yi = y;
     for (let i = 0; i < lines.length; i++) {
       if (i > 0) {
-        x = x0;
-        y += height;
+        xi = x;
+        yi += height;
       }
       for (let j = 0; j < lines[i].length; j++) {
         const charCode = lines[i].charCodeAt(j);
         if (this.font.isInRange(charCode)) {
           const offset = this.font.getOffset(charCode);
           const width = this.font.getWidth(charCode);
-          this.drawImage(x, y, offset, 0, width, height, color);
-          x += width;
+          this.drawImage(xi, yi, offset, 0, width, height, color);
+          xi += width;
         }
       }
     }
     if (out) {
-      out.x = x;
-      out.y = y;
+      out.x = xi;
+      out.y = yi;
     }
   }
 
@@ -132,22 +132,6 @@ export class GraphicsApp extends BaseApp {
   drawRightString(x: number, y: number, str: string, color?: Color): void {
     const x2 = x - this.font.getStringWidth(str);
     this.drawString(x2, y, str, color);
-  }
-
-  /**
-   * Draws a character.
-   * @param c The ASCII character code.
-   * @param x The x-coordinate of the top-left corner.
-   * @param y The y-coordinate of the top-left corner.
-   * @param color Optional color.
-   */
-  drawChar(c: number, x: number, y: number, color?: Color): void {
-    if (this.font.isInRange(c)) {
-      const offset = this.font.getOffset(c);
-      const width = this.font.getWidth(c);
-      const height = this.font.getHeight();
-      this.drawImage(x, y, offset, 0, width, height, color);
-    }
   }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {
