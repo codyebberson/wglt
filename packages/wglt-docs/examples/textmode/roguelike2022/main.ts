@@ -1,16 +1,13 @@
 import {
+  DefaultTerminalTheme,
   Dialog,
   GUI,
   Key,
   Label,
-  MessageDialog,
   Rect,
   SelectInput,
   SelectOption,
   Terminal,
-  TerminalDialogRenderer,
-  TerminalLabelRenderer,
-  TerminalSelectInputRenderer,
   zzfx,
 } from 'wglt';
 import { Actor } from './actor';
@@ -32,10 +29,7 @@ const term = new Terminal(
 );
 
 const gui = new GUI(term);
-gui.renderers.set(Dialog, new TerminalDialogRenderer());
-gui.renderers.set(MessageDialog, new TerminalDialogRenderer());
-gui.renderers.set(Label, new TerminalLabelRenderer());
-gui.renderers.set(SelectInput, new TerminalSelectInputRenderer());
+gui.setTheme(new DefaultTerminalTheme());
 
 let engine: Engine | undefined = undefined;
 

@@ -1,5 +1,6 @@
 import {
   CgaPalette,
+  DefaultTerminalTheme,
   Dialog,
   GUI,
   Key,
@@ -8,18 +9,12 @@ import {
   Rect,
   SelectInput,
   Terminal,
-  TerminalDialogRenderer,
-  TerminalLabelRenderer,
-  TerminalSelectInputRenderer,
 } from 'wglt';
 
 const term = new Terminal('canvas', 80, 45);
 
 const gui = new GUI(term);
-gui.renderers.set(Dialog, new TerminalDialogRenderer());
-gui.renderers.set(MessageDialog, new TerminalDialogRenderer());
-gui.renderers.set(Label, new TerminalLabelRenderer());
-gui.renderers.set(SelectInput, new TerminalSelectInputRenderer());
+gui.setTheme(new DefaultTerminalTheme());
 
 let x = 10;
 let y = 15;

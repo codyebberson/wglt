@@ -1,14 +1,4 @@
-import {
-  Dialog,
-  GUI,
-  Label,
-  MessageDialog,
-  SelectInput,
-  Terminal,
-  TerminalDialogRenderer,
-  TerminalLabelRenderer,
-  TerminalSelectInputRenderer,
-} from 'wglt';
+import { DefaultTerminalTheme, GUI, Terminal } from 'wglt';
 import { Game } from './game';
 import { MainMenu } from './mainmenu';
 
@@ -24,10 +14,7 @@ export class App extends Terminal {
     super('canvas', SCREEN_WIDTH, SCREEN_HEIGHT);
 
     this.gui = new GUI(this);
-    this.gui.renderers.set(Dialog, new TerminalDialogRenderer());
-    this.gui.renderers.set(MessageDialog, new TerminalDialogRenderer());
-    this.gui.renderers.set(Label, new TerminalLabelRenderer());
-    this.gui.renderers.set(SelectInput, new TerminalSelectInputRenderer());
+    this.gui.setTheme(new DefaultTerminalTheme());
 
     this.mainMenu = new MainMenu(this);
     this.state = this.mainMenu;

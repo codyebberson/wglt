@@ -55,6 +55,7 @@ export * from './textmode/font';
 export * from './textmode/gui/dialogrenderer';
 export * from './textmode/gui/labelrenderer';
 export * from './textmode/gui/selectinputrenderer';
+export * from './textmode/gui/theme';
 export * from './textmode/image';
 export * from './textmode/terminal';
 export * from './tilemap/path';
