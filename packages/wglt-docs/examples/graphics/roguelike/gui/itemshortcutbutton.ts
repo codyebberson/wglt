@@ -1,4 +1,4 @@
-import { ArrayList, Button, Container, GUI, GraphicsApp, GraphicsButtonRenderer, Rect } from 'wglt';
+import { ArrayList, Button, Container, GUI, GraphicsApp, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemShortcutButton extends Button {
@@ -44,15 +44,13 @@ export class ItemShortcutButton extends Button {
     }
     return count;
   }
-}
 
-export class ItemShortcutButtonRenderer extends GraphicsButtonRenderer {
-  render(gui: GUI<GraphicsApp>, component: ItemShortcutButton): void {
-    super.render(gui, component);
+  render(gui: GUI<GraphicsApp>): void {
+    gui.drawComponent(this, Button);
 
     const app = gui.context;
-    const dst = component.screenRect;
-    const count = component.countItems();
+    const dst = this.screenRect;
+    const count = this.countItems();
     app.drawRightString(dst.x2 - 3, dst.y2 - 10, count.toString());
   }
 }

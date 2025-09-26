@@ -1,4 +1,4 @@
-import { ArrayList, Container, GUI, GraphicsApp, Rect, Renderer, getKeyForDigit } from 'wglt';
+import { ArrayList, Container, Rect, getKeyForDigit } from 'wglt';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
@@ -100,11 +100,5 @@ export class ShortcutBar extends Container {
       }
     }
     return undefined;
-  }
-}
-
-export class ShortcutBarRenderer implements Renderer<GraphicsApp, ShortcutBar> {
-  render(gui: GUI<GraphicsApp>, component: ShortcutBar): void {
-    gui.drawChildren(component);
   }
 }

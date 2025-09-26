@@ -6,15 +6,19 @@ import { Rect } from '../../core/rect';
 import { GraphicsApp } from '../graphicsapp';
 
 export class AutoRectRenderer<T extends Component = Component> implements Renderer<GraphicsApp, T> {
-  constructor(readonly sourceRect: Rect) {}
-
-  render(gui: GUI<GraphicsApp>, component: Component): void {
+  static render(gui: GUI<GraphicsApp>, sourceRect: Rect, component: Component): void {
     const app = gui.context;
 
-    app.drawAutoRect(this.sourceRect, component.screenRect);
+    app.drawAutoRect(sourceRect, component.screenRect);
 
     if (component instanceof Container) {
       gui.drawChildren(component);
     }
+  }
+
+  constructor(readonly sourceRect: Rect) {}
+
+  render(gui: GUI<GraphicsApp>, component: Component): void {
+    AutoRectRenderer.render(gui, this.sourceRect, component);
   }
 }

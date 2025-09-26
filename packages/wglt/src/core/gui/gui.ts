@@ -5,6 +5,7 @@ import { Component, ComponentConstructor } from './component';
 import { Container } from './container';
 import { Panel } from './panel';
 import { RendererMap } from './renderermap';
+import { Theme } from './theme';
 
 export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;
@@ -27,6 +28,10 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     return this;
   }
 
+  setTheme(theme: Theme<TContext>): void {
+    this.renderers.setAll(theme.renderers);
+  }
+
   handleInput(): boolean {
     this.recalculateLayout();
     this.updateTooltip();
@@ -47,7 +52,10 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     }
   }
 
-  drawComponent<T extends Component>(component: T): void {
+  drawComponent<T extends Component>(
+    component: T,
+    overrideComponentClass?: ComponentConstructor<T>
+  ): void {
     if (!component.visible) {
       return;
     }
@@ -58,23 +66,31 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
       return;
     }
 
-    if (component.render) {
+    if (component.render && !overrideComponentClass) {
       component.render(this);
       return;
     }
 
-    const componentClass = component.constructor as ComponentConstructor<T>;
-    const renderer = this.renderers.get(componentClass);
-    if (renderer) {
-      renderer.render(this, component);
-    } else {
-      if (!this.rendererWarnings.has(componentClass.name)) {
-        console.error(`No renderer for component: ${componentClass.name}`);
-        this.rendererWarnings.add(componentClass.name);
+    let componentClass =
+      overrideComponentClass ?? (component.constructor as ComponentConstructor<T>);
+
+    while (componentClass && componentClass !== Component) {
+      const renderer = this.renderers.get(componentClass);
+      if (renderer) {
+        renderer.render(this, component);
+        return;
       }
-      if (component instanceof Container) {
-        this.drawChildren(component);
-      }
+
+      componentClass = Object.getPrototypeOf(componentClass) as ComponentConstructor<T>;
+    }
+
+    // Renderer not found
+    if (!this.rendererWarnings.has(componentClass.name)) {
+      console.error(`No renderer for component: ${componentClass.name}`);
+      this.rendererWarnings.add(componentClass.name);
+    }
+    if (component instanceof Container) {
+      this.drawChildren(component);
     }
   }
 

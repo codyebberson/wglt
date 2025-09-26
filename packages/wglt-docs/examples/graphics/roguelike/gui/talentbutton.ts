@@ -1,4 +1,4 @@
-import { Button, Container, GUI, GraphicsApp, GraphicsButtonRenderer, Rect } from 'wglt';
+import { Button, Container, GUI, GraphicsApp, Rect } from 'wglt';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';
 import { Talent } from '../talent';
@@ -18,15 +18,13 @@ export class TalentButton extends Button {
   click(): void {
     this.talent.use();
   }
-}
 
-export class TalentButtonRenderer extends GraphicsButtonRenderer {
-  render(gui: GUI<GraphicsApp>, component: TalentButton): void {
-    super.render(gui, component);
+  render(gui: GUI<GraphicsApp>): void {
+    gui.drawComponent(this, Button);
 
     const app = gui.context;
-    const talent = component.talent;
-    const rect = component.screenRect;
+    const talent = this.talent;
+    const rect = this.screenRect;
     const cooldownSprite = Sprites.COOLDOWN;
 
     if (talent.cooldown > 0 && cooldownSprite) {

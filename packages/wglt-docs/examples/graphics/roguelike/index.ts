@@ -1,36 +1,23 @@
 import {
-  AutoRectRenderer,
   Button,
   ButtonSlot,
   Container,
-  Dialog,
+  DefaultGraphicsTheme,
   FONT_04B03,
   GUI,
   GraphicsApp,
-  GraphicsButtonRenderer,
-  GraphicsButtonSlotRenderer,
-  GraphicsLabelRenderer,
-  GraphicsMessageLogRenderer,
-  GraphicsSelectInputRenderer,
   Key,
-  Label,
   Message,
   MessageLog,
   Panel,
   Rect,
-  SelectInput,
 } from 'wglt';
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
 import { Player } from './actors/player';
 import { Game } from './game';
-import { ItemButton, ItemButtonRenderer } from './gui/itembutton';
-import { ItemContainerButtonSlot } from './gui/itemcontainerbuttonslot';
 import { ItemContainerDialog } from './gui/itemcontainerdialog';
-import { ItemShortcutButton, ItemShortcutButtonRenderer } from './gui/itemshortcutbutton';
-import { ShortcutBar, ShortcutBarRenderer } from './gui/shortcutbar';
-import { ShortcutButtonSlot } from './gui/shortcutbuttonslot';
-import { TalentButton, TalentButtonRenderer } from './gui/talentbutton';
+import { ShortcutBar } from './gui/shortcutbar';
 import { MainMenu } from './mainmenu';
 import { createMap } from './mapgen';
 import { Palette } from './palette';
@@ -49,24 +36,7 @@ const dialogSourceRect = new Rect(0, 64, 24, 24);
 const buttonSlotRect = new Rect(0, 88, 24, 24);
 
 const gui = new GUI(app);
-
-// Standard components
-gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
-gui.renderers.set(Panel, new AutoRectRenderer(buttonSlotRect));
-gui.renderers.set(Label, new GraphicsLabelRenderer());
-gui.renderers.set(Button, new GraphicsButtonRenderer());
-gui.renderers.set(SelectInput, new GraphicsSelectInputRenderer());
-gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
-
-// Custom components
-gui.renderers.set(TalentButton, new TalentButtonRenderer());
-gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
-gui.renderers.set(ShortcutButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
-gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ItemContainerButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
-gui.renderers.set(ItemButton, new ItemButtonRenderer());
-gui.renderers.set(ItemShortcutButton, new ItemShortcutButtonRenderer());
+gui.setTheme(new DefaultGraphicsTheme({ dialogSourceRect, buttonSlotRect }));
 
 function newGame(): Game {
   const game = new Game(app, gui);

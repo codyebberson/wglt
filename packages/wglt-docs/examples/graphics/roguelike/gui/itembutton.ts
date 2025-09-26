@@ -1,14 +1,4 @@
-import {
-  ArrayList,
-  Button,
-  Container,
-  GUI,
-  GraphicsApp,
-  GraphicsButtonRenderer,
-  Message,
-  Panel,
-  Rect,
-} from 'wglt';
+import { ArrayList, Button, Container, GUI, GraphicsApp, Message, Panel, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -56,17 +46,15 @@ export class ItemButton extends Button {
       tooltipPanel.visible = false;
     }
   }
-}
 
-export class ItemButtonRenderer extends GraphicsButtonRenderer {
-  render(gui: GUI<GraphicsApp>, component: ItemButton): void {
-    super.render(gui, component);
+  render(gui: GUI<GraphicsApp>): void {
+    gui.drawComponent(this, Button);
 
     const app = gui.context;
-    const stackItems = component.stackItems;
+    const stackItems = this.stackItems;
 
     if (stackItems.length > -1) {
-      const dst = component.screenRect;
+      const dst = this.screenRect;
       app.drawRightString(dst.x2 - 3, dst.y2 - 10, stackItems.length.toString());
     }
   }

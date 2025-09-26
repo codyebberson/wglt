@@ -4,7 +4,7 @@ import { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {
-  render(gui: GUI<GraphicsApp>, component: Button): void {
+  static render(gui: GUI<GraphicsApp>, component: Button): void {
     const app = gui.context;
 
     const sourceRect = component.sprite;
@@ -27,5 +27,9 @@ export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {
         getShortcutKeyDisplay(component.shortcutKey)
       );
     }
+  }
+
+  render(gui: GUI<GraphicsApp>, component: Button): void {
+    GraphicsButtonRenderer.render(gui, component);
   }
 }

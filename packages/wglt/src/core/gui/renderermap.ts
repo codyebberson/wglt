@@ -13,6 +13,12 @@ export class RendererMap<TContext extends BaseApp = BaseApp> {
     return this.renderers.get(type.name);
   }
 
+  setAll(map: RendererMap<TContext>): void {
+    for (const [key, renderer] of map.renderers.entries()) {
+      this.renderers.set(key, renderer);
+    }
+  }
+
   get size(): number {
     return this.renderers.size;
   }

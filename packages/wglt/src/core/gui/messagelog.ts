@@ -3,9 +3,6 @@ import { Container } from '../../core/gui/container';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Rect } from '../../core/rect';
-import { GraphicsApp } from '../../graphics/graphicsapp';
-import { GUI } from './gui';
-import { Renderer } from './renderer';
 
 export class MessageLog extends Container {
   readonly messages: Message[];
@@ -31,18 +28,5 @@ export class MessageLog extends Container {
 
   handleInput(): boolean {
     return false;
-  }
-}
-
-export class GraphicsMessageLogRenderer implements Renderer<GraphicsApp, MessageLog> {
-  render(gui: GUI<GraphicsApp>, component: MessageLog): void {
-    const app = gui.context;
-    const x = component.rect.x;
-    let y = component.rect.y;
-    for (let i = 0; i < component.messages.length; i++) {
-      const msg = component.messages[i];
-      app.drawString(x, y, msg.text ?? '', msg.fg);
-      y += 10;
-    }
   }
 }
