@@ -242,15 +242,11 @@
       </p>
       <pre><code class="lang-typescript"><span class="hljs-comment">// v1</span>
 <span class="hljs-keyword">const</span> terminal = <span class="hljs-keyword">new</span> Terminal(<span class="hljs-built_in">document</span>.<span class="hljs-built_in">querySelector</span>(<span class="hljs-string">'canvas'</span>), <span class="hljs-number">80</span>, <span class="hljs-number">25</span>);
-terminal.writeAt(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'Hello World'</span>);
+terminal.drawString(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'Hello World'</span>);
 
 <span class="hljs-comment">// v2</span>
-<span class="hljs-keyword">const</span> terminal = <span class="hljs-keyword">new</span> Terminal({
-    canvas: <span class="hljs-built_in">document</span>.<span class="hljs-built_in">querySelector</span>(<span class="hljs-string">'canvas'</span>),
-    width: <span class="hljs-number">80</span>,
-    height: <span class="hljs-number">25</span>
-});
-terminal.console.writeAt(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'Hello World'</span>);
+<span class="hljs-keyword">const</span> terminal = <span class="hljs-keyword">new</span> Terminal(<span class="hljs-string">'canvas'</span>, <span class="hljs-number">80</span>, <span class="hljs-number">25</span>);
+terminal.drawString(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'Hello World'</span>);
 </code></pre>
       <p>
         More detailed migration examples are available in the migration guide.
