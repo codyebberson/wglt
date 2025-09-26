@@ -1,9 +1,6 @@
 import { CgaPalette, FONT_04B03, GraphicsApp, Rect } from 'wglt';
 
-const app = new GraphicsApp({
-  size: new Rect(0, 0, 640, 360),
-  font: FONT_04B03,
-});
+const app = new GraphicsApp('canvas', new Rect(0, 0, 640, 360), FONT_04B03);
 
 interface MyObject {
   x: number;

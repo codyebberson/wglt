@@ -15,10 +15,8 @@ export class App extends GraphicsApp {
   game?: Game;
 
   constructor() {
-    super({
-      size: new Rect(0, 0, 640, 360),
+    super('canvas', new Rect(0, 0, 640, 360), FONT_04B03, {
       imageUrl: '/perpetua.png',
-      font: FONT_04B03,
     });
     this.mainMenu = new MainMenu(this);
     this.highScores = new HighScores(this);

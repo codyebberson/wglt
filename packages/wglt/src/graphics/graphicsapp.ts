@@ -7,21 +7,28 @@ import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
 import { DrawList } from './drawlist';
 
-export interface GraphicsAppConfig {
-  readonly size: Rect;
-  readonly font: Font;
+export interface GraphicsAppOptions {
   readonly imageUrl?: string;
 }
 
 export class GraphicsApp extends BaseApp {
   private readonly drawList: DrawList;
 
-  constructor(readonly config: GraphicsAppConfig) {
-    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-    const mouse = new Mouse(canvas, config.size.width, config.size.height);
-    super(canvas, config.size, config.font, mouse);
+  constructor(
+    canvasOrSelector: HTMLCanvasElement | string,
+    size: Rect,
+    font: Font,
+    options?: GraphicsAppOptions
+  ) {
+    const canvas =
+      typeof canvasOrSelector === 'string'
+        ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
+        : canvasOrSelector;
 
-    const imageUrl = config.imageUrl || '/graphics.png';
+    const mouse = new Mouse(canvas, size.width, size.height);
+    super(canvas, size, font, mouse);
+
+    const imageUrl = options?.imageUrl || '/graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);
   }
 

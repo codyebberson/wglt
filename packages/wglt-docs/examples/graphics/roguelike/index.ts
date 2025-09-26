@@ -27,10 +27,7 @@ import { Talent } from './talent';
 const WIDTH = 640;
 const HEIGHT = 360;
 
-const app = new GraphicsApp({
-  size: new Rect(0, 0, WIDTH, HEIGHT),
-  font: FONT_04B03,
-});
+const app = new GraphicsApp('canvas', new Rect(0, 0, WIDTH, HEIGHT), FONT_04B03);
 
 const dialogSourceRect = new Rect(0, 64, 24, 24);
 const buttonSlotRect = new Rect(0, 88, 24, 24);
