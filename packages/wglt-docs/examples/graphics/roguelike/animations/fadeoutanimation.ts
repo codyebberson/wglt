@@ -24,8 +24,8 @@ export class FadeOutAnimation extends Animation {
       src.width,
       src.height,
       color,
-      game.app.size.width,
-      game.app.size.height
+      game.app.width,
+      game.app.height
     );
   }
 }

@@ -55,7 +55,7 @@ export class Game extends AppState<GraphicsApp> {
     readonly gui: GUI<GraphicsApp>
   ) {
     super(app);
-    this.viewport = new Rect(0, 0, app.size.width, app.size.height);
+    this.viewport = new Rect(0, 0, app.width, app.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
@@ -179,13 +179,13 @@ export class Game extends AppState<GraphicsApp> {
     if (!this.player) {
       return;
     }
-    this.viewport.x = this.player.x * TILE_SIZE - ((this.app.size.width / 2) | 0);
-    this.viewport.y = this.player.y * TILE_SIZE - ((this.app.size.height / 2) | 0);
+    this.viewport.x = this.player.x * TILE_SIZE - ((this.app.width / 2) | 0);
+    this.viewport.y = this.player.y * TILE_SIZE - ((this.app.height / 2) | 0);
   }
 
   private updateViewport(): void {
-    this.viewport.width = this.app.size.width;
-    this.viewport.height = this.app.size.height;
+    this.viewport.width = this.app.width;
+    this.viewport.height = this.app.height;
 
     const mouse = this.app.mouse;
     if (mouse.isDragging()) {

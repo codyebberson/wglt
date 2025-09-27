@@ -105,7 +105,7 @@ export class Game extends AppState<App> {
 
     super(app);
     this.gui = new GUI(app);
-    this.viewport = new Rect(0, 0, app.size.width, app.size.height);
+    this.viewport = new Rect(0, 0, app.width, app.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
@@ -348,10 +348,10 @@ export class Game extends AppState<App> {
         this.zoom *= 2.0;
       }
 
-      this.viewport.width = (this.zoom * this.app.size.width) | 0;
-      this.viewport.height = (this.zoom * this.app.size.height) | 0;
-      this.viewport.x = center.x - ((this.app.size.width / this.zoom / 2) | 0);
-      this.viewport.y = center.y - ((this.app.size.height / this.zoom / 2) | 0);
+      this.viewport.width = (this.zoom * this.app.width) | 0;
+      this.viewport.height = (this.zoom * this.app.height) | 0;
+      this.viewport.x = center.x - ((this.app.width / this.zoom / 2) | 0);
+      this.viewport.y = center.y - ((this.app.height / this.zoom / 2) | 0);
     }
   }
 
@@ -428,13 +428,13 @@ export class Game extends AppState<App> {
     if (!this.player) {
       return;
     }
-    this.viewport.x = this.player.centerPixelX - ((this.app.size.width / this.zoom / 2) | 0);
-    this.viewport.y = this.player.centerPixelY - ((this.app.size.height / this.zoom / 2) | 0);
+    this.viewport.x = this.player.centerPixelX - ((this.app.width / this.zoom / 2) | 0);
+    this.viewport.y = this.player.centerPixelY - ((this.app.height / this.zoom / 2) | 0);
   }
 
   private updateViewport(): void {
-    this.viewport.width = this.app.size.width / this.zoom;
-    this.viewport.height = this.app.size.height / this.zoom;
+    this.viewport.width = this.app.width / this.zoom;
+    this.viewport.height = this.app.height / this.zoom;
 
     const mouse = this.app.mouse;
     if (mouse.isDragging()) {

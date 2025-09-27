@@ -18,7 +18,7 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   dragOffset?: Point;
 
   constructor(context: TContext) {
-    super(context.size);
+    super(new Rect(0, 0, context.pixelWidth, context.pixelHeight));
     this.context = context;
     this.renderers = new RendererMap<TContext>();
     this.rendererWarnings = new Set();

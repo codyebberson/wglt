@@ -26,14 +26,14 @@ export abstract class BaseApp {
 
   constructor(
     readonly canvas: HTMLCanvasElement,
-    readonly size: Rect,
+    readonly pixelWidth: number,
+    readonly pixelHeight: number,
     readonly font: Font,
     readonly mouse: Mouse
   ) {
     this.canvas = canvas;
-    this.size = size;
     this.font = font;
-    this.center = new Point((this.size.width / 2) | 0, (this.size.height / 2) | 0);
+    this.center = new Point((this.pixelWidth / 2) | 0, (this.pixelHeight / 2) | 0);
 
     this.gl = canvas.getContext('webgl2', {
       alpha: false,
@@ -46,8 +46,8 @@ export abstract class BaseApp {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    this.canvas.width = this.size.width;
-    this.canvas.height = this.size.height;
+    this.canvas.width = this.pixelWidth;
+    this.canvas.height = this.pixelHeight;
     this.canvas.style.imageRendering = 'pixelated';
     this.canvas.style.outline = 'none';
     this.canvas.tabIndex = 0;

@@ -1,6 +1,6 @@
-import { CgaPalette, FONT_04B03, GraphicsApp, Rect } from 'wglt';
+import { CgaPalette, FONT_04B03, GraphicsApp } from 'wglt';
 
-const app = new GraphicsApp('canvas', new Rect(0, 0, 640, 360), FONT_04B03);
+const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
 
 interface MyObject {
   x: number;
@@ -35,8 +35,8 @@ app.update = (): void => {
       obj.dy = 0;
     }
 
-    if (obj.y > app.size.height) {
-      obj.y = app.size.height;
+    if (obj.y > app.height) {
+      obj.y = app.height;
       obj.dy *= -1;
     }
 
@@ -45,8 +45,8 @@ app.update = (): void => {
       obj.dx *= -1;
     }
 
-    if (obj.x > app.size.width) {
-      obj.x = app.size.width;
+    if (obj.x > app.width) {
+      obj.x = app.width;
       obj.dx *= -1;
     }
 

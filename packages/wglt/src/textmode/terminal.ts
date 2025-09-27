@@ -5,7 +5,6 @@ import { createTexture, initShaderProgram } from '../core/glutils';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
-import { Rect } from '../core/rect';
 import { interpolate } from '../core/utils';
 import { BlendMode } from './blendmode';
 import { Cell } from './cell';
@@ -49,8 +48,8 @@ export class Terminal extends BaseApp {
 
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
-    width: number,
-    height: number,
+    readonly width: number,
+    readonly height: number,
     options?: TerminalOptions
   ) {
     const canvas =
@@ -64,7 +63,7 @@ export class Terminal extends BaseApp {
 
     const mouse = new Mouse(canvas, width, height);
 
-    super(canvas, new Rect(0, 0, pixelWidth, pixelHeight), font, mouse);
+    super(canvas, pixelWidth, pixelHeight, font, mouse);
 
     this.console = new Console(width, height);
     this.pixelWidth = pixelWidth;

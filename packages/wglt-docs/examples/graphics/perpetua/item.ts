@@ -78,7 +78,7 @@ export abstract class Item extends Entity {
     //  1. Expose the notion of "inventory target" as a Game constructor prop
     //  2. Expose some kind of hook to override the pickup behavior
     // const start = new Point(this.pixelX - this.game.viewport.x, this.pixelY - this.game.viewport.y);
-    // const end = new Point(this.game.app.size.width - 16, this.game.app.size.height - 24);
+    // const end = new Point(this.game.app.width - 16, this.game.app.height - 24);
     // this.game.animations.push(new GuiSlideAnimation(this.sprite, start, end, 15));
   }
 

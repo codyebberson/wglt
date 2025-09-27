@@ -1,6 +1,6 @@
-import { CgaPalette, FONT_04B03, GraphicsApp, Rect, Sprite } from 'wglt';
+import { CgaPalette, FONT_04B03, GraphicsApp, Sprite } from 'wglt';
 
-const app = new GraphicsApp('canvas', new Rect(0, 0, 640, 360), FONT_04B03);
+const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
 
 // This is the hero sprite in graphics.png
 // The animation sequence starts at x=0, y=16, width=16, height=16, and has 2 frames

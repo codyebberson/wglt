@@ -15,7 +15,7 @@ import {
   Sprite,
 } from 'wglt';
 
-const app = new GraphicsApp('canvas', new Rect(0, 0, 640, 360), FONT_04B03);
+const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
 
 let x = 160;
 let y = 160;

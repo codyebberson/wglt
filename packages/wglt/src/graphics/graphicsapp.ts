@@ -16,7 +16,8 @@ export class GraphicsApp extends BaseApp {
 
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
-    size: Rect,
+    pixelWidth: number,
+    pixelHeight: number,
     font: Font,
     options?: GraphicsAppOptions
   ) {
@@ -25,11 +26,19 @@ export class GraphicsApp extends BaseApp {
         ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
         : canvasOrSelector;
 
-    const mouse = new Mouse(canvas, size.width, size.height);
-    super(canvas, size, font, mouse);
+    const mouse = new Mouse(canvas, pixelWidth, pixelHeight);
+    super(canvas, pixelWidth, pixelHeight, font, mouse);
 
     const imageUrl = options?.imageUrl || '/graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);
+  }
+
+  get width(): number {
+    return this.pixelWidth;
+  }
+
+  get height(): number {
+    return this.pixelHeight;
   }
 
   startFrame(): void {
@@ -40,12 +49,12 @@ export class GraphicsApp extends BaseApp {
   }
 
   endFrame(): void {
-    this.drawList.flush(this.size.width, this.size.height);
+    this.drawList.flush(this.pixelWidth, this.pixelHeight);
   }
 
   private resetGl(): void {
     const gl = this.gl;
-    gl.viewport(0, 0, this.size.width, this.size.height);
+    gl.viewport(0, 0, this.pixelWidth, this.pixelHeight);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }

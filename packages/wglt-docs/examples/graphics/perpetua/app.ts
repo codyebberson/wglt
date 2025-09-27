@@ -1,4 +1,4 @@
-import { FONT_04B03, GraphicsApp, Rect } from 'wglt';
+import { FONT_04B03, GraphicsApp } from 'wglt';
 import { Credits } from './credits';
 import { Player } from './entities/player';
 import { Game } from './game';
@@ -15,7 +15,7 @@ export class App extends GraphicsApp {
   game?: Game;
 
   constructor() {
-    super('canvas', new Rect(0, 0, 640, 360), FONT_04B03, {
+    super('canvas', 640, 360, FONT_04B03, {
       imageUrl: '/perpetua.png',
     });
     this.mainMenu = new MainMenu(this);

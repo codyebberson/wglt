@@ -5,10 +5,10 @@ import { dagger, leatherArmor } from './entities';
 import { Equipment } from './equipment';
 
 export function renderMainMenu(term: Terminal): void {
-  const centerX = Math.round(term.size.width / 2);
-  const centerY = Math.round(term.size.height / 2);
+  const centerX = Math.round(term.width / 2);
+  const centerY = Math.round(term.height / 2);
   term.drawCenteredString(centerX, centerY - 8, 'TOMBS OF ANCIENT KINGS', Colors.MENU_TITLE);
-  term.drawCenteredString(centerX, term.size.height - 2, 'By Cody Ebberson', Colors.MENU_TITLE);
+  term.drawCenteredString(centerX, term.height - 2, 'By Cody Ebberson', Colors.MENU_TITLE);
 }
 
 export function newGame(): Engine {

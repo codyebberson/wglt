@@ -30,7 +30,7 @@ export class EntityFramesRenderer implements Renderer<App, EntityFrames> {
     this.drawEntity(app, game, player, rect);
 
     // Draw enemy frames
-    rect.x = app.size.width - 84;
+    rect.x = app.width - 84;
     for (let i = 0; i < entities.length; i++) {
       const entity = entities.get(i);
       if (entity === game.player || !(entity instanceof StatsActor)) {
