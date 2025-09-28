@@ -5,11 +5,32 @@ import { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
 
+/**
+ * The Console class manages a 2D grid of text cells for terminal-style rendering.
+ * This is the core text buffer used by the Terminal class for ASCII graphics.
+ * Supports character/color manipulation, box drawing, and console-to-console operations.
+ *
+ * @example
+ * ```typescript
+ * const console = new Console(80, 25);
+ * console.drawString(0, 0, 'Hello World!');
+ * console.drawSingleBox(10, 5, 20, 10);
+ * console.fillRect(0, 20, 80, 5, ' ', Color.WHITE, Color.BLUE);
+ * ```
+ */
 @serializable
 export class Console {
+  /** The 2D grid of cells that make up the console. */
   readonly grid: Cell[][];
+
+  /** Optional clipping rectangle to restrict drawing operations. */
   clip?: Rect;
 
+  /**
+   * Creates a new Console with the specified dimensions.
+   * @param width - Width in characters.
+   * @param height - Height in characters.
+   */
   constructor(
     readonly width: number,
     readonly height: number
@@ -26,6 +47,9 @@ export class Console {
     this.clear();
   }
 
+  /**
+   * Clears the entire console, setting all cells to empty (character code 0).
+   */
   clear(): void {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
@@ -34,6 +58,12 @@ export class Console {
     }
   }
 
+  /**
+   * Gets the cell at the specified coordinates.
+   * @param x - The x-coordinate.
+   * @param y - The y-coordinate.
+   * @returns The Cell at the coordinates, or undefined if out of bounds.
+   */
   getCell(x: number, y: number): Cell | undefined {
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
       return undefined;
@@ -41,6 +71,12 @@ export class Console {
     return this.grid[y][x];
   }
 
+  /**
+   * Gets the character code at the specified coordinates.
+   * @param x - The x-coordinate.
+   * @param y - The y-coordinate.
+   * @returns The character code, or undefined if out of bounds.
+   */
   getCharCode(x: number, y: number): number | undefined {
     if (x < 0 || y < 0 || x >= this.width || y >= this.height) {
       return undefined;
@@ -48,6 +84,14 @@ export class Console {
     return this.grid[y][x].charCode;
   }
 
+  /**
+   * Draws a single character at the specified coordinates.
+   * @param x - The x-coordinate.
+   * @param y - The y-coordinate.
+   * @param c - The character to draw (string) or character code (number).
+   * @param fg - Optional foreground color.
+   * @param bg - Optional background color.
+   */
   drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color): void {
     if (this.clip && !this.clip.contains({ x, y })) {
       return;

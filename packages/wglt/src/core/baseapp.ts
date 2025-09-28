@@ -4,26 +4,61 @@ import { Mouse } from './mouse';
 import { Point } from './point';
 import { Rect } from './rect';
 
+/**
+ * Abstract base class for application states.
+ * States handle game logic, input processing, and rendering for different screens/modes.
+ * @template TApp - The type of application this state belongs to.
+ */
 export abstract class AppState<TApp extends BaseApp = BaseApp> {
+  /**
+   * Creates a new application state.
+   * @param app - The application instance this state belongs to.
+   */
   constructor(readonly app: TApp) {}
+
+  /**
+   * Updates the state logic. Called once per frame.
+   */
   abstract update(): void;
 }
 
+/**
+ * Configuration interface for creating a BaseApp instance.
+ */
 export interface BaseAppConfig {
   readonly canvas: HTMLCanvasElement;
   readonly sizeInPixels: Rect;
   readonly font: Font;
 }
 
+/**
+ * Abstract base class for all WGLT applications.
+ * Provides the core game loop, WebGL2 context, and input handling.
+ * Subclassed by Terminal and GraphicsApp.
+ */
 export abstract class BaseApp {
+  /** The WebGL2 rendering context. */
   readonly gl: WebGL2RenderingContext;
+  /** The center point of the canvas in pixels. */
   readonly center: Point;
+  /** Keyboard input handler. */
   readonly keyboard: Keyboard;
   private readonly boundLoop: () => void;
+  /** Duration of the last frame in milliseconds. */
   lastFrameDuration = 0;
+  /** Optional update callback called each frame. */
   update?: () => void;
+  /** Current application state (for state-based applications). */
   state?: AppState;
 
+  /**
+   * Creates a new BaseApp instance.
+   * @param canvas - The HTML canvas element to render to.
+   * @param pixelWidth - The width of the canvas in pixels.
+   * @param pixelHeight - The height of the canvas in pixels.
+   * @param font - The font to use for text rendering.
+   * @param mouse - The mouse input handler.
+   */
   constructor(
     readonly canvas: HTMLCanvasElement,
     readonly pixelWidth: number,
@@ -57,6 +92,10 @@ export abstract class BaseApp {
     requestAnimationFrame(this.boundLoop);
   }
 
+  /**
+   * The main render loop. Updates input, calls user update functions, and renders the frame.
+   * @private
+   */
   private renderLoop(): void {
     const t = performance.now();
     this.keyboard.updateKeys(t);
@@ -69,7 +108,14 @@ export abstract class BaseApp {
     requestAnimationFrame(this.boundLoop);
   }
 
+  /**
+   * Called at the beginning of each frame. Subclasses should implement frame setup logic here.
+   * @param time - The current time in milliseconds.
+   */
   abstract startFrame(time: number): void;
 
+  /**
+   * Called at the end of each frame. Subclasses should implement rendering logic here.
+   */
   abstract endFrame(): void;
 }

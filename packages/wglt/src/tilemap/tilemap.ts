@@ -17,22 +17,61 @@ export function getTileId(tileX: number, tileY: number): number {
   return tileY * 64 + tileX;
 }
 
+/**
+ * A TileMap represents a 2D grid-based game world with multiple layers.
+ * Provides efficient tile-based rendering, field-of-view calculations,
+ * and pathfinding support. Perfect for roguelikes and tile-based games.
+ *
+ * @example
+ * ```typescript
+ * // Create a 50x50 tilemap with 3 layers, 16x16 pixel tiles
+ * const tileMap = new TileMap(50, 50, 3, new Rect(0, 0, 16, 16));
+ *
+ * // Set a wall tile at position (10, 10) on layer 0
+ * const cell = tileMap.getCell(10, 10);
+ * if (cell) {
+ *   tileMap.setTile(10, 10, 0, 5); // Set tile ID 5 on layer 0
+ *   cell.blocked = true; // Make it block movement
+ *   cell.blockedSight = true; // Make it block vision
+ * }
+ *
+ * // Compute field of view from player position
+ * tileMap.computeFov(playerX, playerY, 10);
+ * ```
+ */
 @serializable
 export class TileMap {
+  /** Width of the tilemap in tiles. */
   readonly width: number;
+  /** Height of the tilemap in tiles. */
   readonly height: number;
+  /** Number of rendering layers (depth). */
   readonly depth: number;
+  /** Size and sprite sheet offset of each tile. */
   readonly tileSize: Rect;
+  /** 2D grid of cells containing tile properties. */
   readonly grid: TileMapCell[][];
+  /** Array of tile layers for rendering. */
   readonly layers: TileMapLayer[];
+  /** Whether the tilemap needs re-rendering. */
   dirty: boolean;
 
-  // Field-of-view state
+  /** X-coordinate of the last FOV calculation origin. */
   originX: number;
+  /** Y-coordinate of the last FOV calculation origin. */
   originY: number;
+  /** Currently visible area (for culling). */
   visibleRect: Rect;
+  /** Previously visible area (for dirty checking). */
   prevVisibleRect: Rect;
 
+  /**
+   * Creates a new TileMap.
+   * @param width - Width of the tilemap in tiles.
+   * @param height - Height of the tilemap in tiles.
+   * @param layerCount - Number of tile layers for depth. Defaults to 1.
+   * @param tileSize - Size of each tile in pixels. Defaults to 16x16.
+   */
   constructor(width: number, height: number, layerCount = 1, tileSize = new Rect(0, 0, 16, 16)) {
     this.width = width;
     this.height = height;

@@ -3,13 +3,47 @@ import { getKeyForLetterByIndex } from '../keys';
 import { Component } from './component';
 import { SelectOption } from './selectoption';
 
+/**
+ * A selectable list component that displays options and handles user selection.
+ * Supports both keyboard navigation (arrow keys, letter shortcuts) and mouse interaction.
+ * Commonly used for menus, inventories, and choice dialogs in roguelikes.
+ *
+ * @example
+ * ```typescript
+ * const options = [
+ *   { name: 'Attack', key: 'a' },
+ *   { name: 'Defend', key: 'd' },
+ *   { name: 'Cast Spell', key: 'c' },
+ *   { name: 'Run Away', key: 'r' }
+ * ];
+ *
+ * const selector = new SelectInput(
+ *   new Rect(10, 10, 200, 100),
+ *   options,
+ *   (option, index) => {
+ *     console.log(`Selected: ${option.name} at index ${index}`);
+ *   }
+ * );
+ * ```
+ */
 export class SelectInput extends Component {
+  /** Array of selectable options. */
   options: SelectOption[];
+  /** Callback function invoked when an option is selected. */
   callback: (option: SelectOption, index: number) => void;
+  /** Index of currently highlighted option (-1 if none selected). */
   selectedIndex = -1;
+  /** Margin around the content in pixels. */
   margin = 4;
+  /** Height of each line/option in pixels. */
   lineHeight = 10;
 
+  /**
+   * Creates a new SelectInput component.
+   * @param rect - The position and size of the selection area.
+   * @param options - Array of options that can be selected.
+   * @param callback - Function called when an option is selected.
+   */
   constructor(
     rect: Rect,
     options: SelectOption[],
@@ -20,6 +54,17 @@ export class SelectInput extends Component {
     this.callback = callback;
   }
 
+  /**
+   * Handles input for the selection component.
+   * Supports:
+   * - Letter keys (a-z) for direct selection by index
+   * - Arrow keys (up/down) for navigation
+   * - Enter to select highlighted option
+   * - Escape to cancel/close
+   * - Mouse clicks on options
+   * @returns True if input was handled.
+   * @override
+   */
   handleInput(): boolean {
     const app = this.root?.context;
     if (!app) {
@@ -29,6 +74,7 @@ export class SelectInput extends Component {
     const mouse = app.mouse;
     const keyboard = app.keyboard;
 
+    // Handle letter key shortcuts (a, b, c, etc.)
     for (let i = 0; i < this.options.length; i++) {
       const key = getKeyForLetterByIndex(i);
       if (keyboard.isKeyPressed(key)) {
@@ -38,6 +84,7 @@ export class SelectInput extends Component {
       }
     }
 
+    // Handle arrow key navigation
     if (keyboard.isUpKeyPressed()) {
       if (this.selectedIndex > 0) {
         this.selectedIndex--;
@@ -52,17 +99,20 @@ export class SelectInput extends Component {
       return true;
     }
 
+    // Handle enter key selection
     if (keyboard.isEnterKeyPressed() && this.selectedIndex >= 0) {
       keyboard.clear();
       this.callback(this.options[this.selectedIndex], this.selectedIndex);
       return true;
     }
 
+    // Handle escape key
     if (keyboard.isEscapeKeyPressed()) {
       keyboard.clear();
       return true;
     }
 
+    // Handle mouse clicks
     const offset = this.screenRect;
     if (mouse.isClicked() && mouse.x >= offset.x1 && mouse.x < offset.x2) {
       for (let i = 0; i < this.options.length; i++) {

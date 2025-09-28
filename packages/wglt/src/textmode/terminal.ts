@@ -12,13 +12,37 @@ import { Console } from './console';
 import { IBM_BIOS_FONT_DATA_URL } from './font';
 import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
+/**
+ * Configuration options for creating a Terminal instance.
+ */
 export interface TerminalOptions {
+  /** URL to a custom font image file. If not provided, uses the default IBM BIOS font. */
   readonly fontUrl?: string;
+  /** Custom font configuration. If not provided, uses the default IBM BIOS font. */
   readonly font?: MonospacedFont;
+  /** Custom movement key mappings. If not provided, uses standard roguelike keys (arrows, vi keys, numpad). */
   readonly movementKeys?: Partial<Record<Key, Point>>;
+  /** Maximum frames per second. If not provided, runs uncapped. */
   readonly maxFps?: number;
 }
 
+/**
+ * The Terminal class provides high-performance ASCII/text-mode rendering using WebGL2.
+ * Perfect for roguelikes, text adventures, and retro-style games.
+ *
+ * @example
+ * ```typescript
+ * const term = new Terminal('canvas', 80, 25);
+ * term.drawString(0, 0, 'Hello World!');
+ *
+ * term.update = () => {
+ *   const key = term.keyboard.getMovementKey();
+ *   if (key) {
+ *     // Handle player movement
+ *   }
+ * };
+ * ```
+ */
 export class Terminal extends BaseApp {
   readonly console: Console;
   readonly pixelWidth: number;
@@ -46,6 +70,13 @@ export class Terminal extends BaseApp {
   fps: number;
   averageFps: number;
 
+  /**
+   * Creates a new Terminal instance.
+   * @param canvasOrSelector - HTML canvas element or CSS selector string.
+   * @param width - Width of the terminal in characters.
+   * @param height - Height of the terminal in characters.
+   * @param options - Optional configuration for fonts, keys, and performance.
+   */
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
     readonly width: number,
@@ -309,22 +340,58 @@ export class Terminal extends BaseApp {
     this.render();
   }
 
+  /**
+   * Clears the entire terminal, filling it with empty cells.
+   */
   clear(): void {
     this.console.clear();
   }
 
+  /**
+   * Fills a rectangular area with a background color.
+   * @param x - The x-coordinate of the top-left corner.
+   * @param y - The y-coordinate of the top-left corner.
+   * @param w - The width of the rectangle in characters.
+   * @param h - The height of the rectangle in characters.
+   * @param color - The background color to fill with.
+   */
   fillRect(x: number, y: number, w: number, h: number, color: number): void {
     this.console.fillRect(x, y, w, h, 0, undefined, color);
   }
 
+  /**
+   * Gets the cell at the specified coordinates.
+   * @param x - The x-coordinate.
+   * @param y - The y-coordinate.
+   * @returns The Cell at the coordinates, or undefined if out of bounds.
+   */
   getCell(x: number, y: number): Cell | undefined {
     return this.console.getCell(x, y);
   }
 
+  /**
+   * Draws a single character at the specified coordinates.
+   * @param x - The x-coordinate.
+   * @param y - The y-coordinate.
+   * @param c - The character to draw (string) or character code (number).
+   * @param fg - Optional foreground color.
+   * @param bg - Optional background color.
+   */
   drawChar(x: number, y: number, c: string | number, fg?: Color, bg?: Color): void {
     this.console.drawChar(x, y, c, fg, bg);
   }
 
+  /**
+   * Draws (blits) part of another console onto this terminal.
+   * @param dstX - Destination x-coordinate on this terminal.
+   * @param dstY - Destination y-coordinate on this terminal.
+   * @param srcConsole - The source console to copy from.
+   * @param srcX - Source x-coordinate in the source console.
+   * @param srcY - Source y-coordinate in the source console.
+   * @param srcWidth - Width of the area to copy.
+   * @param srcHeight - Height of the area to copy.
+   * @param blendMode - Optional blend mode for combining colors.
+   */
   drawConsole(
     dstX: number,
     dstY: number,
@@ -338,6 +405,15 @@ export class Terminal extends BaseApp {
     this.console.drawConsole(dstX, dstY, srcConsole, srcX, srcY, srcWidth, srcHeight, blendMode);
   }
 
+  /**
+   * Draws a text string starting at the specified coordinates.
+   * Supports newlines for multi-line text.
+   * @param x - The x-coordinate to start drawing.
+   * @param y - The y-coordinate to start drawing.
+   * @param str - The text string to draw.
+   * @param color - Optional foreground color.
+   * @param bg - Optional background color.
+   */
   drawString(
     x: number,
     y: number,
@@ -348,10 +424,24 @@ export class Terminal extends BaseApp {
     this.console.drawString(x, y, str, color, bg);
   }
 
+  /**
+   * Draws a text string centered horizontally at the specified coordinates.
+   * @param x - The x-coordinate of the center point.
+   * @param y - The y-coordinate to draw at.
+   * @param str - The text string to draw.
+   * @param color - Optional foreground color.
+   */
   drawCenteredString(x: number, y: number, str: string, color?: number | undefined): void {
     this.console.drawCenteredString(x, y, str, color);
   }
 
+  /**
+   * Draws a text string right-aligned at the specified coordinates.
+   * @param x - The x-coordinate of the right edge.
+   * @param y - The y-coordinate to draw at.
+   * @param str - The text string to draw.
+   * @param color - Optional foreground color.
+   */
   drawRightString(x: number, y: number, str: string, color?: number | undefined): void {
     this.console.drawString(x - str.length, y, str, color);
   }

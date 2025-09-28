@@ -7,13 +7,41 @@ import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
 import { DrawList } from './drawlist';
 
+/**
+ * Configuration options for creating a GraphicsApp instance.
+ */
 export interface GraphicsAppOptions {
+  /** URL to the sprite sheet image. Defaults to '/graphics.png'. */
   readonly imageUrl?: string;
 }
 
+/**
+ * The GraphicsApp class provides high-performance tile-based graphics rendering using WebGL2.
+ * Perfect for modern roguelikes, tile-based games, and sprite-based graphics.
+ * Uses instanced rendering to efficiently draw thousands of sprites.
+ *
+ * @example
+ * ```typescript
+ * const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
+ * const playerSprite = new Sprite(0, 16, 16, 16, 2);
+ *
+ * app.update = () => {
+ *   app.drawImage(100, 100, 0, 16, 16, 16); // Draw sprite directly
+ *   playerSprite.draw(app, playerX, playerY); // Draw using sprite helper
+ * };
+ * ```
+ */
 export class GraphicsApp extends BaseApp {
   private readonly drawList: DrawList;
 
+  /**
+   * Creates a new GraphicsApp instance.
+   * @param canvasOrSelector - HTML canvas element or CSS selector string.
+   * @param pixelWidth - Width of the canvas in pixels.
+   * @param pixelHeight - Height of the canvas in pixels.
+   * @param font - The font to use for text rendering.
+   * @param options - Optional configuration including sprite sheet URL.
+   */
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
     pixelWidth: number,
@@ -33,14 +61,24 @@ export class GraphicsApp extends BaseApp {
     this.drawList = new DrawList(this.gl, imageUrl);
   }
 
+  /**
+   * The width of the canvas in pixels.
+   */
   get width(): number {
     return this.pixelWidth;
   }
 
+  /**
+   * The height of the canvas in pixels.
+   */
   get height(): number {
     return this.pixelHeight;
   }
 
+  /**
+   * Called at the start of each frame. Resets WebGL state and updates sprite animations.
+   * @param time - The current time in milliseconds (inherited from BaseApp).
+   */
   startFrame(): void {
     this.resetGl();
 
@@ -48,6 +86,9 @@ export class GraphicsApp extends BaseApp {
     Sprite.updateGlobalAnimations();
   }
 
+  /**
+   * Called at the end of each frame. Flushes all queued draw calls to the GPU.
+   */
   endFrame(): void {
     this.drawList.flush(this.pixelWidth, this.pixelHeight);
   }

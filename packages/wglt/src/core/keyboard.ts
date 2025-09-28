@@ -50,27 +50,60 @@ const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
   [Key.VK_NUMPAD5]: new Point(0, 0),
 };
 
+/**
+ * Handles keyboard input for WGLT applications.
+ * Provides both low-level key state access and high-level convenience methods
+ * for common roguelike input patterns.
+ *
+ * @example
+ * ```typescript
+ * // Basic key checking
+ * if (keyboard.isKeyPressed(Key.VK_SPACE)) {
+ *   // Handle space key press
+ * }
+ *
+ * // Roguelike movement keys
+ * const moveKey = keyboard.getMovementKey();
+ * if (moveKey) {
+ *   player.move(moveKey.x, moveKey.y);
+ * }
+ * ```
+ */
 export class Keyboard {
+  /** Internal key state management. */
   readonly keys = new InputSet<Key>();
 
   /**
-   * Creates a new keyboard module.
-   *
-   * @param el DOM el to attach listeners.
+   * Creates a new keyboard input handler.
+   * @param el - DOM element to attach event listeners to (usually the canvas).
    */
   constructor(el: HTMLElement) {
     el.addEventListener('keydown', (e) => this.setKey(e, true));
     el.addEventListener('keyup', (e) => this.setKey(e, false));
   }
 
+  /**
+   * Clears all key states. Useful for state transitions or pausing.
+   */
   clear(): void {
     this.keys.clear();
   }
 
+  /**
+   * Gets the Input object for a specific key.
+   * @param key - The key to get input state for.
+   * @returns The Input object containing press/release state.
+   */
   getKey(key: Key): Input {
     return this.keys.get(key);
   }
 
+  /**
+   * Internal method to handle browser keyboard events.
+   * @param e - The keyboard event from the browser.
+   * @param state - True for keydown, false for keyup.
+   * @private
+   */
   setKey(e: KeyboardEvent, state: boolean): void {
     const key = e.code as Key;
     if (key === Key.VK_F11) {
@@ -82,62 +115,125 @@ export class Keyboard {
     this.keys.get(key).setDown(state);
   }
 
+  /**
+   * Updates all key states. Called automatically by the game loop.
+   * @param time - Current time in milliseconds.
+   * @internal
+   */
   updateKeys(time: number): void {
     this.keys.updateAll(time);
   }
 
+  /**
+   * Checks if a key is currently held down.
+   * @param key - The key to check.
+   * @returns True if the key is currently pressed.
+   */
   isKeyDown(key: Key): boolean {
     return this.getKey(key).down;
   }
 
+  /**
+   * Checks if a key was just pressed (including key repeat).
+   * @param key - The key to check.
+   * @returns True if the key was just pressed or is repeating.
+   */
   isKeyPressed(key: Key): boolean {
     return this.getKey(key).isPressed();
   }
 
+  /**
+   * Checks if a down-left movement key is pressed (numpad 1, 'b').
+   * @returns True if any down-left key is pressed.
+   */
   isDownLeftKeyPressed(): boolean {
     return this.isKeyArrayPressed(SOUTHWEST_KEYS);
   }
 
+  /**
+   * Checks if a down movement key is pressed (down arrow, numpad 2, 'j').
+   * @returns True if any down key is pressed.
+   */
   isDownKeyPressed(): boolean {
     return this.isKeyArrayPressed(DOWN_KEYS);
   }
 
+  /**
+   * Checks if a down-right movement key is pressed (numpad 3, 'n').
+   * @returns True if any down-right key is pressed.
+   */
   isDownRightKeyPressed(): boolean {
     return this.isKeyArrayPressed(SOUTHEAST_KEYS);
   }
 
+  /**
+   * Checks if a left movement key is pressed (left arrow, numpad 4, 'h').
+   * @returns True if any left key is pressed.
+   */
   isLeftKeyPressed(): boolean {
     return this.isKeyArrayPressed(LEFT_KEYS);
   }
 
+  /**
+   * Checks if a wait/rest key is pressed (space, numpad 5).
+   * @returns True if any wait key is pressed.
+   */
   isWaitKeyPressed(): boolean {
     return this.isKeyArrayPressed(WAIT_KEYS);
   }
 
+  /**
+   * Checks if a right movement key is pressed (right arrow, numpad 6, 'l').
+   * @returns True if any right key is pressed.
+   */
   isRightKeyPressed(): boolean {
     return this.isKeyArrayPressed(RIGHT_KEYS);
   }
 
+  /**
+   * Checks if an up-left movement key is pressed (numpad 7, 'y').
+   * @returns True if any up-left key is pressed.
+   */
   isUpLeftKeyPressed(): boolean {
     return this.isKeyArrayPressed(NORTHWEST_KEYS);
   }
 
+  /**
+   * Checks if an up movement key is pressed (up arrow, numpad 8, 'k').
+   * @returns True if any up key is pressed.
+   */
   isUpKeyPressed(): boolean {
     return this.isKeyArrayPressed(UP_KEYS);
   }
 
+  /**
+   * Checks if an up-right movement key is pressed (numpad 9, 'u').
+   * @returns True if any up-right key is pressed.
+   */
   isUpRightKeyPressed(): boolean {
     return this.isKeyArrayPressed(NORTHEAST_KEYS);
   }
 
+  /**
+   * Checks if an enter/confirm key is pressed (enter, numpad enter).
+   * @returns True if any enter key is pressed.
+   */
   isEnterKeyPressed(): boolean {
     return this.isKeyArrayPressed(ENTER_KEYS);
   }
 
+  /**
+   * Checks if the escape key is pressed.
+   * @returns True if escape is pressed.
+   */
   isEscapeKeyPressed(): boolean {
     return this.isKeyArrayPressed(ESCAPE_KEYS);
   }
 
+  /**
+   * Checks if any shift key is pressed (left or right shift).
+   * @returns True if any shift key is pressed.
+   */
   isShiftKeyPressed(): boolean {
     return this.isKeyArrayPressed(SHIFT_KEYS);
   }

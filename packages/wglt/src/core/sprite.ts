@@ -3,10 +3,43 @@ import { GraphicsApp } from '../graphics/graphicsapp';
 
 const DEFAULT_TICKS_PER_FRAME = 20;
 
+/**
+ * Represents an animated sprite from a sprite sheet.
+ * Extends Rect to define the source region, with additional animation capabilities.
+ * All sprites share a global animation timer for synchronized animations.
+ *
+ * @example
+ * ```typescript
+ * // Static sprite (single frame)
+ * const coin = new Sprite(32, 16, 16, 16, 1);
+ *
+ * // Animated sprite (4 frames, loops)
+ * const player = new Sprite(0, 32, 16, 16, 4, true, 15);
+ *
+ * // Draw the sprite
+ * player.draw(app, playerX, playerY);
+ *
+ * // Draw flipped horizontally
+ * player.draw(app, playerX, playerY, true);
+ * ```
+ */
 export class Sprite extends Rect {
+  /** Global animation frame counter, shared by all sprites. */
   static globalAnimIndex = 0;
+
+  /** Current animation frame for this sprite instance. */
   private animFrame = 0;
 
+  /**
+   * Creates a new Sprite.
+   * @param x - The x-coordinate of the sprite on the sprite sheet.
+   * @param y - The y-coordinate of the sprite on the sprite sheet.
+   * @param width - The width of each frame in pixels.
+   * @param height - The height of each frame in pixels.
+   * @param frames - Number of animation frames (default: 1 for static sprites).
+   * @param loop - Whether the animation should loop (default: true).
+   * @param ticksPerFrame - Number of game ticks per animation frame (default: 20).
+   */
   constructor(
     x: number,
     y: number,
@@ -19,6 +52,14 @@ export class Sprite extends Rect {
     super(x, y, width, height);
   }
 
+  /**
+   * Draws the sprite at the specified screen coordinates.
+   * Automatically handles animation frame calculation based on global timer.
+   * @param app - The GraphicsApp instance to draw with.
+   * @param x - The x-coordinate on screen to draw at.
+   * @param y - The y-coordinate on screen to draw at.
+   * @param flipped - Whether to flip the sprite horizontally (default: false).
+   */
   draw(app: GraphicsApp, x: number, y: number, flipped = false): void {
     this.animFrame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
 
@@ -32,6 +73,10 @@ export class Sprite extends Rect {
     }
   }
 
+  /**
+   * Creates a copy of this sprite with the same properties.
+   * @returns A new Sprite instance with identical configuration.
+   */
   clone(): Sprite {
     return new Sprite(
       this.x,
@@ -44,6 +89,11 @@ export class Sprite extends Rect {
     );
   }
 
+  /**
+   * Updates the global animation timer used by all sprites.
+   * Called automatically by GraphicsApp each frame.
+   * @internal
+   */
   static updateGlobalAnimations(): void {
     Sprite.globalAnimIndex++;
   }

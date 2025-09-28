@@ -2,22 +2,70 @@ import { InputSet } from './input';
 import { Point } from './point';
 import { Rect } from './rect';
 
+/** Minimum distance in pixels required to register as a drag operation. */
 const MIN_DRAG_DISTANCE = 4;
 
+/**
+ * Handles mouse and touch input for WGLT applications.
+ * Provides click detection, drag operations, mouse wheel support, and touch compatibility.
+ * Automatically handles coordinate conversion and canvas aspect ratio adjustments.
+ *
+ * @example
+ * ```typescript
+ * // Mouse is typically created by BaseApp, but can be accessed via app.mouse
+ *
+ * // Check for clicks
+ * if (mouse.isClicked()) {
+ *   console.log(`Clicked at ${mouse.x}, ${mouse.y}`);
+ * }
+ *
+ * // Check for dragging
+ * if (mouse.isDragging()) {
+ *   console.log(`Dragging from ${mouse.start.x}, ${mouse.start.y}`);
+ * }
+ *
+ * // Check specific button states
+ * if (mouse.buttons.get(0).down) { // Left button
+ *   // Handle left button held down
+ * }
+ *
+ * if (mouse.buttons.get(2).isPressed()) { // Right button
+ *   // Handle right button press
+ * }
+ * ```
+ */
 export class Mouse {
+  /** Input state for mouse buttons (0=left, 1=middle, 2=right). */
   readonly buttons = new InputSet<number>();
+  /** Previous mouse position (for calculating deltas). */
   readonly prev: Point;
+  /** Position where the current drag/click started. */
   readonly start: Point;
+  /** Current mouse x-coordinate in canvas pixels. */
   x: number;
+  /** Current mouse y-coordinate in canvas pixels. */
   y: number;
+  /** Change in x-coordinate since last frame. */
   dx: number;
+  /** Change in y-coordinate since last frame. */
   dy: number;
+  /** Total distance dragged since mouse down. */
   dragDistance: number;
+  /** Horizontal mouse wheel delta this frame. */
   wheelDeltaX: number;
+  /** Vertical mouse wheel delta this frame. */
   wheelDeltaY: number;
+  /** Internal storage for wheel delta. */
   lastWheelDeltaX: number;
+  /** Internal storage for wheel delta. */
   lastWheelDeltaY: number;
 
+  /**
+   * Creates a new Mouse input handler.
+   * @param el - The HTML canvas element to attach event listeners to.
+   * @param width - The logical width of the canvas (for coordinate conversion).
+   * @param height - The logical height of the canvas (for coordinate conversion).
+   */
   constructor(
     readonly el: HTMLCanvasElement,
     readonly width: number,
@@ -35,6 +83,7 @@ export class Mouse {
     this.lastWheelDeltaX = 0;
     this.lastWheelDeltaY = 0;
 
+    // Set up event listeners for both mouse and touch
     el.addEventListener('mousedown', (e) => this.handleEvent(e));
     el.addEventListener('mouseup', (e) => this.handleEvent(e));
     el.addEventListener('mousemove', (e) => this.handleEvent(e));
@@ -111,6 +160,12 @@ export class Mouse {
     this.lastWheelDeltaY = e.deltaY;
   }
 
+  /**
+   * Updates mouse state for the current frame.
+   * Called automatically by the game loop.
+   * @param time - Current time in milliseconds.
+   * @internal
+   */
   update(time: number): void {
     this.dx = this.x - this.prev.x;
     this.dy = this.y - this.prev.y;
@@ -128,10 +183,18 @@ export class Mouse {
     }
   }
 
+  /**
+   * Checks if the left mouse button was clicked (pressed and released without dragging).
+   * @returns True if a click occurred this frame.
+   */
   isClicked(): boolean {
     return this.buttons.get(0).upCount === 1 && this.dragDistance < MIN_DRAG_DISTANCE;
   }
 
+  /**
+   * Checks if the mouse is currently being dragged.
+   * @returns True if the left button is down and has moved beyond the minimum drag distance.
+   */
   isDragging(): boolean {
     return this.buttons.get(0).down && this.dragDistance > MIN_DRAG_DISTANCE;
   }
