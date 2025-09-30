@@ -71,6 +71,10 @@ export class Game extends AppState<GraphicsApp> {
     return this.tileMap.tileSize;
   }
 
+  isPlayer(entity: Entity): boolean {
+    return entity === this.player;
+  }
+
   log(message: string | Message, color?: Color): void {
     if (this.messageLog) {
       this.messageLog.addMessage(message, color);

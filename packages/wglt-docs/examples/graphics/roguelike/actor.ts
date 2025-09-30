@@ -1,4 +1,4 @@
-import { ArrayList, Color, Sprite, TileMapCell } from 'wglt';
+import { ArrayList, Color, Sprite, TileMapCell, zzfx } from 'wglt';
 import { Ability, TargetType } from './ability';
 import { AI } from './ai/ai';
 import { BumpAnimation } from './animations/bumpanimation';
@@ -8,6 +8,7 @@ import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';
 import { Palette } from './palette';
+import { pickupSound, walkSound } from './sounds';
 import { Talent } from './talent';
 
 export class Actor extends Entity {
@@ -79,6 +80,11 @@ export class Actor extends Entity {
     const ySpeed = this.game.tileSize.height / slideCount;
     this.game.animations.push(new SlideAnimation(this, dx * xSpeed, dy * ySpeed, slideCount));
     this.game.blocked = true;
+
+    if (this.game.isPlayer(this)) {
+      zzfx(...walkSound);
+    }
+
     return true;
   }
 
@@ -178,6 +184,7 @@ export class Actor extends Entity {
     item.onPickup(this);
     this.inventory.add(item);
     this.game.entities.remove(item);
+    zzfx(...pickupSound);
   }
 
   use(item: Item): void {

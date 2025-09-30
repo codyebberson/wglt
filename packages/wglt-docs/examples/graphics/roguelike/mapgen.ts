@@ -1,4 +1,4 @@
-import { RNG, Rect, TileMap, getTileId } from 'wglt';
+import { RNG, Rect, TileMap, getTileId, zzfx } from 'wglt';
 import { ConfuseAbility } from './abilities/confuse';
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
@@ -12,6 +12,7 @@ import { Item } from './item';
 import { HealthPotion } from './items/healthpotion';
 import { Scroll } from './items/scroll';
 import { Palette } from './palette';
+import { nextLevelSound } from './sounds';
 import { Sprites } from './sprites';
 
 // Size of the map
@@ -144,6 +145,7 @@ export function createMap(game: Game): void {
   const stairs = new Entity(game, stairsLoc.x, stairsLoc.y, 'stairs', Sprites.STAIRS, true);
   stairs.onBump = (): boolean => {
     nextLevel(game);
+    zzfx(...nextLevelSound);
     return true;
   };
   game.entities.add(stairs);

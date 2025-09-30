@@ -1,6 +1,7 @@
-import { Sprite } from 'wglt';
+import { Sprite, zzfx } from 'wglt';
 import { Actor } from '../actor';
 import { Game } from '../game';
+import { hitSound } from '../sounds';
 
 export class Fighter extends Actor {
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite) {
@@ -10,6 +11,7 @@ export class Fighter extends Actor {
   onAttack(target: Actor, damage: number): void {
     if (damage > 0) {
       this.game.log(`${this.name} attacks ${target.name} for ${damage} hit points.`, 0x808080ff);
+      zzfx(...hitSound);
     } else {
       this.game.log(`${this.name} attacks ${target.name} but it has no effect!`, 0x808080ff);
     }
