@@ -1,5 +1,4 @@
 export * from './core/arraylist';
-export * from './core/arraylistlistener';
 export * from './core/baseapp';
 export * from './core/color';
 export * from './core/font';

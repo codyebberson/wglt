@@ -1,4 +1,4 @@
-import { ArrayList, Button, Panel, Rect, SimplePalette } from 'wglt';
+import { ArrayList, Button, Component, Rect, SimplePalette } from 'wglt';
 import { Actor } from '../actor';
 import { Item } from '../item';
 
@@ -47,7 +47,7 @@ export class VendorButton extends Button {
   //   }
   // }
 
-  decorateTooltip(_tooltipPanel: Panel): void {
+  decorateTooltip(): Component | undefined {
     // if (this.stackItems.length > 0) {
     //   const item = this.stackItems.get(0);
     //   item.onUpdateTooltip();
@@ -55,5 +55,6 @@ export class VendorButton extends Button {
     // }
     // // super.updateTooltip(tooltip);
     // return this.tooltipMessages;
+    return undefined;
   }
 }

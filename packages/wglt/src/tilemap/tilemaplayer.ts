@@ -1,5 +1,5 @@
 import { serializable } from '../core/serialize';
-import { getTileId } from './tilemap';
+import { getTileId } from './utils';
 
 @serializable
 export class TileMapLayer {

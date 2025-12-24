@@ -3,7 +3,6 @@ import { Point } from '../point';
 import { Rect } from '../rect';
 import { Component, type ComponentConstructor } from './component';
 import { Container } from './container';
-import { Panel } from './panel';
 import { RendererMap } from './renderermap';
 import { Theme } from './theme';
 
@@ -11,7 +10,7 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;
   readonly renderers: RendererMap<TContext>;
   readonly rendererWarnings: Set<string>;
-  tooltip?: Panel;
+  // tooltip?: Panel;
   tooltipElement?: Component;
   onDragStart?: (component: Component) => void;
   dragElement?: Component;
@@ -135,32 +134,38 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     }
 
     if (this.tooltipElement !== hoverPanel) {
-      // Hover element has changed
-      this.tooltipElement = hoverPanel;
-      if (!this.tooltip) {
-        // Create for first time
-        this.tooltip = new Panel(new Rect(0, 0, 1, 1));
-        this.addChild(this.tooltip);
-      } else {
-        // Move to front
-        this.moveChild(this.tooltip);
-        this.tooltip.removeAllChildren();
-      }
-      hoverPanel.decorateTooltip(this.tooltip);
+      // // Hover element has changed
+      // this.tooltipElement = hoverPanel;
+      // if (!this.tooltip) {
+      //   // Create for first time
+      //   this.tooltip = new Panel(new Rect(0, 0, 1, 1));
+      //   this.addChild(this.tooltip);
+      // } else {
+      //   // Move to front
+      //   this.moveChild(this.tooltip);
+      //   this.tooltip.removeAllChildren();
+      // }
+      // const tooltipContent = hoverPanel.decorateTooltip();
+      // if (tooltipContent) {
+      //   this.tooltip.addChild(tooltipContent);
+      //   this.tooltip.visible = true;
+      // } else {
+      //   this.tooltip.visible = false;
+      // }
     }
 
-    if (this.tooltip?.visible) {
-      // Update the tooltip to be on the mouse
-      // This is similar to WoW style tooltips.
-      this.tooltip.showAt(app, mouse.x, mouse.y);
-    }
+    // if (this.tooltip?.visible) {
+    //   // Update the tooltip to be on the mouse
+    //   // This is similar to WoW style tooltips.
+    //   this.tooltip.showAt(app, mouse.x, mouse.y);
+    // }
   }
 
   hideTooltip(): void {
     this.tooltipElement = undefined;
-    if (this.tooltip) {
-      this.tooltip.visible = false;
-    }
+    // if (this.tooltip) {
+    //   this.tooltip.visible = false;
+    // }
   }
 
   startDragging(app: BaseApp, component: Component): void {

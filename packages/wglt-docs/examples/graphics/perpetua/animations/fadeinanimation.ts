@@ -1,6 +1,7 @@
 import { fromRgb, Rect } from 'wglt';
-import { Game } from '../game';
-import { Animation, type AnimationFunction } from './animation';
+import type { Game } from '../game';
+import type { AnimationFunction } from './animation';
+import { Animation } from './animation';
 
 export class FadeInAnimation extends Animation {
   readonly duration: number;

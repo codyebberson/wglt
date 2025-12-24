@@ -1,4 +1,7 @@
-import type { ArrayListListener } from './arraylistlistener';
+export interface ArrayListListener<T> {
+  onAdd(array: ArrayList<T>, element: T): void;
+  onRemove(array: ArrayList<T>, element: T): void;
+}
 
 /**
  * A dynamic array implementation with event notification support.

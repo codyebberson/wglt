@@ -1,6 +1,6 @@
-import { Message, Sprite, TileMapCell } from 'wglt';
-import { Actor } from './actor';
-import { Entity } from './entity';
+import type { Message, Sprite, TileMapCell } from 'wglt';
+import type { Actor } from './actor';
+import type { Entity } from './entity';
 
 export const TargetType = {
   SELF: 0,

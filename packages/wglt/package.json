@@ -14,5 +14,12 @@
   },
   "devDependencies": {
     "typescript": "5.9.3"
+  },
+  "madge": {
+    "detectiveOptions": {
+      "ts": {
+        "skipTypeImports": true
+      }
+    }
   }
 }

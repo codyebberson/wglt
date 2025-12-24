@@ -1,6 +1,6 @@
 import { FONT_04B03, GraphicsApp } from 'wglt';
 import { Credits } from './credits';
-import { Player } from './entities/player';
+import type { Player } from './entities/player';
 import { Game } from './game';
 import { HighScores } from './highscores';
 import { Gold } from './items/gold';

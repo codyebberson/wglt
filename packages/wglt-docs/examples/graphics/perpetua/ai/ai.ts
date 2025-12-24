@@ -1,4 +1,4 @@
-import { Actor } from '../actor';
+import type { Actor } from '../actor';
 
 export abstract class AI {
   readonly actor: Actor;

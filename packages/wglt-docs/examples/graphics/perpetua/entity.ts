@@ -1,6 +1,7 @@
-import { Point, Sprite } from 'wglt';
-import { Actor } from './actor';
-import { Game } from './game';
+import type { Sprite } from 'wglt';
+import { Point } from 'wglt';
+import type { Actor } from './actor';
+import type { Game } from './game';
 
 export class Entity extends Point {
   readonly game: Game;

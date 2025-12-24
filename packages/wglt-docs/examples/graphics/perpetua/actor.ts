@@ -1,13 +1,15 @@
-import { ArrayList, type Color, Sprite, TileMapCell } from 'wglt';
-import { type Ability, TargetType } from './ability';
-import { AI } from './ai/ai';
+import type { Color } from 'wglt';
+import { ArrayList, Sprite, TileMapCell } from 'wglt';
+import type { Ability } from './ability';
+import { TargetType } from './ability';
+import type { AI } from './ai/ai';
 import { BumpAnimation } from './animations/bumpanimation';
 import { FloatingTextAnimation } from './animations/floatingtextanimation';
 import { SlideAnimation } from './animations/slideanimation';
 import { Entity } from './entity';
-import { Game } from './game';
-import { Item } from './item';
-import { Talent } from './talent';
+import type { Game } from './game';
+import type { Item } from './item';
+import type { Talent } from './talent';
 
 export class Actor extends Entity {
   hp: number;

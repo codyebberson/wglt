@@ -1,10 +1,10 @@
+import type { Color } from 'wglt';
 import {
   AppState,
   ArrayList,
   AutoRectRenderer,
   Button,
   ButtonSlot,
-  type Color,
   computePath,
   Container,
   Dialog,
@@ -27,12 +27,14 @@ import {
   TileMapCell,
   TileMapRenderer,
 } from 'wglt';
-import { type Ability, TargetType } from './ability';
+import type { Ability } from './ability';
+import { TargetType } from './ability';
 import { Actor } from './actor';
-import { Animation, type AnimationFunction } from './animations/animation';
+import type { AnimationFunction } from './animations/animation';
+import { Animation } from './animations/animation';
 import { FadeInAnimation } from './animations/fadeinanimation';
 import { FadeOutAnimation } from './animations/fadeoutanimation';
-import { App } from './app';
+import type { App } from './app';
 import { Player } from './entities/player';
 import { Entity } from './entity';
 import { BottomPanel, BottomPanelRenderer } from './gui/bottompanel';

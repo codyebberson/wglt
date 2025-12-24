@@ -1,8 +1,6 @@
 import type { PointLike } from '../point';
 import { Rect } from '../rect';
-import { Container } from './container';
-import { GUI } from './gui';
-import type { Panel } from './panel';
+import type { GUI } from './gui';
 
 /**
  * Abstract base class for all GUI components in WGLT.
@@ -30,7 +28,7 @@ export abstract class Component {
   /** Absolute screen position and size (calculated during layout). */
   readonly screenRect: Rect;
   /** Parent container, if this component is a child. */
-  parent?: Container;
+  parent?: Component;
   /** Optional custom render function. */
   render?(gui: GUI): void;
   /** Whether this component is visible and should be rendered. */
@@ -92,6 +90,14 @@ export abstract class Component {
   }
 
   /**
+   * Removes a child component from this container.
+   * @param _child - The component to remove.
+   */
+  removeChild(_child: Component): void {
+    // By default, components do not have children
+  }
+
+  /**
    * Determines whether this component can be dragged.
    * @returns True if the component supports drag operations.
    */
@@ -125,10 +131,11 @@ export abstract class Component {
    * Override this method to provide tooltip content.
    * @param tooltipPanel - The panel to configure for tooltip display.
    */
-  decorateTooltip(tooltipPanel: Panel): void {
+  decorateTooltip(): Component | undefined {
     // By default, no visible tooltips
     // Inheriting classes can override this method with tooltip details
-    tooltipPanel.visible = false;
+    // tooltipPanel.visible = false;
+    return undefined;
   }
 }
 

@@ -1,4 +1,4 @@
-import { ArrayList, Button, Container, GraphicsApp, GUI, Message, Panel, Rect } from 'wglt';
+import { ArrayList, Button, Component, Container, GraphicsApp, GUI, Message, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -32,7 +32,7 @@ export class ItemButton extends Button {
     }
   }
 
-  decorateTooltip(tooltipPanel: Panel): void {
+  decorateTooltip(): Component | undefined {
     let tooltipMessages: Message[] | undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
@@ -40,10 +40,12 @@ export class ItemButton extends Button {
     }
 
     if (tooltipMessages) {
-      tooltipPanel.addChild(Container.fromMessages(tooltipMessages));
-      tooltipPanel.visible = true;
+      // tooltipPanel.addChild(Container.fromMessages(tooltipMessages));
+      // tooltipPanel.visible = true;
+      return Container.fromMessages(tooltipMessages);
     } else {
-      tooltipPanel.visible = false;
+      // tooltipPanel.visible = false;
+      return undefined;
     }
   }
 

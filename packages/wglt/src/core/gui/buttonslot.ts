@@ -2,7 +2,7 @@ import { Container } from '../../core/gui/container';
 import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Button } from './button';
-import { Panel } from './panel';
+import type { Component } from './component';
 
 export class ButtonSlot extends Container {
   shortcutKey?: Key;
@@ -42,10 +42,11 @@ export class ButtonSlot extends Container {
     return mouse.buttons.get(0).down && this.screenRect.contains(mouse);
   }
 
-  decorateTooltip(tooltipPanel: Panel): void {
-    const button = this.button;
-    if (button) {
-      button.decorateTooltip(tooltipPanel);
-    }
+  decorateTooltip(): Component | undefined {
+    // const button = this.button;
+    // if (button) {
+    //   button.decorateTooltip(tooltipPanel);
+    // }
+    return this.button?.decorateTooltip();
   }
 }
