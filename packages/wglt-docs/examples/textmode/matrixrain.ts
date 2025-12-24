@@ -1,4 +1,4 @@
-import { Cell, CgaPalette, RNG, Terminal, fromRgb } from 'wglt';
+import { Cell, CgaPalette, fromRgb, RNG, Terminal } from 'wglt';
 
 const w = 80;
 const h = 45;

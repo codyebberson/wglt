@@ -44,4 +44,4 @@ export const Chars = {
   BLOCK_LEFT_HALF: 13 * 16 + 13,
   BLOCK_RIGHT_HALF: 13 * 16 + 14,
   BLOCK_TOP_HALF: 13 * 16 + 15,
-};
+} as const;

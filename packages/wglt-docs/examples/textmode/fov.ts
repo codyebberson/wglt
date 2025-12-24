@@ -1,11 +1,11 @@
 import {
   CgaPalette,
+  computePath,
   FovQuadrants,
+  getFovQuadrant,
   Terminal,
   TileMap,
   TileMapCell,
-  computePath,
-  getFovQuadrant,
 } from 'wglt';
 
 const SCREEN_WIDTH = 80;

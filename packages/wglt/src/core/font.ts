@@ -81,11 +81,11 @@ export class ProportionalFont extends Font {
   }
 }
 
-export const FONT_IBM_BIOS = new MonospacedFont(new Rect(0, 0, 8, 8));
+export const FONT_IBM_BIOS: MonospacedFont = new MonospacedFont(new Rect(0, 0, 8, 8));
 
-export const FONT_PRESS_START = new MonospacedFont(new Rect(0, 0, 8, 8));
+export const FONT_PRESS_START: MonospacedFont = new MonospacedFont(new Rect(0, 0, 8, 8));
 
-export const FONT_04B03 = new ProportionalFont(
+export const FONT_04B03: ProportionalFont = new ProportionalFont(
   8,
   [
     4, 2, 4, 6, 5, 6, 6, 2, 3, 3, 4, 4, 3, 4, 2, 6, 5, 3, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 4, 4, 4, 5,

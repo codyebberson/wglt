@@ -31,7 +31,7 @@ const term = new Terminal(
 const gui = new GUI(term);
 gui.setTheme(new DefaultTerminalTheme());
 
-let engine: Engine | undefined = undefined;
+let engine: Engine | undefined;
 
 openMainMenu();
 
@@ -86,7 +86,7 @@ function openMainMenu(): void {
           try {
             setEngine(loadGame());
             zzfx(...menuBlipSound);
-          } catch (err) {
+          } catch (_err) {
             gui.addChild(
               new Dialog(
                 new Rect(10, 10, 20, 10),

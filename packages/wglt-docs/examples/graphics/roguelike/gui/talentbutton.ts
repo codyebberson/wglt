@@ -1,4 +1,4 @@
-import { Button, Container, GUI, GraphicsApp, Rect } from 'wglt';
+import { Button, Container, GraphicsApp, GUI, Rect } from 'wglt';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';
 import { Talent } from '../talent';

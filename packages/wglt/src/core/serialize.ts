@@ -16,7 +16,7 @@ interface ArrayViewPlaceholder {
   $data: string;
 }
 
-const classDefinitions = new Map<string, ObjectConstructor>();
+const classDefinitions: Map<string, ObjectConstructor> = new Map();
 
 /**
  * Decorates a class to make serializable.
@@ -108,7 +108,6 @@ export function deserialize(str: string): unknown {
   for (let i = 0; i < instances.length; i++) {
     const instance = instances[i];
     const classDefinition = classDefinitions.get(instance.$type as string) as ObjectConstructor;
-    // biome-ignore lint/performance/noDelete: Need to remove $type property entirely
     delete instance.$type;
     instances[i] = Object.create(
       classDefinition.prototype,

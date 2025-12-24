@@ -1,4 +1,4 @@
-import { ArrayList, Button, Container, GUI, GraphicsApp, Message, Panel, Rect } from 'wglt';
+import { ArrayList, Button, Container, GraphicsApp, GUI, Message, Panel, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -33,7 +33,7 @@ export class ItemButton extends Button {
   }
 
   decorateTooltip(tooltipPanel: Panel): void {
-    let tooltipMessages: Message[] | undefined = undefined;
+    let tooltipMessages: Message[] | undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
       tooltipMessages = item.tooltipMessages;

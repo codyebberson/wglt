@@ -1,5 +1,5 @@
 import { Color } from '../core/color';
-import { ExtendedTexture, createTexture, initShaderProgram } from '../core/glutils';
+import { createTexture, ExtendedTexture, initShaderProgram } from '../core/glutils';
 
 const BUFFER_SIZE = 65536;
 const ELEMENTS_PER_INSTANCE = 9;

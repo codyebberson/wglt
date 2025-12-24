@@ -95,7 +95,7 @@ let prevNoise = 0;
 /**
  * Currently playing music.
  */
-let currMusic: AudioBufferSourceNode | undefined = undefined;
+let currMusic: AudioBufferSourceNode | undefined;
 
 /**
  * Parses a hex substring into a decimal number.

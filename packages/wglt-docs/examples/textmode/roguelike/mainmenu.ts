@@ -3,10 +3,10 @@ import {
   CgaPalette,
   Console,
   Dialog,
+  loadImage2x,
   Rect,
   SelectInput,
   SelectOption,
-  loadImage2x,
 } from 'wglt';
 import { App } from './app';
 

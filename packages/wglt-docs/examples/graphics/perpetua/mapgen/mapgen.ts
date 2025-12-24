@@ -1,4 +1,4 @@
-import { Point, Rect, TileMap, getTileId } from 'wglt';
+import { getTileId, Point, Rect, TileMap } from 'wglt';
 import { FlashHealAbility } from '../abilities/flashheal';
 import { LeapAbility } from '../abilities/leap';
 import { LightningAbility } from '../abilities/lightning';

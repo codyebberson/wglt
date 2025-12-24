@@ -1,4 +1,4 @@
-import { Color, RNG, Terminal, TileMapCell, serializable } from 'wglt';
+import { Color, RNG, serializable, Terminal, TileMapCell } from 'wglt';
 import { Action } from './actions';
 import { Actor } from './actor';
 import { BaseComponent } from './base';

@@ -80,7 +80,7 @@ export class LightningAbility implements Ability {
     range: number
   ): Actor | undefined {
     let minDist = range + 1;
-    let result = undefined;
+    let result: Actor | undefined;
     for (let i = 0; i < game.entities.length; i++) {
       const entity = game.entities.get(i);
       if (entity === player) {

@@ -2,10 +2,10 @@ import {
   ArrayList,
   ButtonSlot,
   Dialog,
+  getKeyForLetterByIndex,
   Message,
   Rect,
   SimplePalette,
-  getKeyForLetterByIndex,
 } from 'wglt';
 import { Actor } from '../actor';
 import { Item } from '../item';

@@ -1,6 +1,6 @@
 // Based on: https://lodev.org/cgtutor/fire.html
 
-import { RNG, Terminal, fromHsv } from 'wglt';
+import { fromHsv, RNG, Terminal } from 'wglt';
 
 const w = 80;
 const h = 45;

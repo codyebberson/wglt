@@ -23,4 +23,4 @@ export const ColodorePalette = {
   LIGHT_GREEN: fromRgb(170, 255, 102),
   LIGHT_BLUE: fromRgb(0, 136, 255),
   LIGHT_GRAY: fromRgb(187, 187, 187),
-};
+} as const;

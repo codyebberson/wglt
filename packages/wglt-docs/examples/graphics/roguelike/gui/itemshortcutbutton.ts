@@ -1,4 +1,4 @@
-import { ArrayList, Button, Container, GUI, GraphicsApp, Rect } from 'wglt';
+import { ArrayList, Button, Container, GraphicsApp, GUI, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemShortcutButton extends Button {

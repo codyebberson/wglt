@@ -8,7 +8,7 @@ export type Color = number;
  * @param a Optional alpha (0-255).
  * @return A 32-bit unsigned integer color.
  */
-export function fromRgb(r: number, g: number, b: number, a = 255): Color {
+export function fromRgb(r: number, g: number, b: number, a: number = 255): Color {
   // Use unsigned right shift to convert to unsigned 32-bit integer
   return (((r << 24) + (g << 16) + (b << 8) + a) >>> 0) as Color;
 }
@@ -24,7 +24,7 @@ export function fromRgb(r: number, g: number, b: number, a = 255): Color {
  * @param a Optional alpha (0.0 - 1.0).
  * @return A 32-bit unsigned integer color.
  */
-export function fromHsv(h: number, s: number, v: number, a = 1): Color {
+export function fromHsv(h: number, s: number, v: number, a: number = 1): Color {
   const i = (h * 6) | 0;
   const f = h * 6 - i;
   const p = v * (1 - s);

@@ -1,4 +1,4 @@
-import { Color, Message, SimplePalette, Sprite, fromRgb } from 'wglt';
+import { Color, fromRgb, Message, SimplePalette, Sprite } from 'wglt';
 import { Actor } from './actor';
 import { Entity } from './entity';
 import { Game } from './game';

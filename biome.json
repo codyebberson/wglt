@@ -1,8 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -13,9 +11,6 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "nursery": {
-        "useExplicitType": "error"
-      },
       "style": {
         "noParameterAssign": "off",
         "useBlockStatements": "error",
@@ -35,6 +30,6 @@
     }
   },
   "files": {
-    "ignore": [".turbo", "dist", "zzfx"]
+    "includes": ["**", "!**/.turbo", "!**/dist", "!**/node_modules", "!**/zzfx"]
   }
 }

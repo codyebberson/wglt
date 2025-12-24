@@ -3,7 +3,7 @@
  * IBM terminal font.
  * See img/font.png.
  */
-export const IBM_BIOS_FONT_DATA_URL =
+export const IBM_BIOS_FONT_DATA_URL: string =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACAAQ' +
   'MAAAD58POIAAAABlBMVEUAAAD///+l2Z/dAAAEhklEQVRIx42Sv4oUQRDGC4UzadSwwMUD8' +
   'QEKlbWD4Q58B/NGpTVocKO1wXHUzMAH0AcwMTYVGg5ag0IzEXaRjdZEZKNzkKbHqtnzHypY' +

@@ -60,7 +60,7 @@ export class Sprite extends Rect {
    * @param y - The y-coordinate on screen to draw at.
    * @param flipped - Whether to flip the sprite horizontally (default: false).
    */
-  draw(app: GraphicsApp, x: number, y: number, flipped = false): void {
+  draw(app: GraphicsApp, x: number, y: number, flipped: boolean = false): void {
     this.animFrame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
 
     const u = this.x + this.animFrame * this.width;

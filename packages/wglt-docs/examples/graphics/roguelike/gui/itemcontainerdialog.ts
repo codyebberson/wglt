@@ -1,4 +1,4 @@
-import { ArrayList, ButtonSlot, Dialog, Message, Rect, getKeyForLetterByIndex } from 'wglt';
+import { ArrayList, ButtonSlot, Dialog, getKeyForLetterByIndex, Message, Rect } from 'wglt';
 import { Item } from '../item';
 import { ItemButton } from './itembutton';
 import { ItemContainerButtonSlot } from './itemcontainerbuttonslot';

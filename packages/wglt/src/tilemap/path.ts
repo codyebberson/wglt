@@ -2,9 +2,9 @@ import { PointLike } from '../core/point';
 import { TileMap } from './tilemap';
 import { TileMapCell } from './tilemapcell';
 
-const dxs = [-1, 0, 1, -1, 1, -1, 0, 1];
-const dys = [-1, -1, -1, 0, 0, 1, 1, 1];
-const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5];
+const dxs = [-1, 0, 1, -1, 1, -1, 0, 1] as const;
+const dys = [-1, -1, -1, 0, 0, 1, 1, 1] as const;
+const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5] as const;
 let pathId = 0;
 
 /**
@@ -19,7 +19,7 @@ export function computePath(
   map: TileMap,
   source: PointLike,
   dest: PointLike | undefined,
-  maxDist = 100
+  maxDist: number = 100
 ): TileMapCell[] | undefined {
   pathId++;
 

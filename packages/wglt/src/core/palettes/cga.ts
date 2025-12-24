@@ -23,4 +23,4 @@ export const CgaPalette = {
   LIGHT_MAGENTA: fromRgb(0xff, 0x55, 0xff),
   DARK_MAGENTA: fromRgb(0xaa, 0x00, 0xaa),
   ORANGE: fromRgb(0xff, 0x88, 0x00),
-};
+} as const;

@@ -9,7 +9,7 @@
  * f = varying vec4 vFgColor;
  * g = varying vec4 vBgColor;
  */
-export const VERTEX_SHADER_SOURCE =
+export const VERTEX_SHADER_SOURCE: string =
   '#version 300 es\n' +
   'precision highp float;' +
   'in vec2 a;' +
@@ -35,7 +35,7 @@ export const VERTEX_SHADER_SOURCE =
  * s = uniform sampler2D uSampler;
  * o = out vec4 oColor;
  */
-export const FRAGMENT_SHADER_SOURCE =
+export const FRAGMENT_SHADER_SOURCE: string =
   '#version 300 es\n' +
   'precision highp float;' +
   'in vec2 e;' +

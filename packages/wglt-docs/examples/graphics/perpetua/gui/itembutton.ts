@@ -2,8 +2,8 @@ import {
   ArrayList,
   Button,
   Container,
-  GUI,
   GraphicsApp,
+  GUI,
   Message,
   Panel,
   Rect,
@@ -51,7 +51,7 @@ export class ItemButton extends Button {
   // }
 
   decorateTooltip(tooltipPanel: Panel): void {
-    let tooltipMessages: Message[] | undefined = undefined;
+    let tooltipMessages: Message[] | undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
       item.onUpdateTooltip();

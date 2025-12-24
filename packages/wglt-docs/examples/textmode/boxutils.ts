@@ -1,4 +1,4 @@
-import { Cell, CgaPalette, Chars, Console, Terminal, fixBoxCells } from 'wglt';
+import { Cell, CgaPalette, Chars, Console, fixBoxCells, Terminal } from 'wglt';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;

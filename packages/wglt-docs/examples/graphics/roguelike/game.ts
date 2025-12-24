@@ -3,18 +3,18 @@ import {
   ArrayList,
   Color,
   Component,
-  GUI,
+  computePath,
   GraphicsApp,
+  GUI,
   Message,
   MessageLog,
   Point,
-  RNG,
   Rect,
+  RNG,
   Sprite,
   TileMap,
   TileMapCell,
   TileMapRenderer,
-  computePath,
 } from 'wglt';
 import { Ability, TargetType } from './ability';
 import { Actor } from './actor';
@@ -511,7 +511,7 @@ export class Game extends AppState<GraphicsApp> {
 
   getClosestMonster(x: number, y: number, range: number): Actor | undefined {
     let minDist = range + 1;
-    let result = undefined;
+    let result: Actor | undefined;
     for (let i = 0; i < this.entities.length; i++) {
       const entity = this.entities.get(i);
       if (entity instanceof Actor && entity !== this.player) {

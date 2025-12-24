@@ -1,4 +1,4 @@
-import { Key, Terminal, serializable } from 'wglt';
+import { Key, serializable, Terminal } from 'wglt';
 import { Action, BumpAction, PickupAction, TakeStairsAction } from './actions';
 import { BaseComponent } from './base';
 import { Colors } from './color';
@@ -17,7 +17,7 @@ export class MainGameEventHandler extends EventHandler {
   handleEvents(term: Terminal): void {
     const { player, path } = this.engine;
     const moveKey = term.keyboard.getMovementKey();
-    let action: Action | undefined = undefined;
+    let action: Action | undefined;
 
     if (term.keyboard.isKeyDown(Key.VK_SHIFT_LEFT) && term.keyboard.isKeyPressed(Key.VK_PERIOD)) {
       action = new TakeStairsAction(player);

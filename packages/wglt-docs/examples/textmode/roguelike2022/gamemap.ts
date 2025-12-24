@@ -1,12 +1,12 @@
 import {
   Console,
+  computePath,
   Point,
   PointLike,
   Rect,
+  serializable,
   TileMap,
   TileMapCell,
-  computePath,
-  serializable,
 } from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';

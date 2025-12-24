@@ -2,13 +2,15 @@
   "name": "create-wglt",
   "version": "2.0.0-beta.1",
   "sideEffects": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "scripts": {
     "build": "tsc"
   },
   "devDependencies": {
-    "@types/node": "22.10.10"
+    "@types/node": "25.0.3"
   },
   "engines": {
     "node": ">=18.0.0"

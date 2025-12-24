@@ -1,4 +1,4 @@
-import { CgaPalette, Terminal, TileMap, TileMapCell, computePath } from 'wglt';
+import { CgaPalette, computePath, Terminal, TileMap, TileMapCell } from 'wglt';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;

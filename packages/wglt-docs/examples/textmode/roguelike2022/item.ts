@@ -60,7 +60,7 @@ export class LightningDamageItem extends Item {
 
   activate(action: Action): void {
     const consumer = action.actor;
-    let target = undefined;
+    let target: Actor | undefined;
     let closestDistance = this.maxRange + 1;
 
     for (const actor of this.gameMap.actors) {

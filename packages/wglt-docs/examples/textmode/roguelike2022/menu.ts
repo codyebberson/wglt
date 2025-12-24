@@ -1,4 +1,4 @@
-import { Terminal, deserialize, serialize } from 'wglt';
+import { deserialize, serialize, Terminal } from 'wglt';
 import { Colors } from './color';
 import { Engine } from './engine';
 import { dagger, leatherArmor } from './entities';

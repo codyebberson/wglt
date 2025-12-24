@@ -1,4 +1,4 @@
-import { CgaPalette, Console, RNG, Terminal, fromHsv } from 'wglt';
+import { CgaPalette, Console, fromHsv, RNG, Terminal } from 'wglt';
 
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;

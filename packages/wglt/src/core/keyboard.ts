@@ -3,18 +3,18 @@ import { Key } from './keys';
 import { Point } from './point';
 
 // Arrow keys, numpad, vi
-const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y];
-const NORTHEAST_KEYS = [Key.VK_NUMPAD9, Key.VK_U];
-const SOUTHWEST_KEYS = [Key.VK_NUMPAD1, Key.VK_B];
-const SOUTHEAST_KEYS = [Key.VK_NUMPAD3, Key.VK_N];
-const UP_KEYS = [Key.VK_UP, Key.VK_NUMPAD8, Key.VK_K];
-const LEFT_KEYS = [Key.VK_LEFT, Key.VK_NUMPAD4, Key.VK_H];
-const DOWN_KEYS = [Key.VK_DOWN, Key.VK_NUMPAD2, Key.VK_J];
-const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L];
-const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5];
-const ENTER_KEYS = [Key.VK_ENTER, Key.VK_NUMPAD_ENTER];
-const ESCAPE_KEYS = [Key.VK_ESCAPE];
-const SHIFT_KEYS = [Key.VK_SHIFT_LEFT, Key.VK_SHIFT_RIGHT];
+const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y] as const;
+const NORTHEAST_KEYS = [Key.VK_NUMPAD9, Key.VK_U] as const;
+const SOUTHWEST_KEYS = [Key.VK_NUMPAD1, Key.VK_B] as const;
+const SOUTHEAST_KEYS = [Key.VK_NUMPAD3, Key.VK_N] as const;
+const UP_KEYS = [Key.VK_UP, Key.VK_NUMPAD8, Key.VK_K] as const;
+const LEFT_KEYS = [Key.VK_LEFT, Key.VK_NUMPAD4, Key.VK_H] as const;
+const DOWN_KEYS = [Key.VK_DOWN, Key.VK_NUMPAD2, Key.VK_J] as const;
+const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L] as const;
+const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5] as const;
+const ENTER_KEYS = [Key.VK_ENTER, Key.VK_NUMPAD_ENTER] as const;
+const ESCAPE_KEYS = [Key.VK_ESCAPE] as const;
+const SHIFT_KEYS = [Key.VK_SHIFT_LEFT, Key.VK_SHIFT_RIGHT] as const;
 
 const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
   // Up
@@ -264,7 +264,7 @@ export class Keyboard {
     return undefined;
   }
 
-  private isKeyArrayPressed(keys: Key[]): boolean {
+  private isKeyArrayPressed(keys: readonly Key[]): boolean {
     for (let i = 0; i < keys.length; i++) {
       if (this.isKeyPressed(keys[i])) {
         return true;

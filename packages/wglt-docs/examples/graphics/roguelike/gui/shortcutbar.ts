@@ -1,4 +1,4 @@
-import { ArrayList, Container, Rect, getKeyForDigit } from 'wglt';
+import { ArrayList, Container, getKeyForDigit, Rect } from 'wglt';
 import { Item } from '../item';
 import { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';

@@ -1,4 +1,4 @@
-import { CgaPalette, Console, Terminal, loadImage2x } from 'wglt';
+import { CgaPalette, Console, loadImage2x, Terminal } from 'wglt';
 
 const term = new Terminal('canvas', 80, 45);
 term.fillRect(0, 0, 80, 45, CgaPalette.DARK_BLUE);

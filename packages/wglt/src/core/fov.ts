@@ -34,7 +34,7 @@ export const FovQuadrants = {
   QUADRANT_WEST: 0x020 + 0x040,
   QUADRANT_SOUTHWEST: 0x040 + 0x080,
   QUADRANT_SOUTH: 0x080 + 0x001,
-};
+} as const;
 
 export function getFovQuadrant(dx: number, dy: number): number {
   if (dx > 0) {

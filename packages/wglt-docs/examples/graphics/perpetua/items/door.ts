@@ -1,4 +1,4 @@
-import { Sprite, getTileId } from 'wglt';
+import { getTileId, Sprite } from 'wglt';
 import { Game } from '../game';
 import { Item } from '../item';
 

@@ -1,4 +1,4 @@
-import { CgaPalette, Terminal, fromHsv } from 'wglt';
+import { CgaPalette, fromHsv, Terminal } from 'wglt';
 
 const WIDTH = 80;
 const HEIGHT = 45;

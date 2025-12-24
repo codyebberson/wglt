@@ -69,7 +69,7 @@ export class ConfusedEnemy extends BaseAI {
       // Its possible the actor will just bump into the wall, wasting a turn.
       try {
         new BumpAction(actor, dx, dy).perform();
-      } catch (err) {}
+      } catch (_err) {}
     }
   }
 }

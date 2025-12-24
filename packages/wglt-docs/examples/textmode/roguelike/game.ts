@@ -2,15 +2,15 @@ import {
   AppState,
   CgaPalette,
   Color,
+  computePath,
   Dialog,
+  fromRgb,
   Key,
-  RNG,
   Rect,
+  RNG,
   SelectInput,
   TileMap,
   TileMapCell,
-  computePath,
-  fromRgb,
 } from 'wglt';
 import { Actor } from './actor';
 import { AI, BasicMonster, ConfusedMonster } from './ai';
@@ -484,7 +484,7 @@ export class Game extends AppState<App> {
       dialog.addChild(
         new SelectInput(new Rect(1, 1, 40, 20), options, (choice) => {
           dialog.close();
-          this.useInventory(options.findIndex((option) => option === choice));
+          this.useInventory(options.indexOf(choice));
         })
       );
       this.app.gui.addChild(dialog);

@@ -1,4 +1,4 @@
-import { RNG, Rect, TileMap, getTileId, zzfx } from 'wglt';
+import { getTileId, Rect, RNG, TileMap, zzfx } from 'wglt';
 import { ConfuseAbility } from './abilities/confuse';
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
@@ -163,7 +163,7 @@ function placeObjects(game: Game, room: Rect): void {
     // Choose random spot for this monster
     const x = rng.nextRange(room.x1 + 1, room.x2 - 1);
     const y = rng.nextRange(room.y1 + 1, room.y2 - 1);
-    let monster = undefined;
+    let monster: Entity;
 
     // Only place it if the tile is not blocked
     // 80% chance of getting an orc

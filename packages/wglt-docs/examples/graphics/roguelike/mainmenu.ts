@@ -1,4 +1,4 @@
-import { AppState, GUI, GraphicsApp } from 'wglt';
+import { AppState, GraphicsApp, GUI } from 'wglt';
 import { Palette } from './palette';
 
 const OPTIONS = [

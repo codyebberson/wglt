@@ -1,4 +1,4 @@
-import { Rect, fromRgb } from 'wglt';
+import { fromRgb, Rect } from 'wglt';
 import { Game } from '../game';
 import { Animation, AnimationFunction } from './animation';
 

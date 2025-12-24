@@ -11,4 +11,4 @@ export const SimplePalette = {
   MAGENTA: fromRgb(255, 0, 255),
   LIGHT_GRAY: fromRgb(0xaa, 0xaa, 0xaa),
   DARK_GRAY: fromRgb(0x55, 0x55, 0x55),
-};
+} as const;

@@ -46,7 +46,7 @@ const BOX_CHAR_DETAILS = [
   [1, 2, 1, 2], // 0xD8
   [1, 0, 0, 1], // 0xD9
   [0, 1, 1, 0], // 0xDA
-];
+] as const;
 
 function isBoxCell(con: Console, x: number, y: number): boolean {
   const charCode = con.getCharCode(x, y);

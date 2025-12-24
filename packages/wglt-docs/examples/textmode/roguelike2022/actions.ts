@@ -1,4 +1,4 @@
-import { PointLike, capitalize, serializable, zzfx } from 'wglt';
+import { capitalize, PointLike, serializable, zzfx } from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
