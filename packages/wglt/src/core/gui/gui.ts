@@ -1,7 +1,7 @@
 import { BaseApp } from '../baseapp';
 import { Point } from '../point';
 import { Rect } from '../rect';
-import { Component, ComponentConstructor } from './component';
+import { Component, type ComponentConstructor } from './component';
 import { Container } from './container';
 import { Panel } from './panel';
 import { RendererMap } from './renderermap';

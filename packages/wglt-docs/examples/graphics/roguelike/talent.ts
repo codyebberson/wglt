@@ -1,5 +1,5 @@
 import { TileMapCell } from 'wglt';
-import { Ability } from './ability';
+import type { Ability } from './ability';
 import { Actor } from './actor';
 import { Entity } from './entity';
 

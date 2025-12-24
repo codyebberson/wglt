@@ -1,7 +1,7 @@
-import { Color, fromRgb } from '../core/color';
+import { type Color, fromRgb } from '../core/color';
 import { SimplePalette } from '../core/palettes/simple';
 import { serializable } from '../core/serialize';
-import { BlendMode } from './blendmode';
+import type { BlendMode } from './blendmode';
 
 function convertCharCode(charCode: string | number): number {
   if (typeof charCode === 'string' && charCode.length > 0) {
@@ -12,18 +12,23 @@ function convertCharCode(charCode: string | number): number {
 
 @serializable
 export class Cell {
+  readonly x: number;
+  readonly y: number;
   charCode: number;
   fg: Color;
   bg: Color;
   dirty: boolean;
 
   constructor(
-    readonly x: number,
-    readonly y: number,
+    x: number,
+    y: number,
     charCode?: string | number,
     fg: Color = SimplePalette.WHITE,
     bg: Color = SimplePalette.BLACK
   ) {
+    this.x = x;
+    this.y = y;
+
     if (charCode !== undefined) {
       this.charCode = convertCharCode(charCode);
     } else {

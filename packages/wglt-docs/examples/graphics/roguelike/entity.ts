@@ -1,4 +1,4 @@
-import { Point, SelectOption, Sprite } from 'wglt';
+import { Point, type SelectOption, Sprite } from 'wglt';
 import { Actor } from './actor';
 import { Game } from './game';
 

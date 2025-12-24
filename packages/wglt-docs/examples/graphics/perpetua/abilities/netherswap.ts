@@ -1,6 +1,6 @@
 import { Message, Pico8Palette, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
-import { Animation, AnimationFunction } from '../animations/animation';
+import { type Ability, TargetType } from '../ability';
+import { Animation, type AnimationFunction } from '../animations/animation';
 import { App } from '../app';
 import { StatsActor } from '../entities/statsactor';
 

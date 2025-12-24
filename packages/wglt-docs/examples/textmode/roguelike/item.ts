@@ -1,4 +1,4 @@
-import { Color } from 'wglt';
+import type { Color } from 'wglt';
 import { Entity } from './entity';
 import { Game } from './game';
 

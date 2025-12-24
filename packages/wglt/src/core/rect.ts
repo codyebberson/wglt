@@ -1,4 +1,4 @@
-import { Point, PointLike } from './point';
+import { Point, type PointLike } from './point';
 import { serializable } from './serialize';
 
 /**
@@ -7,6 +7,11 @@ import { serializable } from './serialize';
  */
 @serializable
 export class Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+
   /**
    * Creates a new rectangle.
    * @param x - The x-coordinate of the top-left corner.
@@ -14,12 +19,12 @@ export class Rect {
    * @param width - The width of the rectangle.
    * @param height - The height of the rectangle.
    */
-  constructor(
-    public x: number,
-    public y: number,
-    public width: number,
-    public height: number
-  ) {}
+  constructor(x: number, y: number, width: number, height: number) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
 
   /**
    * The x-coordinate of the left edge (same as x).

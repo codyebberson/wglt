@@ -1,5 +1,5 @@
 import { BaseApp } from '../core/baseapp';
-import { Color } from '../core/color';
+import type { Color } from '../core/color';
 import { Font } from '../core/font';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';

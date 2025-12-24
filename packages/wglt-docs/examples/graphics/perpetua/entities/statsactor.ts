@@ -7,11 +7,12 @@ import { EquipmentType } from '../equipment/equipmenttype';
 import { Game } from '../game';
 import { Player } from './player';
 
-export enum Sentiment {
-  HOSTILE = -1,
-  NEUTRAL = 0,
-  FRIENDLY = 1,
-}
+export const Sentiment = {
+  HOSTILE: -1,
+  NEUTRAL: 0,
+  FRIENDLY: 1,
+};
+export type Sentiment = (typeof Sentiment)[keyof typeof Sentiment];
 
 export abstract class StatsActor extends Actor {
   level: number;

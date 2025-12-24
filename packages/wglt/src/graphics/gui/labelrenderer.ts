@@ -1,6 +1,6 @@
 import { GUI } from '../../core/gui/gui';
 import { Label } from '../../core/gui/label';
-import { Renderer } from '../../core/gui/renderer';
+import type { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsLabelRenderer implements Renderer<GraphicsApp, Label> {

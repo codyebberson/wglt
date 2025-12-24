@@ -1,4 +1,4 @@
-import { PointLike, serializable } from 'wglt';
+import { type PointLike, serializable } from 'wglt';
 import { BumpAction, MeleeAction, MovementAction } from './actions';
 import { Actor } from './actor';
 
@@ -46,11 +46,13 @@ export class HostileEnemy extends BaseAI {
  */
 @serializable
 export class ConfusedEnemy extends BaseAI {
-  constructor(
-    readonly previousAi: BaseAI,
-    public turnsRemaining: number
-  ) {
+  readonly previousAi: BaseAI;
+  public turnsRemaining: number;
+
+  constructor(previousAi: BaseAI, turnsRemaining: number) {
     super();
+    this.previousAi = previousAi;
+    this.turnsRemaining = turnsRemaining;
   }
 
   perform(actor: Actor): void {

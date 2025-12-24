@@ -1,4 +1,4 @@
-import { Color, deserialize, serialize } from 'wglt';
+import { type Color, deserialize, serialize } from 'wglt';
 import { BaseComponent } from './base';
 import { GameMap } from './gamemap';
 
@@ -9,16 +9,31 @@ export const RenderOrder = {
 };
 
 export abstract class Entity extends BaseComponent {
+  x: number;
+  y: number;
+  char: string;
+  color: Color;
+  name: string;
+  blocks: boolean;
+  renderOrder: number;
+
   constructor(
-    public x: number,
-    public y: number,
-    public char: string,
-    public color: Color,
-    public name: string,
-    public blocks = false,
-    public renderOrder = 0
+    x: number,
+    y: number,
+    char: string,
+    color: Color,
+    name: string,
+    blocks = false,
+    renderOrder = 0
   ) {
     super();
+    this.x = x;
+    this.y = y;
+    this.char = char;
+    this.color = color;
+    this.name = name;
+    this.blocks = blocks;
+    this.renderOrder = renderOrder;
   }
 
   spawn(gameMap: GameMap, x: number, y: number): Entity {

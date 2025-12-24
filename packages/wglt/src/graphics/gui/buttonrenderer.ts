@@ -1,6 +1,6 @@
 import { Button, getShortcutKeyDisplay } from '../../core/gui/button';
 import { GUI } from '../../core/gui/gui';
-import { Renderer } from '../../core/gui/renderer';
+import type { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {

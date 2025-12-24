@@ -6,7 +6,7 @@ import {
   loadImage2x,
   Rect,
   SelectInput,
-  SelectOption,
+  type SelectOption,
 } from 'wglt';
 import { App } from './app';
 

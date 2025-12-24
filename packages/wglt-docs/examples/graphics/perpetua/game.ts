@@ -4,9 +4,9 @@ import {
   AutoRectRenderer,
   Button,
   ButtonSlot,
-  Color,
-  Container,
+  type Color,
   computePath,
+  Container,
   Dialog,
   GraphicsButtonRenderer,
   GraphicsLabelRenderer,
@@ -27,9 +27,9 @@ import {
   TileMapCell,
   TileMapRenderer,
 } from 'wglt';
-import { Ability, TargetType } from './ability';
+import { type Ability, TargetType } from './ability';
 import { Actor } from './actor';
-import { Animation, AnimationFunction } from './animations/animation';
+import { Animation, type AnimationFunction } from './animations/animation';
 import { FadeInAnimation } from './animations/fadeinanimation';
 import { FadeOutAnimation } from './animations/fadeoutanimation';
 import { App } from './app';

@@ -1,4 +1,4 @@
-import { Container, GUI, Pico8Palette, Rect, Renderer } from 'wglt';
+import { Container, GUI, Pico8Palette, Rect, type Renderer } from 'wglt';
 import { App } from '../app';
 import { Player } from '../entities/player';
 import { Sentiment, StatsActor } from '../entities/statsactor';

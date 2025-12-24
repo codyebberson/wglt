@@ -1,6 +1,6 @@
 import { ArrayList } from '../arraylist';
 import { Message } from '../message';
-import { PointLike } from '../point';
+import type { PointLike } from '../point';
 import { Rect } from '../rect';
 import { Component } from './component';
 import { Label } from './label';

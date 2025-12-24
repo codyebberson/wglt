@@ -1,4 +1,4 @@
-import { Color, serializable, zzfx } from 'wglt';
+import { type Color, serializable, zzfx } from 'wglt';
 import { Action, ItemAction } from './actions';
 import { Actor } from './actor';
 import { BaseAI, ConfusedEnemy } from './ai';
@@ -22,13 +22,10 @@ export abstract class Item extends Entity {
 
 @serializable
 export class HealingItem extends Item {
-  constructor(
-    char: string,
-    color: Color,
-    name: string,
-    readonly amount: number
-  ) {
+  readonly amount: number;
+  constructor(char: string, color: Color, name: string, amount: number) {
     super(char, color, name);
+    this.amount = amount;
   }
 
   activate(action: Action): void {
@@ -48,14 +45,12 @@ export class HealingItem extends Item {
 
 @serializable
 export class LightningDamageItem extends Item {
-  constructor(
-    char: string,
-    color: Color,
-    name: string,
-    readonly damage: number,
-    readonly maxRange: number
-  ) {
+  readonly damage: number;
+  readonly maxRange: number;
+  constructor(char: string, color: Color, name: string, damage: number, maxRange: number) {
     super(char, color, name);
+    this.damage = damage;
+    this.maxRange = maxRange;
   }
 
   activate(action: Action): void {
@@ -87,13 +82,10 @@ export class LightningDamageItem extends Item {
 
 @serializable
 export class ConfusionItem extends Item {
-  constructor(
-    char: string,
-    color: Color,
-    name: string,
-    readonly numberOfTurns: number
-  ) {
+  readonly numberOfTurns: number;
+  constructor(char: string, color: Color, name: string, numberOfTurns: number) {
     super(char, color, name);
+    this.numberOfTurns = numberOfTurns;
   }
 
   getAction(consumer: Actor): Action | undefined {
@@ -130,14 +122,12 @@ export class ConfusionItem extends Item {
 
 @serializable
 export class FireballDamageItem extends Item {
-  constructor(
-    char: string,
-    color: Color,
-    name: string,
-    readonly damage: number,
-    readonly radius: number
-  ) {
+  readonly damage: number;
+  readonly radius: number;
+  constructor(char: string, color: Color, name: string, damage: number, radius: number) {
     super(char, color, name);
+    this.damage = damage;
+    this.radius = radius;
   }
 
   getAction(consumer: Actor): Action | undefined {

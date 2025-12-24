@@ -1,5 +1,5 @@
 import { GUI } from '../../core/gui/gui';
-import { Renderer } from '../../core/gui/renderer';
+import type { Renderer } from '../../core/gui/renderer';
 import { SelectInput } from '../../core/gui/selectinput';
 import { GraphicsApp } from '../graphicsapp';
 

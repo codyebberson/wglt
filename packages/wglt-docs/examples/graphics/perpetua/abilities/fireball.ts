@@ -1,5 +1,5 @@
 import { Message, Pico8Palette, Point, Sprite, TileMapCell } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ExplosionAnimation } from '../animations/explosionanimation';
 import { ProjectileAnimation } from '../animations/projectileanimation';

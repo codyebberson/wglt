@@ -35,6 +35,9 @@ const MIN_DRAG_DISTANCE = 4;
  * ```
  */
 export class Mouse {
+  readonly el: HTMLCanvasElement;
+  readonly width: number;
+  readonly height: number;
   /** Input state for mouse buttons (0=left, 1=middle, 2=right). */
   readonly buttons = new InputSet<number>();
   /** Previous mouse position (for calculating deltas). */
@@ -66,11 +69,10 @@ export class Mouse {
    * @param width - The logical width of the canvas (for coordinate conversion).
    * @param height - The logical height of the canvas (for coordinate conversion).
    */
-  constructor(
-    readonly el: HTMLCanvasElement,
-    readonly width: number,
-    readonly height: number
-  ) {
+  constructor(el: HTMLCanvasElement, width: number, height: number) {
+    this.el = el;
+    this.width = width;
+    this.height = height;
     this.prev = new Point(0, 0);
     this.start = new Point(0, 0);
     this.x = 0;

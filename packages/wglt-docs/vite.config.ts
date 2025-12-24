@@ -31,8 +31,18 @@ export default defineConfig({
     target: 'es2022',
   },
   build: {
+    minify: false,
     rollupOptions: {
       input,
+      // output: {
+      //   // Forces all modules into a single 'bundle.js' file
+      //   manualChunks: (id) => {
+      //     if (id.includes('node_modules')) {
+      //       return 'vendor'; // Optional: still separate vendor libs if you want
+      //     }
+      //     return 'bundle'; // Place all other files into a single bundle chunk
+      //   },
+      // },
     },
   },
   server: {

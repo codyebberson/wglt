@@ -2,11 +2,12 @@ import { Message, Sprite, TileMapCell } from 'wglt';
 import { Actor } from './actor';
 import { Entity } from './entity';
 
-export enum TargetType {
-  SELF = 0,
-  ENTITY = 1,
-  TILE = 2,
-}
+export const TargetType = {
+  SELF: 0,
+  ENTITY: 1,
+  TILE: 2,
+} as const;
+export type TargetType = (typeof TargetType)[keyof typeof TargetType];
 
 export interface Ability {
   readonly sprite: Sprite;

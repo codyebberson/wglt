@@ -1,5 +1,5 @@
 import { Message, Point, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
 import { Game } from '../game';
@@ -11,6 +11,7 @@ const FIREBALL_RADIUS = 3;
 const FIREBALL_DAMAGE = 12;
 
 export class FireballAbility implements Ability {
+  readonly game: Game;
   name: string;
   sprite: Sprite;
   targetType: TargetType;
@@ -19,7 +20,8 @@ export class FireballAbility implements Ability {
   minRange = 1;
   maxRange = 25;
 
-  constructor(readonly game: Game) {
+  constructor(game: Game) {
+    this.game = game;
     this.name = 'Fireball';
     this.sprite = Sprites.FIREBALL_ICON;
     this.targetType = TargetType.TILE;

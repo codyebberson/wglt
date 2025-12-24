@@ -1,5 +1,5 @@
 import { Message, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ConfusedMonster } from '../ai/confusedmonster';
 import { Game } from '../game';
@@ -9,6 +9,7 @@ import { Sprites } from '../sprites';
 const CONFUSE_RANGE = 8;
 
 export class ConfuseAbility implements Ability {
+  readonly game: Game;
   name: string;
   sprite: Sprite;
   targetType: TargetType;
@@ -17,7 +18,8 @@ export class ConfuseAbility implements Ability {
   minRange = 1;
   maxRange = 25;
 
-  constructor(readonly game: Game) {
+  constructor(game: Game) {
+    this.game = game;
     this.name = 'Confuse';
     this.sprite = Sprites.CONFUSE_ICON;
     this.targetType = TargetType.ENTITY;

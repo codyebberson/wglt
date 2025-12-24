@@ -1,4 +1,4 @@
-import { Color, Console, Message, serializable, wordWrap } from 'wglt';
+import { type Color, Console, Message, serializable, wordWrap } from 'wglt';
 import { Colors } from './color';
 
 @serializable

@@ -1,4 +1,4 @@
-import { Color } from '../../core/color';
+import type { Color } from '../../core/color';
 import { Container } from '../../core/gui/container';
 import { Message } from '../../core/message';
 import { SimplePalette } from '../../core/palettes/simple';

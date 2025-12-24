@@ -1,4 +1,4 @@
-import { Color, serializable } from 'wglt';
+import { type Color, serializable } from 'wglt';
 import { Action } from './actions';
 import { Item } from './item';
 
@@ -9,15 +9,22 @@ export const EquipmentType = {
 
 @serializable
 export class Equipment extends Item {
+  readonly equipmentType: number;
+  readonly powerBonus: number;
+  readonly defenseBonus: number;
+
   constructor(
     char: string,
     color: Color,
     name: string,
-    readonly equipmentType: number,
-    readonly powerBonus: number,
-    readonly defenseBonus: number
+    equipmentType: number,
+    powerBonus: number,
+    defenseBonus: number
   ) {
     super(char, color, name);
+    this.equipmentType = equipmentType;
+    this.powerBonus = powerBonus;
+    this.defenseBonus = defenseBonus;
   }
 
   activate(action: Action): void {

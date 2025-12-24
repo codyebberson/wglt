@@ -1,5 +1,5 @@
 import { Message, Pico8Palette, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { Bubble } from '../buffs/bubble';
 import { StatsActor } from '../entities/statsactor';
 

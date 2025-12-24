@@ -1,5 +1,5 @@
 import { Entity } from '../entity';
-import { Animation, AnimationFunction } from './animation';
+import { Animation, type AnimationFunction } from './animation';
 
 export class SlideAnimation extends Animation {
   readonly entity: Entity;

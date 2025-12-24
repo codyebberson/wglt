@@ -1,4 +1,4 @@
-import { Color } from 'wglt';
+import { type Color } from 'wglt';
 import { Actor } from '../actor';
 import { Game } from '../game';
 import { Animation } from './animation';

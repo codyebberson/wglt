@@ -1,12 +1,12 @@
 import { BaseApp } from '../core/baseapp';
-import { Color } from '../core/color';
+import type { Color } from '../core/color';
 import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
 import { createTexture, initShaderProgram } from '../core/glutils';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { interpolate } from '../core/utils';
-import { BlendMode } from './blendmode';
+import type { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Console } from './console';
 import { IBM_BIOS_FONT_DATA_URL } from './font';
@@ -44,6 +44,8 @@ export interface TerminalOptions {
  * ```
  */
 export class Terminal extends BaseApp {
+  readonly width: number;
+  readonly height: number;
   readonly console: Console;
   readonly pixelWidth: number;
   readonly pixelHeight: number;
@@ -79,8 +81,8 @@ export class Terminal extends BaseApp {
    */
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
-    readonly width: number,
-    readonly height: number,
+    width: number,
+    height: number,
     options?: TerminalOptions
   ) {
     const canvas =
@@ -96,6 +98,8 @@ export class Terminal extends BaseApp {
 
     super(canvas, pixelWidth, pixelHeight, font, mouse);
 
+    this.width = width;
+    this.height = height;
     this.console = new Console(width, height);
     this.pixelWidth = pixelWidth;
     this.pixelHeight = pixelHeight;

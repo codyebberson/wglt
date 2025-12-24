@@ -1,7 +1,7 @@
 import {
   AppState,
   ArrayList,
-  Color,
+  type Color,
   Component,
   computePath,
   GraphicsApp,
@@ -16,7 +16,7 @@ import {
   TileMapCell,
   TileMapRenderer,
 } from 'wglt';
-import { Ability, TargetType } from './ability';
+import { type Ability, TargetType } from './ability';
 import { Actor } from './actor';
 import { Player } from './actors/player';
 import { Animation } from './animations/animation';
@@ -31,6 +31,7 @@ const TILE_SIZE = 16;
 const VIEW_DISTANCE = 16;
 
 export class Game extends AppState<GraphicsApp> {
+  readonly gui: GUI<GraphicsApp>;
   readonly viewport: Rect;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
@@ -50,11 +51,9 @@ export class Game extends AppState<GraphicsApp> {
   player?: Player;
   tooltipElement?: Component;
 
-  constructor(
-    app: GraphicsApp,
-    readonly gui: GUI<GraphicsApp>
-  ) {
+  constructor(app: GraphicsApp, gui: GUI<GraphicsApp>) {
     super(app);
+    this.gui = gui;
     this.viewport = new Rect(0, 0, app.width, app.height);
     this.animations = [];
     this.entities = new ArrayList<Entity>();

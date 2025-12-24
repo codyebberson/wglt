@@ -1,4 +1,4 @@
-import { Color } from '../color';
+import type { Color } from '../color';
 import { SimplePalette } from '../palettes/simple';
 import { Rect } from '../rect';
 import { Component } from './component';
@@ -57,6 +57,12 @@ export const VerticalAlignment = {
  * ```
  */
 export class Label extends Component {
+  readonly text: string;
+  readonly fg: Color;
+  readonly bg: Color | undefined;
+  readonly halign: number;
+  readonly valign: number;
+
   /**
    * Creates a new Label component.
    * @param rect - The position and size of the label.
@@ -68,12 +74,17 @@ export class Label extends Component {
    */
   constructor(
     rect: Rect,
-    readonly text: string,
-    readonly fg: Color = SimplePalette.WHITE,
-    readonly bg: Color | undefined = undefined,
-    readonly halign = HorizontalAlignment.LEFT,
-    readonly valign = VerticalAlignment.TOP
+    text: string,
+    fg: Color = SimplePalette.WHITE,
+    bg: Color | undefined = undefined,
+    halign = HorizontalAlignment.LEFT,
+    valign = VerticalAlignment.TOP
   ) {
     super(rect);
+    this.text = text;
+    this.fg = fg;
+    this.bg = bg;
+    this.halign = halign;
+    this.valign = valign;
   }
 }

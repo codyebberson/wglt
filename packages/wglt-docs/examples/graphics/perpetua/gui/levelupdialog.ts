@@ -8,7 +8,7 @@ import {
   Message,
   Pico8Palette,
   Rect,
-  Renderer,
+  type Renderer,
   Sprite,
 } from 'wglt';
 import { Player } from '../entities/player';

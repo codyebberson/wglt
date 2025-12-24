@@ -1,14 +1,15 @@
 import { fromRgb, Rect } from 'wglt';
 import { Game } from '../game';
-import { Animation, AnimationFunction } from './animation';
+import { Animation, type AnimationFunction } from './animation';
 
 export class FadeInAnimation extends Animation {
-  constructor(
-    readonly duration: number,
-    readonly fillRect: Rect,
-    onDone?: AnimationFunction
-  ) {
+  readonly duration: number;
+  readonly fillRect: Rect;
+
+  constructor(duration: number, fillRect: Rect, onDone?: AnimationFunction) {
     super(duration, true, onDone);
+    this.duration = duration;
+    this.fillRect = fillRect;
   }
 
   draw(game: Game): void {

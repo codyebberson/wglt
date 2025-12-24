@@ -14,15 +14,18 @@ export interface PointLike {
  */
 @serializable
 export class Point implements PointLike {
+  x: number;
+  y: number;
+
   /**
    * Creates a new Point.
    * @param x - The x-coordinate.
    * @param y - The y-coordinate.
    */
-  constructor(
-    public x: number,
-    public y: number
-  ) {}
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 
   /**
    * Adds another point to this point in place.

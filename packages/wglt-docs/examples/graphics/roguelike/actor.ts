@@ -1,5 +1,5 @@
-import { ArrayList, Color, Sprite, TileMapCell, zzfx } from 'wglt';
-import { Ability, TargetType } from './ability';
+import { ArrayList, type Color, Sprite, TileMapCell, zzfx } from 'wglt';
+import { type Ability, TargetType } from './ability';
 import { AI } from './ai/ai';
 import { BumpAnimation } from './animations/bumpanimation';
 import { FloatingTextAnimation } from './animations/floatingtextanimation';

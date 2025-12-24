@@ -1,8 +1,8 @@
-import { PointLike } from '../point';
+import type { PointLike } from '../point';
 import { Rect } from '../rect';
 import { Container } from './container';
 import { GUI } from './gui';
-import { Panel } from './panel';
+import type { Panel } from './panel';
 
 /**
  * Abstract base class for all GUI components in WGLT.

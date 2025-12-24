@@ -1,5 +1,5 @@
 import { Message, Pico8Palette, Point, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { SlideAnimation } from '../animations/slideanimation';
 import { StatsActor } from '../entities/statsactor';
 

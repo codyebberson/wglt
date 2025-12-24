@@ -4,12 +4,10 @@ import { Dialog } from './dialog';
 import { Label } from './label';
 
 export class MessageDialog extends Dialog {
-  constructor(
-    rect: Rect,
-    title: string | undefined,
-    readonly message: string | Message
-  ) {
+  readonly message: string | Message;
+  constructor(rect: Rect, title: string | undefined, message: string | Message) {
     super(rect, title);
+    this.message = message;
 
     const labelRect = new Rect(2, 2, rect.width - 2, rect.height - 2);
     this.addChild(new Label(labelRect, message as string));

@@ -1,4 +1,4 @@
-import { capitalize, PointLike, serializable, zzfx } from 'wglt';
+import { capitalize, type PointLike, serializable, zzfx } from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
@@ -7,22 +7,25 @@ import { hitSound, nextLevelSound, pickupSound, walkSound } from './sounds';
 import { removeFromArray } from './utils';
 
 export abstract class Action extends BaseComponent {
+  actor: Actor;
   target?: PointLike;
 
-  constructor(public actor: Actor) {
+  constructor(actor: Actor) {
     super(actor);
+    this.actor = actor;
   }
 
   abstract perform(): void;
 }
 
 export abstract class ActionWithDirection extends Action {
-  constructor(
-    actor: Actor,
-    public dx: number,
-    public dy: number
-  ) {
+  dx: number;
+  dy: number;
+
+  constructor(actor: Actor, dx: number, dy: number) {
     super(actor);
+    this.dx = dx;
+    this.dy = dy;
   }
 }
 
@@ -111,11 +114,10 @@ export class PickupAction extends Action {
 
 @serializable
 export class ItemAction extends Action {
-  constructor(
-    actor: Actor,
-    readonly item: Item
-  ) {
+  readonly item: Item;
+  constructor(actor: Actor, item: Item) {
     super(actor);
+    this.item = item;
   }
 
   perform(): void {

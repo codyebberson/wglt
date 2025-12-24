@@ -1,4 +1,4 @@
-import { Color, fromRgb } from '../core/color';
+import { type Color, fromRgb } from '../core/color';
 import { Cell } from './cell';
 import { Chars } from './chars';
 import { Console } from './console';

@@ -1,6 +1,6 @@
 import { Dialog } from '../../core/gui/dialog';
 import { GUI } from '../../core/gui/gui';
-import { Renderer } from '../../core/gui/renderer';
+import type { Renderer } from '../../core/gui/renderer';
 import { SimplePalette } from '../../core/palettes/simple';
 import { Terminal } from '../terminal';
 

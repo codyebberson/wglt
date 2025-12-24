@@ -1,7 +1,7 @@
-import { Color } from '../core/color';
+import type { Color } from '../core/color';
 import { Rect } from '../core/rect';
 import { serializable } from '../core/serialize';
-import { BlendMode } from './blendmode';
+import type { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
 
@@ -20,6 +20,9 @@ import { Chars } from './chars';
  */
 @serializable
 export class Console {
+  readonly width: number;
+  readonly height: number;
+
   /** The 2D grid of cells that make up the console. */
   readonly grid: Cell[][];
 
@@ -31,10 +34,9 @@ export class Console {
    * @param width - Width in characters.
    * @param height - Height in characters.
    */
-  constructor(
-    readonly width: number,
-    readonly height: number
-  ) {
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
     this.grid = [];
     for (let y = 0; y < height; y++) {
       const row = [];

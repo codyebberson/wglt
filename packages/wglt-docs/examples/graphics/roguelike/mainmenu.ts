@@ -10,14 +10,14 @@ const OPTIONS = [
 ];
 
 export class MainMenu extends AppState<GraphicsApp> {
+  readonly gui: GUI<GraphicsApp>;
+  readonly onNewGame: () => void;
   private selectedIndex = 0;
 
-  constructor(
-    app: GraphicsApp,
-    readonly gui: GUI<GraphicsApp>,
-    readonly onNewGame: () => void
-  ) {
+  constructor(app: GraphicsApp, gui: GUI<GraphicsApp>, onNewGame: () => void) {
     super(app);
+    this.gui = gui;
+    this.onNewGame = onNewGame;
   }
 
   update(): void {

@@ -1,4 +1,4 @@
-import { CgaPalette, Color, fromRgb, RNG, Terminal } from 'wglt';
+import { CgaPalette, type Color, fromRgb, RNG, Terminal } from 'wglt';
 
 const WIDTH = 80;
 const HEIGHT = 45;

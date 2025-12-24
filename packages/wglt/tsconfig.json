@@ -24,7 +24,9 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["./dist/**/*", "node_modules"]

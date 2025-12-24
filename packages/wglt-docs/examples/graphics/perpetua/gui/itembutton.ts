@@ -7,7 +7,7 @@ import {
   Message,
   Panel,
   Rect,
-  Renderer,
+  type Renderer,
 } from 'wglt';
 import { Item } from '../item';
 

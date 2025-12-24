@@ -1,4 +1,4 @@
-import { Color } from 'wglt';
+import { type Color } from 'wglt';
 import { Game } from './game';
 
 export class Entity {

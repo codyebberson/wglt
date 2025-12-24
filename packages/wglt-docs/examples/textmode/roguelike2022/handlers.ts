@@ -108,8 +108,10 @@ export class LookHandler extends TargetingHandler {
 
 @serializable
 export class SingleRangedAttackHandler extends TargetingHandler {
-  constructor(readonly action: Action) {
+  readonly action: Action;
+  constructor(action: Action) {
     super(action);
+    this.action = action;
   }
 
   onSelect(x: number, y: number): void {
@@ -121,11 +123,12 @@ export class SingleRangedAttackHandler extends TargetingHandler {
 
 @serializable
 export class AreaRangedAttackHandler extends TargetingHandler {
-  constructor(
-    readonly radius: number,
-    readonly action: Action
-  ) {
+  readonly radius: number;
+  readonly action: Action;
+  constructor(radius: number, action: Action) {
     super(action);
+    this.radius = radius;
+    this.action = action;
   }
 
   onRender(term: Terminal): void {

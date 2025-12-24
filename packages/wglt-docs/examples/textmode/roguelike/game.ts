@@ -1,7 +1,7 @@
 import {
   AppState,
   CgaPalette,
-  Color,
+  type Color,
   computePath,
   Dialog,
   fromRgb,
@@ -13,7 +13,7 @@ import {
   TileMapCell,
 } from 'wglt';
 import { Actor } from './actor';
-import { AI, BasicMonster, ConfusedMonster } from './ai';
+import { type AI, BasicMonster, ConfusedMonster } from './ai';
 import { App } from './app';
 import { Entity } from './entity';
 import { Item } from './item';

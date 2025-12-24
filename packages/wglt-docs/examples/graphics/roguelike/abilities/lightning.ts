@@ -1,5 +1,5 @@
 import { Message, Point, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
 import { Game } from '../game';
@@ -10,6 +10,7 @@ const LIGHTNING_DAMAGE = 20;
 const LIGHTNING_RANGE = 5;
 
 export class LightningAbility implements Ability {
+  readonly game: Game;
   name: string;
   sprite: Sprite;
   targetType: TargetType;
@@ -18,7 +19,8 @@ export class LightningAbility implements Ability {
   minRange = 1;
   maxRange = 25;
 
-  constructor(readonly game: Game) {
+  constructor(game: Game) {
+    this.game = game;
     this.name = 'Lightning';
     this.sprite = Sprites.LIGHTNING_ICON;
     this.targetType = TargetType.SELF;

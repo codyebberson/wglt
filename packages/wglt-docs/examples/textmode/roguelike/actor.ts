@@ -1,5 +1,5 @@
-import { CgaPalette, Color } from 'wglt';
-import { AI } from './ai';
+import { CgaPalette, type Color } from 'wglt';
+import { type AI } from './ai';
 import { Entity } from './entity';
 import { Game } from './game';
 import { Item } from './item';

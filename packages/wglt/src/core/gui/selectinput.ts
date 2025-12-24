@@ -1,7 +1,7 @@
 import { Rect } from '../../core/rect';
 import { getKeyForLetterByIndex } from '../keys';
 import { Component } from './component';
-import { SelectOption } from './selectoption';
+import type { SelectOption } from './selectoption';
 
 /**
  * A selectable list component that displays options and handles user selection.

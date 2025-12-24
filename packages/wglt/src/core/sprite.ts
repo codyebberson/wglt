@@ -26,6 +26,9 @@ const DEFAULT_TICKS_PER_FRAME = 20;
 export class Sprite extends Rect {
   /** Global animation frame counter, shared by all sprites. */
   static globalAnimIndex = 0;
+  readonly frames: number;
+  readonly loop: boolean;
+  readonly ticksPerFrame: number;
 
   /** Current animation frame for this sprite instance. */
   private animFrame = 0;
@@ -45,11 +48,14 @@ export class Sprite extends Rect {
     y: number,
     width: number,
     height: number,
-    readonly frames = 1,
-    readonly loop = true,
-    readonly ticksPerFrame = DEFAULT_TICKS_PER_FRAME
+    frames = 1,
+    loop = true,
+    ticksPerFrame = DEFAULT_TICKS_PER_FRAME
   ) {
     super(x, y, width, height);
+    this.frames = frames;
+    this.loop = loop;
+    this.ticksPerFrame = ticksPerFrame;
   }
 
   /**

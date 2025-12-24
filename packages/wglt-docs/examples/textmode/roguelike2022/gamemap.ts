@@ -1,13 +1,4 @@
-import {
-  Console,
-  computePath,
-  Point,
-  PointLike,
-  Rect,
-  serializable,
-  TileMap,
-  TileMapCell,
-} from 'wglt';
+import { Console, computePath, Point, type PointLike, Rect, serializable, TileMap, TileMapCell } from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
@@ -17,18 +8,18 @@ import { Item } from './item';
 
 @serializable
 export class GameMap extends BaseComponent {
+  width: number;
+  height: number;
+  entities: Entity[];
   private tileMap: TileMap;
   level = 0;
   stairsLocation = new Point(0, 0);
 
-  constructor(
-    engine: Engine,
-    public width: number,
-    public height: number,
-    public entities: Entity[]
-  ) {
+  constructor(engine: Engine, width: number, height: number, entities: Entity[]) {
     super(engine);
-
+    this.width = width;
+    this.height = height;
+    this.entities = entities;
     this.tileMap = new TileMap(width, height);
 
     for (let y = 0; y < height; y++) {

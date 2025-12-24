@@ -6,7 +6,7 @@ import {
   Label,
   Rect,
   SelectInput,
-  SelectOption,
+  type SelectOption,
   Terminal,
   zzfx,
 } from 'wglt';

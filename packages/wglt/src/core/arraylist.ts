@@ -1,4 +1,4 @@
-import { ArrayListListener } from './arraylistlistener';
+import type { ArrayListListener } from './arraylistlistener';
 
 /**
  * A dynamic array implementation with event notification support.

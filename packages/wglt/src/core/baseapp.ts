@@ -10,11 +10,15 @@ import { Rect } from './rect';
  * @template TApp - The type of application this state belongs to.
  */
 export abstract class AppState<TApp extends BaseApp = BaseApp> {
+  readonly app: TApp;
+
   /**
    * Creates a new application state.
    * @param app - The application instance this state belongs to.
    */
-  constructor(readonly app: TApp) {}
+  constructor(app: TApp) {
+    this.app = app;
+  }
 
   /**
    * Updates the state logic. Called once per frame.
@@ -37,6 +41,11 @@ export interface BaseAppConfig {
  * Subclassed by Terminal and GraphicsApp.
  */
 export abstract class BaseApp {
+  readonly canvas: HTMLCanvasElement;
+  readonly pixelWidth: number;
+  readonly pixelHeight: number;
+  readonly font: Font;
+  readonly mouse: Mouse;
   /** The WebGL2 rendering context. */
   readonly gl: WebGL2RenderingContext;
   /** The center point of the canvas in pixels. */
@@ -60,14 +69,17 @@ export abstract class BaseApp {
    * @param mouse - The mouse input handler.
    */
   constructor(
-    readonly canvas: HTMLCanvasElement,
-    readonly pixelWidth: number,
-    readonly pixelHeight: number,
-    readonly font: Font,
-    readonly mouse: Mouse
+    canvas: HTMLCanvasElement,
+    pixelWidth: number,
+    pixelHeight: number,
+    font: Font,
+    mouse: Mouse
   ) {
     this.canvas = canvas;
     this.font = font;
+    this.pixelWidth = pixelWidth;
+    this.pixelHeight = pixelHeight;
+    this.mouse = mouse;
     this.center = new Point((this.pixelWidth / 2) | 0, (this.pixelHeight / 2) | 0);
 
     this.gl = canvas.getContext('webgl2', {

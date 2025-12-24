@@ -1,4 +1,4 @@
-import { PointLike } from '../core/point';
+import type { PointLike } from '../core/point';
 import { TileMap } from './tilemap';
 import { TileMapCell } from './tilemapcell';
 

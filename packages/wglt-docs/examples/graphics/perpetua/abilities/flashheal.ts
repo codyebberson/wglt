@@ -1,5 +1,5 @@
 import { Message, Pico8Palette, Sprite } from 'wglt';
-import { Ability, TargetType } from '../ability';
+import { type Ability, TargetType } from '../ability';
 import { StatsActor } from '../entities/statsactor';
 
 const SPRITE = new Sprite(672, 144, 16, 16);

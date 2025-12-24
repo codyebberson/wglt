@@ -1,6 +1,6 @@
 import { GUI } from '../../core/gui/gui';
 import { MessageLog } from '../../core/gui/messagelog';
-import { Renderer } from '../../core/gui/renderer';
+import type { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsMessageLogRenderer implements Renderer<GraphicsApp, MessageLog> {

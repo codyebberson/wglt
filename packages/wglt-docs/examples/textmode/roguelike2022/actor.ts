@@ -1,4 +1,4 @@
-import { Color, capitalize, serializable } from 'wglt';
+import { type Color, capitalize, serializable } from 'wglt';
 import { BaseAI } from './ai';
 import { Colors } from './color';
 import { Entity, RenderOrder } from './entity';
@@ -8,6 +8,12 @@ import { openLevelUpMenu } from './main';
 
 @serializable
 export class Actor extends Entity {
+  maxHp: number;
+  private hp_: number;
+  baseDefense: number;
+  basePower: number;
+  xp: number;
+  ai?: BaseAI;
   readonly inventory: Item[] = [];
   weapon?: Equipment;
   armor?: Equipment;
@@ -18,14 +24,20 @@ export class Actor extends Entity {
     color: Color,
     name: string,
     blocks: boolean,
-    public maxHp: number,
-    private hp_: number,
-    public baseDefense: number,
-    public basePower: number,
-    public xp = 0,
-    public ai?: BaseAI
+    maxHp: number,
+    hp_: number,
+    baseDefense: number,
+    basePower: number,
+    xp = 0,
+    ai?: BaseAI
   ) {
     super(0, 0, char, color, name, blocks);
+    this.maxHp = maxHp;
+    this.hp_ = hp_;
+    this.baseDefense = baseDefense;
+    this.basePower = basePower;
+    this.xp = xp;
+    this.ai = ai;
     this.renderOrder = RenderOrder.ACTOR;
   }
 
