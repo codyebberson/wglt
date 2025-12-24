@@ -62,5 +62,6 @@ export * from './tilemap/tilemap';
 export * from './tilemap/tilemapcell';
 export * from './tilemap/tilemaplayer';
 export * from './tilemap/tilemaprenderer';
+export * from './tilemap/utils';
 export * from './zzfx/zzfx';
 export * from './zzfx/zzfxm';

@@ -1,6 +1,6 @@
 import { Monster } from '../entities/monster';
 import { Player } from '../entities/player';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Door } from './door';
 
 export class BossDoor extends Door {

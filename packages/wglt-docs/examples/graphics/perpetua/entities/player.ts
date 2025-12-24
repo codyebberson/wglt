@@ -1,5 +1,5 @@
 import { Pico8Palette, Point, Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { StatsActor } from './statsactor';
 
 const PLAYER_SPRITE = new Sprite(128, 32, 16, 16, 2);

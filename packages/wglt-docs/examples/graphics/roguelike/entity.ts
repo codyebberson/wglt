@@ -1,6 +1,6 @@
 import { Point, type SelectOption, Sprite } from 'wglt';
-import { Actor } from './actor';
-import { Game } from './game';
+import type { Actor } from './actor';
+import type { Game } from './game';
 
 export class Entity extends Point implements SelectOption {
   readonly game: Game;

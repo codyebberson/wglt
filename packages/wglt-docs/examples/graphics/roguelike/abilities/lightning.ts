@@ -2,7 +2,7 @@ import { Message, Point, Sprite } from 'wglt';
 import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Palette } from '../palette';
 import { Sprites, TILE_SIZE } from '../sprites';
 

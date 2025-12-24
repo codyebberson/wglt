@@ -1,6 +1,6 @@
 import { ButtonSlot, Dialog, Rect } from 'wglt';
-import { Player } from '../entities/player';
-import { Equipment } from '../equipment/equipment';
+import type { Player } from '../entities/player';
+import type { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
 import { ItemButton } from './itembutton';
 

@@ -1,4 +1,4 @@
-import { Entity } from '../entity';
+import type { Entity } from '../entity';
 import { Animation } from './animation';
 
 const DURATION = 12;

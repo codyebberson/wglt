@@ -1,5 +1,5 @@
 import { Sprite } from 'wglt';
-import { App } from '../app';
+import type { App } from '../app';
 import { StatsActor } from '../entities/statsactor';
 import { Buff } from './buff';
 

@@ -2,7 +2,7 @@ import { Message, Sprite } from 'wglt';
 import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ConfusedMonster } from '../ai/confusedmonster';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';
 

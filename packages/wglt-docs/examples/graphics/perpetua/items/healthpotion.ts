@@ -1,6 +1,6 @@
 import { Message, Pico8Palette, Sprite } from 'wglt';
 import { Actor } from '../actor';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Item } from '../item';
 import { ItemQuality } from '../itemquality';
 

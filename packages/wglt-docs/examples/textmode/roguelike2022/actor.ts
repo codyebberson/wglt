@@ -1,9 +1,9 @@
 import { type Color, capitalize, serializable } from 'wglt';
-import { BaseAI } from './ai';
+import type { BaseAI } from './ai';
 import { Colors } from './color';
 import { Entity, RenderOrder } from './entity';
 import { Equipment, EquipmentType } from './equipment';
-import { Item } from './item';
+import type { Item } from './item';
 import { openLevelUpMenu } from './main';
 
 @serializable

@@ -1,7 +1,7 @@
 import { Sprite } from 'wglt';
 import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Item } from '../item';
 import { ItemQuality } from '../itemquality';
 

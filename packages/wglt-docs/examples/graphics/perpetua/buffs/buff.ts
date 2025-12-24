@@ -1,4 +1,4 @@
-import { StatsActor } from '../entities/statsactor';
+import type { StatsActor } from '../entities/statsactor';
 
 export abstract class Buff {
   readonly actor: StatsActor;

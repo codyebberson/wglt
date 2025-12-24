@@ -1,7 +1,7 @@
 import { CgaPalette, type Color } from 'wglt';
 import { type AI } from './ai';
 import { Entity } from './entity';
-import { Game } from './game';
+import type { Game } from './game';
 import { Item } from './item';
 
 export class Actor extends Entity {

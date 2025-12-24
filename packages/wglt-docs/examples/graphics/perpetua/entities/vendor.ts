@@ -1,6 +1,6 @@
 import { Dialog, Rect, Sprite } from 'wglt';
 import { AI } from '../ai/ai';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { VendorDialog } from '../gui/vendordialog';
 import { Player } from './player';
 import { Sentiment, StatsActor } from './statsactor';

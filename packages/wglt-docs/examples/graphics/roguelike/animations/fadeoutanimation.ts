@@ -1,5 +1,5 @@
 import { fromRgb } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { BLACKOUT } from '../sprites';
 import { Animation } from './animation';
 

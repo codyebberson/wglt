@@ -1,8 +1,8 @@
 import { capitalize, type PointLike, serializable, zzfx } from 'wglt';
-import { Actor } from './actor';
+import type { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
-import { Item } from './item';
+import type { Item } from './item';
 import { hitSound, nextLevelSound, pickupSound, walkSound } from './sounds';
 import { removeFromArray } from './utils';
 

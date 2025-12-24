@@ -1,6 +1,6 @@
 import type { Color } from 'wglt';
-import { Actor } from '../actor';
-import { Game } from '../game';
+import type { Actor } from '../actor';
+import type { Game } from '../game';
 import { Palette } from '../palette';
 import { Animation } from './animation';
 

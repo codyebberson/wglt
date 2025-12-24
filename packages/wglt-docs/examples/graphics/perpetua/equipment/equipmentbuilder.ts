@@ -1,5 +1,5 @@
 import { Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { ItemQuality } from '../itemquality';
 import { Equipment } from './equipment';
 import { EquipmentSlot } from './equipmentslot';

@@ -8,7 +8,7 @@ import {
   SelectInput,
   type SelectOption,
 } from 'wglt';
-import { App } from './app';
+import type { App } from './app';
 
 let menuBg: Console | null = null;
 

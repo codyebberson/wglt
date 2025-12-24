@@ -1,5 +1,5 @@
 import { Point, Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Animation, type AnimationFunction } from './animation';
 import { ProjectileAnimation } from './projectileanimation';
 

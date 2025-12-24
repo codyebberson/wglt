@@ -1,4 +1,4 @@
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Sprites } from '../sprites';
 import { Fighter } from './fighter';
 

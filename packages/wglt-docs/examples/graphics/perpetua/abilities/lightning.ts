@@ -4,7 +4,7 @@ import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
 import { StatsActor } from '../entities/statsactor';
 import { Entity } from '../entity';
-import { Game } from '../game';
+import type { Game } from '../game';
 
 const LIGHTNING_RANGE = 5;
 const MANA_COST = 10;

@@ -1,5 +1,5 @@
 import { type Color, serializable } from 'wglt';
-import { Action } from './actions';
+import type { Action } from './actions';
 import { Item } from './item';
 
 export const EquipmentType = {

@@ -1,5 +1,5 @@
 import { Point, Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Animation } from './animation';
 
 export class ProjectileAnimation extends Animation {

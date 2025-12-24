@@ -1,6 +1,7 @@
-import { ArrayList, Container, GraphicsApp, GUI, getKeyForDigit, Rect, type Renderer } from 'wglt';
-import { Item } from '../item';
-import { Talent } from '../talent';
+import type { Renderer } from 'wglt';
+import { ArrayList, Container, getKeyForDigit, GraphicsApp, GUI, Rect } from 'wglt';
+import type { Item } from '../item';
+import type { Talent } from '../talent';
 import { ItemShortcutButton } from './itemshortcutbutton';
 import { ShortcutButtonSlot } from './shortcutbuttonslot';
 import { TalentButton } from './talentbutton';

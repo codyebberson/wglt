@@ -1,7 +1,7 @@
 import { Sprite } from 'wglt';
 import { Actor } from '../actor';
 import { BasicMonster } from '../ai/basicmonster';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Sprites } from '../sprites';
 import { Fighter } from './fighter';
 import { Player } from './player';

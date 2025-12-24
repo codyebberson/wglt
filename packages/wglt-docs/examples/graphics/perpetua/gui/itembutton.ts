@@ -9,7 +9,7 @@ import {
   Rect,
   type Renderer,
 } from 'wglt';
-import { Item } from '../item';
+import type { Item } from '../item';
 
 export class ItemButton extends Button {
   readonly containerItems: ArrayList<Item>;

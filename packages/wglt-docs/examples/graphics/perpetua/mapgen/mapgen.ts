@@ -2,7 +2,7 @@ import { getTileId, Point, Rect, TileMap } from 'wglt';
 import { FlashHealAbility } from '../abilities/flashheal';
 import { LeapAbility } from '../abilities/leap';
 import { LightningAbility } from '../abilities/lightning';
-import { Player } from '../entities/player';
+import type { Player } from '../entities/player';
 import { Soldier } from '../entities/soldier';
 import { EquipmentBuilder } from '../equipment/equipmentbuilder';
 import { EquipmentSlot } from '../equipment/equipmentslot';
@@ -13,7 +13,7 @@ import {
   SHIRT_SPRITE_1,
 } from '../equipment/equipmentsprites';
 import { EquipmentType } from '../equipment/equipmenttype';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { ItemQuality } from '../itemquality';
 import { Talent } from '../talent';
 import { Tiles } from './tiles';

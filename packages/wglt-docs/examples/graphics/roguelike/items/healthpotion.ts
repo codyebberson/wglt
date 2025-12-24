@@ -1,6 +1,6 @@
 import { Message } from 'wglt';
 import { Actor } from '../actor';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Item } from '../item';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';

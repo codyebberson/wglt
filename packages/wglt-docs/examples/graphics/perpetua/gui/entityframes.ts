@@ -1,8 +1,8 @@
 import { Container, GUI, Pico8Palette, Rect, type Renderer } from 'wglt';
-import { App } from '../app';
-import { Player } from '../entities/player';
+import type { App } from '../app';
+import type { Player } from '../entities/player';
 import { Sentiment, StatsActor } from '../entities/statsactor';
-import { Game } from '../game';
+import type { Game } from '../game';
 
 export class EntityFrames extends Container {
   readonly game: Game;

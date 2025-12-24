@@ -1,5 +1,5 @@
 import { getTileId, Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Item } from '../item';
 
 const TILE_OPEN_DOOR = getTileId(7, 20);

@@ -1,6 +1,6 @@
 import type { Color } from 'wglt';
 import { Entity } from './entity';
-import { Game } from './game';
+import type { Game } from './game';
 
 export class Item extends Entity {
   powerBonus: number;

@@ -1,6 +1,6 @@
 import { type Color, deserialize, serialize } from 'wglt';
 import { BaseComponent } from './base';
-import { GameMap } from './gamemap';
+import type { GameMap } from './gamemap';
 
 export const RenderOrder = {
   CORPSE: 0,

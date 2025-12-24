@@ -1,6 +1,6 @@
 import { type PointLike, serializable } from 'wglt';
 import { BumpAction, MeleeAction, MovementAction } from './actions';
-import { Actor } from './actor';
+import type { Actor } from './actor';
 
 export abstract class BaseAI {
   abstract perform(actor: Actor): void;

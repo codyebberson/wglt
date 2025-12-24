@@ -2,7 +2,7 @@ import { Sprite } from 'wglt';
 import { Actor } from '../actor';
 import { BasicMonster } from '../ai/basicmonster';
 import { EquipmentBuilder } from '../equipment/equipmentbuilder';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Gold } from '../items/gold';
 import { HealthPotion } from '../items/healthpotion';
 import { Sentiment, StatsActor } from './statsactor';

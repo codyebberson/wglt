@@ -1,5 +1,6 @@
-import { ButtonSlot, Container, GUI, Key, Rect, type Renderer } from 'wglt';
-import { App } from '../app';
+import type { Renderer } from 'wglt';
+import { ButtonSlot, Container, GUI, Key, Rect } from 'wglt';
+import type { App } from '../app';
 import { ShortcutBar } from './shortcutbar';
 
 export class BottomPanel extends Container {

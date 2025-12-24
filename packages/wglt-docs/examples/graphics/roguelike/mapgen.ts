@@ -7,7 +7,7 @@ import { Player } from './actors/player';
 import { FadeInAnimation } from './animations/fadeinanimation';
 import { FadeOutAnimation } from './animations/fadeoutanimation';
 import { Entity } from './entity';
-import { Game } from './game';
+import type { Game } from './game';
 import { Item } from './item';
 import { HealthPotion } from './items/healthpotion';
 import { Scroll } from './items/scroll';

@@ -1,7 +1,7 @@
 import { type Color, fromRgb, Message, SimplePalette, Sprite } from 'wglt';
 import { Actor } from './actor';
 import { Entity } from './entity';
-import { Game } from './game';
+import type { Game } from './game';
 import { ItemQuality } from './itemquality';
 
 const COLOR_POOR = fromRgb(0x9d, 0x9d, 0x9d);

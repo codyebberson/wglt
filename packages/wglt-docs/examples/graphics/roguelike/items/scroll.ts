@@ -1,6 +1,6 @@
 import type { Ability } from '../ability';
 import { Actor } from '../actor';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Item } from '../item';
 
 export class Scroll extends Item {

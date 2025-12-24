@@ -1,5 +1,5 @@
 import { Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Monster } from './monster';
 
 export class Soldier extends Monster {

@@ -1,6 +1,6 @@
 import { Sprite, zzfx } from 'wglt';
 import { Actor } from '../actor';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { hitSound } from '../sounds';
 
 export class Fighter extends Actor {

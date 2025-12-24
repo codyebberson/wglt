@@ -1,5 +1,5 @@
 import { Sprite } from 'wglt';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Monster } from './monster';
 
 const SPRITE = new Sprite(96, 272, 16, 16, 2);

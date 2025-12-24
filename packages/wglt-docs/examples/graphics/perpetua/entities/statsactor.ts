@@ -1,11 +1,11 @@
 import { ArrayList, Pico8Palette, Sprite } from 'wglt';
 import { Actor } from '../actor';
-import { Buff } from '../buffs/buff';
-import { Equipment } from '../equipment/equipment';
+import type { Buff } from '../buffs/buff';
+import type { Equipment } from '../equipment/equipment';
 import { EquipmentSlot } from '../equipment/equipmentslot';
 import { EquipmentType } from '../equipment/equipmenttype';
-import { Game } from '../game';
-import { Player } from './player';
+import type { Game } from '../game';
+import type { Player } from './player';
 
 export const Sentiment = {
   HOSTILE: -1,

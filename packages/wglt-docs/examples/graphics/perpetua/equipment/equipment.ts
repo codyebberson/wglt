@@ -1,7 +1,7 @@
 import { Message, Pico8Palette } from 'wglt';
-import { Player } from '../entities/player';
+import type { Player } from '../entities/player';
 import { Item } from '../item';
-import { EquipmentBuilder } from './equipmentbuilder';
+import type { EquipmentBuilder } from './equipmentbuilder';
 import { EquipmentSlot } from './equipmentslot';
 import { EquipmentType } from './equipmenttype';
 

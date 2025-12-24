@@ -4,7 +4,7 @@ import { Actor } from '../actor';
 import { Stunned } from '../ai/stunned';
 import { SlideAnimation } from '../animations/slideanimation';
 import { StatsActor } from '../entities/statsactor';
-import { Game } from '../game';
+import type { Game } from '../game';
 import { Item } from '../item';
 import { ItemQuality } from '../itemquality';
 

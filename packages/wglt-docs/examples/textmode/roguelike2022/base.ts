@@ -1,5 +1,5 @@
-import { Engine } from './engine';
-import { GameMap } from './gamemap';
+import type { Engine } from './engine';
+import type { GameMap } from './gamemap';
 
 export abstract class BaseComponent {
   parent?: BaseComponent;

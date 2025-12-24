@@ -1,5 +1,5 @@
 import { AppState, Pico8Palette } from 'wglt';
-import { App } from './app';
+import type { App } from './app';
 
 const OPTIONS = [
   { display: 'NEW GAME', hash: 'startgame', enabled: true },

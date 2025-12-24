@@ -1,9 +1,18 @@
-import { Console, computePath, Point, type PointLike, Rect, serializable, TileMap, TileMapCell } from 'wglt';
+import {
+  computePath,
+  Console,
+  Point,
+  type PointLike,
+  Rect,
+  serializable,
+  TileMap,
+  TileMapCell,
+} from 'wglt';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
-import { Engine } from './engine';
-import { Entity } from './entity';
+import type { Engine } from './engine';
+import type { Entity } from './entity';
 import { Item } from './item';
 
 @serializable

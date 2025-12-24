@@ -1,5 +1,6 @@
-import { ArrayList, Button, Rect } from 'wglt';
-import { Item } from '../item';
+import type { ArrayList, Rect } from 'wglt';
+import { Button } from 'wglt';
+import type { Item } from '../item';
 
 export class ItemShortcutButton extends Button {
   readonly containerItems: ArrayList<Item>;

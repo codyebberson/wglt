@@ -14,7 +14,7 @@ import {
 } from 'wglt';
 import { Actor } from './actor';
 import { type AI, BasicMonster, ConfusedMonster } from './ai';
-import { App } from './app';
+import type { App } from './app';
 import { Entity } from './entity';
 import { Item } from './item';
 
