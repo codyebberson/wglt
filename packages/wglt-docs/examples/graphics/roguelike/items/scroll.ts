@@ -2,6 +2,7 @@ import { Ability } from '../ability';
 import { Actor } from '../actor';
 import { Game } from '../game';
 import { Item } from '../item';
+import { Sprites } from '../sprites';
 
 export class Scroll extends Item {
   constructor(
@@ -10,7 +11,7 @@ export class Scroll extends Item {
     y: number,
     readonly ability: Ability
   ) {
-    super(game, x, y, `scroll of ${ability.name}`, ability.sprite);
+    super(game, x, y, `scroll of ${ability.name}`, Sprites.SCROLL);
     this.tooltipMessages = ability.tooltipMessages;
   }
 

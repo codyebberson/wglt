@@ -19,10 +19,13 @@ export const Sprites = {
   FIREBALL_ANIMATION: new Sprite(128, 32, 16, 16, 3, false),
   EXPLOSION_ANIMATION: new Sprite(176, 32, 16, 16, 4, false, 4),
   HEALTH_POTION: new Sprite(128, 16, 16, 16, 1),
-  LIGHTNING_ICON: new Sprite(128, 32, 16, 16, 3),
+  LIGHTNING_ICON: new Sprite(128, 48, 16, 16, 3),
 
   // Actors
   PLAYER: new Sprite(0, 16, 16, 16, 2, true),
   ORC: new Sprite(32, 16, 16, 16, 2, true),
   TROLL: new Sprite(64, 16, 16, 16, 2, true),
+
+  // Items
+  SCROLL: new Sprite(144, 16, 16, 16, 1),
 };

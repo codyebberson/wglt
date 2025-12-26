@@ -5,7 +5,7 @@ import { Item } from '../item';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';
 
-const HEAL_AMOUNT = 4;
+const HEAL_AMOUNT = 10;
 
 export class HealthPotion extends Item {
   constructor(game: Game, x: number, y: number) {
@@ -14,7 +14,7 @@ export class HealthPotion extends Item {
     this.tooltipMessages = [
       new Message('Ancient Healing Potion', Palette.BLUE),
       new Message('Item Level 5', Palette.YELLOW),
-      new Message('Use: Restore 10 health', Palette.GREEN),
+      new Message(`Use: Restore ${HEAL_AMOUNT} health`, Palette.GREEN),
     ];
   }
 
