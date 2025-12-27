@@ -37,6 +37,9 @@ uniform sampler2D sprites;
 out vec4 fragColor;
 
 void main(void) {
+   if (texCoord.x < 0.0 || texCoord.y < 0.0 || texCoord.x > 1.0 || texCoord.y > 1.0) {
+     discard;
+   }
    vec4 tile = texture(tiles, texCoord);
    if(tile.x == 0.0 && tile.y == 0.0) { discard; }
    vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;
