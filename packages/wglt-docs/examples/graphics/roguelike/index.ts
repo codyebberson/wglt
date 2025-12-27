@@ -52,14 +52,14 @@ function newGame(): Game {
     app.drawString(1, frameY, player.name);
 
     const hpPercent = player.hp / player.maxHp;
-    app.drawImage(0, frameY + 7, 32, 64, 40, 12);
-    app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 36));
+    app.drawImage(0, frameY + 7, 32, 64, 48, 12);
+    app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 44));
     app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
     const xpPercent = player.xp / player.maxXp;
-    app.drawImage(40, frameY + 7, 32, 64, 40, 12);
-    app.drawImage(42, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 36));
-    app.drawString(43, frameY + 10, `${player.xp}/${player.maxXp}`);
+    app.drawImage(50, frameY + 7, 32, 64, 48, 12);
+    app.drawImage(52, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 44));
+    app.drawString(53, frameY + 10, `${player.xp}/${player.maxXp}`);
   };
   gui.addChild(playerStats);
 
