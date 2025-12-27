@@ -273,8 +273,8 @@ export class TileMap {
 
     this.visibleRect.x = minX;
     this.visibleRect.y = minY;
-    this.visibleRect.width = maxX - minX; // + 1;
-    this.visibleRect.height = maxY - minY; // + 1;
+    this.visibleRect.width = maxX - minX + 1;
+    this.visibleRect.height = maxY - minY + 1;
 
     this.grid[originY][originX].visible = true;
 
@@ -507,8 +507,8 @@ export class TileMap {
    * All visible tiles are marked as explored.
    */
   updateExplored(): void {
-    for (let y = this.visibleRect.y1; y <= this.visibleRect.y2; y++) {
-      for (let x = this.visibleRect.x1; x <= this.visibleRect.x2; x++) {
+    for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
+      for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
         const tile = this.grid[y][x];
         tile.explored = tile.explored || tile.visible;
       }
