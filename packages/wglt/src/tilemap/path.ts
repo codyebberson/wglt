@@ -4,7 +4,7 @@ import { TileMapCell } from './tilemapcell';
 
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1] as const;
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1] as const;
-const costs = [1.5, 1, 1.5, 1, 1, 1.5, 1, 1.5] as const;
+const costs = [1.4, 1, 1.4, 1, 1, 1.4, 1, 1.4] as const;
 let pathId = 0;
 
 /**
@@ -61,7 +61,9 @@ export function computePath(
           v.h = calculateHeuristic(v, dest);
           v.prev = null;
         }
-        const alt = u.g + costs[i];
+        const turnCost =
+          u.prev && (u.x - u.prev.x !== dxs[i] || u.y - u.prev.y !== dys[i]) ? 0.5 : 0.0;
+        const alt = u.g + costs[i] + turnCost;
         if (alt < v.g && alt <= maxDist) {
           v.g = alt;
           v.prev = u;
