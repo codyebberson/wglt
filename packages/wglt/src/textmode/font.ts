@@ -1,3 +1,10 @@
+import { Rect } from '../core/rect';
+
+/**
+ * IBM BIOS font constants.
+ */
+export const IBM_BIOS_FONT_GLYPH_SIZE: Rect = new Rect(0, 0, 8, 8);
+
 /**
  * Font image as data URL.
  * IBM terminal font.

@@ -134,24 +134,40 @@ export class GraphicsApp extends BaseApp {
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(font: Font, x: number, y: number, str: string, color?: Color, out?: Point): void {
+  drawString(
+    font: Font,
+    x: number,
+    y: number,
+    str: string,
+    color?: Color,
+    scale: number = 1,
+    out?: Point
+  ): void {
     const lines = str.split('\n');
-    const srcHeight = font.getHeight();
-    const dstHeight = srcHeight * font.scale;
+    const lineHeight = font.lineHeight * scale;
     let xi = x;
     let yi = y;
     for (let i = 0; i < lines.length; i++) {
       if (i > 0) {
         xi = x;
-        yi += dstHeight;
+        yi += lineHeight;
       }
       for (let j = 0; j < lines[i].length; j++) {
         const charCode = lines[i].charCodeAt(j);
-        if (font.isInRange(charCode)) {
-          const offset = font.getOffset(charCode);
-          const srcWidth = font.getWidth(charCode);
-          const dstWidth = srcWidth * font.scale;
-          this.drawImage(xi, yi, offset, 0, srcWidth, srcHeight, color, dstWidth, dstHeight);
+        if (Font.isInRange(charCode)) {
+          const srcRect = font.getGlyphRect(charCode);
+          const dstWidth = srcRect.width * scale;
+          this.drawImage(
+            xi,
+            yi,
+            srcRect.x,
+            srcRect.y,
+            srcRect.width,
+            srcRect.height,
+            color,
+            dstWidth,
+            lineHeight
+          );
           xi += dstWidth;
         }
       }
@@ -170,10 +186,18 @@ export class GraphicsApp extends BaseApp {
    * @param y The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
+   * @param scale Optional scale factor.
    */
-  drawCenteredString(font: Font, x: number, y: number, str: string, color?: Color): void {
-    const x2 = (x - font.getStringWidth(str) / 2) | 0;
-    this.drawString(font, x2, y, str, color);
+  drawCenteredString(
+    font: Font,
+    x: number,
+    y: number,
+    str: string,
+    color?: Color,
+    scale: number = 1
+  ): void {
+    const x2 = (x - (font.getStringWidth(str) * scale) / 2) | 0;
+    this.drawString(font, x2, y, str, color, scale);
   }
 
   /**
@@ -184,10 +208,18 @@ export class GraphicsApp extends BaseApp {
    * @param y The y-coordinate of the top-right corner.
    * @param str The text string to draw.
    * @param color Optional color.
+   * @param scale Optional scale factor.
    */
-  drawRightString(font: Font, x: number, y: number, str: string, color?: Color): void {
-    const x2 = x - font.getStringWidth(str);
-    this.drawString(font, x2, y, str, color);
+  drawRightString(
+    font: Font,
+    x: number,
+    y: number,
+    str: string,
+    color?: Color,
+    scale: number = 1
+  ): void {
+    const x2 = x - font.getStringWidth(str) * scale;
+    this.drawString(font, x2, y, str, color, scale);
   }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {

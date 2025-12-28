@@ -1,8 +1,8 @@
-import { CgaPalette, MonospacedFont, Rect, Terminal } from 'wglt';
+import { CgaPalette, Rect, Terminal } from 'wglt';
 
 const term = new Terminal('canvas', 80, 25, {
   fontUrl: '/terminal8x14_gs_ro.png',
-  font: new MonospacedFont(new Rect(0, 0, 8, 14)),
+  fontGlyphSize: new Rect(0, 0, 8, 14),
 });
 
 term.fillRect(0, 0, 80, 25, CgaPalette.DARK_BLUE);

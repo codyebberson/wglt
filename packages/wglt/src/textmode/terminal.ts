@@ -1,15 +1,15 @@
 import { BaseApp } from '../core/baseapp';
 import type { Color } from '../core/color';
-import { FONT_IBM_BIOS, MonospacedFont } from '../core/font';
 import { createTexture, initShaderProgram } from '../core/glutils';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
+import type { Rect } from '../core/rect';
 import { interpolate } from '../core/utils';
 import type { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Console } from './console';
-import { IBM_BIOS_FONT_DATA_URL } from './font';
+import { IBM_BIOS_FONT_DATA_URL, IBM_BIOS_FONT_GLYPH_SIZE } from './font';
 import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
 /**
@@ -18,8 +18,8 @@ import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 export interface TerminalOptions {
   /** URL to a custom font image file. If not provided, uses the default IBM BIOS font. */
   readonly fontUrl?: string;
-  /** Custom font configuration. If not provided, uses the default IBM BIOS font. */
-  readonly font?: MonospacedFont;
+  /** Font glyph size. If not provided, uses the default IBM BIOS font (8 pixels by 8 pixels). */
+  readonly fontGlyphSize?: Rect;
   /** Custom movement key mappings. If not provided, uses standard roguelike keys (arrows, vi keys, numpad). */
   readonly movementKeys?: Partial<Record<Key, Point>>;
   /** Maximum frames per second. If not provided, runs uncapped. */
@@ -90,9 +90,9 @@ export class Terminal extends BaseApp {
         ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
         : canvasOrSelector;
 
-    const font = options?.font ?? FONT_IBM_BIOS;
-    const pixelWidth = width * font.glyphSize.width;
-    const pixelHeight = height * font.glyphSize.height;
+    const fontGlyphSize = options?.fontGlyphSize ?? IBM_BIOS_FONT_GLYPH_SIZE;
+    const pixelWidth = width * fontGlyphSize.width;
+    const pixelHeight = height * fontGlyphSize.height;
 
     const mouse = new Mouse(canvas, width, height);
 

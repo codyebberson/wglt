@@ -3,22 +3,91 @@ import { Rect } from './rect';
 const START_CHAR_CODE = 32;
 const END_CHAR_CODE = 126;
 
-export abstract class Font {
-  readonly scale: number;
+/**
+ * The Font class represents a bitmap font with glyph rectangles and line height.
+ */
+export class Font {
+  readonly glyphRects: Rect[];
+  readonly lineHeight: number = 0;
 
-  constructor(scale: number) {
-    this.scale = scale;
+  /**
+   * Creates a monospaced font from start coordinates and monospaced glyph dimensions.
+   *
+   * @param startX - The starting X coordinate of the first glyph.
+   * @param startY - The starting Y coordinate of the first glyph.
+   * @param glyphWidth - The width of each glyph.
+   * @param glyphHeight - The height of each glyph.
+   * @returns A new Font instance representing the monospaced font.
+   */
+  static createMonospaced(
+    startX: number,
+    startY: number,
+    glyphWidth: number,
+    glyphHeight: number
+  ): Font {
+    const glyphRects: Rect[] = [];
+    let x = startX;
+    const y = startY;
+    for (let i = START_CHAR_CODE; i <= END_CHAR_CODE; i++) {
+      glyphRects.push(new Rect(x, y, glyphWidth, glyphHeight));
+      x += glyphWidth;
+    }
+    return new Font(glyphRects, glyphHeight);
   }
-  abstract getOffset(charCode: number): number;
-  abstract getWidth(charCode: number): number;
-  abstract getHeight(): number;
+
+  /**
+   * Creates a proportional font from start coordinates, an array of glyph widths, and a common height.
+   *
+   * @param startX - The starting X coordinate of the first glyph.
+   * @param startY - The starting Y coordinate of the first glyph.
+   * @param widths - An array of widths for each glyph.
+   * @param height - The common height for all glyphs.
+   * @returns A new Font instance representing the proportional font.
+   */
+  static createProportional(
+    startX: number,
+    startY: number,
+    widths: number[],
+    height: number
+  ): Font {
+    const glyphRects: Rect[] = [];
+    let x = startX;
+    const y = startY;
+    for (let i = 0; i < widths.length; i++) {
+      const width = widths[i];
+      glyphRects.push(new Rect(x, y, width, height));
+      x += width;
+    }
+    return new Font(glyphRects, height);
+  }
 
   /**
    * Returns whether the character is in the printable range.
    * @param charCode The integer character ASCII code.
    */
-  isInRange(charCode: number): boolean {
+  static isInRange(charCode: number): boolean {
     return charCode >= START_CHAR_CODE && charCode <= END_CHAR_CODE;
+  }
+
+  /**
+   * Creates a new Font instance.
+   *
+   * @param glyphRects - An array of Rect objects representing the glyph rectangles.
+   * @param lineHeight - The height of a line of text.
+   */
+  constructor(glyphRects: Rect[], lineHeight: number) {
+    this.glyphRects = glyphRects;
+    this.lineHeight = lineHeight;
+  }
+
+  /**
+   * Returns the glyph rectangle for the specified character code.
+   *
+   * @param charCode - The integer character ASCII code.
+   * @returns The Rect object representing the glyph rectangle.
+   */
+  getGlyphRect(charCode: number): Rect {
+    return this.glyphRects[charCode - START_CHAR_CODE];
   }
 
   /**
@@ -28,73 +97,21 @@ export abstract class Font {
   getStringWidth(str: string): number {
     let sum = 0;
     for (let i = 0; i < str.length; i++) {
-      sum += this.getWidth(str.charCodeAt(i));
+      sum += this.getGlyphRect(str.charCodeAt(i)).width;
     }
     return sum;
   }
 }
 
-export class MonospacedFont extends Font {
-  readonly glyphSize: Rect;
+export const FONT_8X8 = Font.createMonospaced(0, 0, 8, 8);
 
-  constructor(glyphSize: Rect, scale: number = 1) {
-    super(scale);
-    this.glyphSize = glyphSize;
-  }
-
-  getOffset(charCode: number): number {
-    return (charCode - START_CHAR_CODE) * this.glyphSize.width;
-  }
-
-  getWidth(): number {
-    return this.glyphSize.width;
-  }
-
-  getHeight(): number {
-    return this.glyphSize.height;
-  }
-}
-
-export class ProportionalFont extends Font {
-  readonly height: number;
-  readonly widths: number[];
-  readonly offsets: number[];
-
-  constructor(height: number, widths: number[], scale: number = 1) {
-    super(scale);
-    this.height = height;
-    this.widths = widths;
-    this.offsets = [0];
-
-    let offset = 0;
-    for (let i = 0; i < this.widths.length; i++) {
-      offset += this.widths[i];
-      this.offsets.push(offset);
-    }
-  }
-
-  getOffset(charCode: number): number {
-    return this.offsets[charCode - START_CHAR_CODE];
-  }
-
-  getWidth(charCode: number): number {
-    return this.widths[charCode - START_CHAR_CODE];
-  }
-
-  getHeight(): number {
-    return this.height;
-  }
-}
-
-export const FONT_IBM_BIOS: MonospacedFont = new MonospacedFont(new Rect(0, 0, 8, 8));
-
-export const FONT_PRESS_START: MonospacedFont = new MonospacedFont(new Rect(0, 0, 8, 8));
-
-export const FONT_04B03: ProportionalFont = new ProportionalFont(
-  8,
+export const FONT_04B03 = Font.createProportional(
+  0,
+  0,
   [
     4, 2, 4, 6, 5, 6, 6, 2, 3, 3, 4, 4, 3, 4, 2, 6, 5, 3, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 4, 4, 4, 5,
     6, 5, 5, 4, 5, 4, 4, 5, 5, 4, 5, 5, 4, 6, 5, 5, 5, 5, 5, 5, 4, 5, 5, 6, 5, 5, 4, 3, 6, 3, 4, 5,
     3, 5, 5, 4, 5, 5, 4, 5, 5, 2, 3, 5, 2, 6, 5, 5, 5, 5, 4, 5, 4, 5, 5, 6, 4, 5, 5, 4, 2, 4, 5, 0,
-  ]
+  ],
+  8
 );
