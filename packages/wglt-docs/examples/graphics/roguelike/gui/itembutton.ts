@@ -1,4 +1,14 @@
-import { ArrayList, Button, Component, Container, GraphicsApp, GUI, Message, Rect } from 'wglt';
+import {
+  ArrayList,
+  Button,
+  Component,
+  Container,
+  FONT_04B03,
+  GraphicsApp,
+  GUI,
+  Message,
+  Rect,
+} from 'wglt';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -53,11 +63,12 @@ export class ItemButton extends Button {
     gui.drawComponent(this, Button);
 
     const app = gui.context;
+    const font = FONT_04B03;
     const stackItems = this.stackItems;
 
     if (stackItems.length > -1) {
       const dst = this.screenRect;
-      app.drawRightString(dst.x2 - 3, dst.y2 - 10, stackItems.length.toString());
+      app.drawRightString(font, dst.x2 - 3, dst.y2 - 10, stackItems.length.toString());
     }
   }
 }

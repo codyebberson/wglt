@@ -96,7 +96,7 @@ export class Terminal extends BaseApp {
 
     const mouse = new Mouse(canvas, width, height);
 
-    super(canvas, pixelWidth, pixelHeight, font, mouse);
+    super(canvas, pixelWidth, pixelHeight, mouse);
 
     this.width = width;
     this.height = height;

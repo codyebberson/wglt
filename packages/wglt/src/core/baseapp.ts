@@ -44,7 +44,6 @@ export abstract class BaseApp {
   readonly canvas: HTMLCanvasElement;
   readonly pixelWidth: number;
   readonly pixelHeight: number;
-  readonly font: Font;
   readonly mouse: Mouse;
   /** The WebGL2 rendering context. */
   readonly gl: WebGL2RenderingContext;
@@ -65,18 +64,10 @@ export abstract class BaseApp {
    * @param canvas - The HTML canvas element to render to.
    * @param pixelWidth - The width of the canvas in pixels.
    * @param pixelHeight - The height of the canvas in pixels.
-   * @param font - The font to use for text rendering.
    * @param mouse - The mouse input handler.
    */
-  constructor(
-    canvas: HTMLCanvasElement,
-    pixelWidth: number,
-    pixelHeight: number,
-    font: Font,
-    mouse: Mouse
-  ) {
+  constructor(canvas: HTMLCanvasElement, pixelWidth: number, pixelHeight: number, mouse: Mouse) {
     this.canvas = canvas;
-    this.font = font;
     this.pixelWidth = pixelWidth;
     this.pixelHeight = pixelHeight;
     this.mouse = mouse;

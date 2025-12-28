@@ -2,6 +2,7 @@ import {
   Button,
   ButtonSlot,
   Dialog,
+  FONT_04B03,
   GraphicsApp,
   GUI,
   Key,
@@ -112,6 +113,7 @@ export class LevelUpDialog extends Dialog {
 export class LevelUpDialogRenderer implements Renderer<GraphicsApp, LevelUpDialog> {
   render(gui: GUI<GraphicsApp>, dialog: LevelUpDialog): void {
     const app = gui.context;
+    const font = FONT_04B03;
 
     // TODO
     const buttonRect = new Rect(0, 0, 24, 24);
@@ -121,10 +123,11 @@ export class LevelUpDialogRenderer implements Renderer<GraphicsApp, LevelUpDialo
     const x = containerRect.x + MARGIN;
     let y = containerRect.y + MARGIN;
 
-    app.drawString(x, y, 'Leveled up!', Pico8Palette.WHITE);
+    app.drawString(font, x, y, 'Leveled up!', Pico8Palette.WHITE);
     y += 10;
 
     app.drawString(
+      font,
       x,
       y,
       `Choose ${dialog.player.remainingAbilityPoints} stats to increase:`,

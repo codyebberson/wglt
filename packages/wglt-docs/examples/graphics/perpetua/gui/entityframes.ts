@@ -1,4 +1,4 @@
-import { Container, GUI, Pico8Palette, Rect, type Renderer } from 'wglt';
+import { Container, FONT_04B03, GUI, Pico8Palette, Rect, type Renderer } from 'wglt';
 import type { App } from '../app';
 import type { Player } from '../entities/player';
 import { Sentiment, StatsActor } from '../entities/statsactor';
@@ -59,6 +59,8 @@ export class EntityFramesRenderer implements Renderer<App, EntityFrames> {
     const dialogSourceRect = new Rect(0, 32, 48, 48);
     graphicsApp.drawAutoRect(dialogSourceRect, rect);
 
+    const font = FONT_04B03;
+
     // Draw the name
     let nameColor = Pico8Palette.YELLOW;
     if (actor.sentiment === Sentiment.FRIENDLY) {
@@ -66,7 +68,7 @@ export class EntityFramesRenderer implements Renderer<App, EntityFrames> {
     } else if (actor.sentiment === Sentiment.HOSTILE) {
       nameColor = Pico8Palette.RED;
     }
-    app.drawString(rect.x + 4, rect.y + 4, actor.name, nameColor);
+    app.drawString(font, rect.x + 4, rect.y + 4, actor.name, nameColor);
 
     // Draw the health
     const healthWidth = Math.round((38.0 * actor.hp) / actor.maxHp);
@@ -84,6 +86,7 @@ export class EntityFramesRenderer implements Renderer<App, EntityFrames> {
       7
     );
     app.drawCenteredString(
+      font,
       rect.x + 20,
       rect.y + 16,
       `${actor.hp}/${actor.maxHp}`,
@@ -101,8 +104,8 @@ export class EntityFramesRenderer implements Renderer<App, EntityFrames> {
     } else if (actor.level < player.level - 1) {
       levelColor = Pico8Palette.YELLOW;
     }
-    app.drawCenteredString(rect.x + 56, rect.y + 5, actor.level.toString(), levelColor);
+    app.drawCenteredString(font, rect.x + 56, rect.y + 5, actor.level.toString(), levelColor);
 
-    app.drawString(rect.x + 4, rect.y + 28, `${actor.x}, ${actor.y}`, Pico8Palette.WHITE);
+    app.drawString(font, rect.x + 4, rect.y + 28, `${actor.x}, ${actor.y}`, Pico8Palette.WHITE);
   }
 }

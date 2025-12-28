@@ -1,3 +1,4 @@
+import type { Font } from '../../core/font';
 import { Button } from '../../core/gui/button';
 import { ButtonSlot } from '../../core/gui/buttonslot';
 import { Dialog } from '../../core/gui/dialog';
@@ -16,6 +17,7 @@ import { GraphicsMessageLogRenderer } from './messagelogrenderer';
 import { GraphicsSelectInputRenderer } from './selectinputrenderer';
 
 export interface DefaultGraphicsThemeOptions {
+  readonly font: Font;
   readonly dialogSourceRect: Rect;
   readonly buttonSlotRect: Rect;
 }
@@ -24,14 +26,14 @@ export class DefaultGraphicsTheme extends Theme<GraphicsApp> {
   constructor(options: DefaultGraphicsThemeOptions) {
     super();
 
-    const { dialogSourceRect, buttonSlotRect } = options;
+    const { font, dialogSourceRect, buttonSlotRect } = options;
 
     this.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
-    this.renderers.set(ButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect));
+    this.renderers.set(ButtonSlot, new GraphicsButtonSlotRenderer(buttonSlotRect, font));
     this.renderers.set(Panel, new AutoRectRenderer(buttonSlotRect));
-    this.renderers.set(Label, new GraphicsLabelRenderer());
-    this.renderers.set(Button, new GraphicsButtonRenderer());
-    this.renderers.set(SelectInput, new GraphicsSelectInputRenderer());
-    this.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
+    this.renderers.set(Label, new GraphicsLabelRenderer(font));
+    this.renderers.set(Button, new GraphicsButtonRenderer(font));
+    this.renderers.set(SelectInput, new GraphicsSelectInputRenderer(font));
+    this.renderers.set(MessageLog, new GraphicsMessageLogRenderer(font));
   }
 }

@@ -15,7 +15,8 @@ import {
   Sprite,
 } from 'wglt';
 
-const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
+const app = new GraphicsApp('canvas', 640, 360);
+const font = FONT_04B03;
 
 let x = 160;
 let y = 160;
@@ -31,8 +32,8 @@ const dialogSourceRect = new Rect(0, 64, 24, 24);
 gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
 gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(Label, new GraphicsLabelRenderer());
-gui.renderers.set(Button, new GraphicsButtonRenderer());
+gui.renderers.set(Label, new GraphicsLabelRenderer(font));
+gui.renderers.set(Button, new GraphicsButtonRenderer(font));
 
 const testButtonSprite = new Sprite(128, 32, 16, 16);
 
@@ -57,9 +58,9 @@ app.update = (): void => {
     }
   }
 
-  app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
-  app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
-  app.drawString(x, y, '@', CgaPalette.LIGHT_GREEN);
+  app.drawString(font, 1, 1, 'Hello world!', CgaPalette.YELLOW);
+  app.drawString(font, 1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
+  app.drawString(font, x, y, '@', CgaPalette.LIGHT_GREEN);
 
   gui.draw();
 };

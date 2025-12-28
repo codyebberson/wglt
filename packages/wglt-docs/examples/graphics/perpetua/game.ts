@@ -8,6 +8,7 @@ import {
   computePath,
   Container,
   Dialog,
+  FONT_04B03,
   GraphicsButtonRenderer,
   GraphicsLabelRenderer,
   GraphicsMessageLogRenderer,
@@ -134,20 +135,22 @@ export class Game extends AppState<App> {
     this.targetSprite = TARGET_SPRITE;
     this.cooldownSprite = new Sprite(192, 16, 16, 16, 24);
 
+    const font = FONT_04B03;
+
     this.gui.renderers.set(BottomPanel, new BottomPanelRenderer());
     this.gui.renderers.set(EntityFrames, new EntityFramesRenderer());
     this.gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
     this.gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
     this.gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
-    this.gui.renderers.set(Label, new GraphicsLabelRenderer());
-    this.gui.renderers.set(Button, new GraphicsButtonRenderer());
-    this.gui.renderers.set(TalentButton, new GraphicsButtonRenderer());
+    this.gui.renderers.set(Label, new GraphicsLabelRenderer(font));
+    this.gui.renderers.set(Button, new GraphicsButtonRenderer(font));
+    this.gui.renderers.set(TalentButton, new GraphicsButtonRenderer(font));
     this.gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
     this.gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(dialogSourceRect));
-    this.gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer());
+    this.gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer(font));
     this.gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
     this.gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(dialogSourceRect));
-    this.gui.renderers.set(ItemButton, new GraphicsButtonRenderer());
+    this.gui.renderers.set(ItemButton, new GraphicsButtonRenderer(font));
 
     this.mapGen = new MapGenerator(this);
 

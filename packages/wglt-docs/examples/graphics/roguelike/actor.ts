@@ -1,4 +1,4 @@
-import { ArrayList, type Color, Sprite, TileMapCell, zzfx } from 'wglt';
+import { ArrayList, type Color, FONT_04B03, Sprite, TileMapCell, zzfx } from 'wglt';
 import type { Ability } from './ability';
 import { TargetType } from './ability';
 import type { AI } from './ai/ai';
@@ -205,7 +205,7 @@ export class Actor extends Entity {
   }
 
   addFloatingText(str: string, color: Color): void {
-    this.game.animations.push(new FloatingTextAnimation(this, str, color));
+    this.game.animations.push(new FloatingTextAnimation(this, FONT_04B03, str, color));
   }
 
   onAttack(_target: Actor, _damage: number): void {}

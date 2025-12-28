@@ -1,6 +1,7 @@
 import { CgaPalette, FONT_04B03, GraphicsApp } from 'wglt';
 
-const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
+const app = new GraphicsApp('canvas', 640, 360);
+const font = FONT_04B03;
 
 interface MyObject {
   x: number;
@@ -53,8 +54,14 @@ app.update = (): void => {
     app.drawImage(obj.x, obj.y, 0, 16, 16, 16);
   }
 
-  app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
-  app.drawString(1, 11, 'Click to add objects', CgaPalette.YELLOW);
-  app.drawString(1, 21, `Object count: ${objects.length}`, CgaPalette.YELLOW);
-  app.drawString(1, 31, `Frame time: ${app.lastFrameDuration.toFixed(2)} ms`, CgaPalette.YELLOW);
+  app.drawString(font, 1, 1, 'Hello world!', CgaPalette.YELLOW);
+  app.drawString(font, 1, 11, 'Click to add objects', CgaPalette.YELLOW);
+  app.drawString(font, 1, 21, `Object count: ${objects.length}`, CgaPalette.YELLOW);
+  app.drawString(
+    font,
+    1,
+    31,
+    `Frame time: ${app.lastFrameDuration.toFixed(2)} ms`,
+    CgaPalette.YELLOW
+  );
 };

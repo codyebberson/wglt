@@ -1,4 +1,4 @@
-import { ArrayList, Button, Container, GraphicsApp, GUI, Rect } from 'wglt';
+import { ArrayList, Button, Container, FONT_04B03, GraphicsApp, GUI, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemShortcutButton extends Button {
@@ -49,8 +49,9 @@ export class ItemShortcutButton extends Button {
     gui.drawComponent(this, Button);
 
     const app = gui.context;
+    const font = FONT_04B03;
     const dst = this.screenRect;
     const count = this.countItems();
-    app.drawRightString(dst.x2 - 3, dst.y2 - 10, count.toString());
+    app.drawRightString(font, dst.x2 - 3, dst.y2 - 10, count.toString());
   }
 }

@@ -1,4 +1,4 @@
-import { AppState, Pico8Palette } from 'wglt';
+import { AppState, FONT_04B03, Pico8Palette } from 'wglt';
 import type { App } from './app';
 
 const OPTIONS = [
@@ -15,11 +15,19 @@ export class MainMenu extends AppState<App> {
   update(): void {
     // "Continue" is only enabled if there is an active game
     const app = this.app;
+    const font = FONT_04B03;
+
     OPTIONS[1].enabled = !!app.game;
 
     // Draw the title text
-    app.drawCenteredString(this.app.center.x + 1, 33, 'WGLT ROGUELIKE DEMO', Pico8Palette.BLACK);
-    app.drawCenteredString(this.app.center.x, 32, 'WGLT ROGUELIKE DEMO');
+    app.drawCenteredString(
+      font,
+      this.app.center.x + 1,
+      33,
+      'WGLT ROGUELIKE DEMO',
+      Pico8Palette.BLACK
+    );
+    app.drawCenteredString(font, this.app.center.x, 32, 'WGLT ROGUELIKE DEMO');
 
     // Draw the menu options
     const mouse = this.app.mouse;
@@ -33,8 +41,8 @@ export class MainMenu extends AppState<App> {
       } else if (i === this.selectedIndex) {
         color = Pico8Palette.YELLOW;
       }
-      app.drawCenteredString(x + 1, y + 1, option.display, Pico8Palette.BLACK);
-      app.drawCenteredString(x, y, option.display, color);
+      app.drawCenteredString(font, x + 1, y + 1, option.display, Pico8Palette.BLACK);
+      app.drawCenteredString(font, x, y, option.display, color);
 
       if (mouse.y >= y && mouse.y < y + 14 && mouse.isClicked()) {
         window.location.hash = option.hash;

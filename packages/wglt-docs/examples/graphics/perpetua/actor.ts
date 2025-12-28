@@ -1,5 +1,5 @@
 import type { Color } from 'wglt';
-import { ArrayList, Sprite, TileMapCell } from 'wglt';
+import { ArrayList, FONT_04B03, Sprite, TileMapCell } from 'wglt';
 import type { Ability } from './ability';
 import { TargetType } from './ability';
 import type { AI } from './ai/ai';
@@ -202,7 +202,7 @@ export class Actor extends Entity {
   }
 
   addFloatingText(str: string, color: Color): void {
-    this.game.animations.push(new FloatingTextAnimation(this, str, color));
+    this.game.animations.push(new FloatingTextAnimation(this, FONT_04B03, str, color));
   }
 
   onAttack(_target: Actor, _damage: number): void {

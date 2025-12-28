@@ -27,13 +27,14 @@ import { Talent } from './talent';
 const WIDTH = 640;
 const HEIGHT = 360;
 
-const app = new GraphicsApp('canvas', WIDTH, HEIGHT, FONT_04B03);
+const app = new GraphicsApp('canvas', WIDTH, HEIGHT);
+const font = FONT_04B03;
 
 const dialogSourceRect = new Rect(0, 64, 24, 24);
 const buttonSlotRect = new Rect(0, 88, 24, 24);
 
 const gui = new GUI(app);
-gui.setTheme(new DefaultGraphicsTheme({ dialogSourceRect, buttonSlotRect }));
+gui.setTheme(new DefaultGraphicsTheme({ font, dialogSourceRect, buttonSlotRect }));
 
 function newGame(): Game {
   const game = new Game(app, gui);
@@ -49,17 +50,17 @@ function newGame(): Game {
   const playerStats = new Panel(new Rect(1, 1, 100, 20));
   playerStats.render = (): void => {
     const frameY = 0;
-    app.drawString(1, frameY, player.name);
+    app.drawString(font, 1, frameY, player.name);
 
     const hpPercent = player.hp / player.maxHp;
     app.drawImage(0, frameY + 7, 32, 64, 48, 12);
     app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 44));
-    app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
+    app.drawString(font, 3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
     const xpPercent = player.xp / player.maxXp;
     app.drawImage(50, frameY + 7, 32, 64, 48, 12);
     app.drawImage(52, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 44));
-    app.drawString(53, frameY + 10, `${player.xp}/${player.maxXp}`);
+    app.drawString(font, 53, frameY + 10, `${player.xp}/${player.maxXp}`);
   };
   gui.addChild(playerStats);
 

@@ -39,14 +39,12 @@ export class GraphicsApp extends BaseApp {
    * @param canvasOrSelector - HTML canvas element or CSS selector string.
    * @param pixelWidth - Width of the canvas in pixels.
    * @param pixelHeight - Height of the canvas in pixels.
-   * @param font - The font to use for text rendering.
    * @param options - Optional configuration including sprite sheet URL.
    */
   constructor(
     canvasOrSelector: HTMLCanvasElement | string,
     pixelWidth: number,
     pixelHeight: number,
-    font: Font,
     options?: GraphicsAppOptions
   ) {
     const canvas =
@@ -55,7 +53,7 @@ export class GraphicsApp extends BaseApp {
         : canvasOrSelector;
 
     const mouse = new Mouse(canvas, pixelWidth, pixelHeight);
-    super(canvas, pixelWidth, pixelHeight, font, mouse);
+    super(canvas, pixelWidth, pixelHeight, mouse);
 
     const imageUrl = options?.imageUrl || '/graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);
@@ -128,29 +126,33 @@ export class GraphicsApp extends BaseApp {
 
   /**
    * Draws a string.
+   *
+   * @param font The font to use.
    * @param x The x-coordinate of the top-left corner.
    * @param y The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
    * @param out Optional output location of cursor.
    */
-  drawString(x: number, y: number, str: string, color?: Color, out?: Point): void {
+  drawString(font: Font, x: number, y: number, str: string, color?: Color, out?: Point): void {
     const lines = str.split('\n');
-    const height = this.font.getHeight();
+    const srcHeight = font.getHeight();
+    const dstHeight = srcHeight * font.scale;
     let xi = x;
     let yi = y;
     for (let i = 0; i < lines.length; i++) {
       if (i > 0) {
         xi = x;
-        yi += height;
+        yi += dstHeight;
       }
       for (let j = 0; j < lines[i].length; j++) {
         const charCode = lines[i].charCodeAt(j);
-        if (this.font.isInRange(charCode)) {
-          const offset = this.font.getOffset(charCode);
-          const width = this.font.getWidth(charCode);
-          this.drawImage(xi, yi, offset, 0, width, height, color);
-          xi += width;
+        if (font.isInRange(charCode)) {
+          const offset = font.getOffset(charCode);
+          const srcWidth = font.getWidth(charCode);
+          const dstWidth = srcWidth * font.scale;
+          this.drawImage(xi, yi, offset, 0, srcWidth, srcHeight, color, dstWidth, dstHeight);
+          xi += dstWidth;
         }
       }
     }
@@ -162,26 +164,30 @@ export class GraphicsApp extends BaseApp {
 
   /**
    * Draws a string horizontally centered.
+   *
+   * @param font The font to use.
    * @param x The x-coordinate of the center.
    * @param y The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
    */
-  drawCenteredString(x: number, y: number, str: string, color?: Color): void {
-    const x2 = (x - this.font.getStringWidth(str) / 2) | 0;
-    this.drawString(x2, y, str, color);
+  drawCenteredString(font: Font, x: number, y: number, str: string, color?: Color): void {
+    const x2 = (x - font.getStringWidth(str) / 2) | 0;
+    this.drawString(font, x2, y, str, color);
   }
 
   /**
    * Draws a right-aligned string.
+   *
+   * @param font The font to use.
    * @param x The x-coordinate of the top-right corner.
    * @param y The y-coordinate of the top-right corner.
    * @param str The text string to draw.
    * @param color Optional color.
    */
-  drawRightString(x: number, y: number, str: string, color?: Color): void {
-    const x2 = x - this.font.getStringWidth(str);
-    this.drawString(x2, y, str, color);
+  drawRightString(font: Font, x: number, y: number, str: string, color?: Color): void {
+    const x2 = x - font.getStringWidth(str);
+    this.drawString(font, x2, y, str, color);
   }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {

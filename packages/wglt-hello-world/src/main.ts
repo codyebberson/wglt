@@ -1,6 +1,10 @@
 import { CgaPalette, FONT_04B03, GraphicsApp, Sprite } from 'wglt';
 
-const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
+const app = new GraphicsApp('canvas', 640, 360);
+
+// Use the 04B03 font
+// This is a convention, so the actual pixels must be present in graphics.png
+const font = FONT_04B03;
 
 // This is the hero sprite in graphics.png
 // The animation sequence starts at x=0, y=16, width=16, height=16, and has 2 frames
@@ -16,7 +20,7 @@ app.update = (): void => {
     y += moveKey.y * 8;
   }
 
-  app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
-  app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
+  app.drawString(font, 1, 1, 'Hello world!', CgaPalette.YELLOW);
+  app.drawString(font, 1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
   sprite.draw(app, x, y);
 };
