@@ -1,7 +1,15 @@
 /*
 
-ZzFX - Zuper Zmall Zound Zynth v1.1.8
-By Frank Force 2019
+Adapted ZzFX for wglt
+Last updated December 2025
+ZzFX continues to receive updates, but ZzFXM does not.
+Therefore, we need to carefully adapt any necessary changes manually.
+Note that this means the ZzFXM tracker may sound differently.
+
+*/
+/*
+
+ZzFX - Zuper Zmall Zound Zynth v1.3.2 by Frank Force
 https://github.com/KilledByAPixel/ZzFX
 
 ZzFX Features
@@ -21,19 +29,19 @@ ZzFX Features
 /*
 
   ZzFX MIT License
-  
+
   Copyright (c) 2019 - Frank Force
-  
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  
+
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
-  
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,52 +49,71 @@ ZzFX Features
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
-  
+
 */
 
 /**
  * Master volume scale.
- * @const {number}
+ * `ZZFX.volume`
  */
 export const zzfxV = 0.3;
 
 /**
  * Sample rate for audio.
- * @const {number}
+ * `ZZFX.sampleRate`
  */
 export const zzfxR = 44100;
 
 /**
  * Create shared audio context.
- * @const {!AudioContext}
+ * `ZZFX.audioContext`
  */
 export const zzfxX = new AudioContext();
 
 /**
  * Play a sound from zzfx paramerters.
+ * `ZZFX.play`
  */
 export function zzfx(
   ...parameters: (number | undefined)[]
 ): AudioBufferSourceNode {
-  return zzfxP(zzfxG(...parameters));
+  return zzfxP([zzfxG(...parameters)]);
 }
 
 /**
  * Play an array of samples.
+ * `ZZFX.playSamples`
  */
-export function zzfxP(...samples: number[][]): AudioBufferSourceNode {
-  const buffer = zzfxX.createBuffer(samples.length, samples[0].length, zzfxR);
+export function zzfxP(sampleChannels: number[][], volumeScale=1, rate=1, pan=0, loop=false): AudioBufferSourceNode {
+  // create buffer and source
+  const channelCount = sampleChannels.length;
+  const sampleLength = sampleChannels[0].length;
+  const buffer = zzfxX.createBuffer(channelCount, sampleLength, zzfxR);
   const source = zzfxX.createBufferSource();
 
-  samples.map((d, i) => buffer.getChannelData(i).set(d));
+  // copy samples to buffer and setup source
+  sampleChannels.forEach((c,i)=> buffer.getChannelData(i).set(c));
   source.buffer = buffer;
-  source.connect((zzfxX as AudioContext).destination);
+  source.playbackRate.value = rate;
+  source.loop = loop;
+
+  // create and connect gain node
+  const gainNode = zzfxX.createGain();
+  gainNode.gain.value = zzfxV*volumeScale;
+  gainNode.connect(zzfxX.destination);
+
+  // connect source to stereo panner and gain
+  const pannerNode = new StereoPannerNode(zzfxX, {'pan':pan});
+  source.connect(pannerNode).connect(gainNode);
   source.start();
+
+  // return sound
   return source;
 }
 
 /**
  * Build an array of samples.
+ * `ZZFX.buildSamples`
  */
 export function zzfxG(
   volume = 1,

@@ -5,32 +5,38 @@
 import { zzfxG, zzfxR } from './zzfx';
 
 /**
- * @property {Number} 0 - Channel instrument
- * @property {Number} 1 - Channel panning (-1 to +1)
- * @property {Number} 2 - Note
+ * Channel definition
+ * @property 0 - Channel instrument
+ * @property 1 - Channel panning (-1 to +1)
+ * @property 2 - Note
  */
-type Channel = (number | undefined)[]; //[number, number, number];
+export type Channel = (number | undefined)[];
 
 /**
- * @type {Array.<Channel>}
+ * Pattern definition
  */
-type Pattern = Channel[];
+export type Pattern = Channel[];
 
 /**
- * @type {Array.<Number>} ZzFX sound parameters
+ * ZzFX instrument definition
  */
-type Instrument = (number | undefined)[];
+export type Instrument = (number | undefined)[];
+
+/**
+ * ZzFXM song definition
+ */
+export type Song = [Instrument[], Pattern[], number[], number?];
 
 /**
  * Generate a song
  *
- * @param {Array.<Instrument>} instruments - Array of ZzFX sound paramaters.
- * @param {Array.<Pattern>} patterns - Array of pattern data.
- * @param {Array.<Number>} sequence - Array of pattern indexes.
- * @param {Number} [speed=125] - Playback speed of the song (in BPM).
- * @returns {Array.<Array.<Number>>} Left and right channel sample data.
+ * @param instruments - Array of ZzFX sound paramaters.
+ * @param patterns - Array of pattern data.
+ * @param sequence - Array of pattern indexes.
+ * @param BPM - Playback speed of the song (in BPM).
+ * @returns Left and right channel sample data.
  */
-export const zzfxM = (instruments: Instrument[], patterns: Pattern[], sequence: number[], BPM = 125) => {
+export const zzfxM = (instruments: Instrument[], patterns: Pattern[], sequence: number[], BPM = 125): number[][] => {
   let instrumentParameters;
   let i;
   let j;
@@ -106,7 +112,8 @@ export const zzfxM = (instruments: Instrument[], patterns: Pattern[], sequence: 
               sampleCache[`i${instrument}n${note}`] ||
               // add sample to cache
               ((instrumentParameters = [...instruments[instrument]]),
-              ((instrumentParameters[2] as number) *= 2 ** ((note - 12) / 12)),
+              // ((instrumentParameters[2] as number) *= 2 ** ((note - 12) / 12)),
+              instrumentParameters[2] = (instrumentParameters[2] || 220) * (2 ** ((note - 12) / 12)), // See: https://github.com/keithclark/ZzFXM/issues/50
               // allow negative values to stop notes
               note > 0 ? zzfxG(...instrumentParameters) : []);
           }

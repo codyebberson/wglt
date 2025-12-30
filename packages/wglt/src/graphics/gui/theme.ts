@@ -39,6 +39,6 @@ export class DefaultGraphicsTheme extends Theme<GraphicsApp> {
     this.renderers.set(MessageLog, new GraphicsMessageLogRenderer(messageLogSpacing, font));
 
     this.defaultFont = font;
-    this.tooltipPadding = new Insets(6, 6, 6, 6);
+    this.tooltipPadding = new Insets(6, 6, 4, 6);
   }
 }
