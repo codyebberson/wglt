@@ -5,6 +5,7 @@ import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
+import { createCenteredCanvas } from '../core/utils';
 import { DrawList } from './drawlist';
 
 /**
@@ -36,6 +37,22 @@ export interface GraphicsAppOptions {
  */
 export class GraphicsApp extends BaseApp {
   private readonly drawList: DrawList;
+
+  /**
+   * Creates a new centered canvas and GraphicsApp instance.
+   * @param pixelWidth - Width of the canvas in pixels.
+   * @param pixelHeight - Height of the canvas in pixels.
+   * @param options - Optional configuration including sprite sheet URL.
+   * @returns The created GraphicsApp instance.
+   */
+  static init(pixelWidth: number, pixelHeight: number, options?: GraphicsAppOptions): GraphicsApp {
+    return new GraphicsApp(
+      createCenteredCanvas(pixelWidth, pixelHeight),
+      pixelWidth,
+      pixelHeight,
+      options
+    );
+  }
 
   /**
    * Creates a new GraphicsApp instance.

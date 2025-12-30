@@ -1,6 +1,8 @@
 import { CgaPalette, FONT_04B03, GraphicsApp, Sprite } from 'wglt';
 
-const app = new GraphicsApp('canvas', 640, 360, { defaultFont: FONT_04B03 });
+// Create the GraphicsApp with a new centered canvas
+// By default, it will look for /graphics.png for the sprite sheet
+const app = GraphicsApp.init(640, 360, { defaultFont: FONT_04B03 });
 
 // This is the hero sprite in graphics.png
 // The animation sequence starts at x=0, y=16, width=16, height=16, and has 2 frames

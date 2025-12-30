@@ -1,4 +1,32 @@
 /**
+ * Creates a centered canvas element in the document body with specified width and height.
+ *
+ * @param width - The width of the canvas in pixels.
+ * @param height - The height of the canvas in pixels.
+ * @returns The created HTMLCanvasElement.
+ */
+export function createCenteredCanvas(width: number, height: number): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  canvas.style.width = `min(100vw, calc(100vh * ${width}/${height}))`;
+  canvas.style.position = 'absolute';
+  canvas.style.aspectRatio = `${width}/${height}`;
+  canvas.style.color = 'white';
+
+  const body = document.body;
+  body.style.margin = '0';
+  body.style.backgroundColor = '#080808';
+  body.style.display = 'grid';
+  body.style.placeItems = 'center';
+  body.style.height = '100vh';
+  body.style.overflow = 'hidden';
+  body.appendChild(canvas);
+
+  return canvas;
+}
+
+/**
  * Returns the input string wrapped to the maximum line length.
  * @param str - The original input string.
  * @param maxLength - The maximum length of a single line.
