@@ -19,8 +19,4 @@ export class Scroll extends Item {
       caster.inventory.remove(this);
     });
   }
-
-  onUpdateTooltip(): void {
-    throw new Error('Method not implemented.');
-  }
 }

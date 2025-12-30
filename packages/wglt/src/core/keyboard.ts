@@ -11,7 +11,7 @@ const UP_KEYS = [Key.VK_UP, Key.VK_NUMPAD8, Key.VK_K] as const;
 const LEFT_KEYS = [Key.VK_LEFT, Key.VK_NUMPAD4, Key.VK_H] as const;
 const DOWN_KEYS = [Key.VK_DOWN, Key.VK_NUMPAD2, Key.VK_J] as const;
 const RIGHT_KEYS = [Key.VK_RIGHT, Key.VK_NUMPAD6, Key.VK_L] as const;
-const WAIT_KEYS = [Key.VK_SPACE, Key.VK_NUMPAD5] as const;
+const WAIT_KEYS = [Key.VK_SPACE, Key.VK_PERIOD, Key.VK_NUMPAD5] as const;
 const ENTER_KEYS = [Key.VK_ENTER, Key.VK_NUMPAD_ENTER] as const;
 const ESCAPE_KEYS = [Key.VK_ESCAPE] as const;
 const SHIFT_KEYS = [Key.VK_SHIFT_LEFT, Key.VK_SHIFT_RIGHT] as const;
@@ -46,6 +46,7 @@ const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
   [Key.VK_N]: new Point(1, 1),
   [Key.VK_NUMPAD3]: new Point(1, 1),
   // Wait
+  [Key.VK_SPACE]: new Point(0, 0),
   [Key.VK_PERIOD]: new Point(0, 0),
   [Key.VK_NUMPAD5]: new Point(0, 0),
 };

@@ -29,8 +29,4 @@ export class HealthPotion extends Item {
     caster.inventory.remove(this);
     caster.ap--;
   }
-
-  onUpdateTooltip(): void {
-    throw new Error('Method not implemented.');
-  }
 }

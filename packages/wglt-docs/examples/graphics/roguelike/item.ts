@@ -11,7 +11,6 @@ export abstract class Item extends Entity {
   }
 
   abstract onUse(user: Actor): void;
-  abstract onUpdateTooltip(): void;
 
   /**
    * Returns true if this item can be stacked with the other item
