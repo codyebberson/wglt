@@ -1,0 +1,18 @@
+{
+  "name": "wglt-example-textmode-boxutils",
+  "version": "2.0.0-beta.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc && vite build",
+    "clean": "rimraf dist",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "rimraf": "6.1.2",
+    "typescript": "5.9.3",
+    "vite": "7.3.0",
+    "wglt": "2.0.0-beta.1"
+  }
+}

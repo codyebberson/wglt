@@ -26,7 +26,7 @@ export interface GraphicsAppOptions {
  *
  * @example
  * ```typescript
- * const app = new GraphicsApp('canvas', 640, 360, FONT_04B03);
+ * const app = GraphicsApp.init(640, 360, FONT_04B03);
  * const playerSprite = new Sprite(0, 16, 16, 16, 2);
  *
  * app.update = () => {

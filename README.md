@@ -49,7 +49,7 @@ Use it:
 ```typescript
 import { Colors, Terminal } from "wglt";
 
-const term = new Terminal("canvas", 80, 45);
+const term = Terminal.init(80, 45);
 term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
 
 let x = 10;

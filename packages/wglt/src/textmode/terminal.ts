@@ -5,7 +5,7 @@ import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import { Point } from '../core/point';
 import type { Rect } from '../core/rect';
-import { interpolate } from '../core/utils';
+import { createCenteredCanvas, interpolate } from '../core/utils';
 import type { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Console } from './console';
@@ -32,7 +32,7 @@ export interface TerminalOptions {
  *
  * @example
  * ```typescript
- * const term = new Terminal('canvas', 80, 25);
+ * const term = Terminal.init(80, 25);
  * term.drawString(0, 0, 'Hello World!');
  *
  * term.update = () => {
@@ -71,6 +71,20 @@ export class Terminal extends BaseApp {
   private renderDelta: number;
   fps: number;
   averageFps: number;
+
+  /**
+   * Creates a new centered canvas and Terminal instance.
+   * @param width - Width of the terminal in characters.
+   * @param height - Height of the terminal in characters.
+   * @param options - Optional configuration for fonts, keys, and performance.
+   * @returns The created Terminal instance.
+   */
+  static init(width: number, height: number, options?: TerminalOptions): Terminal {
+    const fontGlyphSize = options?.fontGlyphSize ?? IBM_BIOS_FONT_GLYPH_SIZE;
+    const pixelWidth = width * fontGlyphSize.width;
+    const pixelHeight = height * fontGlyphSize.height;
+    return new Terminal(createCenteredCanvas(pixelWidth, pixelHeight), width, height, options);
+  }
 
   /**
    * Creates a new Terminal instance.
