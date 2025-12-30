@@ -1,22 +1,18 @@
 import {
-  AutoRectRenderer,
   Button,
   ButtonSlot,
   CgaPalette,
+  DefaultGraphicsTheme,
   Dialog,
   FONT_04B03,
   GraphicsApp,
-  GraphicsButtonRenderer,
-  GraphicsLabelRenderer,
   GUI,
   Label,
-  Panel,
   Rect,
   Sprite,
 } from 'wglt';
 
-const app = new GraphicsApp('canvas', 640, 360);
-const font = FONT_04B03;
+const app = new GraphicsApp('canvas', 640, 360, { defaultFont: FONT_04B03 });
 
 let x = 160;
 let y = 160;
@@ -28,12 +24,13 @@ const gui = new GUI(app);
 // It is an "auto rect", which means it will intelligently scale the image while preserving the corners
 const dialogSourceRect = new Rect(0, 64, 24, 24);
 
-// Now we can register the renderer for the Dialog class
-gui.renderers.set(Dialog, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(Panel, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(ButtonSlot, new AutoRectRenderer(dialogSourceRect));
-gui.renderers.set(Label, new GraphicsLabelRenderer(font));
-gui.renderers.set(Button, new GraphicsButtonRenderer(font));
+gui.setTheme(
+  new DefaultGraphicsTheme({
+    font: FONT_04B03,
+    buttonSlotRect: dialogSourceRect,
+    dialogSourceRect: dialogSourceRect,
+  })
+);
 
 const testButtonSprite = new Sprite(128, 32, 16, 16);
 
@@ -58,9 +55,9 @@ app.update = (): void => {
     }
   }
 
-  app.drawString(font, 1, 1, 'Hello world!', CgaPalette.YELLOW);
-  app.drawString(font, 1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
-  app.drawString(font, x, y, '@', CgaPalette.LIGHT_GREEN);
+  app.drawString(1, 1, 'Hello world!', CgaPalette.YELLOW);
+  app.drawString(1, 10, 'Use arrow keys to move', CgaPalette.YELLOW);
+  app.drawString(x, y, '@', CgaPalette.LIGHT_GREEN);
 
   gui.draw();
 };

@@ -1,4 +1,4 @@
-import { Button, Container, FONT_04B03, GraphicsApp, GUI, Rect } from 'wglt';
+import { Button, Component, GraphicsApp, GUI, Rect } from 'wglt';
 import { Palette } from '../palette';
 import { Sprites } from '../sprites';
 import { Talent } from '../talent';
@@ -11,7 +11,6 @@ export class TalentButton extends Button {
     super(rect, talent.ability.sprite);
     this.talent = talent;
     this.shortcut = !!shortcut;
-    this.tooltip = Container.fromMessages(talent.ability.tooltipMessages);
     this.draggable = true;
   }
 
@@ -19,11 +18,17 @@ export class TalentButton extends Button {
     this.talent.use();
   }
 
+  decorateTooltip(gui: GUI): Component | undefined {
+    if (!this.tooltip) {
+      this.tooltip = gui.fromMessages(this.talent.ability.tooltipMessages);
+    }
+    return this.tooltip;
+  }
+
   render(gui: GUI<GraphicsApp>): void {
     gui.drawComponent(this, Button);
 
     const app = gui.context;
-    const font = FONT_04B03;
     const talent = this.talent;
     const rect = this.screenRect;
     const cooldownSprite = Sprites.COOLDOWN;
@@ -39,8 +44,8 @@ export class TalentButton extends Button {
 
       const cx = (rect.x + rect.width / 2) | 0;
       const cy = (rect.y + rect.height / 2) | 0;
-      app.drawCenteredString(font, cx + 1, cy - 2, talent.cooldown.toString(), Palette.BLACK);
-      app.drawCenteredString(font, cx, cy - 3, talent.cooldown.toString(), Palette.WHITE);
+      app.drawCenteredString(cx + 1, cy - 2, talent.cooldown.toString(), Palette.BLACK);
+      app.drawCenteredString(cx, cy - 3, talent.cooldown.toString(), Palette.WHITE);
     }
   }
 }

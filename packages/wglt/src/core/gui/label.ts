@@ -1,4 +1,5 @@
 import type { Color } from '../color';
+import type { Font } from '../font';
 import { SimplePalette } from '../palettes/simple';
 import { Rect } from '../rect';
 import { Component } from './component';
@@ -62,6 +63,7 @@ export class Label extends Component {
   readonly bg: Color | undefined;
   readonly halign: number;
   readonly valign: number;
+  readonly font: Font | undefined;
 
   /**
    * Creates a new Label component.
@@ -71,6 +73,7 @@ export class Label extends Component {
    * @param bg - Background color. Defaults to transparent.
    * @param halign - Horizontal text alignment. Defaults to LEFT.
    * @param valign - Vertical text alignment. Defaults to TOP.
+   * @param font - Optional font to use for the text.
    */
   constructor(
     rect: Rect,
@@ -78,7 +81,8 @@ export class Label extends Component {
     fg: Color = SimplePalette.WHITE,
     bg: Color | undefined = undefined,
     halign = HorizontalAlignment.LEFT,
-    valign = VerticalAlignment.TOP
+    valign = VerticalAlignment.TOP,
+    font?: Font
   ) {
     super(rect);
     this.text = text;
@@ -86,5 +90,6 @@ export class Label extends Component {
     this.bg = bg;
     this.halign = halign;
     this.valign = valign;
+    this.font = font;
   }
 }

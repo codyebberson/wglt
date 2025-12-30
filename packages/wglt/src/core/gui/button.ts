@@ -3,6 +3,7 @@ import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Sprite } from '../sprite';
 import { Component } from './component';
+import type { GUI } from './gui';
 
 /**
  * A clickable button component with optional keyboard shortcut and tooltip support.
@@ -97,20 +98,11 @@ export class Button extends Container {
 
   /**
    * Configures the tooltip panel to display this button's tooltip.
-   * @param tooltipPanel - The panel to configure for tooltip display.
+   * @param _gui - The GUI instance.
+   * @returns The tooltip component, or undefined if no tooltip is set.
    * @override
    */
-  decorateTooltip(): Component | undefined {
-    // if (this.tooltip) {
-    //   this.tooltip.rect.x = 5;
-    //   this.tooltip.rect.y = 5;
-    //   tooltipPanel.addChild(this.tooltip);
-    //   tooltipPanel.rect.width = this.tooltip.rect.width + 10;
-    //   tooltipPanel.rect.height = this.tooltip.rect.height + 10;
-    //   tooltipPanel.visible = true;
-    // } else {
-    //   tooltipPanel.visible = false;
-    // }
+  decorateTooltip(_gui: GUI): Component | undefined {
     return this.tooltip;
   }
 }

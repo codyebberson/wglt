@@ -21,6 +21,7 @@ export * from './core/gui/selectinput';
 export * from './core/gui/selectoption';
 export * from './core/gui/theme';
 export * from './core/input';
+export * from './core/insets';
 export * from './core/keyboard';
 export * from './core/keys';
 export * from './core/message';

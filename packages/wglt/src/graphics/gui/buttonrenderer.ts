@@ -5,9 +5,9 @@ import type { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {
-  readonly font: Font;
+  readonly font: Font | undefined;
 
-  static render(gui: GUI<GraphicsApp>, font: Font, component: Button): void {
+  static render(gui: GUI<GraphicsApp>, component: Button, font?: Font): void {
     const app = gui.context;
 
     const sourceRect = component.sprite;
@@ -25,19 +25,21 @@ export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {
 
     if (component.shortcutKey) {
       app.drawRightString(
-        font,
         x + sourceRect.width - 2,
         y + 2,
-        getShortcutKeyDisplay(component.shortcutKey)
+        getShortcutKeyDisplay(component.shortcutKey),
+        undefined,
+        undefined,
+        font
       );
     }
   }
 
-  constructor(font: Font) {
+  constructor(font?: Font) {
     this.font = font;
   }
 
   render(gui: GUI<GraphicsApp>, component: Button): void {
-    GraphicsButtonRenderer.render(gui, this.font, component);
+    GraphicsButtonRenderer.render(gui, component, this.font);
   }
 }

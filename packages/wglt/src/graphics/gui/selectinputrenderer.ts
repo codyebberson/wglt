@@ -5,9 +5,9 @@ import { SelectInput } from '../../core/gui/selectinput';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsSelectInputRenderer implements Renderer<GraphicsApp, SelectInput> {
-  readonly font: Font;
+  readonly font: Font | undefined;
 
-  constructor(font: Font) {
+  constructor(font?: Font) {
     this.font = font;
   }
 
@@ -19,7 +19,14 @@ export class GraphicsSelectInputRenderer implements Renderer<GraphicsApp, Select
     const lineHeight = component.lineHeight;
     for (let i = 0; i < options.length; i++) {
       const str = `${String.fromCharCode(65 + i)} - ${options[i].name}`;
-      app.drawString(this.font, offset.x + margin, offset.y + margin + i * lineHeight, str);
+      app.drawString(
+        offset.x + margin,
+        offset.y + margin + i * lineHeight,
+        str,
+        undefined,
+        undefined,
+        this.font
+      );
     }
   }
 }

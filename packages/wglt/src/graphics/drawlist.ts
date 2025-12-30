@@ -164,16 +164,13 @@ export class DrawList {
       return;
     }
 
-    const dw = optDw !== undefined ? optDw : w;
-    const dh = optDh !== undefined ? optDh : h;
-
     const baseIdx = this.instanceCount * ELEMENTS_PER_INSTANCE;
 
     // Destination rectangle
     this.instanceDataF32[baseIdx + 0] = x | 0;
     this.instanceDataF32[baseIdx + 1] = y | 0;
-    this.instanceDataF32[baseIdx + 2] = dw ?? w;
-    this.instanceDataF32[baseIdx + 3] = dh ?? h;
+    this.instanceDataF32[baseIdx + 2] = optDw ?? w;
+    this.instanceDataF32[baseIdx + 3] = optDh ?? h;
 
     // Source rectangle (normalized texture coordinates)
     this.instanceDataF32[baseIdx + 4] = u / this.spriteTexture.width;
@@ -206,7 +203,13 @@ export class DrawList {
 
     // Update instance data
     gl.bindBuffer(gl.ARRAY_BUFFER, this.instanceBuffer);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.instanceDataF32, 0, this.instanceCount * 9);
+    gl.bufferSubData(
+      gl.ARRAY_BUFFER,
+      0,
+      this.instanceDataF32,
+      0,
+      this.instanceCount * ELEMENTS_PER_INSTANCE
+    );
 
     // Draw all instances
     gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, this.instanceCount);

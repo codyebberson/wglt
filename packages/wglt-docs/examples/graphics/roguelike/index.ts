@@ -1,9 +1,7 @@
 import {
   Button,
   ButtonSlot,
-  Container,
   DefaultGraphicsTheme,
-  FONT_04B03,
   GraphicsApp,
   GUI,
   Key,
@@ -15,6 +13,7 @@ import {
 import { FireballAbility } from './abilities/fireball';
 import { LightningAbility } from './abilities/lightning';
 import { Player } from './actors/player';
+import { FONT, HEIGHT, WIDTH } from './constants';
 import { Game } from './game';
 import { ItemContainerDialog } from './gui/itemcontainerdialog';
 import { ShortcutBar } from './gui/shortcutbar';
@@ -24,17 +23,13 @@ import { Palette } from './palette';
 import { Sprites } from './sprites';
 import { Talent } from './talent';
 
-const WIDTH = 640;
-const HEIGHT = 360;
-
-const app = new GraphicsApp('canvas', WIDTH, HEIGHT);
-const font = FONT_04B03;
+const app = new GraphicsApp('canvas', WIDTH, HEIGHT, { defaultFont: FONT });
 
 const dialogSourceRect = new Rect(0, 64, 24, 24);
 const buttonSlotRect = new Rect(0, 88, 24, 24);
 
 const gui = new GUI(app);
-gui.setTheme(new DefaultGraphicsTheme({ font, dialogSourceRect, buttonSlotRect }));
+gui.setTheme(new DefaultGraphicsTheme({ font: FONT, dialogSourceRect, buttonSlotRect }));
 
 function newGame(): Game {
   const game = new Game(app, gui);
@@ -50,17 +45,17 @@ function newGame(): Game {
   const playerStats = new Panel(new Rect(1, 1, 100, 20));
   playerStats.render = (): void => {
     const frameY = 0;
-    app.drawString(font, 1, frameY, player.name);
+    app.drawString(1, frameY, player.name);
 
     const hpPercent = player.hp / player.maxHp;
     app.drawImage(0, frameY + 7, 32, 64, 48, 12);
     app.drawImage(2, frameY + 9, 32, 80, 8, 8, undefined, Math.round(hpPercent * 44));
-    app.drawString(font, 3, frameY + 10, `${player.hp}/${player.maxHp}`);
+    app.drawString(3, frameY + 10, `${player.hp}/${player.maxHp}`);
 
     const xpPercent = player.xp / player.maxXp;
     app.drawImage(50, frameY + 7, 32, 64, 48, 12);
     app.drawImage(52, frameY + 9, 32, 80, 8, 8, undefined, Math.round(xpPercent * 44));
-    app.drawString(font, 53, frameY + 10, `${player.xp}/${player.maxXp}`);
+    app.drawString(53, frameY + 10, `${player.xp}/${player.maxXp}`);
   };
   gui.addChild(playerStats);
 
@@ -76,7 +71,7 @@ function newGame(): Game {
   const inventoryButton = new Button(new Rect(0, 0, 24, 24), Sprites.BAG, undefined, () => {
     inventoryDialog.visible = !inventoryDialog.visible;
   });
-  inventoryButton.tooltip = Container.fromMessages([
+  inventoryButton.tooltip = gui.fromMessages([
     new Message("Traveler's Backpack", Palette.GREEN),
     new Message('Item Level 55', Palette.YELLOW),
     new Message('16 Slot Bag', Palette.WHITE),

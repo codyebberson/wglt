@@ -1,9 +1,6 @@
 import { ArrayList } from '../arraylist';
-import { Message } from '../message';
 import type { PointLike } from '../point';
-import { Rect } from '../rect';
 import { Component } from './component';
-import { Label } from './label';
 
 /**
  * A Container is a Component that can hold and manage child components.
@@ -125,21 +122,5 @@ export class Container extends Component {
       }
     }
     return false;
-  }
-
-  /**
-   * Creates a container with labels for a list of messages.
-   * Useful for displaying message logs or lists.
-   * @param messages - Array of messages to display as labels.
-   * @returns A new Container with Label children for each message.
-   */
-  static fromMessages(messages: Message[]): Container {
-    const container = new Container(new Rect(0, 0, 120, 10 * messages.length));
-    let y = 0;
-    for (const message of messages) {
-      container.addChild(new Label(new Rect(0, y, 100, 10), message.text ?? '', message.fg));
-      y += 10;
-    }
-    return container;
   }
 }

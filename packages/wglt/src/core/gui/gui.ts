@@ -1,8 +1,13 @@
 import { BaseApp } from '../baseapp';
+import type { Font } from '../font';
+import type { Insets } from '../insets';
+import type { Message } from '../message';
 import { Point } from '../point';
 import { Rect } from '../rect';
 import { Component, type ComponentConstructor } from './component';
 import { Container } from './container';
+import { Label } from './label';
+import { Panel } from './panel';
 import { RendererMap } from './renderermap';
 import { Theme } from './theme';
 
@@ -10,7 +15,8 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;
   readonly renderers: RendererMap<TContext>;
   readonly rendererWarnings: Set<string>;
-  // tooltip?: Panel;
+  tooltipPadding?: Insets;
+  tooltip?: Panel;
   tooltipElement?: Component;
   onDragStart?: (component: Component) => void;
   dragElement?: Component;
@@ -29,6 +35,8 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
 
   setTheme(theme: Theme<TContext>): void {
     this.renderers.setAll(theme.renderers);
+    this.context.defaultFont = theme.defaultFont;
+    this.tooltipPadding = theme.tooltipPadding;
   }
 
   handleInput(): boolean {
@@ -105,6 +113,44 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     }
   }
 
+  /**
+   * Creates a container with labels for a list of messages.
+   * Useful for displaying message logs or lists.
+   * @param messages - Array of messages to display as labels.
+   * @param spacing - Vertical spacing between labels. Default is 2.
+   * @param font - Font to use for the labels. Defaults to the GUI's default font.
+   * @returns A new Container with Label children for each message.
+   */
+  fromMessages(messages: Message[], spacing: number = 2, font?: Font): Container {
+    font = font ?? this.context.defaultFont;
+    if (!font) {
+      throw new Error('No font specified for GUI.fromMessages');
+    }
+    const lineHeight = font.lineHeight;
+    const container = new Container(new Rect(0, 0, 120, (lineHeight + spacing) * messages.length));
+    let maxWidth = 0;
+    let y = 0;
+    for (const message of messages) {
+      const text = message.text ?? '';
+      const textWidth = font.getStringWidth(text);
+      container.addChild(
+        new Label(
+          new Rect(0, y, textWidth, lineHeight),
+          text,
+          message.fg,
+          undefined,
+          undefined,
+          undefined,
+          font
+        )
+      );
+      maxWidth = Math.max(maxWidth, textWidth);
+      y += lineHeight + spacing;
+    }
+    container.rect.width = maxWidth;
+    return container;
+  }
+
   updateTooltip(): undefined {
     const app = this.context;
 
@@ -134,38 +180,46 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
     }
 
     if (this.tooltipElement !== hoverPanel) {
-      // // Hover element has changed
-      // this.tooltipElement = hoverPanel;
-      // if (!this.tooltip) {
-      //   // Create for first time
-      //   this.tooltip = new Panel(new Rect(0, 0, 1, 1));
-      //   this.addChild(this.tooltip);
-      // } else {
-      //   // Move to front
-      //   this.moveChild(this.tooltip);
-      //   this.tooltip.removeAllChildren();
-      // }
-      // const tooltipContent = hoverPanel.decorateTooltip();
-      // if (tooltipContent) {
-      //   this.tooltip.addChild(tooltipContent);
-      //   this.tooltip.visible = true;
-      // } else {
-      //   this.tooltip.visible = false;
-      // }
+      // Hover element has changed
+      this.tooltipElement = hoverPanel;
+      if (!this.tooltip) {
+        // Create for first time
+        this.tooltip = new Panel(new Rect(0, 0, 1, 1));
+        this.addChild(this.tooltip);
+      } else {
+        // Move to front
+        this.moveChild(this.tooltip);
+        this.tooltip.removeAllChildren();
+      }
+      const tooltipContent = hoverPanel.decorateTooltip(this);
+      if (tooltipContent) {
+        this.tooltip.addChild(tooltipContent);
+        this.tooltip.rect.width = tooltipContent.rect.width;
+        this.tooltip.rect.height = tooltipContent.rect.height;
+        if (this.tooltipPadding) {
+          this.tooltip.rect.width += this.tooltipPadding.left + this.tooltipPadding.right;
+          this.tooltip.rect.height += this.tooltipPadding.top + this.tooltipPadding.bottom;
+          tooltipContent.rect.x = this.tooltipPadding.left;
+          tooltipContent.rect.y = this.tooltipPadding.top;
+        }
+        this.tooltip.visible = true;
+      } else {
+        this.tooltip.visible = false;
+      }
     }
 
-    // if (this.tooltip?.visible) {
-    //   // Update the tooltip to be on the mouse
-    //   // This is similar to WoW style tooltips.
-    //   this.tooltip.showAt(app, mouse.x, mouse.y);
-    // }
+    if (this.tooltip?.visible) {
+      // Update the tooltip to be on the mouse
+      // This is similar to WoW style tooltips.
+      this.tooltip.showAt(app, mouse.x, mouse.y);
+    }
   }
 
   hideTooltip(): void {
     this.tooltipElement = undefined;
-    // if (this.tooltip) {
-    //   this.tooltip.visible = false;
-    // }
+    if (this.tooltip) {
+      this.tooltip.visible = false;
+    }
   }
 
   startDragging(app: BaseApp, component: Component): void {

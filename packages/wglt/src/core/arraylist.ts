@@ -72,6 +72,15 @@ export class ArrayList<T> {
   }
 
   /**
+   * Sets the element at the specified index.
+   * @param index - The index of the element to set.
+   * @param el - The new element for the specified index.
+   */
+  set(index: number, el: T): void {
+    this.elements[index] = el;
+  }
+
+  /**
    * Adds an element to the end of the list.
    * Notifies all registered listeners.
    * @param el - The element to add.

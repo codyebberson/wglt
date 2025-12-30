@@ -13,6 +13,9 @@ import { DrawList } from './drawlist';
 export interface GraphicsAppOptions {
   /** URL to the sprite sheet image. Defaults to '/graphics.png'. */
   readonly imageUrl?: string;
+
+  /** Default font to use for text rendering. */
+  readonly defaultFont?: Font;
 }
 
 /**
@@ -57,6 +60,8 @@ export class GraphicsApp extends BaseApp {
 
     const imageUrl = options?.imageUrl || '/graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);
+
+    this.defaultFont = options?.defaultFont;
   }
 
   /**
@@ -127,22 +132,27 @@ export class GraphicsApp extends BaseApp {
   /**
    * Draws a string.
    *
-   * @param font The font to use.
    * @param x The x-coordinate of the top-left corner.
    * @param y The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
+   * @param scale Optional scale factor.
+   * @param font Optional font to use, defaults to GraphicsApp's defaultFont.
    * @param out Optional output location of cursor.
    */
   drawString(
-    font: Font,
     x: number,
     y: number,
     str: string,
     color?: Color,
     scale: number = 1,
+    font?: Font,
     out?: Point
   ): void {
+    font ??= this.defaultFont;
+    if (!font) {
+      throw new Error('No font specified for drawString');
+    }
     const lines = str.split('\n');
     const lineHeight = font.lineHeight * scale;
     let xi = x;
@@ -181,45 +191,53 @@ export class GraphicsApp extends BaseApp {
   /**
    * Draws a string horizontally centered.
    *
-   * @param font The font to use.
    * @param x The x-coordinate of the center.
    * @param y The y-coordinate of the top-left corner.
    * @param str The text string to draw.
    * @param color Optional color.
    * @param scale Optional scale factor.
+   * @param font Optional font to use, defaults to GraphicsApp's defaultFont.
    */
   drawCenteredString(
-    font: Font,
     x: number,
     y: number,
     str: string,
     color?: Color,
-    scale: number = 1
+    scale: number = 1,
+    font?: Font
   ): void {
+    font ??= this.defaultFont;
+    if (!font) {
+      throw new Error('No font specified for drawCenteredString');
+    }
     const x2 = (x - (font.getStringWidth(str) * scale) / 2) | 0;
-    this.drawString(font, x2, y, str, color, scale);
+    this.drawString(x2, y, str, color, scale, font);
   }
 
   /**
    * Draws a right-aligned string.
    *
-   * @param font The font to use.
    * @param x The x-coordinate of the top-right corner.
    * @param y The y-coordinate of the top-right corner.
    * @param str The text string to draw.
    * @param color Optional color.
    * @param scale Optional scale factor.
+   * @param font Optional font to use, defaults to GraphicsApp's defaultFont.
    */
   drawRightString(
-    font: Font,
     x: number,
     y: number,
     str: string,
     color?: Color,
-    scale: number = 1
+    scale: number = 1,
+    font?: Font
   ): void {
+    font ??= this.defaultFont;
+    if (!font) {
+      throw new Error('No font specified for drawRightString');
+    }
     const x2 = x - font.getStringWidth(str) * scale;
-    this.drawString(font, x2, y, str, color, scale);
+    this.drawString(x2, y, str, color, scale, font);
   }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {

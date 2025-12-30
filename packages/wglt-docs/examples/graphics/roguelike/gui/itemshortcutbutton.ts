@@ -1,4 +1,4 @@
-import { ArrayList, Button, Container, FONT_04B03, GraphicsApp, GUI, Rect } from 'wglt';
+import { ArrayList, Button, Component, GraphicsApp, GUI, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemShortcutButton extends Button {
@@ -9,9 +9,6 @@ export class ItemShortcutButton extends Button {
     super(rect, shortcutItem.sprite);
     this.containerItems = containerItems;
     this.shortcutItem = shortcutItem;
-    this.tooltip = shortcutItem.tooltipMessages
-      ? Container.fromMessages(shortcutItem.tooltipMessages)
-      : undefined;
     this.draggable = true;
   }
 
@@ -45,13 +42,21 @@ export class ItemShortcutButton extends Button {
     return count;
   }
 
+  decorateTooltip(gui: GUI): Component | undefined {
+    if (!this.tooltip) {
+      this.tooltip = this.shortcutItem.tooltipMessages
+        ? gui.fromMessages(this.shortcutItem.tooltipMessages)
+        : undefined;
+    }
+    return this.tooltip;
+  }
+
   render(gui: GUI<GraphicsApp>): void {
     gui.drawComponent(this, Button);
 
     const app = gui.context;
-    const font = FONT_04B03;
     const dst = this.screenRect;
     const count = this.countItems();
-    app.drawRightString(font, dst.x2 - 3, dst.y2 - 10, count.toString());
+    app.drawRightString(dst.x2 - 3, dst.y2 - 10, count.toString());
   }
 }

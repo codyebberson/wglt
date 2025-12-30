@@ -129,12 +129,12 @@ export abstract class Component {
   /**
    * Customizes the tooltip panel for this component.
    * Override this method to provide tooltip content.
-   * @param tooltipPanel - The panel to configure for tooltip display.
+   * @param _gui - The GUI instance.
+   * @returns A component to display as a tooltip, or undefined for no tooltip.
    */
-  decorateTooltip(): Component | undefined {
+  decorateTooltip(_gui: GUI): Component | undefined {
     // By default, no visible tooltips
     // Inheriting classes can override this method with tooltip details
-    // tooltipPanel.visible = false;
     return undefined;
   }
 }

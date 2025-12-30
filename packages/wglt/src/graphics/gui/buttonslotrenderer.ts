@@ -7,9 +7,9 @@ import { GraphicsApp } from '../graphicsapp';
 import { AutoRectRenderer } from './autorectrenderer';
 
 export class GraphicsButtonSlotRenderer extends AutoRectRenderer<ButtonSlot> {
-  readonly font: Font;
+  readonly font: Font | undefined;
 
-  constructor(sourceRect: Rect, font: Font) {
+  constructor(sourceRect: Rect, font?: Font) {
     super(sourceRect);
     this.font = font;
   }
@@ -19,10 +19,12 @@ export class GraphicsButtonSlotRenderer extends AutoRectRenderer<ButtonSlot> {
 
     if (component.shortcutKey) {
       gui.context.drawRightString(
-        this.font,
         component.screenRect.x + component.screenRect.width - 3,
         component.screenRect.y + 3,
-        getShortcutKeyDisplay(component.shortcutKey)
+        getShortcutKeyDisplay(component.shortcutKey),
+        undefined,
+        undefined,
+        this.font
       );
     }
   }

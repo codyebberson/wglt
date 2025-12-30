@@ -6,7 +6,6 @@ import {
   Button,
   ButtonSlot,
   computePath,
-  Container,
   Dialog,
   FONT_04B03,
   GraphicsButtonRenderer,
@@ -147,7 +146,7 @@ export class Game extends AppState<App> {
     this.gui.renderers.set(TalentButton, new GraphicsButtonRenderer(font));
     this.gui.renderers.set(ShortcutBar, new ShortcutBarRenderer());
     this.gui.renderers.set(ShortcutButtonSlot, new AutoRectRenderer(dialogSourceRect));
-    this.gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer(font));
+    this.gui.renderers.set(MessageLog, new GraphicsMessageLogRenderer(2, font));
     this.gui.renderers.set(ItemContainerDialog, new AutoRectRenderer(dialogSourceRect));
     this.gui.renderers.set(ItemContainerButtonSlot, new AutoRectRenderer(dialogSourceRect));
     this.gui.renderers.set(ItemButton, new GraphicsButtonRenderer(font));
@@ -176,7 +175,7 @@ export class Game extends AppState<App> {
         this.inventoryDialog.visible = true;
       }
     );
-    inventoryButton.tooltip = Container.fromMessages([
+    inventoryButton.tooltip = this.gui.fromMessages([
       new Message("Traveler's Backpack", Pico8Palette.GREEN),
       new Message('Item Level 55', Pico8Palette.YELLOW),
       new Message('16 Slot Bag', Pico8Palette.WHITE),
@@ -193,7 +192,7 @@ export class Game extends AppState<App> {
         this.characterDialog.visible = true;
       }
     );
-    characterButton.tooltip = Container.fromMessages([
+    characterButton.tooltip = this.gui.fromMessages([
       new Message('Character', Pico8Palette.WHITE),
       new Message('Currently equipped items,', Pico8Palette.YELLOW),
       new Message('stats and abilities.', Pico8Palette.YELLOW),
@@ -209,7 +208,7 @@ export class Game extends AppState<App> {
         this.talentsDialog.visible = true;
       }
     );
-    talentsButton.tooltip = Container.fromMessages([
+    talentsButton.tooltip = this.gui.fromMessages([
       new Message('Talents', Pico8Palette.WHITE),
       new Message('A list of all of your', Pico8Palette.YELLOW),
       new Message("character's talents.", Pico8Palette.YELLOW),
@@ -224,7 +223,7 @@ export class Game extends AppState<App> {
         this.hideAllDialogs();
       }
     );
-    inspectButton.tooltip = Container.fromMessages([new Message('Inspect', Pico8Palette.WHITE)]);
+    inspectButton.tooltip = this.gui.fromMessages([new Message('Inspect', Pico8Palette.WHITE)]);
     bottomPanel.inspectSlot.addChild(inspectButton);
 
     const menuButton = new Button(
@@ -235,7 +234,7 @@ export class Game extends AppState<App> {
         window.location.hash = 'menu';
       }
     );
-    menuButton.tooltip = Container.fromMessages([new Message('Main Menu', Pico8Palette.WHITE)]);
+    menuButton.tooltip = this.gui.fromMessages([new Message('Main Menu', Pico8Palette.WHITE)]);
     bottomPanel.menuSlot.addChild(menuButton);
 
     this.inventoryDialog = new ItemContainerDialog(

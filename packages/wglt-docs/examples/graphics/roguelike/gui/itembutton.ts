@@ -1,14 +1,4 @@
-import {
-  ArrayList,
-  Button,
-  Component,
-  Container,
-  FONT_04B03,
-  GraphicsApp,
-  GUI,
-  Message,
-  Rect,
-} from 'wglt';
+import { ArrayList, Button, Component, GraphicsApp, GUI, Message, Rect } from 'wglt';
 import { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -20,9 +10,6 @@ export class ItemButton extends Button {
     this.containerItems = containerItems;
     this.stackItems = new ArrayList<Item>();
     this.stackItems.add(initialItem);
-    this.tooltip = initialItem.tooltipMessages
-      ? Container.fromMessages(initialItem.tooltipMessages)
-      : undefined;
     this.draggable = true;
   }
 
@@ -42,7 +29,7 @@ export class ItemButton extends Button {
     }
   }
 
-  decorateTooltip(): Component | undefined {
+  decorateTooltip(gui: GUI): Component | undefined {
     let tooltipMessages: Message[] | undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
@@ -50,11 +37,8 @@ export class ItemButton extends Button {
     }
 
     if (tooltipMessages) {
-      // tooltipPanel.addChild(Container.fromMessages(tooltipMessages));
-      // tooltipPanel.visible = true;
-      return Container.fromMessages(tooltipMessages);
+      return gui.fromMessages(tooltipMessages);
     } else {
-      // tooltipPanel.visible = false;
       return undefined;
     }
   }
@@ -63,12 +47,11 @@ export class ItemButton extends Button {
     gui.drawComponent(this, Button);
 
     const app = gui.context;
-    const font = FONT_04B03;
     const stackItems = this.stackItems;
 
     if (stackItems.length > -1) {
       const dst = this.screenRect;
-      app.drawRightString(font, dst.x2 - 3, dst.y2 - 10, stackItems.length.toString());
+      app.drawRightString(dst.x2 - 3, dst.y2 - 10, stackItems.length.toString());
     }
   }
 }

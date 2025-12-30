@@ -52,6 +52,8 @@ export abstract class BaseApp {
   /** Keyboard input handler. */
   readonly keyboard: Keyboard;
   private readonly boundLoop: () => void;
+  /** The default font used for text rendering. */
+  defaultFont: Font | undefined;
   /** Duration of the last frame in milliseconds. */
   lastFrameDuration = 0;
   /** Optional update callback called each frame. */

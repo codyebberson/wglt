@@ -1,4 +1,4 @@
-import { AppState, FONT_04B03, GraphicsApp, GUI } from 'wglt';
+import { AppState, GraphicsApp, GUI } from 'wglt';
 import { Palette } from './palette';
 
 const OPTIONS = [
@@ -22,11 +22,10 @@ export class MainMenu extends AppState<GraphicsApp> {
 
   update(): void {
     const app = this.app;
-    const font = FONT_04B03;
 
     // Draw the title text
-    app.drawCenteredString(font, this.app.center.x + 1, 33, 'WGLT ROGUELIKE DEMO', Palette.BLUE);
-    app.drawCenteredString(font, this.app.center.x, 32, 'WGLT ROGUELIKE DEMO');
+    app.drawCenteredString(this.app.center.x + 1, 33, 'WGLT ROGUELIKE DEMO', Palette.BLUE);
+    app.drawCenteredString(this.app.center.x, 32, 'WGLT ROGUELIKE DEMO');
 
     // Draw the menu options
     const mouse = this.app.mouse;
@@ -40,8 +39,8 @@ export class MainMenu extends AppState<GraphicsApp> {
       } else if (i === this.selectedIndex) {
         color = Palette.YELLOW;
       }
-      app.drawCenteredString(font, x + 1, y + 1, option.display, Palette.BLACK);
-      app.drawCenteredString(font, x, y, option.display, color);
+      app.drawCenteredString(x + 1, y + 1, option.display, Palette.BLACK);
+      app.drawCenteredString(x, y, option.display, color);
 
       if (mouse.y >= y && mouse.y < y + 14 && mouse.isClicked()) {
         this.onNewGame();

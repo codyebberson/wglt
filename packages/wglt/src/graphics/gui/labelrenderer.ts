@@ -5,9 +5,9 @@ import type { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
 export class GraphicsLabelRenderer implements Renderer<GraphicsApp, Label> {
-  readonly font: Font;
+  readonly font: Font | undefined;
 
-  constructor(font: Font) {
+  constructor(font?: Font) {
     this.font = font;
   }
 
@@ -20,11 +20,12 @@ export class GraphicsLabelRenderer implements Renderer<GraphicsApp, Label> {
 
     // TODO: Implement halign and valign
     app.drawString(
-      this.font,
       component.screenRect.x,
       component.screenRect.y,
       component.text,
-      component.fg
+      component.fg,
+      undefined,
+      this.font
     );
   }
 }

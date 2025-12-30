@@ -3,6 +3,7 @@ import { Key } from '../../core/keys';
 import { Rect } from '../../core/rect';
 import { Button } from './button';
 import type { Component } from './component';
+import type { GUI } from './gui';
 
 export class ButtonSlot extends Container {
   shortcutKey?: Key;
@@ -42,11 +43,12 @@ export class ButtonSlot extends Container {
     return mouse.buttons.get(0).down && this.screenRect.contains(mouse);
   }
 
-  decorateTooltip(): Component | undefined {
-    // const button = this.button;
-    // if (button) {
-    //   button.decorateTooltip(tooltipPanel);
-    // }
-    return this.button?.decorateTooltip();
+  /**
+   * Returns the tooltip component for the button in this slot, if any.
+   * @param gui - The GUI instance.
+   * @returns The tooltip component, or undefined if no tooltip is set.
+   */
+  decorateTooltip(gui: GUI): Component | undefined {
+    return this.button?.decorateTooltip(gui);
   }
 }

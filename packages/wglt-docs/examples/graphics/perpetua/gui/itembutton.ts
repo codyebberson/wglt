@@ -1,14 +1,4 @@
-import {
-  ArrayList,
-  Button,
-  Component,
-  Container,
-  GraphicsApp,
-  GUI,
-  Message,
-  Rect,
-  type Renderer,
-} from 'wglt';
+import { ArrayList, Button, Component, GraphicsApp, GUI, Message, Rect, type Renderer } from 'wglt';
 import type { Item } from '../item';
 
 export class ItemButton extends Button {
@@ -50,14 +40,14 @@ export class ItemButton extends Button {
   //   }
   // }
 
-  decorateTooltip(): Component | undefined {
+  decorateTooltip(gui: GUI): Component | undefined {
     let tooltipMessages: Message[] | undefined;
     if (this.stackItems.length > 0) {
       const item = this.stackItems.get(0);
       item.onUpdateTooltip();
       // this.tooltipMessages = item.tooltipMessages;
       // if (item.tooltipMessages) {
-      //   this.tooltip = Container.fromMessages(item.tooltipMessages);
+      //   this.tooltip = this.gui.fromMessages(item.tooltipMessages);
       // }
       tooltipMessages = item.tooltipMessages;
       // } else {
@@ -65,9 +55,9 @@ export class ItemButton extends Button {
     }
 
     if (tooltipMessages) {
-      // tooltipPanel.addChild(Container.fromMessages(tooltipMessages));
+      // tooltipPanel.addChild(this.gui.fromMessages(tooltipMessages));
       // tooltipPanel.visible = true;
-      return Container.fromMessages(tooltipMessages);
+      return gui.fromMessages(tooltipMessages);
     } else {
       // tooltipPanel.visible = false;
       return undefined;
@@ -77,7 +67,7 @@ export class ItemButton extends Button {
     //   return this.tooltipMessages;
 
     // if (!this.tooltip) {
-    //   // this.tooltip = Container.fromMessages(this)
+    //   // this.tooltip = this.gui.fromMessages(this)
     // }
   }
 }
