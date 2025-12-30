@@ -4,13 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build",
-    "dev": "vite",
-    "preview": "vite preview"
+    "dev": "http-server public"
   },
   "devDependencies": {
-    "typescript": "5.9.3",
-    "vite": "7.3.0",
-    "wglt": "2.0.0-beta.1"
+    "http-server": "14.1.1"
   }
 }

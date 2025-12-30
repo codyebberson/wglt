@@ -1,6 +1,6 @@
 .turbo
+.DS_Store
+package-lock.json
 node_modules
 dist
-package-lock.json
-.DS_Store
-
+packages/wglt-docs/public/examples

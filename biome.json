@@ -22,6 +22,12 @@
       }
     }
   },
+  "html": {
+    "formatter": {
+      "enabled": true,
+      "lineWidth": 200
+    }
+  },
   "javascript": {
     "formatter": {
       "enabled": true,

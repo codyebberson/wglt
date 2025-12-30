@@ -102,38 +102,6 @@ iframe {
   height: 100%;
 }
 
-#github {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 149px;
-  height: 149px;
-}
-
-.source-link {
-  position: fixed;
-  display: block;
-  right: 10px;
-  bottom: 10px;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  background: white;
-  color: black;
-  border-radius: 50%;
-  text-align: center;
-  text-decoration: none;
-}
-
-.source-link:hover {
-  background: #eee;
-  color: black;
-  text-decoration: none;
-}
-
 .overflow-hidden {
   overflow: hidden;
 }

@@ -1,5 +1,8 @@
 {
   "editor.tabSize": 2,
+  "[html]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },

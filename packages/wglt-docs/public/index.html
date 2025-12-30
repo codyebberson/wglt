@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WGLT - WebGL Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism-okaidia.min.css">
+    <link href="/styles.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+  </head>
+
+  <body class="overflow-hidden">
+    <div id="sidebar">
+      <ul>
+        <li>
+          <a target="main" href="/">WGLT</a>
+        </li>
+        <li>
+          <a target="_blank" href="https://github.com/codyebberson/wglt">GitHub</a>
+        </li>
+        <li>
+          <a target="main" href="v1-to-v2.html">v1 to v2</a>
+        </li>
+      </ul>
+
+      <h2>Examples</h2>
+      <ul>
+        <li>
+          <a target="main" href="examples/wglt-example-graphics-hello-world/index.html">Hello world</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-graphics-performance/index.html">Performance</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-graphics-gui/index.html">GUI</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-graphics-roguelike/index.html">Roguelike</a>
+        </li>
+      </ul>
+      <h2>Text Mode</h2>
+      <ul>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-hello-world/index.html">Hello world</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-performance/index.html">Performance</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-colors/index.html">Colors</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-shmup/index.html">Shmup</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-font/index.html">Custom Font</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-fov/index.html">Field of View</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-path-finding/index.html">Path Finding</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-alpha/index.html">Alpha Blending</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-flame/index.html">Flame</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-matrix-rain/index.html">Matrix Rain</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-gui/index.html">GUI</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-image/index.html">Image Loading</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-boxutils/index.html">Box Utils</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-roguelike-2019/index.html">Roguelike 2019</a>
+        </li>
+        <li>
+          <a target="main" href="examples/wglt-example-textmode-roguelike-2022/index.html">Roguelike 2022</a>
+        </li>
+      </ul>
+    </div>
+    <div id="iframe-container">
+      <iframe name="main"></iframe>
+    </div>
+    <script>
+    document.querySelectorAll('a[href]').forEach((link) => {
+      if (link.target === 'main') {
+        link.addEventListener('click', (e) => {
+          if (e.button === 0) {
+            e.preventDefault();
+            const href = link.getAttribute('href');
+            window.location.hash = href === '/' ? '' : href;
+          }
+        });
+      }
+    });
+
+    const iframe = document.querySelector('iframe');
+    function updateIframe() {
+      iframe.src = window.location.hash.slice(1) || 'home.html';
+    }
+    updateIframe();
+    window.addEventListener('hashchange', updateIframe);
+    </script>
+  </body>
+</html>

@@ -12,7 +12,7 @@ import { DrawList } from './drawlist';
  * Configuration options for creating a GraphicsApp instance.
  */
 export interface GraphicsAppOptions {
-  /** URL to the sprite sheet image. Defaults to '/graphics.png'. */
+  /** URL to the sprite sheet image. Defaults to './graphics.png'. */
   readonly imageUrl?: string;
 
   /** Default font to use for text rendering. */
@@ -75,7 +75,7 @@ export class GraphicsApp extends BaseApp {
     const mouse = new Mouse(canvas, pixelWidth, pixelHeight);
     super(canvas, pixelWidth, pixelHeight, mouse);
 
-    const imageUrl = options?.imageUrl || '/graphics.png';
+    const imageUrl = options?.imageUrl || './graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);
 
     this.defaultFont = options?.defaultFont;
