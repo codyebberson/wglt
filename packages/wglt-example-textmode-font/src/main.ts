@@ -1,7 +1,7 @@
 import { CgaPalette, Rect, Terminal } from 'wglt';
 
 const term = Terminal.init(80, 25, {
-  fontUrl: '/terminal8x14_gs_ro.png',
+  fontUrl: './terminal8x14_gs_ro.png',
   fontGlyphSize: new Rect(0, 0, 8, 14),
 });
 
