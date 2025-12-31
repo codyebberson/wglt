@@ -46,31 +46,30 @@ export class GraphicsApp extends BaseApp {
    * @returns The created GraphicsApp instance.
    */
   static init(pixelWidth: number, pixelHeight: number, options?: GraphicsAppOptions): GraphicsApp {
-    return new GraphicsApp(
-      createCenteredCanvas(pixelWidth, pixelHeight),
-      pixelWidth,
-      pixelHeight,
-      options
-    );
+    return new GraphicsApp(undefined, pixelWidth, pixelHeight, options);
   }
 
   /**
    * Creates a new GraphicsApp instance.
-   * @param canvasOrSelector - HTML canvas element or CSS selector string.
+   * @param canvasOrSelector - HTML canvas element, CSS selector string, or undefined to create a centered canvas.
    * @param pixelWidth - Width of the canvas in pixels.
    * @param pixelHeight - Height of the canvas in pixels.
    * @param options - Optional configuration including sprite sheet URL.
    */
   constructor(
-    canvasOrSelector: HTMLCanvasElement | string,
+    canvasOrSelector: HTMLCanvasElement | string | undefined,
     pixelWidth: number,
     pixelHeight: number,
     options?: GraphicsAppOptions
   ) {
-    const canvas =
-      typeof canvasOrSelector === 'string'
-        ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
-        : canvasOrSelector;
+    let canvas: HTMLCanvasElement;
+    if (typeof canvasOrSelector === 'string') {
+      canvas = document.querySelector(canvasOrSelector) as HTMLCanvasElement;
+    } else if (canvasOrSelector) {
+      canvas = canvasOrSelector;
+    } else {
+      canvas = createCenteredCanvas(pixelWidth, pixelHeight);
+    }
 
     const mouse = new Mouse(canvas, pixelWidth, pixelHeight);
     super(canvas, pixelWidth, pixelHeight, mouse);

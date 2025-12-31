@@ -1,4 +1,4 @@
-import { createCenteredCanvas, DefaultTerminalTheme, GUI, Terminal } from 'wglt';
+import { DefaultTerminalTheme, GUI, Terminal } from 'wglt';
 import { Game } from './game';
 import { MainMenu } from './mainmenu';
 
@@ -11,7 +11,7 @@ export class App extends Terminal {
   game?: Game;
 
   constructor() {
-    super(createCenteredCanvas(SCREEN_WIDTH, SCREEN_HEIGHT), SCREEN_WIDTH, SCREEN_HEIGHT);
+    super(undefined, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     this.gui = new GUI(this);
     this.gui.setTheme(new DefaultTerminalTheme());

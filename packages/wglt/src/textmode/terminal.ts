@@ -80,33 +80,34 @@ export class Terminal extends BaseApp {
    * @returns The created Terminal instance.
    */
   static init(width: number, height: number, options?: TerminalOptions): Terminal {
-    const fontGlyphSize = options?.fontGlyphSize ?? IBM_BIOS_FONT_GLYPH_SIZE;
-    const pixelWidth = width * fontGlyphSize.width;
-    const pixelHeight = height * fontGlyphSize.height;
-    return new Terminal(createCenteredCanvas(pixelWidth, pixelHeight), width, height, options);
+    return new Terminal(undefined, width, height, options);
   }
 
   /**
    * Creates a new Terminal instance.
-   * @param canvasOrSelector - HTML canvas element or CSS selector string.
+   * @param canvasOrSelector - HTML canvas element, CSS selector string, or undefined to create a centered canvas.
    * @param width - Width of the terminal in characters.
    * @param height - Height of the terminal in characters.
    * @param options - Optional configuration for fonts, keys, and performance.
    */
   constructor(
-    canvasOrSelector: HTMLCanvasElement | string,
+    canvasOrSelector: HTMLCanvasElement | string | undefined,
     width: number,
     height: number,
     options?: TerminalOptions
   ) {
-    const canvas =
-      typeof canvasOrSelector === 'string'
-        ? (document.querySelector(canvasOrSelector) as HTMLCanvasElement)
-        : canvasOrSelector;
-
     const fontGlyphSize = options?.fontGlyphSize ?? IBM_BIOS_FONT_GLYPH_SIZE;
     const pixelWidth = width * fontGlyphSize.width;
     const pixelHeight = height * fontGlyphSize.height;
+
+    let canvas: HTMLCanvasElement;
+    if (typeof canvasOrSelector === 'string') {
+      canvas = document.querySelector(canvasOrSelector) as HTMLCanvasElement;
+    } else if (canvasOrSelector) {
+      canvas = canvasOrSelector;
+    } else {
+      canvas = createCenteredCanvas(pixelWidth, pixelHeight);
+    }
 
     const mouse = new Mouse(canvas, width, height);
 
