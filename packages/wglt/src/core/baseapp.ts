@@ -1,7 +1,7 @@
 import { Font } from './font';
 import { Keyboard } from './keyboard';
 import { Mouse } from './mouse';
-import { Point } from './point';
+import { Vec2 } from './vec2';
 import { Rect } from './rect';
 
 /**
@@ -48,7 +48,7 @@ export abstract class BaseApp {
   /** The WebGL2 rendering context. */
   readonly gl: WebGL2RenderingContext;
   /** The center point of the canvas in pixels. */
-  readonly center: Point;
+  readonly center: Vec2;
   /** Keyboard input handler. */
   readonly keyboard: Keyboard;
   private readonly boundLoop: () => void;
@@ -56,8 +56,6 @@ export abstract class BaseApp {
   defaultFont: Font | undefined;
   /** Duration of the last frame in milliseconds. */
   lastFrameDuration = 0;
-  /** Optional update callback called each frame. */
-  update?: () => void;
   /** Current application state (for state-based applications). */
   state?: AppState;
 
@@ -73,7 +71,7 @@ export abstract class BaseApp {
     this.pixelWidth = pixelWidth;
     this.pixelHeight = pixelHeight;
     this.mouse = mouse;
-    this.center = new Point((this.pixelWidth / 2) | 0, (this.pixelHeight / 2) | 0);
+    this.center = new Vec2((this.pixelWidth / 2) | 0, (this.pixelHeight / 2) | 0);
 
     this.gl = canvas.getContext('webgl2', {
       alpha: false,
@@ -95,6 +93,11 @@ export abstract class BaseApp {
 
     this.boundLoop = this.renderLoop.bind(this);
     requestAnimationFrame(this.boundLoop);
+  }
+
+  /** Optional update callback called each frame. */
+  update(): void {
+    // Override in subclasses
   }
 
   /**

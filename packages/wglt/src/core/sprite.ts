@@ -30,9 +30,6 @@ export class Sprite extends Rect {
   readonly loop: boolean;
   readonly ticksPerFrame: number;
 
-  /** Current animation frame for this sprite instance. */
-  private animFrame = 0;
-
   /**
    * Creates a new Sprite.
    * @param x - The x-coordinate of the sprite on the sprite sheet.
@@ -65,11 +62,14 @@ export class Sprite extends Rect {
    * @param x - The x-coordinate on screen to draw at.
    * @param y - The y-coordinate on screen to draw at.
    * @param flipped - Whether to flip the sprite horizontally (default: false).
+   * @param frame - Optional specific frame to draw (overrides animation).
    */
-  draw(app: GraphicsApp, x: number, y: number, flipped: boolean = false): void {
-    this.animFrame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
+  draw(app: GraphicsApp, x: number, y: number, flipped: boolean = false, frame?: number): void {
+    if (frame === undefined) {
+      frame = ((Sprite.globalAnimIndex / this.ticksPerFrame) | 0) % this.frames;
+    }
 
-    const u = this.x + this.animFrame * this.width;
+    const u = this.x + frame * this.width;
     const v = this.y;
 
     if (flipped) {

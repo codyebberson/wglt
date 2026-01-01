@@ -59,6 +59,15 @@ a:hover {
   text-decoration: underline;
 }
 
+a.source-link {
+  color: #888;
+}
+
+a.source-link:hover {
+  color: #aaa;
+  text-decoration: underline;
+}
+
 footer {
   color: #888;
   font-size: 11px;
@@ -71,7 +80,7 @@ footer {
   position: absolute;
   top: 0;
   left: 0;
-  width: 150px;
+  width: 200px;
   bottom: 0;
   text-align: left;
   padding: 4px;

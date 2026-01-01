@@ -1,5 +1,5 @@
 import { InputSet } from './input';
-import { Point } from './point';
+import { Vec2 } from './vec2';
 import { Rect } from './rect';
 
 /** Minimum distance in pixels required to register as a drag operation. */
@@ -41,9 +41,9 @@ export class Mouse {
   /** Input state for mouse buttons (0=left, 1=middle, 2=right). */
   readonly buttons = new InputSet<number>();
   /** Previous mouse position (for calculating deltas). */
-  readonly prev: Point;
+  readonly prev: Vec2;
   /** Position where the current drag/click started. */
-  readonly start: Point;
+  readonly start: Vec2;
   /** Current mouse x-coordinate in canvas pixels. */
   x: number;
   /** Current mouse y-coordinate in canvas pixels. */
@@ -73,8 +73,8 @@ export class Mouse {
     this.el = el;
     this.width = width;
     this.height = height;
-    this.prev = new Point(0, 0);
-    this.start = new Point(0, 0);
+    this.prev = new Vec2(0, 0);
+    this.start = new Vec2(0, 0);
     this.x = 0;
     this.y = 0;
     this.dx = 0;

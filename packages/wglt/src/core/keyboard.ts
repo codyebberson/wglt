@@ -1,6 +1,6 @@
 import { Input, InputSet } from './input';
 import { Key } from './keys';
-import { Point } from './point';
+import { Vec2 } from './vec2';
 
 // Arrow keys, numpad, vi
 const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y] as const;
@@ -16,39 +16,39 @@ const ENTER_KEYS = [Key.VK_ENTER, Key.VK_NUMPAD_ENTER] as const;
 const ESCAPE_KEYS = [Key.VK_ESCAPE] as const;
 const SHIFT_KEYS = [Key.VK_SHIFT_LEFT, Key.VK_SHIFT_RIGHT] as const;
 
-const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Point>> = {
+const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Vec2>> = {
   // Up
-  [Key.VK_K]: new Point(0, -1),
-  [Key.VK_UP]: new Point(0, -1),
-  [Key.VK_NUMPAD8]: new Point(0, -1),
+  [Key.VK_K]: new Vec2(0, -1),
+  [Key.VK_UP]: new Vec2(0, -1),
+  [Key.VK_NUMPAD8]: new Vec2(0, -1),
   // Down
-  [Key.VK_J]: new Point(0, 1),
-  [Key.VK_DOWN]: new Point(0, 1),
-  [Key.VK_NUMPAD2]: new Point(0, 1),
+  [Key.VK_J]: new Vec2(0, 1),
+  [Key.VK_DOWN]: new Vec2(0, 1),
+  [Key.VK_NUMPAD2]: new Vec2(0, 1),
   // Left
-  [Key.VK_H]: new Point(-1, 0),
-  [Key.VK_LEFT]: new Point(-1, 0),
-  [Key.VK_NUMPAD4]: new Point(-1, 0),
+  [Key.VK_H]: new Vec2(-1, 0),
+  [Key.VK_LEFT]: new Vec2(-1, 0),
+  [Key.VK_NUMPAD4]: new Vec2(-1, 0),
   // Right
-  [Key.VK_L]: new Point(1, 0),
-  [Key.VK_RIGHT]: new Point(1, 0),
-  [Key.VK_NUMPAD6]: new Point(1, 0),
+  [Key.VK_L]: new Vec2(1, 0),
+  [Key.VK_RIGHT]: new Vec2(1, 0),
+  [Key.VK_NUMPAD6]: new Vec2(1, 0),
   // Top-left
-  [Key.VK_Y]: new Point(-1, -1),
-  [Key.VK_NUMPAD7]: new Point(-1, -1),
+  [Key.VK_Y]: new Vec2(-1, -1),
+  [Key.VK_NUMPAD7]: new Vec2(-1, -1),
   // Top-right
-  [Key.VK_U]: new Point(1, -1),
-  [Key.VK_NUMPAD9]: new Point(1, -1),
+  [Key.VK_U]: new Vec2(1, -1),
+  [Key.VK_NUMPAD9]: new Vec2(1, -1),
   // Bottom-left
-  [Key.VK_B]: new Point(-1, 1),
-  [Key.VK_NUMPAD1]: new Point(-1, 1),
+  [Key.VK_B]: new Vec2(-1, 1),
+  [Key.VK_NUMPAD1]: new Vec2(-1, 1),
   // Bottom-right
-  [Key.VK_N]: new Point(1, 1),
-  [Key.VK_NUMPAD3]: new Point(1, 1),
+  [Key.VK_N]: new Vec2(1, 1),
+  [Key.VK_NUMPAD3]: new Vec2(1, 1),
   // Wait
-  [Key.VK_SPACE]: new Point(0, 0),
-  [Key.VK_PERIOD]: new Point(0, 0),
-  [Key.VK_NUMPAD5]: new Point(0, 0),
+  [Key.VK_SPACE]: new Vec2(0, 0),
+  [Key.VK_PERIOD]: new Vec2(0, 0),
+  [Key.VK_NUMPAD5]: new Vec2(0, 0),
 };
 
 /**
@@ -255,9 +255,9 @@ export class Keyboard {
    *
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
-  getMovementKey(): Point | undefined {
-    const movementKeys: Partial<Record<Key, Point>> = DEFAULT_MOVEMENT_KEYS;
-    for (const [key, delta] of Object.entries(movementKeys) as [Key, Point][]) {
+  getMovementKey(): Vec2 | undefined {
+    const movementKeys: Partial<Record<Key, Vec2>> = DEFAULT_MOVEMENT_KEYS;
+    for (const [key, delta] of Object.entries(movementKeys) as [Key, Vec2][]) {
       if (this.isKeyPressed(key)) {
         return delta;
       }

@@ -1,14 +1,14 @@
-import { Point, Sprite } from 'wglt';
+import { Vec2, Sprite } from 'wglt';
 import type { Game } from '../game';
 import { Animation } from './animation';
 
 export class ProjectileAnimation extends Animation {
   readonly sprite: Sprite;
-  readonly position: Point;
-  readonly velocity: Point;
+  readonly position: Vec2;
+  readonly velocity: Vec2;
   readonly duration: number;
 
-  constructor(sprite: Sprite, position: Point, velocity: Point, duration: number) {
+  constructor(sprite: Sprite, position: Vec2, velocity: Vec2, duration: number) {
     super(duration, true);
     this.sprite = sprite;
     this.position = position;

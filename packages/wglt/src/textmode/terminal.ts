@@ -3,7 +3,7 @@ import type { Color } from '../core/color';
 import { createTexture, initShaderProgram } from '../core/glutils';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
-import { Point } from '../core/point';
+import { Vec2 } from '../core/vec2';
 import type { Rect } from '../core/rect';
 import { createCenteredCanvas, interpolate } from '../core/utils';
 import type { BlendMode } from './blendmode';
@@ -21,7 +21,7 @@ export interface TerminalOptions {
   /** Font glyph size. If not provided, uses the default IBM BIOS font (8 pixels by 8 pixels). */
   readonly fontGlyphSize?: Rect;
   /** Custom movement key mappings. If not provided, uses standard roguelike keys (arrows, vi keys, numpad). */
-  readonly movementKeys?: Partial<Record<Key, Point>>;
+  readonly movementKeys?: Partial<Record<Key, Vec2>>;
   /** Maximum frames per second. If not provided, runs uncapped. */
   readonly maxFps?: number;
 }

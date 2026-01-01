@@ -1,5 +1,5 @@
 import { ArrayList } from '../arraylist';
-import type { PointLike } from '../point';
+import type { PointLike } from '../vec2';
 import { Component } from './component';
 
 /**

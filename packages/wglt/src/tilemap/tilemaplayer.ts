@@ -5,11 +5,13 @@ import { getTileId } from './utils';
 export class TileMapLayer {
   readonly width: number;
   readonly height: number;
+  readonly tilesPerRow: number;
   readonly imageData: Uint8Array;
 
-  constructor(width: number, height: number) {
+  constructor(width: number, height: number, tilesPerRow: number) {
     this.width = width;
     this.height = height;
+    this.tilesPerRow = tilesPerRow;
     this.imageData = new Uint8Array(4 * width * height);
     this.clear();
   }
@@ -27,8 +29,8 @@ export class TileMapLayer {
 
   setTile(x: number, y: number, tile: number): void {
     const index = this.getIndex(x, y);
-    this.imageData[index] = (tile % 64) | 0;
-    this.imageData[index + 1] = (tile / 64) | 0;
+    this.imageData[index] = (tile % this.tilesPerRow) | 0;
+    this.imageData[index + 1] = (tile / this.tilesPerRow) | 0;
   }
 
   getTile(x: number, y: number): number {

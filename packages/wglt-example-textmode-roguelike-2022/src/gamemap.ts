@@ -1,7 +1,7 @@
 import {
   computePath,
   Console,
-  Point,
+  Vec2,
   type PointLike,
   Rect,
   serializable,
@@ -22,7 +22,7 @@ export class GameMap extends BaseComponent {
   entities: Entity[];
   private tileMap: TileMap;
   level = 0;
-  stairsLocation = new Point(0, 0);
+  stairsLocation = new Vec2(0, 0);
 
   constructor(engine: Engine, width: number, height: number, entities: Entity[]) {
     super(engine);
@@ -68,7 +68,7 @@ export class GameMap extends BaseComponent {
 
   makeStairs(x: number, y: number): void {
     this.makeFloor(x, y);
-    this.stairsLocation = new Point(x, y);
+    this.stairsLocation = new Vec2(x, y);
   }
 
   updateFov(x: number, y: number): void {

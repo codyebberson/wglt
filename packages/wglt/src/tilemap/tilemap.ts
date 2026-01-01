@@ -1,5 +1,6 @@
 import { Rect } from '../core/rect';
 import { serializable } from '../core/serialize';
+import type { Vec2 } from '../core/vec2';
 import { TileMapCell } from './tilemapcell';
 import { TileMapLayer } from './tilemaplayer';
 
@@ -35,6 +36,10 @@ export class TileMap {
   readonly depth: number;
   /** Size and sprite sheet offset of each tile. */
   readonly tileSize: Rect;
+  /** Size of the texture containing all tiles. */
+  readonly textureSize: Rect;
+  /** Number of tiles per row in the tile texture. */
+  readonly tilesPerRow: number;
   /** 2D grid of cells containing tile properties. */
   readonly grid: TileMapCell[][];
   /** Array of tile layers for rendering. */
@@ -57,12 +62,15 @@ export class TileMap {
    * @param height - Height of the tilemap in tiles.
    * @param layerCount - Number of tile layers for depth. Defaults to 1.
    * @param tileSize - Size of each tile in pixels. Defaults to 16x16.
+   * @param textureSize - Size of the tile texture in pixels. Defaults to 1024x1024.
    */
-  constructor(width: number, height: number, layerCount = 1, tileSize = new Rect(0, 0, 16, 16)) {
+  constructor(width: number, height: number, layerCount = 1, tileSize?: Rect, textureSize?: Rect) {
     this.width = width;
     this.height = height;
     this.depth = layerCount;
-    this.tileSize = tileSize;
+    this.tileSize = tileSize ?? new Rect(0, 0, 16, 16);
+    this.textureSize = textureSize ?? new Rect(0, 0, 1024, 1024);
+    this.tilesPerRow = (this.textureSize.width / this.tileSize.width) | 0;
     this.grid = new Array(height);
     this.layers = new Array(layerCount);
     this.dirty = true;
@@ -82,7 +90,7 @@ export class TileMap {
     }
 
     for (let i = 0; i < layerCount; i++) {
-      this.layers[i] = new TileMapLayer(width, height);
+      this.layers[i] = new TileMapLayer(width, height, this.tilesPerRow);
     }
   }
 
@@ -179,45 +187,6 @@ export class TileMap {
     }
   }
 
-  // computeFov(
-  //   originX: number,
-  //   originY: number,
-  //   radius: number,
-  //   opt_noClear?: boolean,
-  //   opt_octants?: number
-  // ): void {
-
-  // computeFov(originX: number, originY: number, radius: number, vradius?: number): void {
-  //   this.originX = originX;
-  //   this.originY = originY;
-  //   this.prevVisibleRect.copy(this.visibleRect);
-
-  //   const dx = radius;
-  //   const dy = vradius || radius;
-  //   this.visibleRect.x = Math.max(0, originX - dx);
-  //   this.visibleRect.y = Math.max(0, originY - dy);
-  //   this.visibleRect.width = Math.min(this.width - 1, originX + dx) - this.visibleRect.x + 1;
-  //   this.visibleRect.height = Math.min(this.height - 1, originY + dy) - this.visibleRect.y + 1;
-
-  //   for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
-  //     for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
-  //       this.grid[y][x].visible = false;
-  //     }
-  //   }
-
-  //   this.grid[originY][originX].visible = true;
-
-  //   this.computeOctantY(1, 1);
-  //   this.computeOctantX(1, 1);
-  //   this.computeOctantY(1, -1);
-  //   this.computeOctantX(1, -1);
-  //   this.computeOctantY(-1, 1);
-  //   this.computeOctantX(-1, 1);
-  //   this.computeOctantY(-1, -1);
-  //   this.computeOctantX(-1, -1);
-  //   this.dirty = true;
-  // }
-
   computeFov(
     originX: number,
     originY: number,
@@ -227,7 +196,6 @@ export class TileMap {
   ): void {
     this.originX = originX;
     this.originY = originY;
-    // this.radius = radius;
     this.prevVisibleRect.copy(this.visibleRect);
 
     let minX = originX;
@@ -240,35 +208,16 @@ export class TileMap {
       minY = Math.min(this.visibleRect.y1, Math.max(0, originY - radius));
       maxX = Math.max(this.visibleRect.x2, Math.min(this.width - 1, originX + radius));
       maxY = Math.max(this.visibleRect.y2, Math.min(this.height - 1, originY + radius));
-
-      // this.visibleRect.x = Math.max(0, originX - radius);
-      // this.visibleRect.y = Math.max(0, originY - radius);
-      // this.visibleRect.width = Math.min(this.width - 1, originX + radius) - this.visibleRect.x + 1;
-      // this.visibleRect.height =
-      //   Math.min(this.height - 1, originY + radius) - this.visibleRect.y + 1;
     } else {
       minX = Math.max(0, originX - radius);
       minY = Math.max(0, originY - radius);
       maxX = Math.min(this.width - 1, originX + radius);
       maxY = Math.min(this.height - 1, originY + radius);
-
-      // this.visibleRect.x = Math.max(0, originX - radius);
-      // this.visibleRect.y = Math.max(0, originY - radius);
-      // this.visibleRect.width = Math.min(this.width - 1, originX + radius) - this.visibleRect.x + 1;
-      // this.visibleRect.height =
-      //   Math.min(this.height - 1, originY + radius) - this.visibleRect.y + 1;
-
       for (let y = minY; y <= maxY; y++) {
         for (let x = minX; x <= maxX; x++) {
           this.grid[y][x].visible = false;
         }
       }
-
-      // for (let y = this.visibleRect.y1; y < this.visibleRect.y2; y++) {
-      //   for (let x = this.visibleRect.x1; x < this.visibleRect.x2; x++) {
-      //     this.grid[y][x].visible = false;
-      //   }
-      // }
     }
 
     this.visibleRect.x = minX;
@@ -513,5 +462,65 @@ export class TileMap {
         tile.explored = tile.explored || tile.visible;
       }
     }
+  }
+
+  /**
+   * Moves the given rectangle by the specified velocity and checks for collisions with blocked tiles.
+   * If a collision occurs, the rectangle's position and velocity are adjusted accordingly.
+   * @param rect The rectangle to move.
+   * @param velocity The velocity vector by which to move the rectangle.
+   * @returns True if a collision occurred, false otherwise.
+   */
+  moveAndCollide(rect: Rect, velocity: Vec2): boolean {
+    rect.x += velocity.x;
+    rect.y += velocity.y;
+
+    const rectHalfWidth = rect.width * 0.5;
+    const rectHalfHeight = rect.height * 0.5;
+    const tileWidth = this.tileSize.width;
+    const tileHeight = this.tileSize.height;
+    let collide = false;
+
+    if (velocity.x < 0) {
+      const tileX = (rect.x / tileWidth) | 0;
+      const tileY = ((rect.y + rectHalfHeight) / tileHeight) | 0;
+      if (this.isBlocked(tileX, tileY)) {
+        rect.x = (tileX + 1) * tileWidth;
+        velocity.x = 0;
+        collide = true;
+      }
+    }
+
+    if (velocity.x > 0) {
+      const tileX = ((rect.x + rect.width - 1) / tileWidth) | 0;
+      const tileY = ((rect.y + rectHalfHeight) / tileHeight) | 0;
+      if (this.isBlocked(tileX, tileY)) {
+        rect.x = tileX * tileWidth - rect.width;
+        velocity.x = 0;
+        collide = true;
+      }
+    }
+
+    if (velocity.y < 0) {
+      const tileX = ((rect.x + rectHalfWidth) / tileWidth) | 0;
+      const tileY = (rect.y / tileHeight) | 0;
+      if (this.isBlocked(tileX, tileY)) {
+        rect.y = (tileY + 1) * tileHeight;
+        velocity.y = 0;
+        collide = true;
+      }
+    }
+
+    if (velocity.y > 0) {
+      const tileX = ((rect.x + rectHalfWidth) / tileWidth) | 0;
+      const tileY = ((rect.y + rect.height - 1) / tileHeight) | 0;
+      if (this.isBlocked(tileX, tileY)) {
+        rect.y = tileY * tileHeight - rect.height;
+        velocity.y = 0;
+        collide = true;
+      }
+    }
+
+    return collide;
   }
 }

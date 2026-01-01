@@ -8,7 +8,7 @@ import {
   GUI,
   Message,
   MessageLog,
-  Point,
+  Vec2,
   Rect,
   RNG,
   Sprite,
@@ -35,7 +35,7 @@ export class Game extends AppState<GraphicsApp> {
   readonly viewport: Rect;
   readonly animations: Animation[];
   readonly entities: ArrayList<Entity>;
-  readonly cursor: Point;
+  readonly cursor: Vec2;
   readonly rng: RNG;
   turnIndex: number;
   blocked: boolean;
@@ -59,7 +59,7 @@ export class Game extends AppState<GraphicsApp> {
     this.entities = new ArrayList<Entity>();
     this.turnIndex = 0;
     this.blocked = false;
-    this.cursor = new Point(-1, -1);
+    this.cursor = new Vec2(-1, -1);
     this.rng = new RNG();
     this.pathIndex = 0;
     this.tileMap = new TileMap(MAP_WIDTH, MAP_HEIGHT, 3, new Rect(0, 0, TILE_SIZE, TILE_SIZE));

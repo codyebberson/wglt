@@ -1,4 +1,4 @@
-import type { PointLike } from '../point';
+import type { PointLike } from '../vec2';
 import { Rect } from '../rect';
 import type { GUI } from './gui';
 

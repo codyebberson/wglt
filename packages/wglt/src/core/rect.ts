@@ -1,4 +1,4 @@
-import { Point, type PointLike } from './point';
+import { Vec2, type PointLike } from './vec2';
 import { serializable } from './serialize';
 
 /**
@@ -89,10 +89,10 @@ export class Rect {
 
   /**
    * Gets the center point of the rectangle.
-   * @returns A Point representing the center coordinates.
+   * @returns A Vec2 representing the center coordinates.
    */
-  getCenter(): Point {
-    return new Point((this.x + this.width / 2) | 0, (this.y + this.height / 2) | 0);
+  getCenter(): Vec2 {
+    return new Vec2((this.x + this.width / 2) | 0, (this.y + this.height / 2) | 0);
   }
 
   /**

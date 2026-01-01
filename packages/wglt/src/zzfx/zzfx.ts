@@ -262,3 +262,31 @@ export function zzfxG(
 
   return b; // return sample buffer
 }
+
+/**
+ * Sound object that can precache and play ZZFX sounds
+ */
+export class Sound {
+  readonly zzfxSound: (number | undefined)[];
+  readonly randomness: number;
+  readonly samples: number[];
+  source?: AudioBufferSourceNode;
+
+  constructor(zzfxSound: (number | undefined)[]) {
+    this.zzfxSound = zzfxSound;
+
+    // extract randomness parameter from zzfxSound
+    this.randomness = zzfxSound[1] != undefined ? zzfxSound[1] : .05;
+    zzfxSound[1] = 0; // generate without frequency randomness
+
+    // cache the sound samples
+    this.samples = zzfxG(...zzfxSound);
+  }
+
+  play(volume=1, pitch=1, randomnessScale=1, pan=0, loop=false) {
+    // play the sound
+    const playbackRate = pitch + pitch * this.randomness*randomnessScale*(Math.random()*2-1);
+    this.source = zzfxP([this.samples], volume, playbackRate, pan, loop);
+    return this.source;
+  }
+}

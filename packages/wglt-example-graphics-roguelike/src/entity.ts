@@ -1,10 +1,12 @@
-import { Point, type SelectOption, Sprite } from 'wglt';
+import { Sprite, Vec2, type PointLike, type SelectOption } from 'wglt';
 import type { Actor } from './actor';
 import type { Game } from './game';
 
-export class Entity extends Point implements SelectOption {
+export class Entity implements PointLike, SelectOption {
   readonly game: Game;
-  readonly offset: Point;
+  readonly offset: Vec2;
+  x: number;
+  y: number;
   name: string;
   sprite: Sprite;
   blocks: boolean;
@@ -12,9 +14,10 @@ export class Entity extends Point implements SelectOption {
   flipped: boolean;
 
   constructor(game: Game, x: number, y: number, name: string, sprite: Sprite, blocks = false) {
-    super(x, y);
     this.game = game;
-    this.offset = new Point(0, 0);
+    this.offset = new Vec2(0, 0);
+    this.x = x;
+    this.y = y;
     this.name = name;
     this.sprite = sprite;
     this.blocks = blocks;
@@ -38,7 +41,7 @@ export class Entity extends Point implements SelectOption {
     return (this.pixelY + this.sprite.height / 2) | 0;
   }
 
-  distanceTo(other: Point): number {
+  distanceTo(other: PointLike): number {
     return Math.hypot(other.x - this.x, other.y - this.y);
   }
 

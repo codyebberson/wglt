@@ -1,4 +1,4 @@
-import { Point, Rect, RNG } from 'wglt';
+import { Vec2, Rect, RNG } from 'wglt';
 import { Actor } from './actor';
 import { Engine } from './engine';
 import {
@@ -115,7 +115,7 @@ export function generateDungeon(
   dungeon.level = level;
 
   const rooms: Rect[] = [];
-  let center: Point;
+  let center: Vec2;
 
   for (let r = 0; r < maxRooms; r++) {
     const w = rng.nextRange(roomMinSize, roomMaxSize);

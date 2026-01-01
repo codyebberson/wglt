@@ -31,7 +31,7 @@ export * from './core/palettes/cga';
 export * from './core/palettes/colodore';
 export * from './core/palettes/pico8';
 export * from './core/palettes/simple';
-export * from './core/point';
+export * from './core/vec2';
 export * from './core/rect';
 export * from './core/rng';
 export * from './core/serialize';

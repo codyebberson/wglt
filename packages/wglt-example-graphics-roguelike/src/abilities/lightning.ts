@@ -1,4 +1,4 @@
-import { Message, Point, Sprite } from 'wglt';
+import { Message, Vec2, Sprite } from 'wglt';
 import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
@@ -48,8 +48,8 @@ export class LightningAbility implements Ability {
       .addAnimation(
         new ProjectileAnimation(
           Sprites.FIREBALL_ANIMATION,
-          new Point(monster.x * TILE_SIZE, monster.y * TILE_SIZE),
-          new Point(0, 0),
+          new Vec2(monster.x * TILE_SIZE, monster.y * TILE_SIZE),
+          new Vec2(0, 0),
           16
         )
       )

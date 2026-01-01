@@ -2,7 +2,7 @@ import { BaseApp } from '../baseapp';
 import type { Font } from '../font';
 import type { Insets } from '../insets';
 import type { Message } from '../message';
-import { Point } from '../point';
+import { Vec2 } from '../vec2';
 import { Rect } from '../rect';
 import { Component, type ComponentConstructor } from './component';
 import { Container } from './container';
@@ -20,7 +20,7 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   tooltipElement?: Component;
   onDragStart?: (component: Component) => void;
   dragElement?: Component;
-  dragOffset?: Point;
+  dragOffset?: Vec2;
 
   constructor(context: TContext) {
     super(new Rect(0, 0, context.pixelWidth, context.pixelHeight));
@@ -225,7 +225,7 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   startDragging(app: BaseApp, component: Component): void {
     const mouse = app.mouse;
     this.dragElement = component;
-    this.dragOffset = new Point(mouse.start.x - component.rect.x, mouse.start.y - component.rect.y);
+    this.dragOffset = new Vec2(mouse.start.x - component.rect.x, mouse.start.y - component.rect.y);
   }
 
   private updateDragging(): boolean {

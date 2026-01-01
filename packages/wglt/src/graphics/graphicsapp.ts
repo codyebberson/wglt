@@ -2,7 +2,7 @@ import { BaseApp } from '../core/baseapp';
 import type { Color } from '../core/color';
 import { Font } from '../core/font';
 import { Mouse } from '../core/mouse';
-import { Point } from '../core/point';
+import { Vec2 } from '../core/vec2';
 import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
 import { createCenteredCanvas } from '../core/utils';
@@ -163,7 +163,7 @@ export class GraphicsApp extends BaseApp {
     color?: Color,
     scale: number = 1,
     font?: Font,
-    out?: Point
+    out?: Vec2
   ): void {
     font ??= this.defaultFont;
     if (!font) {

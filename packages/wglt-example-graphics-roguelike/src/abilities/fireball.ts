@@ -1,4 +1,4 @@
-import { Message, Point, Sprite } from 'wglt';
+import { Message, Vec2, Sprite } from 'wglt';
 import { type Ability, TargetType } from '../ability';
 import { Actor } from '../actor';
 import { ProjectileAnimation } from '../animations/projectileanimation';
@@ -51,8 +51,8 @@ export class FireballAbility implements Ability {
       .addAnimation(
         new ProjectileAnimation(
           Sprites.FIREBALL_ANIMATION,
-          new Point(caster.pixelX, caster.pixelY),
-          new Point(dx, dy),
+          new Vec2(caster.pixelX, caster.pixelY),
+          new Vec2(dx, dy),
           count
         )
       )
@@ -60,8 +60,8 @@ export class FireballAbility implements Ability {
         this.game.addAnimation(
           new ProjectileAnimation(
             Sprites.EXPLOSION_ANIMATION,
-            new Point(target.x * TILE_SIZE, target.y * TILE_SIZE),
-            new Point(0, 0),
+            new Vec2(target.x * TILE_SIZE, target.y * TILE_SIZE),
+            new Vec2(0, 0),
             32
           )
         )

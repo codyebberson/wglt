@@ -1,8 +1,6 @@
 import { initShaderProgram } from '../core/glutils';
 import { TileMap } from './tilemap';
 
-const TEXTURE_SIZE = 1024;
-
 const VS_SOURCE = `#version 300 es
 precision highp float;
 
@@ -30,6 +28,7 @@ in vec2 pixelCoord;
 in vec2 texCoord;
 
 uniform vec2 tileSize;
+uniform vec2 textureSize;
 uniform float animFrame;
 uniform sampler2D tiles;
 uniform sampler2D sprites;
@@ -45,7 +44,7 @@ void main(void) {
    vec2 spriteOffset = floor(tile.xy * 256.0) * tileSize;
    if(tile.z != 0.0) spriteOffset.x += animFrame * tileSize.x;
    vec2 spriteCoord = mod(pixelCoord, tileSize);
-   fragColor = texture(sprites, (spriteOffset + spriteCoord) / ${TEXTURE_SIZE}.0);
+   fragColor = texture(sprites, (spriteOffset + spriteCoord) / textureSize);
    if (fragColor.a == 0.0) discard;
    fragColor.a *= tile.a;
 }`;
@@ -62,6 +61,7 @@ export class TileMapRenderer {
   private readonly viewOffsetUniform: WebGLUniformLocation;
   private readonly mapSizeUniform: WebGLUniformLocation;
   private readonly tileSizeUniform: WebGLUniformLocation;
+  private readonly textureSizeUniform: WebGLUniformLocation;
   private readonly animFrameUniform: WebGLUniformLocation;
   private readonly tileSamplerUniform: WebGLUniformLocation;
   private readonly spriteSamplerUniform: WebGLUniformLocation;
@@ -84,6 +84,10 @@ export class TileMapRenderer {
     ) as WebGLUniformLocation;
     this.mapSizeUniform = gl.getUniformLocation(this.program, 'mapSize') as WebGLUniformLocation;
     this.tileSizeUniform = gl.getUniformLocation(this.program, 'tileSize') as WebGLUniformLocation;
+    this.textureSizeUniform = gl.getUniformLocation(
+      this.program,
+      'textureSize'
+    ) as WebGLUniformLocation;
     this.animFrameUniform = gl.getUniformLocation(
       this.program,
       'animFrame'
@@ -161,6 +165,7 @@ export class TileMapRenderer {
     gl.uniform2f(this.viewOffsetUniform, x, y);
     gl.uniform2f(this.viewportSizeUniform, width, height);
     gl.uniform2f(this.tileSizeUniform, tileMap.tileSize.width, tileMap.tileSize.height);
+    gl.uniform2f(this.textureSizeUniform, tileMap.textureSize.width, tileMap.textureSize.height);
     gl.uniform1f(this.animFrameUniform, animFrame || 0);
 
     // Set up textures

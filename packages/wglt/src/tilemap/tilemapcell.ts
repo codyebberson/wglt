@@ -1,8 +1,8 @@
-import { Point } from '../core/point';
+import { Vec2 } from '../core/vec2';
 import { serializable } from '../core/serialize';
 
 @serializable
-export class TileMapCell extends Point {
+export class TileMapCell extends Vec2 {
   blocked: boolean;
   blockedSight: boolean;
   visible: boolean;
