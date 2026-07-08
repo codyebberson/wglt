@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.3/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
@@ -10,7 +10,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "style": {
         "noParameterAssign": "off",
         "useBlockStatements": "error",
@@ -36,6 +36,6 @@
     }
   },
   "files": {
-    "includes": ["**", "!**/.turbo", "!**/dist", "!**/node_modules", "!**/zzfx"]
+    "includes": ["**", "!**/.turbo", "!**/dist", "!**/node_modules", "!**/zzfx", "!**/tiles.tsx"]
   }
 }

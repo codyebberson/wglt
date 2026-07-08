@@ -1,6 +1,14 @@
 {
   "permissions": {
-    "allow": ["Bash(npm run lint:*)", "WebSearch", "Bash(npm run build:*)"],
+    "allow": [
+      "Bash(npm run lint:*)",
+      "WebSearch",
+      "Bash(npm run build:*)",
+      "Bash(git -C /Users/cody/dev/wglt log --oneline -15)",
+      "Bash(git -C /Users/cody/dev/wglt tag)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(git diff *)"
+    ],
     "deny": [],
     "ask": []
   }
