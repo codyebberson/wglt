@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "rimraf": "6.1.2",
-    "typescript": "5.9.3",
-    "vite": "7.3.0",
+    "rimraf": "6.1.3",
+    "typescript": "6.0.3",
+    "vite": "8.1.3",
     "wglt": "2.0.0-beta.1"
   }
 }

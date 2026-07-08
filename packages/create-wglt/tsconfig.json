@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "rootDir": "src",
     "outDir": "dist",
     "newLine": "lf",
     "lib": ["esnext", "dom", "dom.iterable"],
+    "types": ["node"],
     "allowJs": true,
     "alwaysStrict": true,
     "declaration": true,

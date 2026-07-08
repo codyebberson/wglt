@@ -7,8 +7,12 @@ set -e
 set -x
 
 rm -rf node_modules
-rm -rf docs/node_modules
-rm -rf wglt/node_modules
+
+for dir in `ls packages`; do
+  if test -d "packages/$dir/node_modules"; then
+    rm -rf "packages/$dir/node_modules"
+  fi
+done
 
 # If called with "--update", then use npm i
 if [ "$1" == "--update" ]; then
