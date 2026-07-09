@@ -39,5 +39,5 @@ export const Pico8Palette = {
   MEDIUM_BLUE: 0x065ab5ff,
   MAUVE: 0x754665ff,
   DARK_PEACH: 0xff6e59ff,
-  PEACH: 0xff9d81,
+  PEACH: 0xff9d81ff,
 } as const;

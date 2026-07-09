@@ -1,10 +1,9 @@
 export const Key = {
-  VK_CANCEL: 'Pause',
   VK_BACKSPACE: 'Backspace',
   VK_TAB: 'Tab',
   VK_ENTER: 'Enter',
   VK_SHIFT_LEFT: 'ShiftLeft',
-  VK_SHIFT_RIGHT: 'ShiftLeft',
+  VK_SHIFT_RIGHT: 'ShiftRight',
   VK_CONTROL_LEFT: 'ControlLeft',
   VK_CONTROL_RIGHT: 'ControlRight',
   VK_ALT_LEFT: 'AltLeft',
@@ -113,7 +112,8 @@ export const Key = {
   VK_BACK_SLASH: 'Backslash',
   VK_CLOSE_BRACKET: 'BracketRight',
   VK_QUOTE: 'Quote',
-  VK_META: 'OSLeft',
+  VK_META_LEFT: 'MetaLeft',
+  VK_META_RIGHT: 'MetaRight',
 } as const;
 export type Key = (typeof Key)[keyof typeof Key];
 

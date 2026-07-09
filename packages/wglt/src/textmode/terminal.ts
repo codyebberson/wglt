@@ -203,7 +203,6 @@ export class Terminal extends BaseApp {
     for (let y = 0; y < this.console.height; y++) {
       for (let x = 0; x < this.console.width; x++) {
         const cell = this.console.getCell(x, y) as Cell;
-        cell.dirty = true;
 
         if (!cell.dirty) {
           textureArrayIndex += 8;

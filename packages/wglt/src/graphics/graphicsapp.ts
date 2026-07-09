@@ -274,7 +274,7 @@ export class GraphicsApp extends BaseApp {
     const sx1 = sx0 + sw;
     const sy1 = sy0 + sh;
     const sx2 = sx0 + 2 * sw;
-    const sy2 = sy0 + 2 * sw;
+    const sy2 = sy0 + 2 * sh;
 
     // Destination rect is the dialog
     const dx0 = destRect.x;
