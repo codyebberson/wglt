@@ -2,10 +2,10 @@ import { BaseApp } from '../core/baseapp';
 import type { Color } from '../core/color';
 import { Font } from '../core/font';
 import { Mouse } from '../core/mouse';
-import { Vec2 } from '../core/vec2';
 import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
 import { createCenteredCanvas } from '../core/utils';
+import { Vec2 } from '../core/vec2';
 import { DrawList } from './drawlist';
 
 /**

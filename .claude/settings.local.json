@@ -7,7 +7,9 @@
       "Bash(git -C /Users/cody/dev/wglt log --oneline -15)",
       "Bash(git -C /Users/cody/dev/wglt tag)",
       "Bash(echo \"exit:$?\")",
-      "Bash(git diff *)"
+      "Bash(git diff *)",
+      "Bash(node -e \"console.log\\('valid json:', !!require\\('./package.json'\\).bin['create-wglt']\\)\")",
+      "Bash(npx biome *)"
     ],
     "deny": [],
     "ask": []

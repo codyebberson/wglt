@@ -14,10 +14,5 @@ for dir in `ls packages`; do
   fi
 done
 
-# If called with "--update", then use npm i
-if [ "$1" == "--update" ]; then
-  rm -rf package-lock.json
-  npm i --strict-peer-deps
-else
-  npm ci --strict-peer-deps
-fi
+rm -rf package-lock.json
+npm i --strict-peer-deps

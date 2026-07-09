@@ -1,5 +1,5 @@
-import { Vec2 } from '../core/vec2';
 import { serializable } from '../core/serialize';
+import { Vec2 } from '../core/vec2';
 
 @serializable
 export class TileMapCell extends Vec2 {

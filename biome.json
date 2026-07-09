@@ -36,6 +36,14 @@
     }
   },
   "files": {
-    "includes": ["**", "!**/.turbo", "!**/dist", "!**/node_modules", "!**/zzfx", "!**/tiles.tsx"]
+    "includes": [
+      "**",
+      "!**/.turbo",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/zzfx",
+      "!**/tiles.tsx",
+      "!**/wglt-docs/public/examples"
+    ]
   }
 }

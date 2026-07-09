@@ -1,8 +1,8 @@
 import { Font } from './font';
 import { Keyboard } from './keyboard';
 import { Mouse } from './mouse';
-import { Vec2 } from './vec2';
 import { Rect } from './rect';
+import { Vec2 } from './vec2';
 
 /**
  * Abstract base class for application states.

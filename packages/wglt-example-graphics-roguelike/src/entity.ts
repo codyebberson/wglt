@@ -1,4 +1,4 @@
-import { Sprite, Vec2, type PointLike, type SelectOption } from 'wglt';
+import { type PointLike, type SelectOption, Sprite, Vec2 } from 'wglt';
 import type { Actor } from './actor';
 import type { Game } from './game';
 

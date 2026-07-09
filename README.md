@@ -47,10 +47,9 @@ npm i -D wglt
 Use it:
 
 ```typescript
-import { Colors, Terminal } from "wglt";
+import { CgaPalette, Terminal } from "wglt";
 
 const term = Terminal.init(80, 45);
-term.fillRect(0, 0, 80, 45, 0, Colors.YELLOW, Colors.DARK_BLUE);
 
 let x = 10;
 let y = 10;
@@ -63,8 +62,9 @@ term.update = () => {
   }
 
   term.clear();
-  term.drawString(1, 1, "Hello world!");
-  term.drawString(1, 3, "Use arrow keys to move");
-  term.drawString(x, y, "@");
+  term.fillRect(0, 0, 80, 45, CgaPalette.DARK_BLUE);
+  term.drawString(1, 1, "Hello world!", CgaPalette.YELLOW);
+  term.drawString(1, 3, "Use arrow keys to move", CgaPalette.YELLOW);
+  term.drawString(x, y, "@", CgaPalette.YELLOW);
 };
 ```

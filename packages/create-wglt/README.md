@@ -1,25 +1,15 @@
-# Medplum NPM Initializer
+# create-wglt
 
-This package is an NPM initializer for creating a new Medplum project.
+The official project initializer for [WGLT](https://github.com/codyebberson/wglt),
+the WebGL2 game toolkit.
 
 ## Usage
 
-```bash
-npm init medplum
-```
+    npm init wglt
 
-The user will be prompted for the following information:
-
-1. Which Medplum starter template to use
-2. The name of the project
-3. The Medplum base URL
-
-Learn more about NPM initializers: https://docs.npmjs.com/cli/v11/commands/npm-init
-
-## About Medplum
-
-Medplum is a healthcare platform that helps you quickly develop high-quality compliant applications. Medplum includes a FHIR server, React component library, and developer app.
+You'll be prompted for a project name; the initializer clones the WGLT starter
+template, installs dependencies, and sets up a fresh git repository.
 
 ## License
 
-Apache 2.0. Copyright &copy; Medplum 2025
+MIT. Copyright © Cody Ebberson.

@@ -1,4 +1,4 @@
-import { Vec2, Rect, RNG } from 'wglt';
+import { Rect, RNG, Vec2 } from 'wglt';
 import { Actor } from './actor';
 import { Engine } from './engine';
 import {

@@ -8,13 +8,13 @@ import {
   GUI,
   Message,
   MessageLog,
-  Vec2,
   Rect,
   RNG,
   Sprite,
   TileMap,
   TileMapCell,
   TileMapRenderer,
+  Vec2,
 } from 'wglt';
 import { type Ability, TargetType } from './ability';
 import { Actor } from './actor';

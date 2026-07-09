@@ -53,9 +53,12 @@ async function initializeProject(config: ProjectConfig): Promise<void> {
   try {
     // Clone the repository
     console.log('Cloning starter project...');
-    cp.execSync(`git clone git@github.com:codyebberson/wglt-hello-world ${config.projectName}`, {
-      stdio: 'inherit',
-    });
+    cp.execSync(
+      `git clone https://github.com/codyebberson/wglt-hello-world.git ${config.projectName}`,
+      {
+        stdio: 'inherit',
+      }
+    );
 
     // Remove .git directory
     fs.rmSync(path.join(projectDir, '.git'), { recursive: true, force: true });

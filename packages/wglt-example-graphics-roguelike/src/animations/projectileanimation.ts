@@ -1,4 +1,4 @@
-import { Vec2, Sprite } from 'wglt';
+import { Sprite, Vec2 } from 'wglt';
 import type { Game } from '../game';
 import { Animation } from './animation';
 

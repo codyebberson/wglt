@@ -9,7 +9,7 @@
     "build": "turbo run build",
     "clean": "turbo run clean",
     "dev": "npm run dev --workspace=wglt-docs",
-    "fix": "npx @biomejs/biome format --write .",
+    "fix": "npx @biomejs/biome check --unsafe --write .",
     "lint": "npx @biomejs/biome check .",
     "preview": "npm run preview --workspace=wlgt-docs",
     "test": "turbo run test"

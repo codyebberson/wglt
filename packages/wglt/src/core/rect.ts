@@ -1,5 +1,5 @@
-import { Vec2, type PointLike } from './vec2';
 import { serializable } from './serialize';
+import { type PointLike, Vec2 } from './vec2';
 
 /**
  * Represents a rectangle with x, y position and width, height dimensions.

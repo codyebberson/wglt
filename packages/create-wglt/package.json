@@ -1,11 +1,30 @@
 {
   "name": "create-wglt",
   "version": "2.0.0-beta.1",
+  "description": "Create a new WGLT project",
+  "license": "MIT",
+  "author": "Cody Ebberson",
+  "homepage": "https://github.com/codyebberson/wglt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codyebberson/wglt.git",
+    "directory": "packages/create-wglt"
+  },
+  "keywords": [
+    "wglt",
+    "webgl",
+    "game-engine",
+    "roguelike",
+    "create"
+  ],
   "sideEffects": false,
+  "type": "module",
+  "bin": {
+    "create-wglt": "dist/main.js"
+  },
   "files": [
     "dist"
   ],
-  "type": "module",
   "scripts": {
     "build": "tsc"
   },
