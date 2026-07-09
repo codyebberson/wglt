@@ -1,3 +1,4 @@
+.claude/settings.local.json
 .turbo
 .DS_Store
 package-lock.json
