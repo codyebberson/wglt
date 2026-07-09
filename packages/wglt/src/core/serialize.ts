@@ -18,6 +18,31 @@ interface ArrayViewPlaceholder {
 
 const classDefinitions: Map<string, ObjectConstructor> = new Map();
 
+type ArrayViewConstructor = new (buffer: ArrayBuffer) => ArrayBufferView;
+
+/**
+ * Registry of typed-array / DataView constructors, keyed by `constructor.name`.
+ * Used by both the serializer (to validate the view is supported) and the
+ * deserializer (to reconstruct the view), so both sides resolve types the same
+ * way instead of relying on `globalThis` lookups.
+ */
+const arrayViewConstructors: Map<string, ArrayViewConstructor> = new Map(
+  (
+    [
+      Int8Array,
+      Uint8Array,
+      Uint8ClampedArray,
+      Int16Array,
+      Uint16Array,
+      Int32Array,
+      Uint32Array,
+      Float32Array,
+      Float64Array,
+      DataView,
+    ] as unknown as ArrayViewConstructor[]
+  ).map((ctor) => [(ctor as unknown as { name: string }).name, ctor])
+);
+
 /**
  * Decorates a class to make serializable.
  * Any class with the `@serializable` decorator will be serialized and deserialized.
@@ -53,10 +78,20 @@ export function serialize(obj: unknown): string {
   }
 
   function replaceArrayView(input: ArrayBufferView): ArrayViewPlaceholder {
+    const typeName = input.constructor.name;
+    if (!arrayViewConstructors.has(typeName)) {
+      throw new Error(`Array view ${typeName} is not serializable.`);
+    }
     const uint8View = new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
+    // Build the binary string one chunk at a time. `String.fromCharCode.apply`
+    // over the whole buffer overflows the call stack for large arrays.
+    let binary = '';
+    for (let i = 0; i < uint8View.length; i += 0x8000) {
+      binary += String.fromCharCode(...uint8View.subarray(i, i + 0x8000));
+    }
     return {
-      $type: input.constructor.name,
-      $data: btoa(String.fromCharCode.apply(null, Array.from(uint8View))),
+      $type: typeName,
+      $data: btoa(binary),
     };
   }
 
@@ -137,19 +172,18 @@ export function deserialize(str: string): unknown {
   }
 
   function replaceArrayView(input: ArrayViewPlaceholder): ArrayBufferView {
-    const uint8View = new Uint8Array(input.$data.length);
-    for (let i = 0; i < input.$data.length; i++) {
-      uint8View[i] = input.$data.charCodeAt(i);
-    }
-
-    const arrayBuffer = uint8View.buffer;
-
-    const ctor = (globalThis as Record<string, unknown>)[input.$type];
-    if (typeof ctor !== 'function') {
+    const ctor = arrayViewConstructors.get(input.$type);
+    if (!ctor) {
       throw new Error(`${input.$type} constructor not found`);
     }
 
-    return new (ctor as new (buffer: ArrayBuffer) => ArrayBufferView)(arrayBuffer);
+    const binary = atob(input.$data);
+    const uint8View = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      uint8View[i] = binary.charCodeAt(i);
+    }
+
+    return new ctor(uint8View.buffer);
   }
 
   function replaceArray(input: unknown[]): unknown[] {
