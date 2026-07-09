@@ -64,11 +64,20 @@ export const zzfxV = 0.3;
  */
 export const zzfxR = 44100;
 
+let sharedAudioContext: AudioContext | undefined;
+
 /**
- * Create shared audio context.
+ * Returns the shared audio context, creating it on first use.
  * `ZZFX.audioContext`
+ *
+ * The context is created lazily rather than at module load so that importing
+ * the package does not throw in environments without `AudioContext` (Node, SSR,
+ * tests) and does not eagerly acquire audio before a user gesture.
  */
-export const zzfxX = new AudioContext();
+export function zzfxX(): AudioContext {
+  sharedAudioContext ??= new AudioContext();
+  return sharedAudioContext;
+}
 
 /**
  * Play a sound from zzfx paramerters.
@@ -86,10 +95,11 @@ export function zzfx(
  */
 export function zzfxP(sampleChannels: number[][], volumeScale=1, rate=1, pan=0, loop=false): AudioBufferSourceNode {
   // create buffer and source
+  const audioContext = zzfxX();
   const channelCount = sampleChannels.length;
   const sampleLength = sampleChannels[0].length;
-  const buffer = zzfxX.createBuffer(channelCount, sampleLength, zzfxR);
-  const source = zzfxX.createBufferSource();
+  const buffer = audioContext.createBuffer(channelCount, sampleLength, zzfxR);
+  const source = audioContext.createBufferSource();
 
   // copy samples to buffer and setup source
   sampleChannels.forEach((c,i)=> buffer.getChannelData(i).set(c));
@@ -98,12 +108,12 @@ export function zzfxP(sampleChannels: number[][], volumeScale=1, rate=1, pan=0, 
   source.loop = loop;
 
   // create and connect gain node
-  const gainNode = zzfxX.createGain();
+  const gainNode = audioContext.createGain();
   gainNode.gain.value = zzfxV*volumeScale;
-  gainNode.connect(zzfxX.destination);
+  gainNode.connect(audioContext.destination);
 
   // connect source to stereo panner and gain
-  const pannerNode = new StereoPannerNode(zzfxX, {'pan':pan});
+  const pannerNode = new StereoPannerNode(audioContext, {'pan':pan});
   source.connect(pannerNode).connect(gainNode);
   source.start();
 
