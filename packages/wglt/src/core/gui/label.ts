@@ -29,6 +29,34 @@ export const VerticalAlignment = {
 };
 
 /**
+ * Computes the aligned start coordinate for content placed within a span.
+ *
+ * Works for both axes because {@link HorizontalAlignment} and
+ * {@link VerticalAlignment} share the same numeric values: `0` (left/top),
+ * `1` (center), and `2` (right/bottom).
+ *
+ * @param start - The starting edge of the span (rect x or y).
+ * @param available - The size of the span (rect width or height).
+ * @param extent - The size of the content being placed.
+ * @param align - The alignment value (0, 1, or 2).
+ * @returns The aligned start coordinate.
+ */
+export function alignStart(
+  start: number,
+  available: number,
+  extent: number,
+  align: number
+): number {
+  if (align === HorizontalAlignment.CENTER) {
+    return start + Math.floor((available - extent) / 2);
+  }
+  if (align === HorizontalAlignment.RIGHT) {
+    return start + available - extent;
+  }
+  return start;
+}
+
+/**
  * A text display component with configurable alignment and colors.
  * Labels are non-interactive components used to display static or dynamic text.
  *

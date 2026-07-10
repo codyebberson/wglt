@@ -1,6 +1,6 @@
 import type { Font } from '../../core/font';
 import { GUI } from '../../core/gui/gui';
-import { Label } from '../../core/gui/label';
+import { alignStart, Label } from '../../core/gui/label';
 import type { Renderer } from '../../core/gui/renderer';
 import { GraphicsApp } from '../graphicsapp';
 
@@ -17,15 +17,19 @@ export class GraphicsLabelRenderer implements Renderer<GraphicsApp, Label> {
     }
 
     const app = gui.context;
+    const font = component.font ?? this.font ?? app.defaultFont;
+    const rect = component.screenRect;
 
-    // TODO: Implement halign and valign
-    app.drawString(
-      component.screenRect.x,
-      component.screenRect.y,
-      component.text,
-      component.fg,
-      undefined,
-      this.font
-    );
+    // Align within the label rect. Requires a font to measure the text; when
+    // none is available fall back to the top-left corner (drawString reports
+    // the missing font).
+    let x = rect.x;
+    let y = rect.y;
+    if (font) {
+      x = alignStart(rect.x, rect.width, font.getStringWidth(component.text), component.halign);
+      y = alignStart(rect.y, rect.height, font.lineHeight, component.valign);
+    }
+
+    app.drawString(x, y, component.text, component.fg, undefined, font);
   }
 }
