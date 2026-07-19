@@ -3,219 +3,146 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WGLT - WebGL Toolkit</title>
+    <title>WGLT - Migrating to v2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism-okaidia.min.css">
     <link href="/styles.css" rel="stylesheet">
   </head>
 
   <body>
     <main>
-      <h1 id="wglt-v2-from-terminal-to-toolkit">WGLT v2: From Terminal to Toolkit</h1>
+      <h1>Migrating to WGLT v2</h1>
       <p>
-        WGLT is evolving from a WebGL Terminal library focused on ASCII games into a more comprehensive WebGL Toolkit that supports both traditional ASCII roguelikes and modern tile-based games.
-        Version 2 maintains backwards compatibility while significantly expanding the library&#39;s capabilities.
+        WGLT v2 is a breaking release. It retains the text-mode renderer while reorganizing the library around a shared application core, a new graphics renderer, and a redesigned GUI. Existing
+        applications should expect source changes when upgrading from a pre-v2 release.
       </p>
-      <h2 id="core-architecture-changes">Core Architecture Changes</h2>
-      <h3 id="new-application-model">New Application Model</h3>
-      <ul>
-        <li>Introduced a new <code>BaseApp</code> abstract class that serves as the foundation</li>
-        <li>
-          Two concrete implementations:
-          <ul>
-            <li><code>Terminal</code> (extends <code>BaseApp</code>): For ASCII/text-mode games</li>
-            <li><code>GraphicsApp</code> (extends <code>BaseApp</code>): For tile-based/graphical games</li>
-          </ul>
-        </li>
-        <li>Users typically choose one based on their needs, with example demos clearly separated into &quot;Graphics&quot; and &quot;Text Mode&quot; categories</li>
-      </ul>
-      <h3 id="terminal-class-changes">Terminal Class Changes</h3>
-      <p>The <code>Terminal</code> class remains mostly backwards compatible with v1, with a few important architectural changes:</p>
-      <ol>
-        <li>
-          <p><strong>Composition Over Inheritance</strong></p>
-          <ul>
-            <li>Previously: <code>Terminal</code> extended <code>Console</code></li>
-            <li>
-              Now: <code>Terminal</code> contains a
-              <code>Console</code>
-              instance
-            </li>
-            <li>Common console operations (fillRect, drawChar, drawString) are delegated</li>
-            <li>
-              Some operations require direct
-              <code>terminal.console</code>
-              access
-            </li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>Input Handling</strong></p>
-          <ul>
-            <li>Removed delegate methods for mouse and keyboard</li>
-            <li>
-              Now use direct access:
-              <ul>
-                <li><code>terminal.keyboard.isKeyDown()</code></li>
-                <li><code>terminal.mouse.getX()</code></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>TileMap Separation</strong></p>
-          <ul>
-            <li>Moved TileMap functionality out of <code>Console</code> class</li>
-            <li>
-              New dedicated classes:
-              <ul>
-                <li><code>TileMap</code></li>
-                <li><code>TileMapLayer</code></li>
-                <li><code>TileMapCell</code></li>
-              </ul>
-            </li>
-            <li>Updated examples demonstrate TileMap to Console translation</li>
-          </ul>
-        </li>
-      </ol>
-      <h2 id="new-graphics-features">New Graphics Features</h2>
-      <h3 id="graphicsapp-core-features">GraphicsApp Core Features</h3>
-      <ol>
-        <li>
-          <p><strong>Sprite Management</strong></p>
-          <ul>
-            <li>Single image atlas convention (recommended sizes: 1024x1024, 2048x2048)</li>
-            <li>Support for 4096x4096 atlases (99.96% compatibility)</li>
-            <li>
-              Fast WebGL2 instanced rendering for
-              <code>drawImage</code>
-              operations
-            </li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>Font System</strong></p>
-          <ul>
-            <li>New <code>Font</code> class for character positioning and dimensions</li>
-            <li>
-              Helper utilities:
-              <ul>
-                <li><code>Font.createMonospaced()</code></li>
-                <li><code>Font.createProportional()</code></li>
-                <li>Built-in pixel art fonts (e.g., &quot;04B03&quot;)</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>Sprite System</strong></p>
-          <ul>
-            <li>
-              New <code>Sprite</code> class with:
-              <ul>
-                <li>Source rect management</li>
-                <li>Animation cycles</li>
-                <li>Animation delay control</li>
-              </ul>
-            </li>
-            <li>Color override support for effects (text coloring, sprite flashing)</li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>TileMap Rendering</strong></p>
-          <ul>
-            <li>Specialized <code>TileMapRenderer</code></li>
-            <li>Optimized shader for single-pass layer rendering</li>
-            <li>Highly efficient for large tilemaps</li>
-          </ul>
-        </li>
-      </ol>
-      <h2 id="revamped-gui-system">Revamped GUI System</h2>
-      <p>The GUI system has been completely redesigned for both text and graphics modes, offering more power and flexibility.</p>
-      <h3 id="key-features">Key Features</h3>
-      <ol>
-        <li>
-          <p><strong>Optional Integration</strong></p>
-          <ul>
-            <li>GUI features only activate when explicitly used</li>
-            <li>Requires <code>GUI</code> class instance</li>
-            <li>
-              Explicit <code>GUI.handleInput</code> and
-              <code>GUI.draw</code>
-              calls in render loop
-            </li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>Component Architecture</strong></p>
-          <ul>
-            <li>Base <code>Component</code> class</li>
-            <li><code>Container</code> class for parent-child relationships</li>
-            <li>Built-in drag-and-drop support</li>
-            <li>Optimized for common game patterns (action bars, inventory management)</li>
-          </ul>
-        </li>
-        <li>
-          <p><strong>Rendering System</strong></p>
-          <ul>
-            <li>Flexible <code>Renderer</code> interface</li>
-            <li>Register renderers for component classes</li>
-            <li>Optional built-in renderer implementations</li>
-            <li>Support for component-level <code>render()</code> methods</li>
-          </ul>
-        </li>
-      </ol>
-      <h2 id="migration-notes">Migration Notes</h2>
-      <ul>
-        <li>The GUI system changes are the most potentially disruptive</li>
-        <li>Most existing applications didn&#39;t heavily use the previous GUI features</li>
-        <li>Examples have been updated to demonstrate new patterns</li>
-        <li>The last pure-terminal version will be tagged for reference</li>
-      </ul>
-      <h2 id="development-environment-changes">Development Environment Changes</h2>
-      <h3 id="modern-javascript-build-support">Modern JavaScript Build Support</h3>
-      <ul>
-        <li>Removed pre-bundled/pre-minified JavaScript output</li>
-        <li>Distributing as individual .js and .d.ts files</li>
-        <li>Designed for modern bundlers (Webpack, Rollup, Vite)</li>
-        <li>Reflects current JavaScript/TypeScript development practices</li>
-      </ul>
-      <h3 id="new-serialization-framework">New Serialization Framework</h3>
-      <ul>
-        <li>Built-in support for complex object graphs</li>
-        <li>Handles inheritance, composition, and cyclical references</li>
-        <li>Supports class registration with <code>registerSerializable()</code></li>
-        <li>Ideal for roguelike game state management</li>
-        <li>Detailed documentation and examples available separately</li>
-      </ul>
-      <h2 id="migration-example">Migration Example</h2>
-      <p>Here&#39;s a simple &quot;Hello World&quot; comparison between v1 and v2:</p>
-      <pre><code class="lang-typescript"><span class="hljs-comment">// v1</span>
-<span class="hljs-keyword">const</span> terminal = <span class="hljs-keyword">new</span> Terminal(<span class="hljs-built_in">document</span>.<span class="hljs-built_in">querySelector</span>(<span class="hljs-string">'canvas'</span>), <span class="hljs-number">80</span>, <span class="hljs-number">25</span>);
-terminal.drawString(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'Hello World'</span>);
+      <p>
+        This guide focuses on the most common changes from <code>0.6.4</code>, the last stable version published before v2. It is not an exhaustive list of every changed or removed symbol. Compile
+        your application against v2 and use the current examples as the reference for APIs not covered here.
+      </p>
 
-<span class="hljs-comment">// v2</span>
-<span class="hljs-keyword">const</span> terminal = <span class="hljs-keyword">new</span> Terminal(<span class="hljs-string">'canvas'</span>, <span class="hljs-number">80</span>, <span class="hljs-number">25</span>);
-terminal.drawString(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-string">'Hello World'</span>);
-</code></pre>
-      <p>More detailed migration examples are available in the migration guide.</p>
-      <h2 id="design-decisions">Design Decisions</h2>
-      <h3 id="terminal-console-separation">Terminal/Console Separation</h3>
+      <h2>Creating an application</h2>
       <p>
-        The original design attempted to simplify usage by combining Terminal and Console functionality through inheritance. In practice, this created unclear boundaries and magical behavior. The v2
-        separation provides:
+        <code>Terminal.init()</code>
+        is the simplest way to create a text-mode application in v2. It creates and centers its own canvas. The constructor remains available when the application supplies a canvas or CSS selector.
       </p>
+      <pre><code class="language-typescript">import { Terminal } from 'wglt';
+
+// 0.6.4
+const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+const term = new Terminal(canvas, 80, 45);
+
+// v2: create and center a canvas automatically.
+const term = Terminal.init(80, 45);
+
+// v2: or use an existing canvas.
+const termWithCanvas = new Terminal('#game', 80, 45);</code></pre>
+      <p>Text-mode applications use <code>Terminal</code>. Sprite-based applications use<code>GraphicsApp</code>, which accepts dimensions in pixels and renders from an image atlas.</p>
+      <pre><code class="language-typescript">import { FONT_04B03, GraphicsApp } from 'wglt';
+
+const app = GraphicsApp.init(640, 360, {
+  imageUrl: './graphics.png',
+  defaultFont: FONT_04B03,
+});</code></pre>
+
+      <h2>Terminal options</h2>
+      <p>The v2 terminal options are:</p>
       <ul>
-        <li>Clearer responsibility boundaries</li>
-        <li>More explicit API surface</li>
-        <li>Better composability</li>
-        <li>Reduced coupling between rendering and state management</li>
+        <li><code>fontUrl</code>: URL of the bitmap font image</li>
+        <li><code>fontGlyphSize</code>: dimensions of one glyph in that image</li>
+        <li><code>movementKeys</code>: custom key-to-<code>Vec2</code> mappings</li>
       </ul>
-      <h2 id="future-direction">Future Direction</h2>
       <p>
-        WGLT v2 represents a significant evolution while maintaining the library&#39;s core identity. The expansion to support both ASCII and graphical games opens new possibilities while keeping the
-        library&#39;s focus on performance and flexibility.
+        The old <code>font</code>, <code>crt</code>, and <code>maxFps</code> options are not part of the v2 API. Replace
+        <code>Point</code>
+        with <code>Vec2</code> (or use the structural <code>PointLike</code> type where a class instance is unnecessary).
       </p>
+
+      <h2>Console drawing</h2>
+      <p>
+        In 0.6.4, <code>Terminal</code> extended <code>Console</code>. In v2 it owns a <code>Console</code> containing the text cells instead. Common operations such as <code>clear()</code>,
+        <code>fillRect()</code>, <code>drawChar()</code>,
+        <code>drawString()</code>, and <code>drawConsole()</code> are available directly on the terminal. More specialized cell and box operations are available through
+        <code>terminal.console</code>.
+      </p>
+      <pre><code class="language-typescript">term.drawString(2, 2, 'Hello');
+term.console.drawDoubleBox(0, 0, 20, 5);</code></pre>
+
+      <h2>Input handling</h2>
+      <p>
+        The old <code>terminal.keys</code> property is now <code>terminal.keyboard</code>. Keyboard helpers that were methods on <code>Terminal</code> also live there. The key constant object was
+        renamed from <code>Keys</code> to <code>Key</code>. Mouse coordinates and button state remain available through <code>terminal.mouse</code>.
+      </p>
+      <pre><code class="language-typescript">term.update = () => {
+  const movement = term.keyboard.getMovementKey();
+  if (movement) {
+    player.x += movement.x;
+    player.y += movement.y;
+  }
+
+  if (term.mouse.buttons.get(0).isClicked()) {
+    console.log(term.mouse.x, term.mouse.y);
+  }
+};</code></pre>
+
+      <h2>GUI changes</h2>
+      <p>
+        The GUI system was redesigned and should not be considered source-compatible with the pre-v2 GUI. Create a <code>GUI</code> for the application, install the matching theme, and explicitly
+        process input and draw it from the update callback.
+      </p>
+      <pre><code class="language-typescript">import { DefaultTerminalTheme, GUI } from 'wglt';
+
+const gui = new GUI(term);
+gui.setTheme(new DefaultTerminalTheme());
+
+term.update = () => {
+  gui.handleInput();
+  gui.draw();
+};</code></pre>
+      <p>
+        The 0.6.4 GUI was a stack of dialogs managed by a single dialog renderer. V2 replaces it with a component tree, renderer maps, themes, layout, tooltips, and drag-and-drop behavior. Port GUI
+        code using the current text-mode and graphics GUI examples rather than assuming old dialogs can be reused unchanged.
+      </p>
+
+      <h2>New graphics and tilemap APIs</h2>
+      <p>
+        V2 adds the sprite-based <code>GraphicsApp</code>, fonts, sprites, draw batching, and GUI renderers for graphical games. It also adds
+        <code>TileMap</code>, <code>TileMapLayer</code>, <code>TileMapCell</code>, and
+        <code>TileMapRenderer</code>. These APIs did not exist in the published 0.6.4 package.
+      </p>
+
+      <h2>Serialization</h2>
+      <p>
+        The <code>@serializable</code> decorator has been replaced by explicit registration. A static initialization block keeps registration next to the class declaration while using standard
+        ECMAScript syntax.
+      </p>
+      <pre><code class="language-typescript">import { registerSerializable } from 'wglt';
+
+class Actor {
+  static {
+    registerSerializable(Actor);
+  }
+}
+</code></pre>
+      <p><code>serialize()</code> and <code>deserialize()</code> still support object identity and circular references. V2 also supports typed arrays and <code>DataView</code> values.</p>
+
+      <h2>Packaging and runtime requirements</h2>
+      <ul>
+        <li>WGLT v2 is ESM-only; the CommonJS build from 0.6.4 is no longer published.</li>
+        <li>The package contains individual JavaScript modules and TypeScript declarations rather than pre-bundled output.</li>
+        <li>The package is intended for modern tooling such as Vite, Rollup, or Webpack.</li>
+        <li>Library consumers need a WebGL2-capable browser.</li>
+      </ul>
+
+      <h2>Recommended upgrade process</h2>
+      <ol>
+        <li>Upgrade <code>wglt</code> and run the TypeScript compiler.</li>
+        <li>Replace <code>Point</code>, old input delegates, and changed terminal options.</li>
+        <li>Port GUI code against the current examples.</li>
+        <li>Replace decorator-based serialization registration.</li>
+        <li>Build and exercise the application in a WebGL2-capable browser.</li>
+      </ol>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/components/prism-typescript.min.js"></script>
   </body>
 </html>
