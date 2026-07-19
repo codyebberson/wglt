@@ -18,7 +18,6 @@ export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   tooltipPadding?: Insets;
   tooltip?: Panel;
   tooltipElement?: Component;
-  onDragStart?: (component: Component) => void;
   dragElement?: Component;
   dragOffset?: Vec2;
 

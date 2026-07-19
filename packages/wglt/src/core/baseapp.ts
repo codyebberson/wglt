@@ -2,7 +2,6 @@ import { Font } from './font';
 import { Keyboard } from './keyboard';
 import type { Key } from './keys';
 import { Mouse } from './mouse';
-import { Rect } from './rect';
 import { Vec2 } from './vec2';
 
 /**
@@ -25,15 +24,6 @@ export abstract class AppState<TApp extends BaseApp = BaseApp> {
    * Updates the state logic. Called once per frame.
    */
   abstract update(): void;
-}
-
-/**
- * Configuration interface for creating a BaseApp instance.
- */
-export interface BaseAppConfig {
-  readonly canvas: HTMLCanvasElement;
-  readonly sizeInPixels: Rect;
-  readonly font: Font;
 }
 
 /**

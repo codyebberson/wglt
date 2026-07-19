@@ -47,24 +47,24 @@ export class Terminal extends BaseApp {
   readonly console: Console;
   readonly pixelWidth: number;
   readonly pixelHeight: number;
-  readonly program: WebGLProgram;
-  readonly positionAttribLocation: number;
-  readonly textureAttribLocation: number;
-  readonly fgColorAttribLocation: number;
-  readonly bgColorAttribLocation: number;
-  readonly positionsArray: Float32Array;
-  readonly indexArray: Uint16Array;
-  readonly textureArray: Float32Array;
-  readonly foregroundUint8Array: Uint8Array;
-  readonly foregroundDataView: DataView;
-  readonly backgroundUint8Array: Uint8Array;
-  readonly backgroundDataView: DataView;
-  readonly positionBuffer: WebGLBuffer;
-  readonly indexBuffer: WebGLBuffer;
-  readonly textureBuffer: WebGLBuffer;
-  readonly foregroundBuffer: WebGLBuffer;
-  readonly backgroundBuffer: WebGLBuffer;
-  readonly texture: WebGLTexture;
+  private readonly program: WebGLProgram;
+  private readonly positionAttribLocation: number;
+  private readonly textureAttribLocation: number;
+  private readonly fgColorAttribLocation: number;
+  private readonly bgColorAttribLocation: number;
+  private readonly positionsArray: Float32Array;
+  private readonly indexArray: Uint16Array;
+  private readonly textureArray: Float32Array;
+  private readonly foregroundUint8Array: Uint8Array;
+  private readonly foregroundDataView: DataView;
+  private readonly backgroundUint8Array: Uint8Array;
+  private readonly backgroundDataView: DataView;
+  private readonly positionBuffer: WebGLBuffer;
+  private readonly indexBuffer: WebGLBuffer;
+  private readonly textureBuffer: WebGLBuffer;
+  private readonly foregroundBuffer: WebGLBuffer;
+  private readonly backgroundBuffer: WebGLBuffer;
+  private readonly texture: WebGLTexture;
   private lastRenderTime: number;
   private renderDelta: number;
   fps: number;
@@ -371,7 +371,7 @@ export class Terminal extends BaseApp {
    * @param h - The height of the rectangle in characters.
    * @param color - The background color to fill with.
    */
-  fillRect(x: number, y: number, w: number, h: number, color: number): void {
+  fillRect(x: number, y: number, w: number, h: number, color: Color): void {
     this.console.fillRect(x, y, w, h, 0, undefined, color);
   }
 
@@ -430,13 +430,7 @@ export class Terminal extends BaseApp {
    * @param color - Optional foreground color.
    * @param bg - Optional background color.
    */
-  drawString(
-    x: number,
-    y: number,
-    str: string,
-    color?: number | undefined,
-    bg?: number | undefined
-  ): void {
+  drawString(x: number, y: number, str: string, color?: Color, bg?: Color): void {
     this.console.drawString(x, y, str, color, bg);
   }
 
@@ -447,7 +441,7 @@ export class Terminal extends BaseApp {
    * @param str - The text string to draw.
    * @param color - Optional foreground color.
    */
-  drawCenteredString(x: number, y: number, str: string, color?: number | undefined): void {
+  drawCenteredString(x: number, y: number, str: string, color?: Color): void {
     this.console.drawCenteredString(x, y, str, color);
   }
 
@@ -458,7 +452,7 @@ export class Terminal extends BaseApp {
    * @param str - The text string to draw.
    * @param color - Optional foreground color.
    */
-  drawRightString(x: number, y: number, str: string, color?: number | undefined): void {
+  drawRightString(x: number, y: number, str: string, color?: Color): void {
     const lines = str.split('\n');
     for (let i = 0; i < lines.length; i++) {
       this.console.drawStringLine(x - lines[i].length, y + i, lines[i], color);

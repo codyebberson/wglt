@@ -190,12 +190,20 @@ export class TileMap {
     }
   }
 
+  /**
+   * Computes field of view from an origin point.
+   * @param originX - X-coordinate of the viewer.
+   * @param originY - Y-coordinate of the viewer.
+   * @param radius - Maximum viewing distance in tiles.
+   * @param noClear - Whether to preserve visibility from the previous calculation.
+   * @param octants - Optional bitmask selecting which octants to compute.
+   */
   computeFov(
     originX: number,
     originY: number,
     radius: number,
-    opt_noClear?: boolean,
-    opt_octants?: number
+    noClear?: boolean,
+    octants?: number
   ): void {
     this.originX = originX;
     this.originY = originY;
@@ -206,7 +214,7 @@ export class TileMap {
     let maxX = originX;
     let maxY = originY;
 
-    if (opt_noClear) {
+    if (noClear) {
       minX = Math.min(this.visibleRect.x1, Math.max(0, originX - radius));
       minY = Math.min(this.visibleRect.y1, Math.max(0, originY - radius));
       maxX = Math.max(this.visibleRect.x2, Math.min(this.width - 1, originX + radius));
@@ -230,7 +238,7 @@ export class TileMap {
 
     this.grid[originY][originX].visible = true;
 
-    if (opt_octants === undefined) {
+    if (octants === undefined) {
       this.computeOctantY(1, 1);
       this.computeOctantX(1, 1);
       this.computeOctantX(1, -1);
@@ -249,35 +257,35 @@ export class TileMap {
       //  6  / | \  1
       //    /  |  \
       //   / 7 | 0 \
-      if (opt_octants & 0x001) {
+      if (octants & 0x001) {
         this.computeOctantY(1, 1);
       }
 
-      if (opt_octants & 0x002) {
+      if (octants & 0x002) {
         this.computeOctantX(1, 1);
       }
 
-      if (opt_octants & 0x004) {
+      if (octants & 0x004) {
         this.computeOctantX(1, -1);
       }
 
-      if (opt_octants & 0x008) {
+      if (octants & 0x008) {
         this.computeOctantY(1, -1);
       }
 
-      if (opt_octants & 0x010) {
+      if (octants & 0x010) {
         this.computeOctantY(-1, -1);
       }
 
-      if (opt_octants & 0x020) {
+      if (octants & 0x020) {
         this.computeOctantX(-1, -1);
       }
 
-      if (opt_octants & 0x040) {
+      if (octants & 0x040) {
         this.computeOctantX(-1, 1);
       }
 
-      if (opt_octants & 0x080) {
+      if (octants & 0x080) {
         this.computeOctantY(-1, 1);
       }
     }

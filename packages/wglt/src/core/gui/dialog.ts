@@ -4,15 +4,10 @@ import { Panel } from './panel';
 
 export class Dialog extends Panel {
   title?: string;
-  modal: boolean;
-  closeButton: boolean;
 
   constructor(rect: Rect, title?: string, ...children: Component[]) {
     super(rect);
     this.title = title;
-    this.modal = true;
-    this.closeButton = false;
-
     if (children) {
       for (const child of children) {
         this.addChild(child);

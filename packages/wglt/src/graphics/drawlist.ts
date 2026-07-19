@@ -145,8 +145,8 @@ export class DrawList {
    * @param w The width of the sprite.
    * @param h The height of the sprite.
    * @param color Optional color.
-   * @param dw Optional destination width.
-   * @param dh Optional destination height.
+   * @param destinationWidth Optional destination width.
+   * @param destinationHeight Optional destination height.
    */
   drawImage(
     x: number,
@@ -155,9 +155,9 @@ export class DrawList {
     v: number,
     w: number,
     h: number,
-    optColor?: Color,
-    optDw?: number,
-    optDh?: number
+    color?: Color,
+    destinationWidth?: number,
+    destinationHeight?: number
   ): void {
     const spriteTexture = this.spriteTexture;
     if (!spriteTexture.loaded) {
@@ -173,8 +173,8 @@ export class DrawList {
     // Destination rectangle
     this.instanceDataF32[baseIdx + 0] = x | 0;
     this.instanceDataF32[baseIdx + 1] = y | 0;
-    this.instanceDataF32[baseIdx + 2] = optDw ?? w;
-    this.instanceDataF32[baseIdx + 3] = optDh ?? h;
+    this.instanceDataF32[baseIdx + 2] = destinationWidth ?? w;
+    this.instanceDataF32[baseIdx + 3] = destinationHeight ?? h;
 
     // Source rectangle (normalized texture coordinates)
     this.instanceDataF32[baseIdx + 4] = u / this.spriteTexture.width;
@@ -183,7 +183,7 @@ export class DrawList {
     this.instanceDataF32[baseIdx + 7] = h / this.spriteTexture.height;
 
     // Color
-    this.instanceDataU32[baseIdx + 8] = optColor ?? 0;
+    this.instanceDataU32[baseIdx + 8] = color ?? 0;
 
     this.instanceCount++;
   }
