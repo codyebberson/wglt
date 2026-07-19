@@ -73,12 +73,14 @@ const DEFAULT_MOVEMENT_KEYS: Partial<Record<Key, Vec2>> = {
 export class Keyboard {
   /** Internal key state management. */
   readonly keys = new InputSet<Key>();
+  private readonly movementKeys: Partial<Record<Key, Vec2>>;
 
   /**
    * Creates a new keyboard input handler.
    * @param el - DOM element to attach event listeners to (usually the canvas).
    */
-  constructor(el: HTMLElement) {
+  constructor(el: HTMLElement, movementKeys?: Partial<Record<Key, Vec2>>) {
+    this.movementKeys = movementKeys ?? DEFAULT_MOVEMENT_KEYS;
     el.addEventListener('keydown', (e) => this.setKey(e, true));
     el.addEventListener('keyup', (e) => this.setKey(e, false));
   }
@@ -256,10 +258,9 @@ export class Keyboard {
    * See: http://www.roguebasin.com/index.php?title=Preferred_Key_Controls
    */
   getMovementKey(): Vec2 | undefined {
-    const movementKeys: Partial<Record<Key, Vec2>> = DEFAULT_MOVEMENT_KEYS;
-    for (const [key, delta] of Object.entries(movementKeys) as [Key, Vec2][]) {
+    for (const [key, delta] of Object.entries(this.movementKeys) as [Key, Vec2][]) {
       if (this.isKeyPressed(key)) {
-        return delta;
+        return delta.clone();
       }
     }
     return undefined;

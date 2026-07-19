@@ -1,4 +1,4 @@
-import { type Color, serializable } from 'wglt';
+import { type Color, registerSerializable } from 'wglt';
 import type { Action } from './actions';
 import { Item } from './item';
 
@@ -7,8 +7,11 @@ export const EquipmentType = {
   ARMOR: 2,
 };
 
-@serializable
 export class Equipment extends Item {
+  static {
+    registerSerializable(Equipment);
+  }
+
   readonly equipmentType: number;
   readonly powerBonus: number;
   readonly defenseBonus: number;

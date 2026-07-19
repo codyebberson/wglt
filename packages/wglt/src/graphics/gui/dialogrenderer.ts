@@ -13,7 +13,7 @@ export class GraphicsDialogRenderer implements Renderer<GraphicsApp, Dialog> {
 
   render(gui: GUI<GraphicsApp>, component: Dialog): void {
     const app = gui.context;
-    app.drawAutoRect(this.sourceRect, component.rect);
+    app.drawAutoRect(this.sourceRect, component.screenRect);
     gui.drawChildren(component);
   }
 }

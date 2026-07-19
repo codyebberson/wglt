@@ -1,4 +1,4 @@
-import { serializable } from './serialize';
+import { registerSerializable } from './serialize';
 
 /**
  * Interface for objects that have x and y coordinates.
@@ -12,8 +12,11 @@ export interface PointLike {
  * Represents a 2D point with x and y coordinates.
  * Used throughout WGLT for positions, offsets, and movement vectors.
  */
-@serializable
 export class Vec2 implements PointLike {
+  static {
+    registerSerializable(Vec2);
+  }
+
   x: number;
   y: number;
 

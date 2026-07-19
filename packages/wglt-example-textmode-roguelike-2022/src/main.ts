@@ -19,9 +19,7 @@ import { levelUpSound, menuBlipSound } from './sounds';
 const SCREEN_WIDTH = 80;
 const SCREEN_HEIGHT = 45;
 
-const maxFps = 30;
-
-const term = Terminal.init(SCREEN_WIDTH, SCREEN_HEIGHT, { maxFps });
+const term = Terminal.init(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 const gui = new GUI(term);
 gui.setTheme(new DefaultTerminalTheme());

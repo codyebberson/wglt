@@ -1,6 +1,6 @@
 import type { Color } from '../core/color';
 import { Rect } from '../core/rect';
-import { serializable } from '../core/serialize';
+import { registerSerializable } from '../core/serialize';
 import type { BlendMode } from './blendmode';
 import { Cell } from './cell';
 import { Chars } from './chars';
@@ -18,8 +18,11 @@ import { Chars } from './chars';
  * console.fillRect(0, 20, 80, 5, ' ', Color.WHITE, Color.BLUE);
  * ```
  */
-@serializable
 export class Console {
+  static {
+    registerSerializable(Console);
+  }
+
   readonly width: number;
   readonly height: number;
 
@@ -117,7 +120,10 @@ export class Console {
   }
 
   drawCenteredString(x: number, y: number, str: string, fg?: Color, bg?: Color): void {
-    this.drawString(x - Math.floor(str.length / 2), y, str, fg, bg);
+    const lines = str.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      this.drawStringLine(x - Math.floor(lines[i].length / 2), y + i, lines[i], fg, bg);
+    }
   }
 
   drawHLine(x: number, y: number, width: number, c: string | number, fg?: Color, bg?: Color): void {

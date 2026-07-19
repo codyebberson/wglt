@@ -1,4 +1,4 @@
-import { serializable } from './serialize';
+import { registerSerializable } from './serialize';
 
 /**
  * Interface for objects that have x and y coordinates.
@@ -14,8 +14,11 @@ export interface InsetsLike {
  * Represents a 2D point with x and y coordinates.
  * Used throughout WGLT for positions, offsets, and movement vectors.
  */
-@serializable
 export class Insets implements InsetsLike {
+  static {
+    registerSerializable(Insets);
+  }
+
   top: number;
   right: number;
   bottom: number;

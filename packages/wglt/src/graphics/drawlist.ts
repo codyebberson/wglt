@@ -164,6 +164,10 @@ export class DrawList {
       return;
     }
 
+    if (this.instanceCount >= BUFFER_SIZE) {
+      throw new RangeError(`DrawList capacity exceeded (${BUFFER_SIZE} sprites)`);
+    }
+
     const baseIdx = this.instanceCount * ELEMENTS_PER_INSTANCE;
 
     // Destination rectangle

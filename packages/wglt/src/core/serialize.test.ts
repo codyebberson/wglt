@@ -1,13 +1,10 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { deserialize, serializable, serialize } from './serialize.ts';
+import { deserialize, registerSerializable, serialize } from './serialize.ts';
 
-// NOTE: `node --experimental-strip-types` strips type syntax only; it cannot
-// transform TS decorators. So this suite registers classes by calling
-// `serializable(Class)` directly (exactly what the `@serializable` decorator
-// does) rather than using decorator syntax, and it cannot import decorated
-// modules such as `rng.ts`. The RNG round-trip below is modelled with a mirror
-// class that reproduces RNG's serialized shape (a Uint32Array state vector).
+// This suite registers local fixture classes directly. The RNG round-trip below
+// uses a mirror class that reproduces RNG's serialized shape (a Uint32Array
+// state vector) so the test remains focused on serialization behavior.
 
 function roundTrip<T>(value: T): T {
   return deserialize(serialize(value)) as T;
@@ -93,7 +90,7 @@ test('preserves a Uint32Array state vector inside a serializable class (B5 regre
       return (y ^ (y >>> 11)) >>> 0;
     }
   }
-  serializable(Generator);
+  registerSerializable(Generator);
 
   const gen = new Generator();
   gen.seed(12345);
@@ -114,7 +111,7 @@ test('deduplicates shared instances via references', () => {
   class Node {
     value = 0;
   }
-  serializable(Node);
+  registerSerializable(Node);
 
   const shared = new Node();
   shared.value = 7;
@@ -131,7 +128,7 @@ test('handles circular references between instances', () => {
     next?: Ring;
     name = '';
   }
-  serializable(Ring);
+  registerSerializable(Ring);
 
   const a = new Ring();
   a.name = 'a';
@@ -154,7 +151,7 @@ test('reattaches the prototype so instance methods survive', () => {
       return this.x + this.y;
     }
   }
-  serializable(Point);
+  registerSerializable(Point);
 
   const p = new Point();
   p.x = 3;

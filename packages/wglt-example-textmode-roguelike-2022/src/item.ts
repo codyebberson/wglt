@@ -1,4 +1,4 @@
-import { type Color, serializable, zzfx } from 'wglt';
+import { type Color, registerSerializable, zzfx } from 'wglt';
 import { Action, ItemAction } from './actions';
 import { Actor } from './actor';
 import { BaseAI, ConfusedEnemy } from './ai';
@@ -20,8 +20,11 @@ export abstract class Item extends Entity {
   abstract activate(action: Action): void;
 }
 
-@serializable
 export class HealingItem extends Item {
+  static {
+    registerSerializable(HealingItem);
+  }
+
   readonly amount: number;
   constructor(char: string, color: Color, name: string, amount: number) {
     super(char, color, name);
@@ -43,8 +46,11 @@ export class HealingItem extends Item {
   }
 }
 
-@serializable
 export class LightningDamageItem extends Item {
+  static {
+    registerSerializable(LightningDamageItem);
+  }
+
   readonly damage: number;
   readonly maxRange: number;
   constructor(char: string, color: Color, name: string, damage: number, maxRange: number) {
@@ -80,8 +86,11 @@ export class LightningDamageItem extends Item {
   }
 }
 
-@serializable
 export class ConfusionItem extends Item {
+  static {
+    registerSerializable(ConfusionItem);
+  }
+
   readonly numberOfTurns: number;
   constructor(char: string, color: Color, name: string, numberOfTurns: number) {
     super(char, color, name);
@@ -120,8 +129,11 @@ export class ConfusionItem extends Item {
   }
 }
 
-@serializable
 export class FireballDamageItem extends Item {
+  static {
+    registerSerializable(FireballDamageItem);
+  }
+
   readonly damage: number;
   readonly radius: number;
   constructor(char: string, color: Color, name: string, damage: number, radius: number) {

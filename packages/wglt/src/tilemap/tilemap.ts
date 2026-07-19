@@ -1,5 +1,5 @@
 import { Rect } from '../core/rect';
-import { serializable } from '../core/serialize';
+import { registerSerializable } from '../core/serialize';
 import type { Vec2 } from '../core/vec2';
 import { TileMapCell } from './tilemapcell';
 import { TileMapLayer } from './tilemaplayer';
@@ -26,8 +26,11 @@ import { TileMapLayer } from './tilemaplayer';
  * tileMap.computeFov(playerX, playerY, 10);
  * ```
  */
-@serializable
 export class TileMap {
+  static {
+    registerSerializable(TileMap);
+  }
+
   /** Width of the tilemap in tiles. */
   readonly width: number;
   /** Height of the tilemap in tiles. */

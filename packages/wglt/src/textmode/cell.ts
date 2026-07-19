@@ -1,6 +1,6 @@
 import { type Color, fromRgb } from '../core/color';
 import { SimplePalette } from '../core/palettes/simple';
-import { serializable } from '../core/serialize';
+import { registerSerializable } from '../core/serialize';
 import type { BlendMode } from './blendmode';
 
 function convertCharCode(charCode: string | number): number {
@@ -10,8 +10,11 @@ function convertCharCode(charCode: string | number): number {
   return charCode as number;
 }
 
-@serializable
 export class Cell {
+  static {
+    registerSerializable(Cell);
+  }
+
   readonly x: number;
   readonly y: number;
   charCode: number;

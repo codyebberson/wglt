@@ -1,4 +1,4 @@
-import { capitalize, type PointLike, serializable, zzfx } from 'wglt';
+import { capitalize, type PointLike, registerSerializable, zzfx } from 'wglt';
 import type { Actor } from './actor';
 import { BaseComponent } from './base';
 import { Colors } from './color';
@@ -29,8 +29,11 @@ export abstract class ActionWithDirection extends Action {
   }
 }
 
-@serializable
 export class MeleeAction extends ActionWithDirection {
+  static {
+    registerSerializable(MeleeAction);
+  }
+
   perform(): void {
     const destX = this.actor.x + this.dx;
     const destY = this.actor.y + this.dy;
@@ -54,8 +57,11 @@ export class MeleeAction extends ActionWithDirection {
   }
 }
 
-@serializable
 export class MovementAction extends ActionWithDirection {
+  static {
+    registerSerializable(MovementAction);
+  }
+
   perform(): void {
     const destX = this.actor.x + this.dx;
     const destY = this.actor.y + this.dy;
@@ -77,8 +83,11 @@ export class MovementAction extends ActionWithDirection {
   }
 }
 
-@serializable
 export class BumpAction extends ActionWithDirection {
+  static {
+    registerSerializable(BumpAction);
+  }
+
   perform(): void {
     if (this.dx === 0 && this.dy === 0) {
       // Wait action
@@ -97,8 +106,11 @@ export class BumpAction extends ActionWithDirection {
   }
 }
 
-@serializable
 export class PickupAction extends Action {
+  static {
+    registerSerializable(PickupAction);
+  }
+
   perform(): void {
     const item = this.gameMap.getItem(this.actor.x, this.actor.y);
     if (!item) {
@@ -112,8 +124,11 @@ export class PickupAction extends Action {
   }
 }
 
-@serializable
 export class ItemAction extends Action {
+  static {
+    registerSerializable(ItemAction);
+  }
+
   readonly item: Item;
   constructor(actor: Actor, item: Item) {
     super(actor);
@@ -125,8 +140,11 @@ export class ItemAction extends Action {
   }
 }
 
-@serializable
 export class TakeStairsAction extends Action {
+  static {
+    registerSerializable(TakeStairsAction);
+  }
+
   perform(): void {
     const stairs = this.gameMap.stairsLocation;
     if (!stairs || stairs.x !== this.actor.x || stairs.y !== this.actor.y) {

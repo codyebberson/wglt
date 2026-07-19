@@ -1,8 +1,11 @@
-import { serializable } from '../core/serialize';
+import { registerSerializable } from '../core/serialize';
 import { getTileId } from './utils';
 
-@serializable
 export class TileMapLayer {
+  static {
+    registerSerializable(TileMapLayer);
+  }
+
   readonly width: number;
   readonly height: number;
   readonly tilesPerRow: number;

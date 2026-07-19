@@ -180,22 +180,20 @@ export class GraphicsApp extends BaseApp {
       }
       for (let j = 0; j < lines[i].length; j++) {
         const charCode = lines[i].charCodeAt(j);
-        if (Font.isInRange(charCode)) {
-          const srcRect = font.getGlyphRect(charCode);
-          const dstWidth = srcRect.width * scale;
-          this.drawImage(
-            xi,
-            yi,
-            srcRect.x,
-            srcRect.y,
-            srcRect.width,
-            srcRect.height,
-            color,
-            dstWidth,
-            lineHeight
-          );
-          xi += dstWidth;
-        }
+        const srcRect = font.getGlyphRect(charCode);
+        const dstWidth = srcRect.width * scale;
+        this.drawImage(
+          xi,
+          yi,
+          srcRect.x,
+          srcRect.y,
+          srcRect.width,
+          srcRect.height,
+          color,
+          dstWidth,
+          lineHeight
+        );
+        xi += dstWidth;
       }
     }
     if (out) {
@@ -226,8 +224,11 @@ export class GraphicsApp extends BaseApp {
     if (!font) {
       throw new Error('No font specified for drawCenteredString');
     }
-    const x2 = (x - (font.getStringWidth(str) * scale) / 2) | 0;
-    this.drawString(x2, y, str, color, scale, font);
+    const lines = str.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const x2 = (x - (font.getStringWidth(lines[i]) * scale) / 2) | 0;
+      this.drawString(x2, y + i * font.lineHeight * scale, lines[i], color, scale, font);
+    }
   }
 
   /**
@@ -252,8 +253,11 @@ export class GraphicsApp extends BaseApp {
     if (!font) {
       throw new Error('No font specified for drawRightString');
     }
-    const x2 = x - font.getStringWidth(str) * scale;
-    this.drawString(x2, y, str, color, scale, font);
+    const lines = str.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const x2 = x - font.getStringWidth(lines[i]) * scale;
+      this.drawString(x2, y + i * font.lineHeight * scale, lines[i], color, scale, font);
+    }
   }
 
   drawAutoRect(sourceRect: Rect, destRect: Rect): void {

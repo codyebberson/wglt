@@ -3,7 +3,7 @@ import {
   computePath,
   type PointLike,
   Rect,
-  serializable,
+  registerSerializable,
   TileMap,
   TileMapCell,
   Vec2,
@@ -15,8 +15,11 @@ import type { Engine } from './engine';
 import type { Entity } from './entity';
 import { Item } from './item';
 
-@serializable
 export class GameMap extends BaseComponent {
+  static {
+    registerSerializable(GameMap);
+  }
+
   width: number;
   height: number;
   entities: Entity[];

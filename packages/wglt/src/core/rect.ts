@@ -1,12 +1,15 @@
-import { serializable } from './serialize';
+import { registerSerializable } from './serialize';
 import { type PointLike, Vec2 } from './vec2';
 
 /**
  * Represents a rectangle with x, y position and width, height dimensions.
  * Used throughout WGLT for screen regions, collision detection, and UI layout.
  */
-@serializable
 export class Rect {
+  static {
+    registerSerializable(Rect);
+  }
+
   x: number;
   y: number;
   width: number;

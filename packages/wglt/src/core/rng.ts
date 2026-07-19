@@ -1,4 +1,4 @@
-import { serializable } from './serialize';
+import { registerSerializable } from './serialize';
 
 /*
  * Random number generator.
@@ -18,8 +18,11 @@ const MATRIX_A = 0x9908b0df; /* constant vector a */
 const UPPER_MASK = 0x80000000; /* most significant w-r bits */
 const LOWER_MASK = 0x7fffffff; /* least significant r bits */
 
-@serializable
 export class RNG {
+  static {
+    registerSerializable(RNG);
+  }
+
   private readonly mt: Uint32Array;
   private mti: number;
 

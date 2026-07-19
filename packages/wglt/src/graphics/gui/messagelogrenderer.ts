@@ -21,8 +21,8 @@ export class GraphicsMessageLogRenderer implements Renderer<GraphicsApp, Message
       throw new Error('No font available for rendering MessageLog');
     }
 
-    const x = component.rect.x;
-    let y = component.rect.y;
+    const x = component.screenRect.x;
+    let y = component.screenRect.y;
     for (let i = 0; i < component.messages.length; i++) {
       const msg = component.messages[i];
       app.drawString(x, y, msg.text ?? '', msg.fg, undefined, font);

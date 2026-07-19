@@ -1,4 +1,4 @@
-import { Key, serializable, Terminal } from 'wglt';
+import { Key, registerSerializable, Terminal } from 'wglt';
 import { Action, BumpAction, PickupAction, TakeStairsAction } from './actions';
 import { BaseComponent } from './base';
 import { Colors } from './color';
@@ -12,8 +12,11 @@ export abstract class EventHandler extends BaseComponent {
   }
 }
 
-@serializable
 export class MainGameEventHandler extends EventHandler {
+  static {
+    registerSerializable(MainGameEventHandler);
+  }
+
   handleEvents(term: Terminal): void {
     const { player, path } = this.engine;
     const moveKey = term.keyboard.getMovementKey();
@@ -99,15 +102,21 @@ export abstract class TargetingHandler extends EventHandler {
   abstract onSelect(x: number, y: number): void;
 }
 
-@serializable
 export class LookHandler extends TargetingHandler {
+  static {
+    registerSerializable(LookHandler);
+  }
+
   onSelect(): void {
     this.engine.eventHandler = new MainGameEventHandler(this.engine);
   }
 }
 
-@serializable
 export class SingleRangedAttackHandler extends TargetingHandler {
+  static {
+    registerSerializable(SingleRangedAttackHandler);
+  }
+
   readonly action: Action;
   constructor(action: Action) {
     super(action);
@@ -121,8 +130,11 @@ export class SingleRangedAttackHandler extends TargetingHandler {
   }
 }
 
-@serializable
 export class AreaRangedAttackHandler extends TargetingHandler {
+  static {
+    registerSerializable(AreaRangedAttackHandler);
+  }
+
   readonly radius: number;
   readonly action: Action;
   constructor(radius: number, action: Action) {

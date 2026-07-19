@@ -11,7 +11,7 @@
     "dev": "npm run dev --workspace=wglt-docs",
     "fix": "npx @biomejs/biome check --unsafe --write .",
     "lint": "npx @biomejs/biome check .",
-    "preview": "npm run preview --workspace=wlgt-docs",
+    "preview": "npm run preview --workspace=wglt-docs",
     "test": "turbo run test"
   },
   "devDependencies": {

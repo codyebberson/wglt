@@ -1,4 +1,4 @@
-import { type Color, capitalize, serializable } from 'wglt';
+import { type Color, capitalize, registerSerializable } from 'wglt';
 import type { BaseAI } from './ai';
 import { Colors } from './color';
 import { Entity, RenderOrder } from './entity';
@@ -6,8 +6,11 @@ import { Equipment, EquipmentType } from './equipment';
 import type { Item } from './item';
 import { openLevelUpMenu } from './main';
 
-@serializable
 export class Actor extends Entity {
+  static {
+    registerSerializable(Actor);
+  }
+
   maxHp: number;
   private hp_: number;
   baseDefense: number;

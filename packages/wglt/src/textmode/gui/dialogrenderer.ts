@@ -9,26 +9,26 @@ export class TerminalDialogRenderer implements Renderer<Terminal, Dialog> {
     const app = gui.context;
 
     app.console.fillRect(
-      component.rect.x,
-      component.rect.y,
-      component.rect.width,
-      component.rect.height,
+      component.screenRect.x,
+      component.screenRect.y,
+      component.screenRect.width,
+      component.screenRect.height,
       0,
       SimplePalette.WHITE,
       SimplePalette.BLACK
     );
 
     app.console.drawDoubleBox(
-      component.rect.x,
-      component.rect.y,
-      component.rect.width,
-      component.rect.height
+      component.screenRect.x,
+      component.screenRect.y,
+      component.screenRect.width,
+      component.screenRect.height
     );
 
     if (component.title) {
       app.console.drawString(
-        component.rect.x + 2,
-        component.rect.y,
+        component.screenRect.x + 2,
+        component.screenRect.y,
         ` ${component.title} `,
         SimplePalette.YELLOW
       );

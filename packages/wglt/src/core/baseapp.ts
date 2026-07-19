@@ -1,5 +1,6 @@
 import { Font } from './font';
 import { Keyboard } from './keyboard';
+import type { Key } from './keys';
 import { Mouse } from './mouse';
 import { Rect } from './rect';
 import { Vec2 } from './vec2';
@@ -66,7 +67,13 @@ export abstract class BaseApp {
    * @param pixelHeight - The height of the canvas in pixels.
    * @param mouse - The mouse input handler.
    */
-  constructor(canvas: HTMLCanvasElement, pixelWidth: number, pixelHeight: number, mouse: Mouse) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    pixelWidth: number,
+    pixelHeight: number,
+    mouse: Mouse,
+    movementKeys?: Partial<Record<Key, Vec2>>
+  ) {
     this.canvas = canvas;
     this.pixelWidth = pixelWidth;
     this.pixelHeight = pixelHeight;
@@ -78,7 +85,7 @@ export abstract class BaseApp {
       antialias: false,
     }) as WebGL2RenderingContext;
 
-    this.keyboard = new Keyboard(canvas);
+    this.keyboard = new Keyboard(canvas, movementKeys);
 
     this.gl.disable(this.gl.DEPTH_TEST);
     this.gl.enable(this.gl.BLEND);

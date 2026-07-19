@@ -87,7 +87,8 @@ export class Font {
    * @returns The Rect object representing the glyph rectangle.
    */
   getGlyphRect(charCode: number): Rect {
-    return this.glyphRects[charCode - START_CHAR_CODE];
+    const glyphIndex = Font.isInRange(charCode) ? charCode - START_CHAR_CODE : 0;
+    return this.glyphRects[glyphIndex];
   }
 
   /**
@@ -97,7 +98,8 @@ export class Font {
   getStringWidth(str: string): number {
     let sum = 0;
     for (let i = 0; i < str.length; i++) {
-      sum += this.getGlyphRect(str.charCodeAt(i)).width;
+      const charCode = str.charCodeAt(i);
+      sum += this.getGlyphRect(charCode === 10 ? START_CHAR_CODE : charCode).width;
     }
     return sum;
   }

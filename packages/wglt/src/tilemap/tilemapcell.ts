@@ -1,8 +1,11 @@
-import { serializable } from '../core/serialize';
+import { registerSerializable } from '../core/serialize';
 import { Vec2 } from '../core/vec2';
 
-@serializable
 export class TileMapCell extends Vec2 {
+  static {
+    registerSerializable(TileMapCell);
+  }
+
   blocked: boolean;
   blockedSight: boolean;
   visible: boolean;

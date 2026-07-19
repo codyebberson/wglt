@@ -1,8 +1,11 @@
 import type { Color } from './color';
-import { serializable } from './serialize';
+import { registerSerializable } from './serialize';
 
-@serializable
 export class Message {
+  static {
+    registerSerializable(Message);
+  }
+
   readonly text: string | undefined;
   readonly fg: Color | undefined;
 

@@ -1,8 +1,11 @@
-import { type Color, Console, Message, serializable, wordWrap } from 'wglt';
+import { type Color, Console, Message, registerSerializable, wordWrap } from 'wglt';
 import { Colors } from './color';
 
-@serializable
 export class MessageLog {
+  static {
+    registerSerializable(MessageLog);
+  }
+
   readonly messages: Message[] = [];
 
   /**

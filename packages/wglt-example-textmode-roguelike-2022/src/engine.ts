@@ -1,4 +1,4 @@
-import { type Color, RNG, serializable, Terminal, TileMapCell } from 'wglt';
+import { type Color, RNG, registerSerializable, Terminal, TileMapCell } from 'wglt';
 import type { Action } from './actions';
 import { Actor } from './actor';
 import { BaseComponent } from './base';
@@ -16,8 +16,11 @@ const ROOM_MAX_SIZE = 10;
 const ROOM_MIN_SIZE = 6;
 const MAX_ROOMS = 30;
 
-@serializable
 export class Engine extends BaseComponent {
+  static {
+    registerSerializable(Engine);
+  }
+
   readonly rng = new RNG();
   readonly player = new Actor('@', Colors.WHITE, 'Player', true, 30, 30, 1, 2);
   readonly messageLog = new MessageLog();

@@ -44,11 +44,10 @@ const arrayViewConstructors: Map<string, ArrayViewConstructor> = new Map(
 );
 
 /**
- * Decorates a class to make serializable.
- * Any class with the `@serializable` decorator will be serialized and deserialized.
- * @param value - The TypeScript class to mark as serializable.
+ * Registers a class so its instances can be serialized and deserialized.
+ * @param value - The class constructor to register.
  */
-export function serializable(value: { name: string }): void {
+export function registerSerializable(value: { name: string }): void {
   classDefinitions.set(value.name, value as ObjectConstructor);
 }
 

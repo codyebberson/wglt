@@ -22,8 +22,6 @@ export interface TerminalOptions {
   readonly fontGlyphSize?: Rect;
   /** Custom movement key mappings. If not provided, uses standard roguelike keys (arrows, vi keys, numpad). */
   readonly movementKeys?: Partial<Record<Key, Vec2>>;
-  /** Maximum frames per second. If not provided, runs uncapped. */
-  readonly maxFps?: number;
 }
 
 /**
@@ -111,7 +109,7 @@ export class Terminal extends BaseApp {
 
     const mouse = new Mouse(canvas, width, height);
 
-    super(canvas, pixelWidth, pixelHeight, mouse);
+    super(canvas, pixelWidth, pixelHeight, mouse, options?.movementKeys);
 
     this.width = width;
     this.height = height;
@@ -461,6 +459,9 @@ export class Terminal extends BaseApp {
    * @param color - Optional foreground color.
    */
   drawRightString(x: number, y: number, str: string, color?: number | undefined): void {
-    this.console.drawString(x - str.length, y, str, color);
+    const lines = str.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      this.console.drawStringLine(x - lines[i].length, y + i, lines[i], color);
+    }
   }
 }

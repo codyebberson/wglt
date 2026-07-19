@@ -10,7 +10,6 @@ export * from './core/gui/component';
 export * from './core/gui/container';
 export * from './core/gui/dialog';
 export * from './core/gui/gui';
-export * from './core/gui/imagepanel';
 export * from './core/gui/label';
 export * from './core/gui/messagedialog';
 export * from './core/gui/messagelog';

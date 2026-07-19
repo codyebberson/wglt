@@ -1,4 +1,4 @@
-import { type PointLike, serializable } from 'wglt';
+import { type PointLike, registerSerializable } from 'wglt';
 import { BumpAction, MeleeAction, MovementAction } from './actions';
 import type { Actor } from './actor';
 
@@ -16,8 +16,11 @@ export abstract class BaseAI {
   }
 }
 
-@serializable
 export class HostileEnemy extends BaseAI {
+  static {
+    registerSerializable(HostileEnemy);
+  }
+
   perform(actor: Actor): void {
     const target = actor.engine.player;
     const dx = target.x - actor.x;
@@ -44,8 +47,11 @@ export class HostileEnemy extends BaseAI {
  * A confused enemy will stumble around aimlessly for a given number of turns, then revert back to its previous AI.
  * If an actor occupies a tile it is randomly moving into, it will attack.
  */
-@serializable
 export class ConfusedEnemy extends BaseAI {
+  static {
+    registerSerializable(ConfusedEnemy);
+  }
+
   readonly previousAi: BaseAI;
   public turnsRemaining: number;
 
