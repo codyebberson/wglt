@@ -8,13 +8,16 @@ import type { SelectOption } from './selectoption';
  * Supports both keyboard navigation (arrow keys, letter shortcuts) and mouse interaction.
  * Commonly used for menus, inventories, and choice dialogs in roguelikes.
  *
+ * Options are selected by position: the first option is bound to `a`, the
+ * second to `b`, and so on (the first 26 options only).
+ *
  * @example
  * ```typescript
  * const options = [
- *   { name: 'Attack', key: 'a' },
- *   { name: 'Defend', key: 'd' },
- *   { name: 'Cast Spell', key: 'c' },
- *   { name: 'Run Away', key: 'r' }
+ *   { name: 'Attack' },
+ *   { name: 'Defend' },
+ *   { name: 'Cast Spell' },
+ *   { name: 'Run Away' }
  * ];
  *
  * const selector = new SelectInput(
@@ -74,8 +77,10 @@ export class SelectInput extends Component {
     const mouse = app.mouse;
     const keyboard = app.keyboard;
 
-    // Handle letter key shortcuts (a, b, c, etc.)
-    for (let i = 0; i < this.options.length; i++) {
+    // Handle letter key shortcuts (a, b, c, ...). Only the first 26 options get
+    // a shortcut; there is no sensible key past 'z' (index 26 would map to '[').
+    const shortcutCount = Math.min(this.options.length, 26);
+    for (let i = 0; i < shortcutCount; i++) {
       const key = getKeyForLetterByIndex(i);
       if (keyboard.isKeyPressed(key)) {
         keyboard.clear();
@@ -121,10 +126,12 @@ export class SelectInput extends Component {
         if (mouse.y >= startY && mouse.y < endY) {
           mouse.buttons.clear();
           this.callback(this.options[i], i);
+          return true;
         }
       }
     }
 
-    return true;
+    // Nothing matched — let components behind this one handle the input.
+    return false;
   }
 }
