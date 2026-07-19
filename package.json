@@ -15,10 +15,10 @@
     "test": "turbo run test"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.3",
+    "@biomejs/biome": "2.5.4",
     "@types/node": "26.1.1",
     "rimraf": "6.1.2",
-    "turbo": "2.10.4"
+    "turbo": "2.10.5"
   },
   "engines": {
     "node": ">=18.0.0"
