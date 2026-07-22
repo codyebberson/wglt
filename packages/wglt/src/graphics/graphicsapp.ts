@@ -2,6 +2,7 @@ import { BaseApp } from '../core/baseapp.ts';
 import type { Color } from '../core/color.ts';
 import { Font } from '../core/font.ts';
 import type { ExtendedTexture } from '../core/glutils.ts';
+import type { Key } from '../core/keys.ts';
 import { Mouse } from '../core/mouse.ts';
 import { Rect } from '../core/rect.ts';
 import { Sprite } from '../core/sprite.ts';
@@ -18,6 +19,9 @@ export interface GraphicsAppOptions {
 
   /** Default font to use for text rendering. */
   readonly defaultFont?: Font;
+
+  /** Custom movement key mappings. If not provided, uses standard roguelike keys. */
+  readonly movementKeys?: Partial<Record<Key, Vec2>>;
 }
 
 /**
@@ -82,7 +86,7 @@ export class GraphicsApp extends BaseApp {
     }
 
     const mouse = new Mouse(canvas, pixelWidth, pixelHeight);
-    super(canvas, pixelWidth, pixelHeight, mouse);
+    super(canvas, pixelWidth, pixelHeight, mouse, options?.movementKeys);
 
     const imageUrl = options?.imageUrl || './graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);

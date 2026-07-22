@@ -39,6 +39,7 @@ export * from './core/serialize.ts';
 export * from './core/sprite.ts';
 export * from './core/utils.ts';
 export * from './core/vec2.ts';
+export * from './graphics/drawlist.ts';
 export * from './graphics/graphicsapp.ts';
 export * from './graphics/gui/autorectrenderer.ts';
 export * from './graphics/gui/buttonrenderer.ts';

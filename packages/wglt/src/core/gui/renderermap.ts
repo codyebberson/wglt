@@ -3,6 +3,8 @@ import { Component, type ComponentConstructor } from './component.ts';
 import type { Renderer } from './renderer.ts';
 
 export class RendererMap<TContext extends BaseApp = BaseApp> {
+  // Use names rather than constructor identity so renderer registrations survive HMR replacing a
+  // component class with a new constructor during the same page session.
   private readonly renderers = new Map<string, Renderer>();
 
   set<T extends Component>(type: ComponentConstructor<T>, renderer: Renderer<TContext, T>): void {

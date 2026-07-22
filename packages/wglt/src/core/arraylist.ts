@@ -56,10 +56,20 @@ export class ArrayList<T> {
   }
 
   /**
-   * Removes all elements from the list.
+   * Removes all elements from the list and notifies registered listeners for each removal.
    */
   clear(): void {
-    this.elements.length = 0;
+    if (!this.listeners || this.elements.length === 0) {
+      this.elements.length = 0;
+      return;
+    }
+
+    const removed = this.elements.splice(0);
+    for (const element of removed) {
+      for (const listener of this.listeners) {
+        listener.onRemove(this, element);
+      }
+    }
   }
 
   /**

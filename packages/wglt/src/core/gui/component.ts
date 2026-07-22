@@ -116,11 +116,11 @@ export abstract class Component {
   }
 
   /**
-   * Called when this component is dropped onto another component.
-   * @param _dest - The component this was dropped onto.
-   * @returns True if the drop was handled, false otherwise.
+   * Called when another component is dropped onto this component.
+   * @param _source - The component being dropped.
+   * @returns True to accept the source at its new location, or false to restore its position.
    */
-  onDrop(_dest: Component): boolean {
+  onDrop(_source: Component): boolean {
     // By default, do nothing
     // Child classes can override this method
     return false;
