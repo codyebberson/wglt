@@ -3,7 +3,7 @@ import { registerSerializable } from './serialize';
 
 export class Message {
   static {
-    registerSerializable(Message);
+    registerSerializable('wglt.Message', Message);
   }
 
   readonly text: string | undefined;

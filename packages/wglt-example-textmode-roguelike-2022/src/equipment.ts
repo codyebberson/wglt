@@ -9,7 +9,7 @@ export const EquipmentType = {
 
 export class Equipment extends Item {
   static {
-    registerSerializable(Equipment);
+    registerSerializable('roguelike.Equipment', Equipment);
   }
 
   readonly equipmentType: number;

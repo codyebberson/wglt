@@ -20,7 +20,7 @@ const LOWER_MASK = 0x7fffffff; /* least significant r bits */
 
 export class RNG {
   static {
-    registerSerializable(RNG);
+    registerSerializable('wglt.RNG', RNG);
   }
 
   private readonly mt: Uint32Array;

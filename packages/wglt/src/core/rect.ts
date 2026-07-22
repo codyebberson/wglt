@@ -7,7 +7,7 @@ import { type PointLike, Vec2 } from './vec2';
  */
 export class Rect {
   static {
-    registerSerializable(Rect);
+    registerSerializable('wglt.Rect', Rect);
   }
 
   x: number;

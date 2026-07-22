@@ -3,7 +3,7 @@ import { Vec2 } from '../core/vec2';
 
 export class TileMapCell extends Vec2 {
   static {
-    registerSerializable(TileMapCell);
+    registerSerializable('wglt.TileMapCell', TileMapCell);
   }
 
   blocked: boolean;

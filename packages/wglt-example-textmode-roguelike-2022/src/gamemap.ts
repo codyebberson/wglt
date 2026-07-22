@@ -17,7 +17,7 @@ import { Item } from './item';
 
 export class GameMap extends BaseComponent {
   static {
-    registerSerializable(GameMap);
+    registerSerializable('roguelike.GameMap', GameMap);
   }
 
   width: number;

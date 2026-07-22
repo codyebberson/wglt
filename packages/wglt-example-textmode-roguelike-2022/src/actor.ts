@@ -8,7 +8,7 @@ import { openLevelUpMenu } from './main';
 
 export class Actor extends Entity {
   static {
-    registerSerializable(Actor);
+    registerSerializable('roguelike.Actor', Actor);
   }
 
   maxHp: number;

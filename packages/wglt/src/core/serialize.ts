@@ -16,7 +16,13 @@ interface ArrayViewPlaceholder {
   $data: string;
 }
 
-const classDefinitions: Map<string, ObjectConstructor> = new Map();
+interface SerializableConstructor {
+  readonly name: string;
+  readonly prototype: object;
+}
+
+const classDefinitions = new Map<string, SerializableConstructor>();
+const classIds = new Map<SerializableConstructor, string>();
 
 type ArrayViewConstructor = new (buffer: ArrayBuffer) => ArrayBufferView;
 
@@ -45,10 +51,23 @@ const arrayViewConstructors: Map<string, ArrayViewConstructor> = new Map(
 
 /**
  * Registers a class so its instances can be serialized and deserialized.
+ * @param id - A stable, namespaced identifier persisted in serialized data.
  * @param value - The class constructor to register.
  */
-export function registerSerializable(value: { name: string }): void {
-  classDefinitions.set(value.name, value as ObjectConstructor);
+export function registerSerializable(id: string, value: SerializableConstructor): void {
+  if (!id) {
+    throw new Error('Serializable class ID cannot be empty.');
+  }
+  const registeredClass = classDefinitions.get(id);
+  if (registeredClass && registeredClass !== value) {
+    throw new Error(`Serializable class ID "${id}" is already registered.`);
+  }
+  const registeredId = classIds.get(value);
+  if (registeredId && registeredId !== id) {
+    throw new Error(`Class ${value.name} is already registered as "${registeredId}".`);
+  }
+  classDefinitions.set(id, value);
+  classIds.set(value, id);
 }
 
 /**
@@ -104,16 +123,17 @@ export function serialize(obj: unknown): string {
 
   function replaceObject(input: Record<string, unknown>): Record<string, unknown> {
     if (input.constructor.name !== 'Object') {
-      if (!classDefinitions.has(input.constructor.name)) {
+      const classId = classIds.get(input.constructor as unknown as SerializableConstructor);
+      if (!classId) {
         throw new Error(`Class ${input.constructor.name} is not serializable.`);
       }
       if (instancesMap.has(input)) {
         return { $ref: instancesMap.get(input) };
       }
       const $ref = instances.length;
-      instances.push({ $type: input.constructor.name });
+      instances.push({ $type: classId });
       instancesMap.set(input, $ref);
-      instances[$ref] = { ...replaceObjectProperties(input), $type: input.constructor.name };
+      instances[$ref] = { ...replaceObjectProperties(input), $type: classId };
       return { $ref };
     }
     return replaceObjectProperties(input);
@@ -141,7 +161,11 @@ export function deserialize(str: string): unknown {
   // First, replace all objects with class instances
   for (let i = 0; i < instances.length; i++) {
     const instance = instances[i];
-    const classDefinition = classDefinitions.get(instance.$type as string) as ObjectConstructor;
+    const classId = instance.$type as string;
+    const classDefinition = classDefinitions.get(classId);
+    if (!classDefinition) {
+      throw new Error(`Serializable class ID "${classId}" is not registered.`);
+    }
     delete instance.$type;
     instances[i] = Object.create(
       classDefinition.prototype,

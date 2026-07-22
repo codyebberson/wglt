@@ -3,7 +3,7 @@ import { Colors } from './color';
 
 export class MessageLog {
   static {
-    registerSerializable(MessageLog);
+    registerSerializable('roguelike.MessageLog', MessageLog);
   }
 
   readonly messages: Message[] = [];

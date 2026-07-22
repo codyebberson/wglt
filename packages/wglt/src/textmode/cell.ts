@@ -12,7 +12,7 @@ function convertCharCode(charCode: string | number): number {
 
 export class Cell {
   static {
-    registerSerializable(Cell);
+    registerSerializable('wglt.Cell', Cell);
   }
 
   readonly x: number;

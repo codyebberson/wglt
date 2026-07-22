@@ -3,7 +3,7 @@ import { getTileId } from './utils';
 
 export class TileMapLayer {
   static {
-    registerSerializable(TileMapLayer);
+    registerSerializable('wglt.TileMapLayer', TileMapLayer);
   }
 
   readonly width: number;

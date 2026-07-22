@@ -18,7 +18,7 @@ const MAX_ROOMS = 30;
 
 export class Engine extends BaseComponent {
   static {
-    registerSerializable(Engine);
+    registerSerializable('roguelike.Engine', Engine);
   }
 
   readonly rng = new RNG();

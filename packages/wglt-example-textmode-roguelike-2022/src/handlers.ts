@@ -14,7 +14,7 @@ export abstract class EventHandler extends BaseComponent {
 
 export class MainGameEventHandler extends EventHandler {
   static {
-    registerSerializable(MainGameEventHandler);
+    registerSerializable('roguelike.MainGameEventHandler', MainGameEventHandler);
   }
 
   handleEvents(term: Terminal): void {
@@ -104,7 +104,7 @@ export abstract class TargetingHandler extends EventHandler {
 
 export class LookHandler extends TargetingHandler {
   static {
-    registerSerializable(LookHandler);
+    registerSerializable('roguelike.LookHandler', LookHandler);
   }
 
   onSelect(): void {
@@ -114,7 +114,7 @@ export class LookHandler extends TargetingHandler {
 
 export class SingleRangedAttackHandler extends TargetingHandler {
   static {
-    registerSerializable(SingleRangedAttackHandler);
+    registerSerializable('roguelike.SingleRangedAttackHandler', SingleRangedAttackHandler);
   }
 
   readonly action: Action;
@@ -132,7 +132,7 @@ export class SingleRangedAttackHandler extends TargetingHandler {
 
 export class AreaRangedAttackHandler extends TargetingHandler {
   static {
-    registerSerializable(AreaRangedAttackHandler);
+    registerSerializable('roguelike.AreaRangedAttackHandler', AreaRangedAttackHandler);
   }
 
   readonly radius: number;

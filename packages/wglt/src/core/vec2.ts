@@ -14,7 +14,7 @@ export interface PointLike {
  */
 export class Vec2 implements PointLike {
   static {
-    registerSerializable(Vec2);
+    registerSerializable('wglt.Vec2', Vec2);
   }
 
   x: number;

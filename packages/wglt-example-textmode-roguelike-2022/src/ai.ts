@@ -18,7 +18,7 @@ export abstract class BaseAI {
 
 export class HostileEnemy extends BaseAI {
   static {
-    registerSerializable(HostileEnemy);
+    registerSerializable('roguelike.HostileEnemy', HostileEnemy);
   }
 
   perform(actor: Actor): void {
@@ -49,7 +49,7 @@ export class HostileEnemy extends BaseAI {
  */
 export class ConfusedEnemy extends BaseAI {
   static {
-    registerSerializable(ConfusedEnemy);
+    registerSerializable('roguelike.ConfusedEnemy', ConfusedEnemy);
   }
 
   readonly previousAi: BaseAI;

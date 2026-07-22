@@ -90,7 +90,7 @@ test('preserves a Uint32Array state vector inside a serializable class (B5 regre
       return (y ^ (y >>> 11)) >>> 0;
     }
   }
-  registerSerializable(Generator);
+  registerSerializable('test.Generator', Generator);
 
   const gen = new Generator();
   gen.seed(12345);
@@ -111,7 +111,7 @@ test('deduplicates shared instances via references', () => {
   class Node {
     value = 0;
   }
-  registerSerializable(Node);
+  registerSerializable('test.Node', Node);
 
   const shared = new Node();
   shared.value = 7;
@@ -128,7 +128,7 @@ test('handles circular references between instances', () => {
     next?: Ring;
     name = '';
   }
-  registerSerializable(Ring);
+  registerSerializable('test.Ring', Ring);
 
   const a = new Ring();
   a.name = 'a';
@@ -151,7 +151,7 @@ test('reattaches the prototype so instance methods survive', () => {
       return this.x + this.y;
     }
   }
-  registerSerializable(Point);
+  registerSerializable('test.Point', Point);
 
   const p = new Point();
   p.x = 3;
@@ -166,4 +166,30 @@ test('throws when serializing an unregistered class', () => {
     x = 1;
   }
   assert.throws(() => serialize(new Unregistered()), /not serializable/);
+});
+
+test('persists the registered class ID instead of the constructor name', () => {
+  class MinifiableClass {}
+  registerSerializable('test.stable-id', MinifiableClass);
+
+  const serialized = serialize(new MinifiableClass());
+  assert.match(serialized, /"\$type":"test\.stable-id"/);
+  assert.doesNotMatch(serialized, /MinifiableClass/);
+});
+
+test('rejects duplicate class IDs', () => {
+  class First {}
+  class Second {}
+  registerSerializable('test.duplicate-id', First);
+
+  assert.throws(() => registerSerializable('test.duplicate-id', Second), /already registered/);
+});
+
+test('reports an unknown class ID when deserializing', () => {
+  const serialized = JSON.stringify({
+    instances: [{ $type: 'test.unknown-id' }],
+    root: { $ref: 0 },
+  });
+
+  assert.throws(() => deserialize(serialized), /test\.unknown-id.*not registered/);
 });

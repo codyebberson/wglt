@@ -28,7 +28,7 @@ import { TileMapLayer } from './tilemaplayer';
  */
 export class TileMap {
   static {
-    registerSerializable(TileMap);
+    registerSerializable('wglt.TileMap', TileMap);
   }
 
   /** Width of the tilemap in tiles. */

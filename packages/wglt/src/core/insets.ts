@@ -16,7 +16,7 @@ export interface InsetsLike {
  */
 export class Insets implements InsetsLike {
   static {
-    registerSerializable(Insets);
+    registerSerializable('wglt.Insets', Insets);
   }
 
   top: number;

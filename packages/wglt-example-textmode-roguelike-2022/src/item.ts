@@ -22,7 +22,7 @@ export abstract class Item extends Entity {
 
 export class HealingItem extends Item {
   static {
-    registerSerializable(HealingItem);
+    registerSerializable('roguelike.HealingItem', HealingItem);
   }
 
   readonly amount: number;
@@ -48,7 +48,7 @@ export class HealingItem extends Item {
 
 export class LightningDamageItem extends Item {
   static {
-    registerSerializable(LightningDamageItem);
+    registerSerializable('roguelike.LightningDamageItem', LightningDamageItem);
   }
 
   readonly damage: number;
@@ -88,7 +88,7 @@ export class LightningDamageItem extends Item {
 
 export class ConfusionItem extends Item {
   static {
-    registerSerializable(ConfusionItem);
+    registerSerializable('roguelike.ConfusionItem', ConfusionItem);
   }
 
   readonly numberOfTurns: number;
@@ -131,7 +131,7 @@ export class ConfusionItem extends Item {
 
 export class FireballDamageItem extends Item {
   static {
-    registerSerializable(FireballDamageItem);
+    registerSerializable('roguelike.FireballDamageItem', FireballDamageItem);
   }
 
   readonly damage: number;

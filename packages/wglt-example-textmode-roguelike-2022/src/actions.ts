@@ -31,7 +31,7 @@ export abstract class ActionWithDirection extends Action {
 
 export class MeleeAction extends ActionWithDirection {
   static {
-    registerSerializable(MeleeAction);
+    registerSerializable('roguelike.MeleeAction', MeleeAction);
   }
 
   perform(): void {
@@ -59,7 +59,7 @@ export class MeleeAction extends ActionWithDirection {
 
 export class MovementAction extends ActionWithDirection {
   static {
-    registerSerializable(MovementAction);
+    registerSerializable('roguelike.MovementAction', MovementAction);
   }
 
   perform(): void {
@@ -85,7 +85,7 @@ export class MovementAction extends ActionWithDirection {
 
 export class BumpAction extends ActionWithDirection {
   static {
-    registerSerializable(BumpAction);
+    registerSerializable('roguelike.BumpAction', BumpAction);
   }
 
   perform(): void {
@@ -108,7 +108,7 @@ export class BumpAction extends ActionWithDirection {
 
 export class PickupAction extends Action {
   static {
-    registerSerializable(PickupAction);
+    registerSerializable('roguelike.PickupAction', PickupAction);
   }
 
   perform(): void {
@@ -126,7 +126,7 @@ export class PickupAction extends Action {
 
 export class ItemAction extends Action {
   static {
-    registerSerializable(ItemAction);
+    registerSerializable('roguelike.ItemAction', ItemAction);
   }
 
   readonly item: Item;
@@ -142,7 +142,7 @@ export class ItemAction extends Action {
 
 export class TakeStairsAction extends Action {
   static {
-    registerSerializable(TakeStairsAction);
+    registerSerializable('roguelike.TakeStairsAction', TakeStairsAction);
   }
 
   perform(): void {

@@ -20,7 +20,7 @@ import { Chars } from './chars';
  */
 export class Console {
   static {
-    registerSerializable(Console);
+    registerSerializable('wglt.Console', Console);
   }
 
   readonly width: number;
