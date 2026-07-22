@@ -1,6 +1,6 @@
-import { BaseApp } from '../baseapp';
-import { Component, type ComponentConstructor } from './component';
-import type { Renderer } from './renderer';
+import { BaseApp } from '../baseapp.ts';
+import { Component, type ComponentConstructor } from './component.ts';
+import type { Renderer } from './renderer.ts';
 
 export class RendererMap<TContext extends BaseApp = BaseApp> {
   private readonly renderers = new Map<string, Renderer>();

@@ -1,7 +1,7 @@
-import { Rect } from '../../core/rect';
-import { getKeyForLetterByIndex } from '../keys';
-import { Component } from './component';
-import type { SelectOption } from './selectoption';
+import { Rect } from '../../core/rect.ts';
+import { getKeyForLetterByIndex } from '../keys.ts';
+import { Component } from './component.ts';
+import type { SelectOption } from './selectoption.ts';
 
 /**
  * A selectable list component that displays options and handles user selection.

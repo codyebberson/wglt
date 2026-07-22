@@ -1,13 +1,13 @@
-import { BaseApp } from '../core/baseapp';
-import type { Color } from '../core/color';
-import { Font } from '../core/font';
-import type { ExtendedTexture } from '../core/glutils';
-import { Mouse } from '../core/mouse';
-import { Rect } from '../core/rect';
-import { Sprite } from '../core/sprite';
-import { createCenteredCanvas } from '../core/utils';
-import { Vec2 } from '../core/vec2';
-import { DrawList } from './drawlist';
+import { BaseApp } from '../core/baseapp.ts';
+import type { Color } from '../core/color.ts';
+import { Font } from '../core/font.ts';
+import type { ExtendedTexture } from '../core/glutils.ts';
+import { Mouse } from '../core/mouse.ts';
+import { Rect } from '../core/rect.ts';
+import { Sprite } from '../core/sprite.ts';
+import { createCenteredCanvas } from '../core/utils.ts';
+import { Vec2 } from '../core/vec2.ts';
+import { DrawList } from './drawlist.ts';
 
 /**
  * Configuration options for creating a GraphicsApp instance.

@@ -1,6 +1,6 @@
-import { Input, InputSet } from './input';
-import { Key } from './keys';
-import { Vec2 } from './vec2';
+import { Input, InputSet } from './input.ts';
+import { Key } from './keys.ts';
+import { Vec2 } from './vec2.ts';
 
 // Arrow keys, numpad, vi
 const NORTHWEST_KEYS = [Key.VK_NUMPAD7, Key.VK_Y] as const;

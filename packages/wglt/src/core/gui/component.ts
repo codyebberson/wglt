@@ -1,6 +1,6 @@
-import { Rect } from '../rect';
-import type { PointLike } from '../vec2';
-import type { GUI } from './gui';
+import { Rect } from '../rect.ts';
+import type { PointLike } from '../vec2.ts';
+import type { GUI } from './gui.ts';
 
 /**
  * Abstract base class for all GUI components in WGLT.

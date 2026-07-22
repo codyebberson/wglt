@@ -1,21 +1,21 @@
-import { BaseApp } from '../core/baseapp';
-import type { Color } from '../core/color';
+import { BaseApp } from '../core/baseapp.ts';
+import type { Color } from '../core/color.ts';
 import {
   createTexture,
   disposeTexture,
   type ExtendedTexture,
   initShaderProgram,
-} from '../core/glutils';
-import { Key } from '../core/keys';
-import { Mouse } from '../core/mouse';
-import type { Rect } from '../core/rect';
-import { createCenteredCanvas, interpolate } from '../core/utils';
-import { Vec2 } from '../core/vec2';
-import type { BlendMode } from './blendmode';
-import { Cell } from './cell';
-import { Console } from './console';
-import { IBM_BIOS_FONT_DATA_URL, IBM_BIOS_FONT_GLYPH_SIZE } from './font';
-import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
+} from '../core/glutils.ts';
+import { Key } from '../core/keys.ts';
+import { Mouse } from '../core/mouse.ts';
+import type { Rect } from '../core/rect.ts';
+import { createCenteredCanvas, interpolate } from '../core/utils.ts';
+import { Vec2 } from '../core/vec2.ts';
+import type { BlendMode } from './blendmode.ts';
+import { Cell } from './cell.ts';
+import { Console } from './console.ts';
+import { IBM_BIOS_FONT_DATA_URL, IBM_BIOS_FONT_GLYPH_SIZE } from './font.ts';
+import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders.ts';
 
 const MAX_TERMINAL_CELL_COUNT = 16384;
 

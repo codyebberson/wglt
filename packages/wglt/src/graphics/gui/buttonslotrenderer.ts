@@ -1,10 +1,10 @@
-import type { Font } from '../../core/font';
-import { getShortcutKeyDisplay } from '../../core/gui/button';
-import { ButtonSlot } from '../../core/gui/buttonslot';
-import { GUI } from '../../core/gui/gui';
-import type { Rect } from '../../core/rect';
-import { GraphicsApp } from '../graphicsapp';
-import { AutoRectRenderer } from './autorectrenderer';
+import type { Font } from '../../core/font.ts';
+import { getShortcutKeyDisplay } from '../../core/gui/button.ts';
+import { ButtonSlot } from '../../core/gui/buttonslot.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Rect } from '../../core/rect.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
+import { AutoRectRenderer } from './autorectrenderer.ts';
 
 export class GraphicsButtonSlotRenderer extends AutoRectRenderer<ButtonSlot> {
   readonly font: Font | undefined;

@@ -1,10 +1,10 @@
-import type { Color } from '../color';
-import type { Font } from '../font';
-import type { Insets } from '../insets';
-import { Message } from '../message';
-import { Rect } from '../rect';
-import { Dialog } from './dialog';
-import { Label } from './label';
+import type { Color } from '../color.ts';
+import type { Font } from '../font.ts';
+import type { Insets } from '../insets.ts';
+import { Message } from '../message.ts';
+import { Rect } from '../rect.ts';
+import { Dialog } from './dialog.ts';
+import { Label } from './label.ts';
 
 export class MessageDialog extends Dialog {
   readonly message: string | Message;

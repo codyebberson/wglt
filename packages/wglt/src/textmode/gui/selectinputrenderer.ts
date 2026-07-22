@@ -1,8 +1,8 @@
-import { GUI } from '../../core/gui/gui';
-import type { Renderer } from '../../core/gui/renderer';
-import { SelectInput } from '../../core/gui/selectinput';
-import { SimplePalette } from '../../core/palettes/simple';
-import { Terminal } from '../terminal';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { SelectInput } from '../../core/gui/selectinput.ts';
+import { SimplePalette } from '../../core/palettes/simple.ts';
+import { Terminal } from '../terminal.ts';
 
 export class TerminalSelectInputRenderer implements Renderer<Terminal, SelectInput> {
   render(gui: GUI<Terminal>, input: SelectInput): void {

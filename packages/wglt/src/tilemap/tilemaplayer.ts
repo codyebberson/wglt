@@ -1,5 +1,5 @@
-import { registerSerializable } from '../core/serialize';
-import { getTileId } from './utils';
+import { registerSerializable } from '../core/serialize.ts';
+import { getTileId } from './utils.ts';
 
 export class TileMapLayer {
   static {

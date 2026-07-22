@@ -1,4 +1,4 @@
-import { registerSerializable } from './serialize';
+import { registerSerializable } from './serialize.ts';
 
 /**
  * Interface for objects that have x and y coordinates.

@@ -1,8 +1,8 @@
-import type { Color } from '../color';
-import type { Font } from '../font';
-import { SimplePalette } from '../palettes/simple';
-import { Rect } from '../rect';
-import { Component } from './component';
+import type { Color } from '../color.ts';
+import type { Font } from '../font.ts';
+import { SimplePalette } from '../palettes/simple.ts';
+import { Rect } from '../rect.ts';
+import { Component } from './component.ts';
 
 /**
  * Horizontal text alignment options for Labels.

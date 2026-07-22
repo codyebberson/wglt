@@ -1,15 +1,15 @@
-import { BaseApp } from '../baseapp';
-import type { Font } from '../font';
-import type { Insets } from '../insets';
-import type { Message } from '../message';
-import { Rect } from '../rect';
-import { Vec2 } from '../vec2';
-import { Component, type ComponentConstructor } from './component';
-import { Container } from './container';
-import { Label } from './label';
-import { Panel } from './panel';
-import { RendererMap } from './renderermap';
-import { Theme } from './theme';
+import { BaseApp } from '../baseapp.ts';
+import type { Font } from '../font.ts';
+import type { Insets } from '../insets.ts';
+import type { Message } from '../message.ts';
+import { Rect } from '../rect.ts';
+import { Vec2 } from '../vec2.ts';
+import { Component, type ComponentConstructor } from './component.ts';
+import { Container } from './container.ts';
+import { Label } from './label.ts';
+import { Panel } from './panel.ts';
+import { RendererMap } from './renderermap.ts';
+import { Theme } from './theme.ts';
 
 export class GUI<TContext extends BaseApp = BaseApp> extends Container {
   readonly context: TContext;

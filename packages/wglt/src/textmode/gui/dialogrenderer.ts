@@ -1,8 +1,8 @@
-import { Dialog } from '../../core/gui/dialog';
-import { GUI } from '../../core/gui/gui';
-import type { Renderer } from '../../core/gui/renderer';
-import { SimplePalette } from '../../core/palettes/simple';
-import { Terminal } from '../terminal';
+import { Dialog } from '../../core/gui/dialog.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { SimplePalette } from '../../core/palettes/simple.ts';
+import { Terminal } from '../terminal.ts';
 
 export class TerminalDialogRenderer implements Renderer<Terminal, Dialog> {
   render(gui: GUI<Terminal>, component: Dialog): void {

@@ -1,12 +1,12 @@
-import { Dialog } from '../../core/gui/dialog';
-import { Label } from '../../core/gui/label';
-import { MessageDialog } from '../../core/gui/messagedialog';
-import { SelectInput } from '../../core/gui/selectinput';
-import { Theme } from '../../core/gui/theme';
-import { Terminal } from '../terminal';
-import { TerminalDialogRenderer } from './dialogrenderer';
-import { TerminalLabelRenderer } from './labelrenderer';
-import { TerminalSelectInputRenderer } from './selectinputrenderer';
+import { Dialog } from '../../core/gui/dialog.ts';
+import { Label } from '../../core/gui/label.ts';
+import { MessageDialog } from '../../core/gui/messagedialog.ts';
+import { SelectInput } from '../../core/gui/selectinput.ts';
+import { Theme } from '../../core/gui/theme.ts';
+import { Terminal } from '../terminal.ts';
+import { TerminalDialogRenderer } from './dialogrenderer.ts';
+import { TerminalLabelRenderer } from './labelrenderer.ts';
+import { TerminalSelectInputRenderer } from './selectinputrenderer.ts';
 
 export class DefaultTerminalTheme extends Theme<Terminal> {
   constructor() {

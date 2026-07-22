@@ -1,9 +1,9 @@
-import { Container } from '../../core/gui/container';
-import { Key } from '../../core/keys';
-import { Rect } from '../../core/rect';
-import { Button } from './button';
-import type { Component } from './component';
-import type { GUI } from './gui';
+import { Container } from '../../core/gui/container.ts';
+import { Key } from '../../core/keys.ts';
+import { Rect } from '../../core/rect.ts';
+import { Button } from './button.ts';
+import type { Component } from './component.ts';
+import type { GUI } from './gui.ts';
 
 export class ButtonSlot extends Container {
   shortcutKey?: Key;

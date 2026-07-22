@@ -1,4 +1,4 @@
-import { fromRgb } from '../color';
+import { fromRgb } from '../color.ts';
 
 /**
  * PICO 8 palette.

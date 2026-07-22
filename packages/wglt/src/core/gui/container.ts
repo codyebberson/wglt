@@ -1,6 +1,6 @@
-import { ArrayList } from '../arraylist';
-import type { PointLike } from '../vec2';
-import { Component } from './component';
+import { ArrayList } from '../arraylist.ts';
+import type { PointLike } from '../vec2.ts';
+import { Component } from './component.ts';
 
 /**
  * A Container is a Component that can hold and manage child components.

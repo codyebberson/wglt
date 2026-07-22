@@ -1,5 +1,5 @@
-import { Rect } from '../core/rect';
-import type { GraphicsApp } from '../graphics/graphicsapp';
+import { Rect } from '../core/rect.ts';
+import type { GraphicsApp } from '../graphics/graphicsapp.ts';
 
 const DEFAULT_TICKS_PER_FRAME = 20;
 

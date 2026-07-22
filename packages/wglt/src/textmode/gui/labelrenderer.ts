@@ -1,7 +1,7 @@
-import { GUI } from '../../core/gui/gui';
-import { alignStart, Label } from '../../core/gui/label';
-import type { Renderer } from '../../core/gui/renderer';
-import { Terminal } from '../terminal';
+import { GUI } from '../../core/gui/gui.ts';
+import { alignStart, Label } from '../../core/gui/label.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { Terminal } from '../terminal.ts';
 
 export class TerminalLabelRenderer implements Renderer<Terminal, Label> {
   render(gui: GUI<Terminal>, component: Label): void {

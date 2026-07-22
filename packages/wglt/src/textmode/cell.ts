@@ -1,7 +1,7 @@
-import { type Color, fromRgb } from '../core/color';
-import { SimplePalette } from '../core/palettes/simple';
-import { registerSerializable } from '../core/serialize';
-import type { BlendMode } from './blendmode';
+import { type Color, fromRgb } from '../core/color.ts';
+import { SimplePalette } from '../core/palettes/simple.ts';
+import { registerSerializable } from '../core/serialize.ts';
+import type { BlendMode } from './blendmode.ts';
 
 function convertCharCode(charCode: string | number): number {
   if (typeof charCode === 'string' && charCode.length > 0) {

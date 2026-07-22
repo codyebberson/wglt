@@ -1,5 +1,5 @@
-import { registerSerializable } from './serialize';
-import { type PointLike, Vec2 } from './vec2';
+import { registerSerializable } from './serialize.ts';
+import { type PointLike, Vec2 } from './vec2.ts';
 
 /**
  * Represents a rectangle with x, y position and width, height dimensions.

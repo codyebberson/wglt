@@ -1,7 +1,7 @@
-import { type Color, fromRgb } from '../core/color';
-import { Cell } from './cell';
-import { Chars } from './chars';
-import { Console } from './console';
+import { type Color, fromRgb } from '../core/color.ts';
+import { Cell } from './cell.ts';
+import { Chars } from './chars.ts';
+import { Console } from './console.ts';
 
 /**
  * All available 2x2 patterns for 2x image loading.

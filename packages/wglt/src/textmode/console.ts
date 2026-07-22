@@ -1,9 +1,9 @@
-import type { Color } from '../core/color';
-import { Rect } from '../core/rect';
-import { registerSerializable } from '../core/serialize';
-import type { BlendMode } from './blendmode';
-import { Cell } from './cell';
-import { Chars } from './chars';
+import type { Color } from '../core/color.ts';
+import { Rect } from '../core/rect.ts';
+import { registerSerializable } from '../core/serialize.ts';
+import type { BlendMode } from './blendmode.ts';
+import { Cell } from './cell.ts';
+import { Chars } from './chars.ts';
 
 /**
  * The Console class manages a 2D grid of text cells for terminal-style rendering.

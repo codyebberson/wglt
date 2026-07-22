@@ -1,4 +1,4 @@
-import { fromRgb } from '../color';
+import { fromRgb } from '../color.ts';
 
 /**
  * Commodore 64 palette.

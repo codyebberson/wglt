@@ -1,8 +1,8 @@
-import type { Font } from '../../core/font';
-import { GUI } from '../../core/gui/gui';
-import type { Renderer } from '../../core/gui/renderer';
-import { SelectInput } from '../../core/gui/selectinput';
-import { GraphicsApp } from '../graphicsapp';
+import type { Font } from '../../core/font.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { SelectInput } from '../../core/gui/selectinput.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
 
 export class GraphicsSelectInputRenderer implements Renderer<GraphicsApp, SelectInput> {
   readonly font: Font | undefined;

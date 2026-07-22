@@ -1,9 +1,9 @@
-import { Container } from '../../core/gui/container';
-import { Key } from '../../core/keys';
-import { Rect } from '../../core/rect';
-import { Sprite } from '../sprite';
-import { Component } from './component';
-import type { GUI } from './gui';
+import { Container } from '../../core/gui/container.ts';
+import { Key } from '../../core/keys.ts';
+import { Rect } from '../../core/rect.ts';
+import { Sprite } from '../sprite.ts';
+import { Component } from './component.ts';
+import type { GUI } from './gui.ts';
 
 /**
  * A clickable button component with optional keyboard shortcut and tooltip support.

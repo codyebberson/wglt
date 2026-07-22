@@ -1,8 +1,8 @@
-import { Font } from './font';
-import { Keyboard } from './keyboard';
-import type { Key } from './keys';
-import { Mouse } from './mouse';
-import { Vec2 } from './vec2';
+import { Font } from './font.ts';
+import { Keyboard } from './keyboard.ts';
+import type { Key } from './keys.ts';
+import { Mouse } from './mouse.ts';
+import { Vec2 } from './vec2.ts';
 
 /**
  * Abstract base class for application states.

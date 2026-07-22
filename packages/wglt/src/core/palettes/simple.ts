@@ -1,4 +1,4 @@
-import { fromRgb } from '../color';
+import { fromRgb } from '../color.ts';
 
 export const SimplePalette = {
   BLACK: fromRgb(0, 0, 0),

@@ -1,5 +1,5 @@
-import type { Color } from './color';
-import { registerSerializable } from './serialize';
+import type { Color } from './color.ts';
+import { registerSerializable } from './serialize.ts';
 
 export class Message {
   static {

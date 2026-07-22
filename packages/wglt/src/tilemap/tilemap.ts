@@ -1,8 +1,8 @@
-import { Rect } from '../core/rect';
-import { registerSerializable } from '../core/serialize';
-import type { Vec2 } from '../core/vec2';
-import { TileMapCell } from './tilemapcell';
-import { TileMapLayer } from './tilemaplayer';
+import { Rect } from '../core/rect.ts';
+import { registerSerializable } from '../core/serialize.ts';
+import type { Vec2 } from '../core/vec2.ts';
+import { TileMapCell } from './tilemapcell.ts';
+import { TileMapLayer } from './tilemaplayer.ts';
 
 /**
  * A TileMap represents a 2D grid-based game world with multiple layers.

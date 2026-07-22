@@ -1,8 +1,8 @@
-import { Dialog } from '../../core/gui/dialog';
-import { GUI } from '../../core/gui/gui';
-import type { Renderer } from '../../core/gui/renderer';
-import { Rect } from '../../core/rect';
-import { GraphicsApp } from '../graphicsapp';
+import { Dialog } from '../../core/gui/dialog.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { Rect } from '../../core/rect.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
 
 export class GraphicsDialogRenderer implements Renderer<GraphicsApp, Dialog> {
   readonly sourceRect: Rect;

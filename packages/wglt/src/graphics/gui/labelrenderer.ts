@@ -1,8 +1,8 @@
-import type { Font } from '../../core/font';
-import { GUI } from '../../core/gui/gui';
-import { alignStart, Label } from '../../core/gui/label';
-import type { Renderer } from '../../core/gui/renderer';
-import { GraphicsApp } from '../graphicsapp';
+import type { Font } from '../../core/font.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import { alignStart, Label } from '../../core/gui/label.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
 
 export class GraphicsLabelRenderer implements Renderer<GraphicsApp, Label> {
   readonly font: Font | undefined;

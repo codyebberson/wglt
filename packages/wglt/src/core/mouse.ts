@@ -1,6 +1,6 @@
-import { InputSet } from './input';
-import { Rect } from './rect';
-import { Vec2 } from './vec2';
+import { InputSet } from './input.ts';
+import { Rect } from './rect.ts';
+import { Vec2 } from './vec2.ts';
 
 /** Minimum distance in pixels required to register as a drag operation. */
 const MIN_DRAG_DISTANCE = 4;

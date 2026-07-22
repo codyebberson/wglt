@@ -1,8 +1,8 @@
-import type { Font } from '../../core/font';
-import { GUI } from '../../core/gui/gui';
-import { MessageLog } from '../../core/gui/messagelog';
-import type { Renderer } from '../../core/gui/renderer';
-import { GraphicsApp } from '../graphicsapp';
+import type { Font } from '../../core/font.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import { MessageLog } from '../../core/gui/messagelog.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
 
 export class GraphicsMessageLogRenderer implements Renderer<GraphicsApp, MessageLog> {
   readonly spacing: number;

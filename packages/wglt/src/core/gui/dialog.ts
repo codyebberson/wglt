@@ -1,6 +1,6 @@
-import { Rect } from '../../core/rect';
-import { Component } from './component';
-import { Panel } from './panel';
+import { Rect } from '../../core/rect.ts';
+import { Component } from './component.ts';
+import { Panel } from './panel.ts';
 
 export class Dialog extends Panel {
   title?: string;

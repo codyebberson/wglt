@@ -2,7 +2,7 @@
  * ZzFX Music Renderer v2.0.3 by Keith Clark and Frank Force
  */
 
-import { zzfxG, zzfxR } from './zzfx';
+import { zzfxG, zzfxR } from './zzfx.ts';
 
 /**
  * Channel definition

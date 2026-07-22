@@ -1,9 +1,9 @@
-import { Component } from '../../core/gui/component';
-import { Container } from '../../core/gui/container';
-import { GUI } from '../../core/gui/gui';
-import type { Renderer } from '../../core/gui/renderer';
-import { Rect } from '../../core/rect';
-import { GraphicsApp } from '../graphicsapp';
+import { Component } from '../../core/gui/component.ts';
+import { Container } from '../../core/gui/container.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { Rect } from '../../core/rect.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
 
 export class AutoRectRenderer<T extends Component = Component> implements Renderer<GraphicsApp, T> {
   readonly sourceRect: Rect;

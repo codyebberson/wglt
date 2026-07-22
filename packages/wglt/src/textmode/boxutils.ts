@@ -1,4 +1,4 @@
-import { Console } from './console';
+import { Console } from './console.ts';
 
 /**
  * Details about box characters.

@@ -1,6 +1,6 @@
-import { initShaderProgram } from '../core/glutils';
-import { GraphicsApp } from '../graphics/graphicsapp';
-import { TileMap } from './tilemap';
+import { initShaderProgram } from '../core/glutils.ts';
+import { GraphicsApp } from '../graphics/graphicsapp.ts';
+import { TileMap } from './tilemap.ts';
 
 const VS_SOURCE = `#version 300 es
 precision highp float;

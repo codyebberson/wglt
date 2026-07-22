@@ -1,5 +1,5 @@
-import { registerSerializable } from '../core/serialize';
-import { Vec2 } from '../core/vec2';
+import { registerSerializable } from '../core/serialize.ts';
+import { Vec2 } from '../core/vec2.ts';
 
 export class TileMapCell extends Vec2 {
   static {

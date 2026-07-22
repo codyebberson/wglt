@@ -1,10 +1,10 @@
-import type { Color } from '../core/color';
+import type { Color } from '../core/color.ts';
 import {
   createTexture,
   disposeTexture,
   type ExtendedTexture,
   initShaderProgram,
-} from '../core/glutils';
+} from '../core/glutils.ts';
 
 const BUFFER_SIZE = 65536;
 const ELEMENTS_PER_INSTANCE = 9;

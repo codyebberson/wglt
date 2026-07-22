@@ -1,5 +1,5 @@
-import { BaseApp } from '../baseapp';
-import { Container } from './container';
+import { BaseApp } from '../baseapp.ts';
+import { Container } from './container.ts';
 
 export class Panel extends Container {
   showAt(app: BaseApp, x: number, y: number): void {

@@ -1,5 +1,5 @@
-import { Message } from '../../core/message';
-import { Sprite } from '../sprite';
+import { Message } from '../../core/message.ts';
+import { Sprite } from '../sprite.ts';
 
 export interface SelectOption {
   id?: string;

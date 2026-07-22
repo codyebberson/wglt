@@ -1,4 +1,4 @@
-import { registerSerializable } from './serialize';
+import { registerSerializable } from './serialize.ts';
 
 /*
  * Random number generator.

@@ -1,6 +1,6 @@
-import { BaseApp } from '../baseapp';
-import { Component } from './component';
-import { GUI } from './gui';
+import { BaseApp } from '../baseapp.ts';
+import { Component } from './component.ts';
+import { GUI } from './gui.ts';
 
 export interface Renderer<
   TContext extends BaseApp = BaseApp,

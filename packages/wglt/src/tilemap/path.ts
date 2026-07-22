@@ -1,6 +1,6 @@
-import type { PointLike } from '../core/vec2';
-import { TileMap } from './tilemap';
-import { TileMapCell } from './tilemapcell';
+import type { PointLike } from '../core/vec2.ts';
+import { TileMap } from './tilemap.ts';
+import { TileMapCell } from './tilemapcell.ts';
 
 const dxs = [-1, 0, 1, -1, 1, -1, 0, 1] as const;
 const dys = [-1, -1, -1, 0, 0, 1, 1, 1] as const;

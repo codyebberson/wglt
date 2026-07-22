@@ -1,4 +1,4 @@
-import { Rect } from '../core/rect';
+import { Rect } from '../core/rect.ts';
 
 /**
  * IBM BIOS font constants.

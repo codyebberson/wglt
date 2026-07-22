@@ -1,8 +1,8 @@
-import type { Font } from '../../core/font';
-import { Button, getShortcutKeyDisplay } from '../../core/gui/button';
-import { GUI } from '../../core/gui/gui';
-import type { Renderer } from '../../core/gui/renderer';
-import { GraphicsApp } from '../graphicsapp';
+import type { Font } from '../../core/font.ts';
+import { Button, getShortcutKeyDisplay } from '../../core/gui/button.ts';
+import { GUI } from '../../core/gui/gui.ts';
+import type { Renderer } from '../../core/gui/renderer.ts';
+import { GraphicsApp } from '../graphicsapp.ts';
 
 export class GraphicsButtonRenderer implements Renderer<GraphicsApp, Button> {
   readonly font: Font | undefined;

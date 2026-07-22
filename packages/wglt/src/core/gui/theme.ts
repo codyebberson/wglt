@@ -1,7 +1,7 @@
-import { BaseApp } from '../baseapp';
-import type { Font } from '../font';
-import type { Insets } from '../insets';
-import { RendererMap } from './renderermap';
+import { BaseApp } from '../baseapp.ts';
+import type { Font } from '../font.ts';
+import type { Insets } from '../insets.ts';
+import { RendererMap } from './renderermap.ts';
 
 export class Theme<TContext extends BaseApp = BaseApp> {
   readonly renderers: RendererMap<TContext>;
