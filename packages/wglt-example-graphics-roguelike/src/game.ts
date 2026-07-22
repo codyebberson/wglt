@@ -63,7 +63,7 @@ export class Game extends AppState<GraphicsApp> {
     this.rng = new RNG();
     this.pathIndex = 0;
     this.tileMap = new TileMap(MAP_WIDTH, MAP_HEIGHT, 3, new Rect(0, 0, TILE_SIZE, TILE_SIZE));
-    this.tileMapRenderer = new TileMapRenderer(app.gl, this.tileMap);
+    this.tileMapRenderer = new TileMapRenderer(app, this.tileMap);
   }
 
   get tileSize(): Rect {

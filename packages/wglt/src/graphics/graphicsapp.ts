@@ -1,6 +1,7 @@
 import { BaseApp } from '../core/baseapp';
 import type { Color } from '../core/color';
 import { Font } from '../core/font';
+import type { ExtendedTexture } from '../core/glutils';
 import { Mouse } from '../core/mouse';
 import { Rect } from '../core/rect';
 import { Sprite } from '../core/sprite';
@@ -36,6 +37,8 @@ export interface GraphicsAppOptions {
  * ```
  */
 export class GraphicsApp extends BaseApp {
+  /** The shared sprite atlas used by graphics and tile-map rendering. */
+  readonly atlas: ExtendedTexture;
   private readonly drawList: DrawList;
 
   /**
@@ -76,6 +79,7 @@ export class GraphicsApp extends BaseApp {
 
     const imageUrl = options?.imageUrl || './graphics.png';
     this.drawList = new DrawList(this.gl, imageUrl);
+    this.atlas = this.drawList.spriteTexture;
 
     this.defaultFont = options?.defaultFont;
   }

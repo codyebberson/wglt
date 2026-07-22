@@ -1,4 +1,5 @@
 import { initShaderProgram } from '../core/glutils';
+import { GraphicsApp } from '../graphics/graphicsapp';
 import { TileMap } from './tilemap';
 
 const VS_SOURCE = `#version 300 es
@@ -50,6 +51,7 @@ void main(void) {
 }`;
 
 export class TileMapRenderer {
+  private readonly app: GraphicsApp;
   private readonly gl: WebGL2RenderingContext;
   private readonly tileMap: TileMap;
   private readonly vao: WebGLVertexArrayObject;
@@ -66,9 +68,12 @@ export class TileMapRenderer {
   private readonly tileSamplerUniform: WebGLUniformLocation;
   private readonly spriteSamplerUniform: WebGLUniformLocation;
 
-  constructor(gl: WebGL2RenderingContext, tileMap: TileMap) {
-    this.gl = gl;
+  constructor(app: GraphicsApp, tileMap: TileMap) {
+    this.app = app;
+    this.gl = app.gl;
     this.tileMap = tileMap;
+
+    const gl = this.gl;
 
     // Create shader program first
     this.program = initShaderProgram(gl, VS_SOURCE, FS_SOURCE);
@@ -170,6 +175,7 @@ export class TileMapRenderer {
 
     // Set up textures
     gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.app.atlas);
     gl.uniform1i(this.spriteSamplerUniform, 0);
 
     gl.activeTexture(gl.TEXTURE1);

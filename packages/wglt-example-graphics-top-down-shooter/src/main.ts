@@ -772,7 +772,7 @@ class Game extends GraphicsApp {
       new Rect(0, 0, TILE_SIZE, TILE_SIZE),
       new Rect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE)
     );
-    this.tileMapRenderer = new TileMapRenderer(this.gl, this.tileMap);
+    this.tileMapRenderer = new TileMapRenderer(this, this.tileMap);
     this.viewport = new Rect(0, 0, this.width, this.height);
     for (let i = 0; i < layers.length; i++) {
       const csv = layers[i].textContent.trim() as string;
