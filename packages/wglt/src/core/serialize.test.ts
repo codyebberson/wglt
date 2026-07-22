@@ -22,6 +22,34 @@ test('round-trips nested plain objects and arrays', () => {
   assert.deepEqual(roundTrip(src), src);
 });
 
+test('round-trips plain objects that contain serialization marker property names', () => {
+  const src = {
+    referenceLike: { $ref: 0, name: 'player' },
+    arrayViewLike: { $type: 'domain', $data: 'hello' },
+    knownArrayViewWithExtraData: { $type: 'Uint8Array', $data: 'AA==', name: 'bytes' },
+  };
+  assert.deepEqual(roundTrip(src), src);
+});
+
+test('includes and validates the serialization format version', () => {
+  assert.equal(JSON.parse(serialize(null)).$wglt, 1);
+  assert.throws(
+    () => deserialize(JSON.stringify({ $wglt: 2, instances: [], root: null })),
+    /format version: 2/
+  );
+  assert.throws(
+    () => deserialize(JSON.stringify({ instances: [], root: null })),
+    /format version: undefined/
+  );
+});
+
+test('rejects invalid internal references', () => {
+  assert.throws(
+    () => deserialize(JSON.stringify({ $wglt: 1, instances: [], root: { $ref: 0 } })),
+    /reference: 0/
+  );
+});
+
 test('preserves order of a mixed array', () => {
   const src = [1, 'two', { three: 3 }, [4]];
   assert.deepEqual(roundTrip(src), src);
@@ -187,6 +215,7 @@ test('rejects duplicate class IDs', () => {
 
 test('reports an unknown class ID when deserializing', () => {
   const serialized = JSON.stringify({
+    $wglt: 1,
     instances: [{ $type: 'test.unknown-id' }],
     root: { $ref: 0 },
   });

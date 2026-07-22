@@ -119,7 +119,7 @@ term.update = () => {
 
 class Actor {
   static {
-    registerSerializable(Actor);
+    registerSerializable('my-game.Actor', Actor);
   }
 }
 </code></pre>
@@ -129,6 +129,13 @@ class Actor {
         duplicated and circular references involving them are not supported. Register a class for objects that require identity or circular-reference support. V2 also supports typed arrays and
         <code>DataView</code>
         values.
+      </p>
+      <p>
+        Serialized bundles include a <code>$wglt</code> format version. Deserialization rejects missing or unsupported versions instead of guessing how to interpret the data. The exact internal marker
+        shapes
+        <code>{ $ref: number }</code>
+        and <code>{ $type: supportedArrayView, $data: string }</code> are reserved. Plain objects may use those property names when they also contain other properties. Registered class instances must
+        not define their own <code>$type</code> property because that property stores the registered class ID.
       </p>
 
       <h2>Packaging and runtime requirements</h2>

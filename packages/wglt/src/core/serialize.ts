@@ -1,7 +1,10 @@
 interface SerializationBundle {
+  $wglt: number;
   instances: InstancePlaceholder[];
   root: unknown;
 }
+
+const SERIALIZATION_FORMAT_VERSION = 1;
 
 interface InstancePlaceholder {
   $type?: string;
@@ -76,6 +79,7 @@ export function registerSerializable(id: string, value: SerializableConstructor)
  * Plain objects and arrays are serialized by value: shared references are duplicated, and
  * circular references involving them are not supported. Register a class for any object that
  * needs identity or circular-reference support.
+ * The output is a versioned WGLT serialization bundle.
  * @param obj - The root object to serialize.
  * @returns A string representation of the object graph.
  */
@@ -83,7 +87,7 @@ export function serialize(obj: unknown): string {
   const instances: InstancePlaceholder[] = [];
   const instancesMap = new WeakMap<object, number>();
   const root = replace(obj);
-  return JSON.stringify({ instances, root });
+  return JSON.stringify({ $wglt: SERIALIZATION_FORMAT_VERSION, instances, root });
 
   function replace(input: unknown): unknown {
     if (ArrayBuffer.isView(input)) {
@@ -155,11 +159,18 @@ export function serialize(obj: unknown): string {
  * Deserializes a JSON string to an object graph.
  * Restores the identity, prototypes, and circular references of registered class instances.
  * Plain objects and arrays are restored as independent values.
+ * Rejects bundles with a missing or unsupported WGLT serialization format version.
  * @param str - The JSON string to deserialize.
  * @returns The deserialized object graph.
  */
 export function deserialize(str: string): unknown {
   const input = JSON.parse(str) as SerializationBundle;
+  if (input?.$wglt !== SERIALIZATION_FORMAT_VERSION) {
+    throw new Error(`Unsupported WGLT serialization format version: ${String(input?.$wglt)}`);
+  }
+  if (!Array.isArray(input.instances)) {
+    throw new Error('Invalid WGLT serialization bundle: instances must be an array.');
+  }
   const instances = input.instances;
 
   // First, replace all objects with class instances
@@ -224,6 +235,9 @@ export function deserialize(str: string): unknown {
     input: Record<string, unknown>
   ): InstancePlaceholder | Record<string, unknown> {
     if (isRef(input)) {
+      if (!Number.isInteger(input.$ref) || input.$ref < 0 || input.$ref >= instances.length) {
+        throw new Error(`Invalid WGLT serialization reference: ${input.$ref}`);
+      }
       return instances[input.$ref];
     }
     replaceObjectProperties(input);
@@ -238,9 +252,22 @@ export function deserialize(str: string): unknown {
 }
 
 function isDataView(value: unknown): value is ArrayViewPlaceholder {
-  return !!(value && typeof value === 'object' && '$type' in value && '$data' in value);
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  const input = value as Record<string, unknown>;
+  return (
+    Object.keys(input).length === 2 &&
+    typeof input.$type === 'string' &&
+    typeof input.$data === 'string' &&
+    arrayViewConstructors.has(input.$type)
+  );
 }
 
 function isRef(value: unknown): value is ReferencePlaceholder {
-  return !!(value && typeof value === 'object' && '$ref' in value);
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  const input = value as Record<string, unknown>;
+  return Object.keys(input).length === 1 && typeof input.$ref === 'number';
 }
