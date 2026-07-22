@@ -67,7 +67,14 @@ export class GraphicsApp extends BaseApp {
   ) {
     let canvas: HTMLCanvasElement;
     if (typeof canvasOrSelector === 'string') {
-      canvas = document.querySelector(canvasOrSelector) as HTMLCanvasElement;
+      const element = document.querySelector(canvasOrSelector);
+      if (!element) {
+        throw new Error(`Canvas element not found for selector: ${canvasOrSelector}`);
+      }
+      if (!(element instanceof HTMLCanvasElement)) {
+        throw new Error(`Element matching selector is not a canvas: ${canvasOrSelector}`);
+      }
+      canvas = element;
     } else if (canvasOrSelector) {
       canvas = canvasOrSelector;
     } else {
