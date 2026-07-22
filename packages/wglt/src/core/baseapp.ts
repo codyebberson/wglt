@@ -95,6 +95,10 @@ export abstract class BaseApp {
     this.canvas.focus();
 
     this.boundLoop = this.renderLoop.bind(this);
+
+    // Applications intentionally start automatically. Requiring nearly every caller to invoke a
+    // separate start() method would add ceremony to the common case; requestAnimationFrame runs
+    // after the current constructor call stack, once concrete application initialization finishes.
     this.animationFrameId = requestAnimationFrame(this.boundLoop);
   }
 

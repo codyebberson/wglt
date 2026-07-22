@@ -21,6 +21,23 @@ export function computePath(
   dest: PointLike | undefined,
   maxDist: number = 100
 ): TileMapCell[] | undefined {
+  if (
+    !Number.isInteger(source.x) ||
+    !Number.isInteger(source.y) ||
+    map.isOutOfRange(source.x, source.y)
+  ) {
+    throw new RangeError(`Path source is outside the tile map: (${source.x}, ${source.y})`);
+  }
+  if (
+    dest &&
+    (!Number.isInteger(dest.x) || !Number.isInteger(dest.y) || map.isOutOfRange(dest.x, dest.y))
+  ) {
+    throw new RangeError(`Path destination is outside the tile map: (${dest.x}, ${dest.y})`);
+  }
+  if (!Number.isFinite(maxDist) || maxDist < 0) {
+    throw new RangeError(`Path maximum distance must be a non-negative finite number: ${maxDist}`);
+  }
+
   pathId++;
 
   const sourceCell = map.grid[source.y][source.x];

@@ -97,6 +97,9 @@ export class TileMap {
     }
   }
 
+  // This is used in hot tile-access loops, so it intentionally performs only bounds checks.
+  // Callers are expected to provide integer coordinates; higher-level operations such as
+  // pathfinding and FOV validate their inputs once at the operation boundary.
   isOutOfRange(x: number, y: number, z = 0): boolean {
     return x < 0 || x >= this.width || y < 0 || y >= this.height || z < 0 || z >= this.depth;
   }
@@ -205,6 +208,17 @@ export class TileMap {
     noClear?: boolean,
     octants?: number
   ): void {
+    if (
+      !Number.isInteger(originX) ||
+      !Number.isInteger(originY) ||
+      this.isOutOfRange(originX, originY)
+    ) {
+      throw new RangeError(`FOV origin is outside the tile map: (${originX}, ${originY})`);
+    }
+    if (!Number.isFinite(radius) || radius < 0) {
+      throw new RangeError(`FOV radius must be a non-negative finite number: ${radius}`);
+    }
+
     this.originX = originX;
     this.originY = originY;
     this.prevVisibleRect.copy(this.visibleRect);

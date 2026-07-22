@@ -1,3 +1,6 @@
+// This broad barrel is intentional. WGLT favors making its small implementation surface available
+// to users over maintaining a narrowly curated API. That may require more frequent semver-major
+// releases when internals change, and we explicitly accept that tradeoff.
 export * from './core/arraylist.ts';
 export * from './core/baseapp.ts';
 export * from './core/color.ts';
