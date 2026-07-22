@@ -532,7 +532,6 @@ export class Game extends AppState<GraphicsApp> {
 
     this.tileMap.computeFov(this.player.x, this.player.y, VIEW_DISTANCE);
     this.tileMap.updateExplored();
-    this.tileMap.dirty = true;
 
     // Determine which entities are visible
     for (let i = 0; i < this.entities.length; i++) {

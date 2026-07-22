@@ -108,6 +108,7 @@ export class TileMap {
     for (let i = 0; i < this.layers.length; i++) {
       this.layers[i].clear();
     }
+    this.dirty = true;
   }
 
   getTile(x: number, y: number, z = 0): number {
@@ -122,6 +123,7 @@ export class TileMap {
       return;
     }
     this.layers[z].setTile(x, y, tile);
+    this.dirty = true;
   }
 
   isBlocked(x: number, y: number): boolean {
@@ -167,6 +169,7 @@ export class TileMap {
     const cell = this.getCell(x, y);
     if (cell) {
       cell.explored = explored;
+      this.dirty = true;
     }
   }
 
@@ -182,6 +185,7 @@ export class TileMap {
       return;
     }
     this.layers[z].setAnimated(x, y, animated);
+    this.dirty = true;
   }
 
   resetFov(): void {
@@ -191,6 +195,7 @@ export class TileMap {
         this.grid[y][x].visible = false;
       }
     }
+    this.dirty = true;
   }
 
   /**
@@ -303,6 +308,7 @@ export class TileMap {
         this.computeOctantY(-1, 1);
       }
     }
+    this.dirty = true;
   }
 
   /**
@@ -487,6 +493,7 @@ export class TileMap {
         tile.explored = tile.explored || tile.visible;
       }
     }
+    this.dirty = true;
   }
 
   /**
