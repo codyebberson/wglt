@@ -3,7 +3,10 @@
  * provides additional helper properties.
  */
 export interface ExtendedTexture extends WebGLTexture {
+  /** Whether the image has loaded and been uploaded to the texture. */
   loaded: boolean;
+  /** The image-loading error, or undefined while loading and after a successful load. */
+  error: Error | undefined;
   width: number;
   height: number;
   image: HTMLImageElement;
@@ -79,6 +82,7 @@ export function loadShader(gl: WebGLRenderingContext, type: GLenum, source: stri
 export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedTexture {
   const texture = gl.createTexture() as ExtendedTexture;
   texture.loaded = false;
+  texture.error = undefined;
   texture.width = 0;
   texture.height = 0;
   texture.disposed = false;
@@ -117,7 +121,7 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
     if (texture.disposed) {
       return;
     }
-    throw new Error(`Failed to load texture: ${url}`);
+    texture.error = new Error(`Failed to load texture: ${url}`);
   };
 
   image.onload = (): void => {
