@@ -1,6 +1,24 @@
 {
   "name": "wglt",
   "version": "2.0.0-beta.1",
+  "description": "A WebGL2 game engine for roguelikes and turn-based games",
+  "license": "MIT",
+  "author": "Cody Ebberson",
+  "homepage": "https://github.com/codyebberson/wglt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codyebberson/wglt.git",
+    "directory": "packages/wglt"
+  },
+  "keywords": [
+    "wglt",
+    "webgl",
+    "webgl2",
+    "game-engine",
+    "roguelike",
+    "ascii",
+    "tilemap"
+  ],
   "sideEffects": false,
   "type": "module",
   "types": "./dist/index.d.ts",
