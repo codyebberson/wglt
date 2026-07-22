@@ -1,6 +1,11 @@
 import { BaseApp } from '../core/baseapp';
 import type { Color } from '../core/color';
-import { createTexture, initShaderProgram } from '../core/glutils';
+import {
+  createTexture,
+  disposeTexture,
+  type ExtendedTexture,
+  initShaderProgram,
+} from '../core/glutils';
 import { Key } from '../core/keys';
 import { Mouse } from '../core/mouse';
 import type { Rect } from '../core/rect';
@@ -64,7 +69,7 @@ export class Terminal extends BaseApp {
   private readonly textureBuffer: WebGLBuffer;
   private readonly foregroundBuffer: WebGLBuffer;
   private readonly backgroundBuffer: WebGLBuffer;
-  private readonly texture: WebGLTexture;
+  private readonly texture: ExtendedTexture;
   private lastRenderTime: number;
   private renderDelta: number;
   fps: number;
@@ -354,6 +359,17 @@ export class Terminal extends BaseApp {
   endFrame(): void {
     this.flush();
     this.render();
+  }
+
+  protected disposeResources(): void {
+    const gl = this.gl;
+    disposeTexture(gl, this.texture);
+    gl.deleteProgram(this.program);
+    gl.deleteBuffer(this.positionBuffer);
+    gl.deleteBuffer(this.indexBuffer);
+    gl.deleteBuffer(this.textureBuffer);
+    gl.deleteBuffer(this.foregroundBuffer);
+    gl.deleteBuffer(this.backgroundBuffer);
   }
 
   /**

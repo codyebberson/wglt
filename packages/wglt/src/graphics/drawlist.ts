@@ -1,5 +1,10 @@
 import type { Color } from '../core/color';
-import { createTexture, type ExtendedTexture, initShaderProgram } from '../core/glutils';
+import {
+  createTexture,
+  disposeTexture,
+  type ExtendedTexture,
+  initShaderProgram,
+} from '../core/glutils';
 
 const BUFFER_SIZE = 65536;
 const ELEMENTS_PER_INSTANCE = 9;
@@ -224,6 +229,17 @@ export class DrawList {
     gl.useProgram(null);
 
     // Reset for next frame
+    this.instanceCount = 0;
+  }
+
+  /** Releases the WebGL resources owned by this draw list. */
+  dispose(): void {
+    const gl = this.gl;
+    disposeTexture(gl, this.spriteTexture);
+    gl.deleteProgram(this.program);
+    gl.deleteBuffer(this.quadBuffer);
+    gl.deleteBuffer(this.instanceBuffer);
+    gl.deleteVertexArray(this.vao);
     this.instanceCount = 0;
   }
 }

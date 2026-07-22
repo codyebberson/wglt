@@ -62,6 +62,9 @@ export class Mouse {
   lastWheelDeltaX: number;
   /** Internal storage for wheel delta. */
   lastWheelDeltaY: number;
+  private readonly mouseListener: (event: MouseEvent) => void;
+  private readonly touchListener: (event: TouchEvent) => void;
+  private readonly wheelListener: (event: WheelEvent) => void;
 
   /**
    * Creates a new Mouse input handler.
@@ -84,17 +87,34 @@ export class Mouse {
     this.wheelDeltaY = 0;
     this.lastWheelDeltaX = 0;
     this.lastWheelDeltaY = 0;
+    this.mouseListener = (event): void => this.handleEvent(event);
+    this.touchListener = (event): void => this.handleTouchEvent(event);
+    this.wheelListener = (event): void => this.handleWheelEvent(event);
 
     // Set up event listeners for both mouse and touch
-    el.addEventListener('mousedown', (e) => this.handleEvent(e));
-    el.addEventListener('mouseup', (e) => this.handleEvent(e));
-    el.addEventListener('mousemove', (e) => this.handleEvent(e));
-    el.addEventListener('contextmenu', (e) => this.handleEvent(e));
-    el.addEventListener('touchstart', (e) => this.handleTouchEvent(e));
-    el.addEventListener('touchend', (e) => this.handleTouchEvent(e));
-    el.addEventListener('touchcancel', (e) => this.handleTouchEvent(e));
-    el.addEventListener('touchmove', (e) => this.handleTouchEvent(e));
-    el.addEventListener('wheel', (e) => this.handleWheelEvent(e));
+    el.addEventListener('mousedown', this.mouseListener);
+    el.addEventListener('mouseup', this.mouseListener);
+    el.addEventListener('mousemove', this.mouseListener);
+    el.addEventListener('contextmenu', this.mouseListener);
+    el.addEventListener('touchstart', this.touchListener);
+    el.addEventListener('touchend', this.touchListener);
+    el.addEventListener('touchcancel', this.touchListener);
+    el.addEventListener('touchmove', this.touchListener);
+    el.addEventListener('wheel', this.wheelListener);
+  }
+
+  /** Removes the mouse and touch event listeners. */
+  dispose(): void {
+    this.el.removeEventListener('mousedown', this.mouseListener);
+    this.el.removeEventListener('mouseup', this.mouseListener);
+    this.el.removeEventListener('mousemove', this.mouseListener);
+    this.el.removeEventListener('contextmenu', this.mouseListener);
+    this.el.removeEventListener('touchstart', this.touchListener);
+    this.el.removeEventListener('touchend', this.touchListener);
+    this.el.removeEventListener('touchcancel', this.touchListener);
+    this.el.removeEventListener('touchmove', this.touchListener);
+    this.el.removeEventListener('wheel', this.wheelListener);
+    this.buttons.clear();
   }
 
   private handleTouchEvent(e: TouchEvent): void {

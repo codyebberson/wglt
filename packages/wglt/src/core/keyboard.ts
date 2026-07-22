@@ -74,15 +74,28 @@ export class Keyboard {
   /** Internal key state management. */
   readonly keys = new InputSet<Key>();
   private readonly movementKeys: Partial<Record<Key, Vec2>>;
+  private readonly el: HTMLElement;
+  private readonly keyDownListener: (event: KeyboardEvent) => void;
+  private readonly keyUpListener: (event: KeyboardEvent) => void;
 
   /**
    * Creates a new keyboard input handler.
    * @param el - DOM element to attach event listeners to (usually the canvas).
    */
   constructor(el: HTMLElement, movementKeys?: Partial<Record<Key, Vec2>>) {
+    this.el = el;
     this.movementKeys = movementKeys ?? DEFAULT_MOVEMENT_KEYS;
-    el.addEventListener('keydown', (e) => this.setKey(e, true));
-    el.addEventListener('keyup', (e) => this.setKey(e, false));
+    this.keyDownListener = (event): void => this.setKey(event, true);
+    this.keyUpListener = (event): void => this.setKey(event, false);
+    el.addEventListener('keydown', this.keyDownListener);
+    el.addEventListener('keyup', this.keyUpListener);
+  }
+
+  /** Removes the keyboard event listeners. */
+  dispose(): void {
+    this.el.removeEventListener('keydown', this.keyDownListener);
+    this.el.removeEventListener('keyup', this.keyUpListener);
+    this.clear();
   }
 
   /**

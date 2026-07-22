@@ -116,6 +116,10 @@ export class GraphicsApp extends BaseApp {
     this.drawList.flush(this.pixelWidth, this.pixelHeight);
   }
 
+  protected disposeResources(): void {
+    this.drawList.dispose();
+  }
+
   private resetGl(): void {
     const gl = this.gl;
     gl.viewport(0, 0, this.pixelWidth, this.pixelHeight);

@@ -43,6 +43,8 @@ export abstract class BaseApp {
   /** Keyboard input handler. */
   readonly keyboard: Keyboard;
   private readonly boundLoop: () => void;
+  private animationFrameId: number | undefined;
+  private disposed = false;
   /** The default font used for text rendering. */
   defaultFont: Font | undefined;
   /** Duration of the last frame in milliseconds. */
@@ -89,7 +91,12 @@ export abstract class BaseApp {
     this.canvas.focus();
 
     this.boundLoop = this.renderLoop.bind(this);
-    requestAnimationFrame(this.boundLoop);
+    this.animationFrameId = requestAnimationFrame(this.boundLoop);
+  }
+
+  /** Returns whether this application has been disposed. */
+  isDisposed(): boolean {
+    return this.disposed;
   }
 
   /** Optional update callback called each frame. */
@@ -102,16 +109,43 @@ export abstract class BaseApp {
    * @private
    */
   private renderLoop(): void {
+    if (this.disposed) {
+      return;
+    }
     const t = performance.now();
     this.keyboard.updateKeys(t);
     this.mouse.update(t);
     this.startFrame(t);
     this.update?.();
     this.state?.update();
+    if (this.disposed) {
+      return;
+    }
     this.endFrame();
     this.lastFrameDuration = performance.now() - t;
-    requestAnimationFrame(this.boundLoop);
+    this.animationFrameId = requestAnimationFrame(this.boundLoop);
   }
+
+  /**
+   * Stops this application and releases its event listeners and WebGL resources.
+   * Call this when removing an application while its page remains loaded.
+   */
+  dispose(): void {
+    if (this.disposed) {
+      return;
+    }
+    this.disposed = true;
+    if (this.animationFrameId !== undefined) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = undefined;
+    }
+    this.keyboard.dispose();
+    this.mouse.dispose();
+    this.disposeResources();
+  }
+
+  /** Releases resources owned by a concrete application implementation. */
+  protected disposeResources(): void {}
 
   /**
    * Called at the beginning of each frame. Subclasses should implement frame setup logic here.

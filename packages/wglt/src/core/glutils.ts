@@ -6,6 +6,8 @@ export interface ExtendedTexture extends WebGLTexture {
   loaded: boolean;
   width: number;
   height: number;
+  image: HTMLImageElement;
+  disposed: boolean;
 }
 
 /**
@@ -35,6 +37,11 @@ export function initShaderProgram(
     gl.deleteShader(fragmentShader);
     throw new Error(`Shader program linking failed: ${info}`);
   }
+
+  gl.detachShader(shaderProgram, vertexShader);
+  gl.detachShader(shaderProgram, fragmentShader);
+  gl.deleteShader(vertexShader);
+  gl.deleteShader(fragmentShader);
 
   return shaderProgram;
 }
@@ -74,6 +81,7 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
   texture.loaded = false;
   texture.width = 0;
   texture.height = 0;
+  texture.disposed = false;
 
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -103,12 +111,19 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
   );
 
   const image = new Image();
+  texture.image = image;
 
   image.onerror = (): void => {
+    if (texture.disposed) {
+      return;
+    }
     throw new Error(`Failed to load texture: ${url}`);
   };
 
   image.onload = (): void => {
+    if (texture.disposed) {
+      return;
+    }
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -124,4 +139,15 @@ export function createTexture(gl: WebGLRenderingContext, url: string): ExtendedT
   image.src = url;
 
   return texture;
+}
+
+/** Cancels pending image callbacks and releases a texture created by {@link createTexture}. */
+export function disposeTexture(gl: WebGLRenderingContext, texture: ExtendedTexture): void {
+  if (texture.disposed) {
+    return;
+  }
+  texture.disposed = true;
+  texture.image.onload = (): void => {};
+  texture.image.onerror = (): void => {};
+  gl.deleteTexture(texture);
 }

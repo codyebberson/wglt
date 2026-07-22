@@ -55,6 +55,7 @@ export class TileMapRenderer {
   private readonly gl: WebGL2RenderingContext;
   private readonly tileMap: TileMap;
   private readonly vao: WebGLVertexArrayObject;
+  private readonly quadBuffer: WebGLBuffer;
   private readonly program: WebGLProgram;
   private readonly layerTextures: WebGLTexture[];
 
@@ -67,6 +68,7 @@ export class TileMapRenderer {
   private readonly animFrameUniform: WebGLUniformLocation;
   private readonly tileSamplerUniform: WebGLUniformLocation;
   private readonly spriteSamplerUniform: WebGLUniformLocation;
+  private disposed = false;
 
   constructor(app: GraphicsApp, tileMap: TileMap) {
     this.app = app;
@@ -113,8 +115,8 @@ export class TileMapRenderer {
       -1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0, -1, -1, 0, 1, 1, 1, 1, 0, -1, 1, 0, 0,
     ]);
 
-    const quadBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+    this.quadBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, quadVerts, gl.STATIC_DRAW);
 
     // Set up vertex attributes
@@ -223,5 +225,20 @@ export class TileMapRenderer {
     gl.useProgram(null);
 
     tileMap.dirty = false;
+  }
+
+  /** Releases the WebGL resources owned by this renderer. */
+  dispose(): void {
+    if (this.disposed) {
+      return;
+    }
+    this.disposed = true;
+    const gl = this.gl;
+    for (const texture of this.layerTextures) {
+      gl.deleteTexture(texture);
+    }
+    gl.deleteProgram(this.program);
+    gl.deleteBuffer(this.quadBuffer);
+    gl.deleteVertexArray(this.vao);
   }
 }
