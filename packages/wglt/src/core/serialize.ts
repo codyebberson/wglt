@@ -72,7 +72,10 @@ export function registerSerializable(id: string, value: SerializableConstructor)
 
 /**
  * Serializes a value to JSON.
- * Handles circular references and class instances.
+ * Registered class instances preserve their identity and may contain circular references.
+ * Plain objects and arrays are serialized by value: shared references are duplicated, and
+ * circular references involving them are not supported. Register a class for any object that
+ * needs identity or circular-reference support.
  * @param obj - The root object to serialize.
  * @returns A string representation of the object graph.
  */
@@ -150,7 +153,8 @@ export function serialize(obj: unknown): string {
 
 /**
  * Deserializes a JSON string to an object graph.
- * Handles circular references and class instances.
+ * Restores the identity, prototypes, and circular references of registered class instances.
+ * Plain objects and arrays are restored as independent values.
  * @param str - The JSON string to deserialize.
  * @returns The deserialized object graph.
  */

@@ -123,7 +123,13 @@ class Actor {
   }
 }
 </code></pre>
-      <p><code>serialize()</code> and <code>deserialize()</code> still support object identity and circular references. V2 also supports typed arrays and <code>DataView</code> values.</p>
+      <p>
+        <code>serialize()</code>
+        and <code>deserialize()</code> preserve object identity and circular references for registered class instances. Plain objects and arrays are serialized by value, so shared references are
+        duplicated and circular references involving them are not supported. Register a class for objects that require identity or circular-reference support. V2 also supports typed arrays and
+        <code>DataView</code>
+        values.
+      </p>
 
       <h2>Packaging and runtime requirements</h2>
       <ul>
