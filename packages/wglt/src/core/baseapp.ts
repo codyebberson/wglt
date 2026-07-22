@@ -72,10 +72,14 @@ export abstract class BaseApp {
     this.mouse = mouse;
     this.center = new Vec2((this.pixelWidth / 2) | 0, (this.pixelHeight / 2) | 0);
 
-    this.gl = canvas.getContext('webgl2', {
+    const gl = canvas.getContext('webgl2', {
       alpha: false,
       antialias: false,
-    }) as WebGL2RenderingContext;
+    });
+    if (!gl) {
+      throw new Error('WebGL2 is not supported or could not be initialized.');
+    }
+    this.gl = gl;
 
     this.keyboard = new Keyboard(canvas, movementKeys);
 
