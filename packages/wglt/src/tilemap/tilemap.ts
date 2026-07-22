@@ -236,8 +236,8 @@ export class TileMap {
     if (noClear) {
       minX = Math.min(this.visibleRect.x1, Math.max(0, originX - radius));
       minY = Math.min(this.visibleRect.y1, Math.max(0, originY - radius));
-      maxX = Math.max(this.visibleRect.x2, Math.min(this.width - 1, originX + radius));
-      maxY = Math.max(this.visibleRect.y2, Math.min(this.height - 1, originY + radius));
+      maxX = Math.max(this.visibleRect.x2 - 1, Math.min(this.width - 1, originX + radius));
+      maxY = Math.max(this.visibleRect.y2 - 1, Math.min(this.height - 1, originY + radius));
     } else {
       minX = Math.max(0, originX - radius);
       minY = Math.max(0, originY - radius);
@@ -256,6 +256,7 @@ export class TileMap {
     this.visibleRect.height = maxY - minY + 1;
 
     this.grid[originY][originX].visible = true;
+    this.grid[originY][originX].explored = true;
 
     if (octants === undefined) {
       this.computeOctantY(1, 1);
