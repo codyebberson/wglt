@@ -17,6 +17,8 @@ import { Console } from './console';
 import { IBM_BIOS_FONT_DATA_URL, IBM_BIOS_FONT_GLYPH_SIZE } from './font';
 import { FRAGMENT_SHADER_SOURCE, VERTEX_SHADER_SOURCE } from './shaders';
 
+const MAX_TERMINAL_CELL_COUNT = 16384;
+
 /**
  * Configuration options for creating a Terminal instance.
  */
@@ -99,6 +101,13 @@ export class Terminal extends BaseApp {
     height: number,
     options?: TerminalOptions
   ) {
+    const cellCount = width * height;
+    if (cellCount > MAX_TERMINAL_CELL_COUNT) {
+      throw new RangeError(
+        `Terminal dimensions exceed the ${MAX_TERMINAL_CELL_COUNT.toLocaleString()}-cell limit: ${width}x${height} (${cellCount} cells)`
+      );
+    }
+
     const fontGlyphSize = options?.fontGlyphSize ?? IBM_BIOS_FONT_GLYPH_SIZE;
     const pixelWidth = width * fontGlyphSize.width;
     const pixelHeight = height * fontGlyphSize.height;
@@ -131,7 +140,6 @@ export class Terminal extends BaseApp {
     this.fgColorAttribLocation = this.getAttribLocation('c');
     this.bgColorAttribLocation = this.getAttribLocation('d');
 
-    const cellCount = width * height;
     this.positionsArray = new Float32Array(cellCount * 3 * 4);
     this.indexArray = new Uint16Array(cellCount * 6);
     this.textureArray = new Float32Array(cellCount * 2 * 4);
